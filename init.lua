@@ -1,7 +1,7 @@
 vim.loader.enable()
 
 if vim.fn.has("macunix") then
-  vim.opt.runtimepath:append("/Users/retran/.dotfiles/config/nvim")
+  vim.opt.runtimepath:append("/Users/retran/.meow/config/nvim")
 end
 
 require("config/options")
@@ -66,4 +66,3 @@ require("lazy").setup({
 
 require("utils.hooks").setup()
 require("config/keymaps")
-
