@@ -45,6 +45,18 @@ return {
       hidden = true,
       layout = { preset = "ivy" },
       sources = {
+        files = {
+          hidden = true,
+        },
+        git_files = {
+          hidden = true,
+        },
+        recent = {
+          hidden = true,
+        },
+        explorer = {
+          hidden = true,
+        },
         projects = {
           hidden = true,
           confirm = function(picker, item)
