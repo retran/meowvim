@@ -22,6 +22,20 @@
 
 A carefully crafted Neovim configuration that transforms your editor into a powerful, beautiful, and efficient development environment. Part of the [meow configuration system](https://github.com/retran/meow), MeowVim provides a comprehensive setup with modern plugins, intelligent defaults, and a delightful user experience.
 
+## 🖼️ Screenshots
+
+*Screenshots and demos coming soon! The configuration features a beautiful Tokyo Night theme with modern UI elements, intelligent completion, and seamless Git integration.*
+
+## 🌟 What Makes MeowVim Special?
+
+- **🚀 Zero Configuration**: Works out of the box with sensible defaults
+- **🎨 Beautiful Interface**: Tokyo Night theme with modern UI components
+- **🧠 AI-Powered**: GitHub Copilot integration for intelligent coding assistance
+- **⚡ Lightning Fast**: Optimized for performance with lazy loading
+- **🔧 Highly Customizable**: Easy to extend and modify to your needs
+- **🌐 Language Support**: Works with all major programming languages
+- **📦 Plugin Rich**: 30+ carefully selected plugins for enhanced productivity
+
 ## 📋 Table of Contents
 
 - [✨ Features](#-features)
@@ -198,6 +212,17 @@ On first launch, MeowVim will:
 :Copilot auth
 ```
 
+### 5. Using with Neovide (Optional)
+If you have [Neovide](https://neovide.dev/) installed, you can use the included launch script:
+
+```bash
+# macOS with Raycast
+./bin/meowvim.sh
+
+# Or launch directly
+neovide --size 2200x1600
+```
+
 ## ⚙️ Configuration
 
 MeowVim is highly customizable. Here's how to make it your own:
@@ -341,9 +366,23 @@ nvim --headless "+Lazy sync" +qa
    ```vim
    :LspInfo
    ```
-2. Install missing servers:
+2. Install missing servers using Mason:
    ```vim
    :Mason
+   ```
+3. For specific languages, you might need to install servers manually:
+   ```bash
+   # TypeScript/JavaScript
+   npm install -g typescript typescript-language-server
+   
+   # Python
+   pip install python-lsp-server
+   
+   # Go
+   go install golang.org/x/tools/gopls@latest
+   
+   # Rust
+   rustup component add rust-analyzer
    ```
 
 #### Copilot Not Working
