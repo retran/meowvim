@@ -21,4 +21,4 @@ vim.g.neovide_padding_right = 2
 vim.g.neovide_padding_left = 2
 
 vim.opt.title = true
-vim.opt.titlestring = "MeowVim"
+vim.opt.titlestring = "MeowVim - Purr-fect Neovim"
