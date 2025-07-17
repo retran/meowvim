@@ -17,7 +17,7 @@
 <strong>Meowvim - Purr-fect Neovim</strong>
 </div>
 
-A carefully crafted Neovim configuration that provides a modern development environment. Part of the [meow configuration system](https://github.com/retran/meow), `Meowvim` includes curated plugins, intelligent defaults, and a consistent user experience.
+A carefully crafted Neovim configuration that provides a modern development environment. Part of the `project meow`, `Meowvim` includes curated plugins, intelligent defaults, and a consistent user experience.
 
 ## 🖼️ Screenshots
 
@@ -163,6 +163,7 @@ git submodule update
 After installation, follow these steps to get started:
 
 ### 1. First Launch
+
 ```bash
 nvim
 ```
@@ -277,11 +278,14 @@ nvim --headless "+Lazy sync" +qa
 #### LSP Not Working
 
 1. Check if the language server is installed:
+
    ```vim
    :LspInfo
    ```
-2. Language servers are managed by the meow system. If you installed `Meowvim` as part of meow, they should be automatically available.
+
+2. Language servers are managed by the `meow`. If you installed `Meowvim` as part of `meow`, they should be automatically available.
 3. For standalone installation, you may need to install servers manually:
+
    ```bash
    # TypeScript/JavaScript
    npm install -g typescript typescript-language-server
@@ -299,10 +303,13 @@ nvim --headless "+Lazy sync" +qa
 #### Copilot Not Working
 
 1. Authenticate with GitHub:
+
    ```vim
    :Copilot auth
    ```
+
 2. Check status:
+
    ```vim
    :Copilot status
    ```
@@ -310,9 +317,11 @@ nvim --headless "+Lazy sync" +qa
 #### Performance Issues
 
 1. Check startup time:
+
    ```vim
    :StartupTime
    ```
+
 2. Disable unused plugins in `lua/plugins/`
 
 #### Icons Not Displaying
@@ -347,11 +356,13 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 `Meowvim` builds on the excellent work of the Neovim community.
 
 ### Core Dependencies
+
 - [Neovim](https://neovim.io/) - The extensible text editor
 - [Lazy.nvim](https://github.com/folke/lazy.nvim) - Modern plugin manager
 - [Tokyo Night](https://github.com/folke/tokyonight.nvim) - Beautiful colorscheme
 
 ### Plugins
+
 - [auto-save.nvim](https://github.com/okuuva/auto-save.nvim) - Automatic file saving
 - [bufferline.nvim](https://github.com/akinsho/bufferline.nvim) - Buffer line with tabs
 - [cmp-buffer](https://github.com/hrsh7th/cmp-buffer) - Buffer completion source
@@ -399,6 +410,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - [which-key.nvim](https://github.com/folke/which-key.nvim) - Keybinding help
 
 ### Inspiration
+
 - [LazyVim](https://github.com/LazyVim/LazyVim) - Modern Neovim configuration
 - [Spacemacs](https://github.com/syl20bnr/spacemacs) - Emacs configuration framework
 
