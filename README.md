@@ -1,4 +1,4 @@
-# 🐱 MeowVim
+# 🐱 Meowvim
 
 > The purr-fect Neovim configuration for a cozy coding session. May or may not increase your productivity by a feline factor.
 
@@ -12,22 +12,22 @@
 </div>
 
 <div align="center">
-<img src="assets/icon_small.png" alt="MeowVim Logo" width="200">
+<img src="assets/icon_small.png" alt="Meowvim Logo" width="200">
 <br>
-<strong>MeowVim - Purr-fect Neovim</strong>
+<strong>Meowvim - Purr-fect Neovim</strong>
 </div>
 
-A carefully crafted Neovim configuration that provides a modern development environment. Part of the [meow configuration system](https://github.com/retran/meow), MeowVim includes curated plugins, intelligent defaults, and a consistent user experience.
+A carefully crafted Neovim configuration that provides a modern development environment. Part of the `project meow`, `Meowvim` includes curated plugins, intelligent defaults, and a consistent user experience.
 
 ## 🖼️ Screenshots
 
 <div align="center">
 
 ### Dashboard
-<img src="assets/screenshot_dashboard.png" alt="MeowVim Dashboard" width="800">
+<img src="assets/screenshot_dashboard.png" alt="Meowvim Dashboard" width="800">
 
 ### Editor
-<img src="assets/screenshot_editor.png" alt="MeowVim Editor" width="800">
+<img src="assets/screenshot_editor.png" alt="Meowvim Editor" width="800">
 
 </div>
 
@@ -48,7 +48,6 @@ A carefully crafted Neovim configuration that provides a modern development envi
 - [🚀 Installation](#-installation)
 - [⚡ Quick Start](#-quick-start)
 - [⚙️ Configuration](#️-configuration)
-- [🎯 Usage Examples](#-usage-examples)
 - [🔧 Troubleshooting](#-troubleshooting)
 - [🤝 Contributing](#-contributing)
 - [📄 License](#-license)
@@ -56,9 +55,10 @@ A carefully crafted Neovim configuration that provides a modern development envi
 
 ## ✨ Features
 
-MeowVim includes these development features:
+`Meowvim` includes these development features:
 
 ### 🧠 Intelligence & Completion
+
 - **LSP Support**: Language Server Protocol integration with automatic setup
 - **GitHub Copilot**: AI-powered code completion and suggestions
 - **Completion Engine**: Context-aware autocompletion with nvim-cmp
@@ -66,6 +66,7 @@ MeowVim includes these development features:
 - **Syntax Highlighting**: Syntax highlighting with Treesitter
 
 ### 🎨 Interface
+
 - **Tokyo Night Theme**: Modern, readable colorscheme
 - **Status Line**: Informative status bar with Git integration
 - **Buffer Management**: Buffer navigation and organization
@@ -73,6 +74,7 @@ MeowVim includes these development features:
 - **Indent Guides**: Visual indentation helpers
 
 ### 🔧 Development Tools
+
 - **Git Integration**: Git workflow with Gitsigns and Fugitive
 - **Code Formatting**: Automatic formatting with Conform.nvim
 - **Linting**: Real-time code linting with nvim-lint
@@ -81,6 +83,7 @@ MeowVim includes these development features:
 - **Refactoring**: Code refactoring tools
 
 ### 🚀 Productivity
+
 - **Fuzzy Finder**: File and text search with Snacks
 - **Auto-save**: Automatic file saving
 - **Session Management**: Session persistence
@@ -89,6 +92,7 @@ MeowVim includes these development features:
 - **Auto-pairs**: Automatic bracket and quote pairing
 
 ### 🎯 Language Support
+
 - **Go**: Go development support with testing
 - **TypeScript/JavaScript**: JS/TS development
 - **Python**: Python development support
@@ -97,14 +101,16 @@ MeowVim includes these development features:
 
 ## 📋 Prerequisites
 
-Before installing MeowVim, ensure you have the following:
+Before installing `Meowvim`, ensure you have the following:
 
 ### Required
+
 - **Neovim** ≥ 0.9.0
 - **Git** (for plugin management)
 - **A terminal** with true color support
 
 ### Recommended
+
 - **Node.js** ≥ 18.0 (for some LSP servers and Copilot)
 - **Python** ≥ 3.8 (for Python LSP and some plugins)
 - **Go** ≥ 1.19 (for Go development)
@@ -114,6 +120,7 @@ Before installing MeowVim, ensure you have the following:
 - **JetBrains Mono Nerd Font** (for proper icon display)
 
 ### Optional
+
 - **Neovide** (GUI Neovim client) - A Raycast launch script is included
 - **GitHub Copilot** subscription (for AI features)
 
@@ -127,7 +134,7 @@ If you're starting fresh or want to replace your current Neovim config:
 # Backup your existing config (if any)
 mv ~/.config/nvim ~/.config/nvim.backup
 
-# Clone MeowVim
+# Clone Meowvim
 git clone https://github.com/retran/meowvim.git ~/.config/nvim
 
 # Start Neovim - plugins will install automatically
@@ -136,7 +143,7 @@ nvim
 
 ### Option 2: As Part of Meow System
 
-If you're using the complete [meow configuration system](https://github.com/retran/meow):
+If you're using [`meow` dotfiles management system](https://github.com/retran/meow):
 
 ```bash
 # Clone the meow system
@@ -156,26 +163,32 @@ git submodule update
 After installation, follow these steps to get started:
 
 ### 1. First Launch
+
 ```bash
 nvim
 ```
 
-On first launch, MeowVim will:
+On first launch, `Meowvim` will:
+
 - Install the Lazy.nvim plugin manager
 - Download and install all plugins
 - Configure Language Server Protocol (LSP) servers automatically
 
 ### 2. Basic Navigation
-- **Leader key**: `Space` (main entry point for functions)
-- **Open file finder**: `Space + Space`
-- **Exit**: `:q` or `ZZ`
+
+- **Leader key**: `Space` (main entry point for features)
+- **Open project**: `Space, f, p`
+
+- **Open smart file finder**: `Space, Space`
 
 ### 3. Set Up GitHub Copilot (Optional)
+
 ```vim
 :Copilot auth
 ```
 
 ### 4. Using with Neovide (Optional)
+
 If you have [Neovide](https://neovide.dev/) installed, you can use the included launch script:
 
 ```bash
@@ -188,9 +201,10 @@ neovide
 
 ## ⚙️ Configuration
 
-MeowVim is highly customizable. Here's how to make it your own:
+`Meowvim` is highly customizable. Here's how to make it your own:
 
 ### File Structure
+
 ```
 ~/.config/nvim/
 ├── init.lua              # Main configuration entry point
@@ -205,6 +219,7 @@ MeowVim is highly customizable. Here's how to make it your own:
 ```
 
 ### Customizing Options
+
 Edit `lua/config/options.lua` to change Neovim settings:
 
 ```lua
@@ -217,6 +232,7 @@ vim.opt.wrap = true
 ```
 
 ### Adding Plugins
+
 Create a new file in `lua/plugins/` directory:
 
 ```lua
@@ -230,6 +246,7 @@ return {
 ```
 
 ### Customizing Keymaps
+
 Edit `lua/config/keymaps.lua` to add your own key mappings:
 
 ```lua
@@ -238,6 +255,7 @@ Edit `lua/config/keymaps.lua` to add your own key mappings:
 ```
 
 ### Theme Customization
+
 Switch themes by editing `lua/plugins/tokyonight.lua`:
 
 ```lua
@@ -250,6 +268,7 @@ vim.cmd.colorscheme("tokyonight-storm")  -- or "tokyonight-day"
 ### Common Issues
 
 #### Plugin Installation Fails
+
 ```bash
 # Clear plugin cache and reinstall
 rm -rf ~/.local/share/nvim/lazy
@@ -257,51 +276,60 @@ nvim --headless "+Lazy sync" +qa
 ```
 
 #### LSP Not Working
+
 1. Check if the language server is installed:
+
    ```vim
    :LspInfo
    ```
-2. Language servers are managed by the meow system. If you installed MeowVim as part of meow, they should be automatically available.
+
+2. Language servers are managed by the `meow`. If you installed `Meowvim` as part of `meow`, they should be automatically available.
 3. For standalone installation, you may need to install servers manually:
+
    ```bash
    # TypeScript/JavaScript
    npm install -g typescript typescript-language-server
-   
+
    # Python
    pip install python-lsp-server
-   
+
    # Go
    go install golang.org/x/tools/gopls@latest
-   
+
    # Rust
    rustup component add rust-analyzer
    ```
 
 #### Copilot Not Working
+
 1. Authenticate with GitHub:
+
    ```vim
    :Copilot auth
    ```
+
 2. Check status:
+
    ```vim
    :Copilot status
    ```
 
 #### Performance Issues
+
 1. Check startup time:
+
    ```vim
    :StartupTime
    ```
+
 2. Disable unused plugins in `lua/plugins/`
 
 #### Icons Not Displaying
-Install JetBrains Mono Nerd Font:
-```bash
-# Download and install JetBrains Mono Nerd Font
-# https://www.nerdfonts.com/font-downloads
-```
+
+Install [JetBrains Mono Nerd Font](https://www.nerdfonts.com/font-downloads).
 
 ### Getting Help
+
 - Use `:help` for Neovim documentation
 - Check `:Lazy` for plugin management
 - Use `<Space>?` for Which-key help
@@ -309,48 +337,15 @@ Install JetBrains Mono Nerd Font:
 
 ## 🤝 Contributing
 
-Contributions are welcome to help improve MeowVim! Here's how you can help:
+Contributions are welcome to help improve `Meowvim`! Here's how you can help:
 
 ### Ways to Contribute
+
 - 🐛 Report bugs
 - 💡 Suggest new features
 - 📝 Improve documentation
 - 🔧 Submit code improvements
 - 🎨 Enhance themes and UI
-
-### Development Setup
-```bash
-# Fork the repository
-git clone https://github.com/YOUR-USERNAME/meowvim.git
-cd meowvim
-
-# Create a feature branch
-git checkout -b feature/new-feature
-
-# Make your changes and test thoroughly
-
-# Commit your changes
-git commit -m "Add new feature"
-
-# Push to your fork
-git push origin feature/new-feature
-
-# Create a Pull Request
-```
-
-### Code Style
-- Follow existing code patterns
-- Use meaningful variable names
-- Comment complex logic
-- Keep functions focused and small
-- Test your changes thoroughly
-
-### Pull Request Guidelines
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a Pull Request with a clear description
 
 ## 📄 License
 
@@ -358,14 +353,16 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## 🙏 Acknowledgments
 
-MeowVim builds on the excellent work of the Neovim community.
+`Meowvim` builds on the excellent work of the Neovim community.
 
 ### Core Dependencies
+
 - [Neovim](https://neovim.io/) - The extensible text editor
 - [Lazy.nvim](https://github.com/folke/lazy.nvim) - Modern plugin manager
 - [Tokyo Night](https://github.com/folke/tokyonight.nvim) - Beautiful colorscheme
 
 ### Plugins
+
 - [auto-save.nvim](https://github.com/okuuva/auto-save.nvim) - Automatic file saving
 - [bufferline.nvim](https://github.com/akinsho/bufferline.nvim) - Buffer line with tabs
 - [cmp-buffer](https://github.com/hrsh7th/cmp-buffer) - Buffer completion source
@@ -413,20 +410,22 @@ MeowVim builds on the excellent work of the Neovim community.
 - [which-key.nvim](https://github.com/folke/which-key.nvim) - Keybinding help
 
 ### Inspiration
+
 - [LazyVim](https://github.com/LazyVim/LazyVim) - Modern Neovim configuration
 - [Spacemacs](https://github.com/syl20bnr/spacemacs) - Emacs configuration framework
 
 ### Author
-MeowVim is developed by Andrew Vasilyev with help from feline assistants Sonya, Mila, and Marcus Fenix.
+
+`Meowvim` is developed by Andrew Vasilyev with help from GitHub Copilot and feline assistants Sonya Blade, Mila, and Marcus Fenix.
 
 ---
 
 <div align="center">
 
-**Happy coding with MeowVim! 🐱**
+**Happy coding with `project meow`! 🐱**
 
 Made with ❤️ by Andrew Vasilyev and feline assistants
 
-[Report Bug](https://github.com/retran/meowvim/issues) · [Request Feature](https://github.com/retran/meowvim/issues) · [Contribute](https://github.com/retran/meowvim/pulls)
+[Report Bug](https://github.com/retran/meow/issues) · [Request Feature](https://github.com/retran/meow/issues) · [Contribute](https://github.com/retran/meow/pulls)
 
 </div>
