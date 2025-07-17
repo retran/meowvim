@@ -1,6 +1,6 @@
 # 🐱 MeowVim
 
-> The purr-fect Neovim configuration for a cozy coding session
+> A Neovim configuration for a cozy coding session
 
 <div align="center">
 
@@ -20,21 +20,21 @@
                     MeowVim - Purr-fect Neovim
 ```
 
-A carefully crafted Neovim configuration that transforms your editor into a powerful, beautiful, and efficient development environment. Part of the [meow configuration system](https://github.com/retran/meow), MeowVim provides a comprehensive setup with modern plugins, intelligent defaults, and a delightful user experience.
+A carefully crafted Neovim configuration that provides a modern development environment. Part of the [meow configuration system](https://github.com/retran/meow), MeowVim includes curated plugins, intelligent defaults, and a consistent user experience.
 
 ## 🖼️ Screenshots
 
-*Screenshots and demos coming soon! The configuration features a beautiful Tokyo Night theme with modern UI elements, intelligent completion, and seamless Git integration.*
+*Screenshots and demos coming soon! The configuration features the Tokyo Night theme with modern UI elements, intelligent completion, and Git integration.*
 
-## 🌟 What Makes MeowVim Special?
+## 🌟 Key Features
 
 - **🚀 Zero Configuration**: Works out of the box with sensible defaults
-- **🎨 Beautiful Interface**: Tokyo Night theme with modern UI components
-- **🧠 AI-Powered**: GitHub Copilot integration for intelligent coding assistance
-- **⚡ Lightning Fast**: Optimized for performance with lazy loading
-- **🔧 Highly Customizable**: Easy to extend and modify to your needs
-- **🌐 Language Support**: Works with all major programming languages
-- **📦 Plugin Rich**: 30+ carefully selected plugins for enhanced productivity
+- **🎨 Modern Interface**: Tokyo Night theme with clean UI components
+- **🧠 AI-Powered**: GitHub Copilot integration for coding assistance
+- **⚡ Performance**: Optimized with lazy loading
+- **🔧 Customizable**: Easy to extend and modify
+- **🌐 Language Support**: Works with major programming languages
+- **📦 Plugin Collection**: 25+ curated plugins for development
 
 ## 📋 Table of Contents
 
@@ -51,44 +51,44 @@ A carefully crafted Neovim configuration that transforms your editor into a powe
 
 ## ✨ Features
 
-MeowVim comes packed with powerful features that make coding a joy:
+MeowVim includes these development features:
 
 ### 🧠 Intelligence & Completion
-- **LSP Support**: Full Language Server Protocol integration with automatic setup
+- **LSP Support**: Language Server Protocol integration with automatic setup
 - **GitHub Copilot**: AI-powered code completion and suggestions
-- **Smart Completion**: Context-aware autocompletion with nvim-cmp
-- **Code Snippets**: Extensive snippet collection with LuaSnip
-- **Syntax Highlighting**: Advanced syntax highlighting with Treesitter
+- **Completion Engine**: Context-aware autocompletion with nvim-cmp
+- **Code Snippets**: Snippet collection with LuaSnip
+- **Syntax Highlighting**: Syntax highlighting with Treesitter
 
-### 🎨 Beautiful Interface
-- **Tokyo Night Theme**: Modern, eye-friendly colorscheme
-- **Status Line**: Informative lualine with Git integration
-- **Buffer Management**: Elegant buffer line with easy navigation
-- **Icons**: Beautiful icons throughout the interface
+### 🎨 Interface
+- **Tokyo Night Theme**: Modern, readable colorscheme
+- **Status Line**: Informative status bar with Git integration
+- **Buffer Management**: Buffer navigation and organization
+- **Icons**: Consistent iconography throughout
 - **Indent Guides**: Visual indentation helpers
 
 ### 🔧 Development Tools
-- **Git Integration**: Seamless Git workflow with Gitsigns and Fugitive
+- **Git Integration**: Git workflow with Gitsigns and Fugitive
 - **Code Formatting**: Automatic formatting with Conform.nvim
 - **Linting**: Real-time code linting with nvim-lint
-- **Debugging**: Full debugging support with nvim-dap
-- **Testing**: Integrated test runner with Neotest
-- **Refactoring**: Advanced refactoring tools
+- **Debugging**: Debugging support with nvim-dap
+- **Testing**: Test runner integration with Neotest
+- **Refactoring**: Code refactoring tools
 
-### 🚀 Productivity Boosters
-- **Fuzzy Finder**: Fast file and text search with Snacks
+### 🚀 Productivity
+- **Fuzzy Finder**: File and text search with Snacks
 - **Auto-save**: Automatic file saving
-- **Session Management**: Persistent sessions and window layouts
-- **Quick Navigation**: Leap motion for lightning-fast cursor movement
-- **Comment Toggling**: Smart comment handling
+- **Session Management**: Session persistence
+- **Quick Navigation**: Leap motion for cursor movement
+- **Comment Handling**: Smart comment toggling
 - **Auto-pairs**: Automatic bracket and quote pairing
 
 ### 🎯 Language Support
-- **Go**: Full Go development support with testing
-- **TypeScript/JavaScript**: Modern JS/TS development
-- **Python**: Comprehensive Python support
-- **Lua**: Enhanced Lua development for Neovim
-- **And many more**: Extensible language support
+- **Go**: Go development support with testing
+- **TypeScript/JavaScript**: JS/TS development
+- **Python**: Python development support
+- **Lua**: Lua development for Neovim
+- **Additional languages**: Extensible language support
 
 ## 📋 Prerequisites
 
@@ -107,7 +107,7 @@ Before installing MeowVim, ensure you have the following:
 - **fd** (for faster file finding)
 - **A Nerd Font** (for proper icon display)
 
-### Optional but Recommended
+### Optional
 - **Neovide** (GUI Neovim client) - A launch script is included
 - **GitHub Copilot** subscription (for AI features)
 
@@ -183,7 +183,7 @@ nvim
 On first launch, MeowVim will:
 - Install the Lazy.nvim plugin manager
 - Download and install all plugins
-- Set up Language Server Protocol (LSP) servers
+- Configure Language Server Protocol (LSP) servers automatically
 
 ### 2. Basic Navigation
 - **Leader key**: `Space` (most commands start with Space)
@@ -366,11 +366,8 @@ nvim --headless "+Lazy sync" +qa
    ```vim
    :LspInfo
    ```
-2. Install missing servers using Mason:
-   ```vim
-   :Mason
-   ```
-3. For specific languages, you might need to install servers manually:
+2. Language servers are managed by the meow system. If you installed MeowVim as part of meow, they should be automatically available.
+3. For standalone installation, you may need to install servers manually:
    ```bash
    # TypeScript/JavaScript
    npm install -g typescript typescript-language-server
@@ -417,7 +414,7 @@ Install a Nerd Font:
 
 ## 🤝 Contributing
 
-We welcome contributions to make MeowVim even better! Here's how you can help:
+Contributions are welcome to help improve MeowVim! Here's how you can help:
 
 ### Ways to Contribute
 - 🐛 Report bugs
@@ -433,15 +430,15 @@ git clone https://github.com/YOUR-USERNAME/meowvim.git
 cd meowvim
 
 # Create a feature branch
-git checkout -b feature/amazing-feature
+git checkout -b feature/new-feature
 
 # Make your changes and test thoroughly
 
 # Commit your changes
-git commit -m "Add amazing feature"
+git commit -m "Add new feature"
 
 # Push to your fork
-git push origin feature/amazing-feature
+git push origin feature/new-feature
 
 # Create a Pull Request
 ```
@@ -466,30 +463,66 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## 🙏 Acknowledgments
 
-MeowVim stands on the shoulders of giants. Special thanks to:
+MeowVim builds on the excellent work of the Neovim community.
 
 ### Core Dependencies
 - [Neovim](https://neovim.io/) - The extensible text editor
 - [Lazy.nvim](https://github.com/folke/lazy.nvim) - Modern plugin manager
-- [Tokyo Night](https://github.com/folke/tokyonight.nvim) - Beautiful theme
+- [Tokyo Night](https://github.com/folke/tokyonight.nvim) - Beautiful colorscheme
 
-### Plugin Ecosystem
-- [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) - LSP configuration
-- [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) - Completion engine
-- [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) - Syntax highlighting
-- [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim) - Status line
+### Plugins
+- [auto-save.nvim](https://github.com/okuuva/auto-save.nvim) - Automatic file saving
+- [bufferline.nvim](https://github.com/akinsho/bufferline.nvim) - Buffer line with tabs
+- [cmp-buffer](https://github.com/hrsh7th/cmp-buffer) - Buffer completion source
+- [cmp-nvim-lsp](https://github.com/hrsh7th/cmp-nvim-lsp) - LSP completion source
+- [cmp-path](https://github.com/hrsh7th/cmp-path) - Path completion source
+- [cmp_luasnip](https://github.com/saadparwaiz1/cmp_luasnip) - LuaSnip completion source
+- [Comment.nvim](https://github.com/numToStr/Comment.nvim) - Smart commenting
+- [conform.nvim](https://github.com/stevearc/conform.nvim) - Code formatting
+- [copilot.lua](https://github.com/zbirenbaum/copilot.lua) - GitHub Copilot integration
+- [copilot-cmp](https://github.com/zbirenbaum/copilot-cmp) - Copilot completion source
+- [copilot-lualine](https://github.com/AndreM222/copilot-lualine) - Copilot status in lualine
+- [FixCursorHold.nvim](https://github.com/antoinemadec/FixCursorHold.nvim) - Fix CursorHold performance
+- [friendly-snippets](https://github.com/rafamadriz/friendly-snippets) - Snippet collection
 - [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) - Git integration
-- [GitHub Copilot](https://github.com/zbirenbaum/copilot.lua) - AI assistance
+- [indent-blankline.nvim](https://github.com/lukas-reineke/indent-blankline.nvim) - Indentation guides
+- [leap.nvim](https://github.com/ggandor/leap.nvim) - Quick navigation
+- [lspkind.nvim](https://github.com/onsails/lspkind.nvim) - LSP kind icons
+- [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim) - Status line
+- [LuaSnip](https://github.com/L3MON4D3/LuaSnip) - Snippet engine
+- [mini.icons](https://github.com/echasnovski/mini.icons) - Icon provider
+- [neodev.nvim](https://github.com/folke/neodev.nvim) - Lua development setup
+- [neotest](https://github.com/nvim-neotest/neotest) - Test runner
+- [neotest-go](https://github.com/nvim-neotest/neotest-go) - Go test adapter
+- [noice.nvim](https://github.com/folke/noice.nvim) - Improved UI
+- [nui.nvim](https://github.com/MunifTanjim/nui.nvim) - UI components library
+- [nvim-autopairs](https://github.com/windwp/nvim-autopairs) - Auto-pairing
+- [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) - Completion engine
+- [nvim-dap](https://github.com/mfussenegger/nvim-dap) - Debug adapter protocol
+- [nvim-dap-ui](https://github.com/rcarriga/nvim-dap-ui) - Debug UI
+- [nvim-lint](https://github.com/mfussenegger/nvim-lint) - Linting
+- [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) - LSP configuration
+- [nvim-nio](https://github.com/nvim-neotest/nvim-nio) - Async I/O library
+- [nvim-notify](https://github.com/rcarriga/nvim-notify) - Notification system
+- [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) - Syntax highlighting
+- [nvim-treesitter-context](https://github.com/nvim-treesitter/nvim-treesitter-context) - Context display
+- [nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects) - Text objects
+- [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons) - File icons
+- [plenary.nvim](https://github.com/nvim-lua/plenary.nvim) - Lua utilities
+- [refactoring.nvim](https://github.com/ThePrimeagen/refactoring.nvim) - Refactoring tools
+- [SchemaStore.nvim](https://github.com/b0o/SchemaStore.nvim) - JSON schema store
+- [snacks.nvim](https://github.com/folke/snacks.nvim) - Collection of utilities
+- [vim-fugitive](https://github.com/tpope/vim-fugitive) - Git commands
+- [vim-repeat](https://github.com/tpope/vim-repeat) - Repeat plugin commands
+- [vim-startuptime](https://github.com/dstein64/vim-startuptime) - Startup profiling
+- [which-key.nvim](https://github.com/folke/which-key.nvim) - Keybinding help
 
 ### Inspiration
 - [LazyVim](https://github.com/LazyVim/LazyVim) - Modern Neovim configuration
-- [AstroNvim](https://github.com/AstroNvim/AstroNvim) - Feature-rich configuration
-- [NvChad](https://github.com/NvChad/NvChad) - Blazing fast configuration
+- [Spacemacs](https://github.com/syl20bnr/spacemacs) - Emacs configuration framework
 
-### Community
-- The amazing Neovim community
-- Plugin maintainers and contributors
-- Users who provide feedback and suggestions
+### Author
+MeowVim is developed by Andrew Vasilyev with help from feline assistants Sonya, Mila, and Marcus Fenix.
 
 ---
 
@@ -497,7 +530,7 @@ MeowVim stands on the shoulders of giants. Special thanks to:
 
 **Happy coding with MeowVim! 🐱**
 
-Made with ❤️ by the MeowVim team
+Made with ❤️ by Andrew Vasilyev and feline assistants
 
 [Report Bug](https://github.com/retran/meowvim/issues) · [Request Feature](https://github.com/retran/meowvim/issues) · [Contribute](https://github.com/retran/meowvim/pulls)
 
