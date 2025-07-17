@@ -1,6 +1,6 @@
 # 🐱 MeowVim
 
-> A dotfiles management system that sets up your development environment with a single command.
+> The purr-fect Neovim configuration for a cozy coding session. May or may not increase your productivity by a feline factor.
 
 <div align="center">
 
