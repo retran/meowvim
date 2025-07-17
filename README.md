@@ -21,7 +21,15 @@ A carefully crafted Neovim configuration that provides a modern development envi
 
 ## 🖼️ Screenshots
 
-*Screenshots and demos coming soon! The configuration features the Tokyo Night theme with modern UI elements, intelligent completion, and Git integration.*
+<div align="center">
+
+### Dashboard
+<img src="assets/screenshot_dashboard.png" alt="MeowVim Dashboard" width="800">
+
+### Editor
+<img src="assets/screenshot_editor.png" alt="MeowVim Editor" width="800">
+
+</div>
 
 ## 🌟 Key Features
 
