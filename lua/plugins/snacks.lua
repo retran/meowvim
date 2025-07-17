@@ -15,7 +15,7 @@ return {
           { icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
           { icon = " ", key = "q", desc = "Quit", action = ":qa" },
         },
-        header = [[MeowVim v0.1.0]],
+        header = [[Meowvim v0.1.0]],
       },
       sections = {
         {

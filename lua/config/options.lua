@@ -60,6 +60,6 @@ opt.shortmess:append({ W = true, I = true, c = true, C = true })
 opt.sessionoptions = "buffers,tabpages,curdir,folds,winpos,winsize"
 
 opt.title = true
-opt.titlestring = "MeowVim - Purr-fect Neovim"
+opt.titlestring = "Meowvim - Purr-fect Neovim"
 
 vim.g.disable_autoformat = true
