@@ -11,14 +11,11 @@
 
 </div>
 
-```
-                        /\   /\
-                       (  . .)
-                        )   (
-                       (  v  )
-                      ^^  ^  ^^
-                    MeowVim - Purr-fect Neovim
-```
+<div align="center">
+<img src="assets/icon_small.png" alt="MeowVim Logo" width="200">
+<br>
+<strong>MeowVim - Purr-fect Neovim</strong>
+</div>
 
 A carefully crafted Neovim configuration that provides a modern development environment. Part of the [meow configuration system](https://github.com/retran/meow), MeowVim includes curated plugins, intelligent defaults, and a consistent user experience.
 
