@@ -1,6 +1,6 @@
 # 🐱 MeowVim
 
-> A Neovim configuration for a cozy coding session
+> A dotfiles management system that sets up your development environment with a single command.
 
 <div align="center">
 
@@ -102,10 +102,11 @@ Before installing MeowVim, ensure you have the following:
 - **Go** ≥ 1.19 (for Go development)
 - **Ripgrep** (for faster searching)
 - **fd** (for faster file finding)
-- **A Nerd Font** (for proper icon display)
+- **fzf** (for fuzzy finding)
+- **JetBrains Mono Nerd Font** (for proper icon display)
 
 ### Optional
-- **Neovide** (GUI Neovim client) - A launch script is included
+- **Neovide** (GUI Neovim client) - A Raycast launch script is included
 - **GitHub Copilot** subscription (for AI features)
 
 ## 🚀 Installation
@@ -133,39 +134,13 @@ If you're using the complete [meow configuration system](https://github.com/retr
 # Clone the meow system
 git clone https://github.com/retran/meow.git ~/.meow
 
-# Follow the meow installation instructions
+# Initialize and update submodules (meowvim is connected as submodule)
 cd ~/.meow
+git submodule init
+git submodule update
+
+# Follow the meow installation instructions
 ./install.sh
-```
-
-### Platform-Specific Setup
-
-#### macOS
-```bash
-# Install Neovim
-brew install neovim
-
-# Install optional dependencies
-brew install ripgrep fd
-```
-
-#### Linux (Ubuntu/Debian)
-```bash
-# Install Neovim
-sudo apt update
-sudo apt install neovim
-
-# Install optional dependencies
-sudo apt install ripgrep fd-find
-```
-
-#### Windows
-```powershell
-# Install Neovim using Scoop
-scoop install neovim
-
-# Install optional dependencies
-scoop install ripgrep fd
 ```
 
 ## ⚡ Quick Start
@@ -183,33 +158,16 @@ On first launch, MeowVim will:
 - Configure Language Server Protocol (LSP) servers automatically
 
 ### 2. Basic Navigation
-- **Leader key**: `Space` (most commands start with Space)
+- **Leader key**: `Space` (main entry point for functions)
 - **Open file finder**: `Space + Space`
-- **Command palette**: `:`
 - **Exit**: `:q` or `ZZ`
 
-### 3. Essential Commands
-```vim
-" File operations
-:e filename        " Edit file
-:w                 " Save file
-:q                 " Quit
-
-" Window management
-<C-h/j/k/l>       " Navigate windows
-<Leader>w         " Window commands
-
-" Buffer management
-<Tab>             " Next buffer
-<S-Tab>           " Previous buffer
-```
-
-### 4. Set Up GitHub Copilot (Optional)
+### 3. Set Up GitHub Copilot (Optional)
 ```vim
 :Copilot auth
 ```
 
-### 5. Using with Neovide (Optional)
+### 4. Using with Neovide (Optional)
 If you have [Neovide](https://neovide.dev/) installed, you can use the included launch script:
 
 ```bash
@@ -217,7 +175,7 @@ If you have [Neovide](https://neovide.dev/) installed, you can use the included 
 ./bin/meowvim.sh
 
 # Or launch directly
-neovide --size 2200x1600
+neovide
 ```
 
 ## ⚙️ Configuration
@@ -279,74 +237,6 @@ Switch themes by editing `lua/plugins/tokyonight.lua`:
 vim.cmd.colorscheme("tokyonight-storm")  -- or "tokyonight-day"
 ```
 
-## 🎯 Usage Examples
-
-### File Management
-```vim
-" Open file finder
-<Space><Space>
-
-" Find files by name
-<Space>f
-
-" Find in files (grep)
-<Space>g
-
-" Recent files
-<Space>r
-```
-
-### Code Navigation
-```vim
-" Go to definition
-gd
-
-" Go to references
-gr
-
-" Hover information
-<Space>k
-
-" Code actions
-<Space>ca
-```
-
-### Git Operations
-```vim
-" Git status
-<Space>gs
-
-" Git blame
-<Space>gb
-
-" Git commits
-<Space>gc
-```
-
-### Testing
-```vim
-" Run nearest test
-<Space>tn
-
-" Run all tests
-<Space>ta
-
-" Test file
-<Space>tf
-```
-
-### Debugging
-```vim
-" Toggle breakpoint
-<Space>db
-
-" Start debugging
-<Space>dc
-
-" Step over
-<Space>do
-```
-
 ## 🔧 Troubleshooting
 
 ### Common Issues
@@ -397,9 +287,9 @@ nvim --headless "+Lazy sync" +qa
 2. Disable unused plugins in `lua/plugins/`
 
 #### Icons Not Displaying
-Install a Nerd Font:
+Install JetBrains Mono Nerd Font:
 ```bash
-# Download and install a Nerd Font
+# Download and install JetBrains Mono Nerd Font
 # https://www.nerdfonts.com/font-downloads
 ```
 
