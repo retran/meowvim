@@ -26,6 +26,8 @@ return {
         max_prefix_length = 10,
         tab_size = 12,
 
+        always_show_bufferline = false,
+
         custom_filter = function(buf_number)
           local filetype = vim.bo[buf_number].filetype
           if filetype == "NvimTree" then
