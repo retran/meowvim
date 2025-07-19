@@ -4,7 +4,7 @@ return {
   priority = 1000,
   config = function()
     require("tokyonight").setup({
-      transparent = false,
+      transparent = not vim.g.neovide,
     })
     vim.cmd.colorscheme("tokyonight-night")
   end,
