@@ -121,7 +121,6 @@ Before installing `Meowvim`, ensure you have the following:
 
 ### Optional
 
-- **Neovide** (GUI Neovim client) - A Raycast launch script is included
 - **GitHub Copilot** subscription (for AI features)
 
 ## 🚀 Installation
