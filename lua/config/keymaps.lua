@@ -660,36 +660,6 @@ if wk_ok then
     { "<leader>mr", "@r",             desc = "Play 'r'" },
   }
 
-  if vim.g.neovide then
-    table.insert(mappings, {
-      "<leader>o+",
-      function()
-        if vim.g.neovide then
-          vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + 0.1
-        end
-      end,
-      desc = "Scale Up",
-    })
-
-    table.insert(mappings, {
-      "<leader>o-",
-      function()
-        if vim.g.neovide then
-          vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - 0.1
-        end
-      end,
-      desc = "Scale Down",
-    })
-
-    table.insert(mappings, {
-      "<leader>of",
-      function()
-        vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen
-      end,
-      desc = "Toggle Fullscreen",
-    })
-  end
-
   vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Goto Next Diagnostic" })
   vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Goto Previous Diagnostic" })
 

@@ -187,18 +187,6 @@ On first launch, `Meowvim` will:
 :Copilot auth
 ```
 
-### 4. Using with Neovide (Optional)
-
-If you have [Neovide](https://neovide.dev/) installed, you can use the included launch script:
-
-```bash
-# macOS with Raycast
-./bin/meowvim.sh
-
-# Or launch directly
-neovide
-```
-
 ## ⚙️ Configuration
 
 `Meowvim` is highly customizable. Here's how to make it your own:
@@ -212,7 +200,6 @@ neovide
 │   ├── config/
 │   │   ├── options.lua   # Neovim options
 │   │   ├── keymaps.lua   # Key mappings
-│   │   └── neovide.lua   # Neovide GUI settings
 │   ├── plugins/          # Plugin configurations
 │   └── utils/            # Utility functions
 └── assets/               # Icons and resources
