@@ -1,431 +1,223 @@
 # 🐱 Meowvim
 
-> The purr-fect Neovim configuration for a cozy coding session. May or may not increase your productivity by a feline factor.
+> The purr-fect Neovim configuration for a cozy and productive coding session.
 
 <div align="center">
-
-![Neovim](https://img.shields.io/badge/neovim-%23019733.svg?style=for-the-badge&logo=neovim&logoColor=white)
-![License](https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge)
-![GitHub stars](https://img.shields.io/github/stars/retran/meowvim?style=for-the-badge)
-![GitHub forks](https://img.shields.io/github/forks/retran/meowvim?style=for-the-badge)
-
+  <img src="assets/icon_small.png" alt="Meowvim Logo" width="160">
+  <br><br>
+  <strong>Modern, minimal, and cat-approved Neovim setup.</strong>
+  <br><br>
+  
+  ![Neovim](https://img.shields.io/badge/neovim-%23019733.svg?style=for-the-badge&logo=neovim&logoColor=white)
+  ![License](https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge)
+  ![GitHub stars](https://img.shields.io/github/stars/retran/meowvim?style=for-the-badge)
+  ![GitHub forks](https://img.shields.io/github/forks/retran/meowvim?style=for-the-badge)
 </div>
 
-<div align="center">
-<img src="assets/icon_small.png" alt="Meowvim Logo" width="200">
-<br>
-<strong>Meowvim - Purr-fect Neovim</strong>
-</div>
+---
 
-A carefully crafted Neovim configuration that provides a modern development environment. Part of the `project meow`, `Meowvim` includes curated plugins, intelligent defaults, and a consistent user experience.
+A carefully curated Neovim configuration that delivers a modern and delightful developer experience. Part of the [Project Meow](https://github.com/retran/meow), `Meowvim` includes elegant defaults, essential plugins, and playful polish.
+
+---
 
 ## 🖼️ Screenshots
 
 <div align="center">
 
 ### Dashboard
-<img src="assets/screenshot_dashboard.png" alt="Meowvim Dashboard" width="800">
+<img src="assets/screenshot_dashboard.png" alt="Dashboard Screenshot" width="800">
 
 ### Editor
-<img src="assets/screenshot_editor.png" alt="Meowvim Editor" width="800">
+<img src="assets/screenshot_editor.png" alt="Editor Screenshot" width="800">
 
 </div>
 
+---
+
 ## 🌟 Key Features
 
-- **🚀 Zero Configuration**: Works out of the box with sensible defaults
-- **🎨 Modern Interface**: Tokyo Night theme with clean UI components
-- **🧠 AI-Powered**: GitHub Copilot integration for coding assistance
-- **⚡ Performance**: Optimized with lazy loading
-- **🔧 Customizable**: Easy to extend and modify
-- **🌐 Language Support**: Works with major programming languages
-- **📦 Plugin Collection**: 25+ curated plugins for development
+- 🚀 **Zero Configuration** – Sensible defaults out of the box  
+- 🎨 **Modern UI** – Clean interface powered by Tokyo Night theme  
+- 🧠 **AI Integration** – GitHub Copilot support for smart code suggestions  
+- ⚡ **Fast & Lazy** – Optimized with Lazy.nvim for performance  
+- 🔧 **Fully Customizable** – Easy to extend with your own tweaks  
+- 🌐 **Language Ready** – Preconfigured LSPs for major languages  
+- 📦 **25+ Curated Plugins** – For everything from Git to testing
 
-## 📋 Table of Contents
+---
 
-- [✨ Features](#-features)
-- [📋 Prerequisites](#-prerequisites)
-- [🚀 Installation](#-installation)
-- [⚡ Quick Start](#-quick-start)
-- [⚙️ Configuration](#️-configuration)
-- [🔧 Troubleshooting](#-troubleshooting)
-- [🤝 Contributing](#-contributing)
-- [📄 License](#-license)
-- [🙏 Acknowledgments](#-acknowledgments)
+## 📦 Installation
 
-## ✨ Features
-
-`Meowvim` includes these development features:
-
-### 🧠 Intelligence & Completion
-
-- **LSP Support**: Language Server Protocol integration with automatic setup
-- **GitHub Copilot**: AI-powered code completion and suggestions
-- **Completion Engine**: Context-aware autocompletion with nvim-cmp
-- **Code Snippets**: Snippet collection with LuaSnip
-- **Syntax Highlighting**: Syntax highlighting with Treesitter
-
-### 🎨 Interface
-
-- **Tokyo Night Theme**: Modern, readable colorscheme
-- **Status Line**: Informative status bar with Git integration
-- **Buffer Management**: Buffer navigation and organization
-- **Icons**: Consistent iconography throughout
-- **Indent Guides**: Visual indentation helpers
-
-### 🔧 Development Tools
-
-- **Git Integration**: Git workflow with Gitsigns and Fugitive
-- **Code Formatting**: Automatic formatting with Conform.nvim
-- **Linting**: Real-time code linting with nvim-lint
-- **Debugging**: Debugging support with nvim-dap
-- **Testing**: Test runner integration with Neotest
-- **Refactoring**: Code refactoring tools
-
-### 🚀 Productivity
-
-- **Fuzzy Finder**: File and text search with Snacks
-- **Auto-save**: Automatic file saving
-- **Session Management**: Session persistence
-- **Quick Navigation**: Leap motion for cursor movement
-- **Comment Handling**: Smart comment toggling
-- **Auto-pairs**: Automatic bracket and quote pairing
-
-### 🎯 Language Support
-
-- **Go**: Go development support with testing
-- **TypeScript/JavaScript**: JS/TS development
-- **Python**: Python development support
-- **Lua**: Lua development for Neovim
-- **Additional languages**: Extensible language support
-
-## 📋 Prerequisites
-
-Before installing `Meowvim`, ensure you have the following:
-
-### Required
-
-- **Neovim** ≥ 0.9.0
-- **Git** (for plugin management)
-- **A terminal** with true color support
-
-### Recommended
-
-- **Node.js** ≥ 18.0 (for some LSP servers and Copilot)
-- **Python** ≥ 3.8 (for Python LSP and some plugins)
-- **Go** ≥ 1.19 (for Go development)
-- **Ripgrep** (for faster searching)
-- **fd** (for faster file finding)
-- **fzf** (for fuzzy finding)
-- **JetBrains Mono Nerd Font** (for proper icon display)
-
-### Optional
-
-- **Neovide** (GUI Neovim client) - A Raycast launch script is included
-- **GitHub Copilot** subscription (for AI features)
-
-## 🚀 Installation
-
-### Option 1: Fresh Installation
-
-If you're starting fresh or want to replace your current Neovim config:
+### 🔹 Option 1: Fresh Setup
 
 ```bash
-# Backup your existing config (if any)
 mv ~/.config/nvim ~/.config/nvim.backup
-
-# Clone Meowvim
 git clone https://github.com/retran/meowvim.git ~/.config/nvim
-
-# Start Neovim - plugins will install automatically
 nvim
 ```
 
-### Option 2: As Part of Meow System
-
-If you're using [`meow` dotfiles management system](https://github.com/retran/meow):
+### 🔹 Option 2: Use with `meow` System
 
 ```bash
-# Clone the meow system
 git clone https://github.com/retran/meow.git ~/.meow
-
-# Initialize and update submodules (meowvim is connected as submodule)
 cd ~/.meow
-git submodule init
-git submodule update
-
-# Follow the meow installation instructions
+git submodule update --init
 ./install.sh
 ```
 
+---
+
 ## ⚡ Quick Start
-
-After installation, follow these steps to get started:
-
-### 1. First Launch
 
 ```bash
 nvim
 ```
 
-On first launch, `Meowvim` will:
+On first launch, Meowvim will:
+- Automatically install Lazy.nvim
+- Fetch and configure plugins
+- Set up LSP servers
 
-- Install the Lazy.nvim plugin manager
-- Download and install all plugins
-- Configure Language Server Protocol (LSP) servers automatically
+---
 
-### 2. Basic Navigation
+## 🛠 Prerequisites
 
-- **Leader key**: `Space` (main entry point for features)
-- **Open project**: `Space, f, p`
+### Required
+- [Neovim](https://neovim.io) ≥ 0.9.0  
+- Git  
+- Terminal with true color
 
-- **Open smart file finder**: `Space, Space`
+### Recommended
+- Node.js ≥ 18  
+- Python ≥ 3.8  
+- Go ≥ 1.19  
+- [Ripgrep](https://github.com/BurntSushi/ripgrep)  
+- [fd](https://github.com/sharkdp/fd)  
+- [fzf](https://github.com/junegunn/fzf)  
+- [JetBrains Mono Nerd Font](https://www.nerdfonts.com/font-downloads)
 
-### 3. Set Up GitHub Copilot (Optional)
+---
 
-```vim
-:Copilot auth
-```
+## 🔧 Configuration
 
-### 4. Using with Neovide (Optional)
-
-If you have [Neovide](https://neovide.dev/) installed, you can use the included launch script:
-
-```bash
-# macOS with Raycast
-./bin/meowvim.sh
-
-# Or launch directly
-neovide
-```
-
-## ⚙️ Configuration
-
-`Meowvim` is highly customizable. Here's how to make it your own:
-
-### File Structure
+The config is modular and easy to modify:
 
 ```
 ~/.config/nvim/
-├── init.lua              # Main configuration entry point
+├── init.lua
 ├── lua/
-│   ├── config/
-│   │   ├── options.lua   # Neovim options
-│   │   ├── keymaps.lua   # Key mappings
-│   │   └── neovide.lua   # Neovide GUI settings
-│   ├── plugins/          # Plugin configurations
-│   └── utils/            # Utility functions
-└── assets/               # Icons and resources
+│   ├── config/      # Core settings, keymaps
+│   ├── plugins/     # Plugin definitions
+│   └── utils/       # Helper functions
+└── assets/          # Icons and screenshots
 ```
 
-### Customizing Options
+Edit options: `lua/config/options.lua`  
+Customize keymaps: `lua/config/keymaps.lua`  
+Add plugins: `lua/plugins/`  
+Change theme: `lua/plugins/tokyonight.lua`
 
-Edit `lua/config/options.lua` to change Neovim settings:
+---
 
-```lua
--- Example: Change tab width
-vim.opt.tabstop = 4
-vim.opt.shiftwidth = 4
+## 🧠 Features (In Detail)
 
--- Example: Enable line wrapping
-vim.opt.wrap = true
-```
+### Code Intelligence
+- Full LSP support
+- GitHub Copilot integration
+- Autocompletion via `nvim-cmp`
+- LuaSnip for snippets
+- Treesitter for syntax and structure
 
-### Adding Plugins
+### Interface
+- Tokyo Night theme
+- Status bar (lualine)
+- Buffer tabs
+- Icons (devicons)
+- Indentation guides
 
-Create a new file in `lua/plugins/` directory:
+### Dev Tools
+- Git tools: Fugitive, Gitsigns
+- Formatters: Conform.nvim
+- Linters: nvim-lint
+- Debugger: nvim-dap
+- Tests: Neotest
 
-```lua
--- lua/plugins/my-plugin.lua
-return {
-  "author/plugin-name",
-  config = function()
-    -- Plugin configuration
-  end,
-}
-```
+### Productivity
+- Fuzzy finder (Snacks)
+- Autosave
+- Session manager
+- Motion tools (Leap)
+- Comment toggles
+- Auto-pairing
 
-### Customizing Keymaps
+### Language Support
+- TypeScript / JavaScript  
+- Python  
+- Go  
+- Lua  
+- ...and more!
 
-Edit `lua/config/keymaps.lua` to add your own key mappings:
+---
 
-```lua
--- Add your custom keymaps
-{ "<leader>mp", ":MyPlugin<CR>", desc = "My Plugin" },
-```
+## ❓ Troubleshooting
 
-### Theme Customization
-
-Switch themes by editing `lua/plugins/tokyonight.lua`:
-
-```lua
--- Change variant
-vim.cmd.colorscheme("tokyonight-storm")  -- or "tokyonight-day"
-```
-
-## 🔧 Troubleshooting
-
-### Common Issues
-
-#### Plugin Installation Fails
-
+### Plugins not installing?
 ```bash
-# Clear plugin cache and reinstall
 rm -rf ~/.local/share/nvim/lazy
 nvim --headless "+Lazy sync" +qa
 ```
 
-#### LSP Not Working
+### LSP not working?
+```vim
+:LspInfo
+```
 
-1. Check if the language server is installed:
+Install missing servers (e.g. `npm i -g typescript-language-server`).
 
-   ```vim
-   :LspInfo
-   ```
+### Copilot issues?
+```vim
+:Copilot auth
+:Copilot status
+```
 
-2. Language servers are managed by the `meow`. If you installed `Meowvim` as part of `meow`, they should be automatically available.
-3. For standalone installation, you may need to install servers manually:
+### Font issues?
+Install a Nerd Font like [JetBrains Mono](https://www.nerdfonts.com/font-downloads).
 
-   ```bash
-   # TypeScript/JavaScript
-   npm install -g typescript typescript-language-server
-
-   # Python
-   pip install python-lsp-server
-
-   # Go
-   go install golang.org/x/tools/gopls@latest
-
-   # Rust
-   rustup component add rust-analyzer
-   ```
-
-#### Copilot Not Working
-
-1. Authenticate with GitHub:
-
-   ```vim
-   :Copilot auth
-   ```
-
-2. Check status:
-
-   ```vim
-   :Copilot status
-   ```
-
-#### Performance Issues
-
-1. Check startup time:
-
-   ```vim
-   :StartupTime
-   ```
-
-2. Disable unused plugins in `lua/plugins/`
-
-#### Icons Not Displaying
-
-Install [JetBrains Mono Nerd Font](https://www.nerdfonts.com/font-downloads).
-
-### Getting Help
-
-- Use `:help` for Neovim documentation
-- Check `:Lazy` for plugin management
-- Use `<Space>?` for Which-key help
-- Check the [issues page](https://github.com/retran/meowvim/issues)
+---
 
 ## 🤝 Contributing
 
-Contributions are welcome to help improve `Meowvim`! Here's how you can help:
+All contributions welcome!
 
-### Ways to Contribute
+- 🐞 Fix bugs
+- 📖 Improve docs
+- ✨ Add features
+- 🎨 Suggest theme tweaks
 
-- 🐛 Report bugs
-- 💡 Suggest new features
-- 📝 Improve documentation
-- 🔧 Submit code improvements
-- 🎨 Enhance themes and UI
+---
 
 ## 📄 License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+MIT License – see [`LICENSE`](LICENSE) file.
 
-## 🙏 Acknowledgments
+---
 
-`Meowvim` builds on the excellent work of the Neovim community.
+## 🙏 Credits
 
-### Core Dependencies
+Built by [Andrew Vasilyev](https://github.com/retran)  
+With help from GitHub Copilot and cats Sonya Blade, Mila & Marcus Fenix 🐈
 
-- [Neovim](https://neovim.io/) - The extensible text editor
-- [Lazy.nvim](https://github.com/folke/lazy.nvim) - Modern plugin manager
-- [Tokyo Night](https://github.com/folke/tokyonight.nvim) - Beautiful colorscheme
-
-### Plugins
-
-- [auto-save.nvim](https://github.com/okuuva/auto-save.nvim) - Automatic file saving
-- [bufferline.nvim](https://github.com/akinsho/bufferline.nvim) - Buffer line with tabs
-- [cmp-buffer](https://github.com/hrsh7th/cmp-buffer) - Buffer completion source
-- [cmp-nvim-lsp](https://github.com/hrsh7th/cmp-nvim-lsp) - LSP completion source
-- [cmp-path](https://github.com/hrsh7th/cmp-path) - Path completion source
-- [cmp_luasnip](https://github.com/saadparwaiz1/cmp_luasnip) - LuaSnip completion source
-- [Comment.nvim](https://github.com/numToStr/Comment.nvim) - Smart commenting
-- [conform.nvim](https://github.com/stevearc/conform.nvim) - Code formatting
-- [copilot.lua](https://github.com/zbirenbaum/copilot.lua) - GitHub Copilot integration
-- [copilot-cmp](https://github.com/zbirenbaum/copilot-cmp) - Copilot completion source
-- [copilot-lualine](https://github.com/AndreM222/copilot-lualine) - Copilot status in lualine
-- [FixCursorHold.nvim](https://github.com/antoinemadec/FixCursorHold.nvim) - Fix CursorHold performance
-- [friendly-snippets](https://github.com/rafamadriz/friendly-snippets) - Snippet collection
-- [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) - Git integration
-- [indent-blankline.nvim](https://github.com/lukas-reineke/indent-blankline.nvim) - Indentation guides
-- [leap.nvim](https://github.com/ggandor/leap.nvim) - Quick navigation
-- [lspkind.nvim](https://github.com/onsails/lspkind.nvim) - LSP kind icons
-- [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim) - Status line
-- [LuaSnip](https://github.com/L3MON4D3/LuaSnip) - Snippet engine
-- [mini.icons](https://github.com/echasnovski/mini.icons) - Icon provider
-- [neodev.nvim](https://github.com/folke/neodev.nvim) - Lua development setup
-- [neotest](https://github.com/nvim-neotest/neotest) - Test runner
-- [neotest-go](https://github.com/nvim-neotest/neotest-go) - Go test adapter
-- [noice.nvim](https://github.com/folke/noice.nvim) - Improved UI
-- [nui.nvim](https://github.com/MunifTanjim/nui.nvim) - UI components library
-- [nvim-autopairs](https://github.com/windwp/nvim-autopairs) - Auto-pairing
-- [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) - Completion engine
-- [nvim-dap](https://github.com/mfussenegger/nvim-dap) - Debug adapter protocol
-- [nvim-dap-ui](https://github.com/rcarriga/nvim-dap-ui) - Debug UI
-- [nvim-lint](https://github.com/mfussenegger/nvim-lint) - Linting
-- [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) - LSP configuration
-- [nvim-nio](https://github.com/nvim-neotest/nvim-nio) - Async I/O library
-- [nvim-notify](https://github.com/rcarriga/nvim-notify) - Notification system
-- [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) - Syntax highlighting
-- [nvim-treesitter-context](https://github.com/nvim-treesitter/nvim-treesitter-context) - Context display
-- [nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects) - Text objects
-- [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons) - File icons
-- [plenary.nvim](https://github.com/nvim-lua/plenary.nvim) - Lua utilities
-- [refactoring.nvim](https://github.com/ThePrimeagen/refactoring.nvim) - Refactoring tools
-- [SchemaStore.nvim](https://github.com/b0o/SchemaStore.nvim) - JSON schema store
-- [snacks.nvim](https://github.com/folke/snacks.nvim) - Collection of utilities
-- [vim-fugitive](https://github.com/tpope/vim-fugitive) - Git commands
-- [vim-repeat](https://github.com/tpope/vim-repeat) - Repeat plugin commands
-- [vim-startuptime](https://github.com/dstein64/vim-startuptime) - Startup profiling
-- [which-key.nvim](https://github.com/folke/which-key.nvim) - Keybinding help
-
-### Inspiration
-
-- [LazyVim](https://github.com/LazyVim/LazyVim) - Modern Neovim configuration
-- [Spacemacs](https://github.com/syl20bnr/spacemacs) - Emacs configuration framework
-
-### Author
-
-`Meowvim` is developed by Andrew Vasilyev with help from GitHub Copilot and feline assistants Sonya Blade, Mila, and Marcus Fenix.
+Thanks to:
+- [LazyVim](https://github.com/LazyVim/LazyVim)
+- [Tokyo Night](https://github.com/folke/tokyonight.nvim)
+- [bubu07codes](https://github.com/bubu07codes)
+- All open source plugin authors!
 
 ---
 
 <div align="center">
 
-**Happy coding with `project meow`! 🐱**
-
-Made with ❤️ by Andrew Vasilyev and feline assistants
-
-[Report Bug](https://github.com/retran/meow/issues) · [Request Feature](https://github.com/retran/meow/issues) · [Contribute](https://github.com/retran/meow/pulls)
+✨ Happy coding with Meowvim ✨  
+[🐛 Report Issue](https://github.com/retran/meowvim/issues) ・ [📬 Suggest Feature](https://github.com/retran/meowvim/issues) ・ [📥 Contribute](https://github.com/retran/meowvim/pulls)
 
 </div>
