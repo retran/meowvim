@@ -7,6 +7,8 @@ return {
   priority = 1000,
   opts = {
     dashboard = {
+      width = 44,
+      pane_gap = 4,
       preset = {
         keys = {
           { icon = " ", key = "p", desc = "Open Project", action = ":lua Snacks.dashboard.pick('projects')" },
@@ -15,20 +17,33 @@ return {
           { icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
           { icon = " ", key = "q", desc = "Quit", action = ":qa" },
         },
-        header = [[Meowvim v0.1.0]],
+        header = [[Meowvim
+-------]],
       },
       sections = {
         {
-          section = "terminal",
-          cmd = "cat ~/.config/nvim/assets/icon.ascii",
+          pane = 1,
           height = 17,
-          width = 60,
           padding = 1,
-          hl = "header"
+          section = "terminal",
+          cmd = "~/.config/nvim/scripts/icon.sh",
         },
-        { section = "header" },
-        { section = "keys",   gap = 0 },
-        { section = "startup" },
+        {
+          pane = 2,
+          {
+            section = "header",
+            padding = 1
+          },
+          {
+            section = "keys",
+            gap = 0,
+            padding = { 6, 2 },
+          },
+          {
+            section = "startup",
+            padding = 1,
+          },
+        },
       },
     },
     notifier = {},
