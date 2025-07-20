@@ -1,8 +1,10 @@
+-- lua/plugins/which-key.lua
 return {
   "folke/which-key.nvim",
-  dependencies = { "nvim-tree/nvim-web-devicons", "echasnovski/mini.icons" },
   event = "VeryLazy",
-  opts = {
-    preset = "helix",
-  },
+  config = function()
+    require("which-key").setup({
+      preset = "helix",
+    })
+  end,
 }
