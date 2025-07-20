@@ -8,13 +8,19 @@ function M.map(mode, lhs, rhs, opts)
   vim.keymap.set(mode, lhs, rhs, opts)
 end
 
-local snacks_ok, snacks = pcall(require, "snacks")
+local snacks = require("snacks")
 
 local wk_ok, wk = pcall(require, "which-key")
 if wk_ok then
   local mappings = {
     -- Undo
     { "<leader>u",  function() snacks.picker.undo() end,                  desc = "Undo History" },
+    { "<leader>U",  function() snacks.picker.redo() end,                  desc = "Redo History" },
+
+    -- Quit
+    { "<leader>q",  group = "+quit" },
+    { "<leader>qq", ":qa<CR>",                                            desc = "Quit All" },
+    { "<leader>qQ", ":qa!<CR>",                                           desc = "Force Quit All" },
 
     -- Window
     { "<leader>w",  group = "+window" },
