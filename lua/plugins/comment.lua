@@ -18,8 +18,8 @@ return {
         block = "gcb",
       },
       opleader = {
-        line = "gcC",
-        block = "gcB",
+        line = "gc",
+        block = "gc",
       },
       extra = {
         above = "gcO",

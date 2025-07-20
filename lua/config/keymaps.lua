@@ -125,10 +125,10 @@ if wk_ok then
     { "[d",         vim.diagnostic.goto_prev,               desc = "Goto Previous",             mode = "n" },
 
     -- Workspace
-    { "<leader>w",  group = "+workspace" },
-    { "<leader>wa", vim.lsp.buf.add_workspace_folder,       desc = "Workspace -> Add Folder" },
-    { "<leader>wr", vim.lsp.buf.remove_workspace_folder,    desc = "Workspace -> Remove Folder" },
-    { "<leader>wl", vim.lsp.buf.list_workspace_folders,     desc = "Workspace -> List Folders" },
+    { "<leader>W",  group = "+workspace" },
+    { "<leader>Wa", vim.lsp.buf.add_workspace_folder,       desc = "Workspace -> Add Folder" },
+    { "<leader>Wr", vim.lsp.buf.remove_workspace_folder,    desc = "Workspace -> Remove Folder" },
+    { "<leader>Wl", vim.lsp.buf.list_workspace_folders,     desc = "Workspace -> List Folders" },
 
     -- Signature Help
     { "<C-k>",      vim.lsp.buf.signature_help,             desc = "Signature Help",            mode = "i" },
@@ -206,7 +206,7 @@ if wk_ok then
     },
 
     -- Test
-    { "<leader>t",  group = "+test" },
+    { "<leader>t", group = "+test" },
     {
       "<leader>tt",
       function()
@@ -258,7 +258,7 @@ if wk_ok then
     },
 
     -- Git Signs
-    { "<leader>h",  group = "+gitsigns" },
+    { "<leader>h", group = "+gitsigns" },
     {
       "<leader>hj",
       function()
