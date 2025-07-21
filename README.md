@@ -42,7 +42,8 @@ A carefully curated Neovim configuration that delivers a modern and delightful d
 - ⚡ **Fast & Lazy** – Optimized with Lazy.nvim for performance  
 - 🔧 **Fully Customizable** – Easy to extend with your own tweaks  
 - 🌐 **Language Ready** – Preconfigured LSPs for major languages  
-- 📦 **25+ Curated Plugins** – For everything from Git to testing
+- 📦 **25+ Curated Plugins** – For everything from Git to testing  
+- 🧑‍💻 **GitHub Copilot Subscription** – Optional AI enhancements
 
 ---
 
@@ -77,6 +78,15 @@ On first launch, Meowvim will:
 - Automatically install Lazy.nvim
 - Fetch and configure plugins
 - Set up LSP servers
+- **Leader key**: `Space` (main entry point for features)
+- **Open project**: `Space, f, p`
+- **Open smart file finder**: `Space, Space`
+
+### Optional: Set Up GitHub Copilot
+
+```vim
+:Copilot auth
+```
 
 ---
 
@@ -85,7 +95,7 @@ On first launch, Meowvim will:
 ### Required
 - [Neovim](https://neovim.io) ≥ 0.9.0  
 - Git  
-- Terminal with true color
+- Terminal with true color support
 
 ### Recommended
 - Node.js ≥ 18  
@@ -106,10 +116,12 @@ The config is modular and easy to modify:
 ~/.config/nvim/
 ├── init.lua
 ├── lua/
-│   ├── config/      # Core settings, keymaps
-│   ├── plugins/     # Plugin definitions
-│   └── utils/       # Helper functions
-└── assets/          # Icons and screenshots
+│   ├── config/
+│   │   ├── options.lua   # Neovim options
+│   │   ├── keymaps.lua   # Key mappings
+│   ├── plugins/          # Plugin configurations
+│   └── utils/            # Utility functions
+└── assets/               # Icons and resources
 ```
 
 Edit options: `lua/config/options.lua`  
@@ -189,10 +201,10 @@ Install a Nerd Font like [JetBrains Mono](https://www.nerdfonts.com/font-downloa
 
 All contributions welcome!
 
-- 🐞 Fix bugs
-- 📖 Improve docs
-- ✨ Add features
-- 🎨 Suggest theme tweaks
+- 🐞 Fix bugs  
+- 📖 Improve docs  
+- ✨ Add features  
+- 🎨 Suggest theme tweaks  
 
 ---
 
@@ -208,9 +220,9 @@ Built by [Andrew Vasilyev](https://github.com/retran)
 With help from GitHub Copilot and cats Sonya Blade, Mila & Marcus Fenix 🐈
 
 Thanks to:
-- [LazyVim](https://github.com/LazyVim/LazyVim)
-- [Tokyo Night](https://github.com/folke/tokyonight.nvim)
-- [bubu07codes](https://github.com/bubu07codes)
+- [LazyVim](https://github.com/LazyVim/LazyVim)  
+- [Tokyo Night](https://github.com/folke/tokyonight.nvim)  
+- [bubu07codes](https://github.com/bubu07codes)  
 - All open source plugin authors!
 
 ---

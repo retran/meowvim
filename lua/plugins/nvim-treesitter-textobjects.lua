@@ -14,8 +14,8 @@ return {
             ["ar"] = { query = "@assignment.rhs", desc = "around assignment rhs" },
             ["a@"] = { query = "@attribute.outer", desc = "around attribute" },
             ["i@"] = { query = "@attribute.inner", desc = "inside attribute" },
-            ["ab"] = { query = "@block.outer", desc = "around block" },
-            ["ib"] = { query = "@block.inner", desc = "inside block" },
+            ["am"] = { query = "@block.outer", desc = "around major block" },
+            ["im"] = { query = "@block.inner", desc = "inside major block" },
             ["aC"] = { query = "@call.outer", desc = "around call" },
             ["iC"] = { query = "@call.inner", desc = "inside call" },
             ["ac"] = { query = "@class.outer", desc = "around class" },
@@ -35,10 +35,10 @@ return {
             ["ia"] = { query = "@parameter.inner", desc = "inside parameter" },
             ["ax"] = { query = "@regex.outer", desc = "around regex" },
             ["ix"] = { query = "@regex.inner", desc = "inside regex" },
-            ["at"] = { query = "@return.outer", desc = "around return" },
-            ["it"] = { query = "@return.inner", desc = "inside return" },
+            ["aR"] = { query = "@return.outer", desc = "around return" }, -- 'R' для Return
+            ["iR"] = { query = "@return.inner", desc = "inside return" },
             ["iS"] = { query = "@scopename.inner", desc = "inside scopename" },
-            ["as"] = { query = "@statement.outer", desc = "around statement" },
+            ["aS"] = { query = "@statement.outer", desc = "around statement" }, -- 'S' для Statement
           },
         },
         move = {

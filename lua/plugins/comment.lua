@@ -14,17 +14,17 @@ return {
       sticky = true,
       ignore = nil,
       toggler = {
-        line = "<leader>cc",
-        block = "<leader>cb",
+        line = "gcc",
+        block = "gcb",
       },
       opleader = {
-        line = "<leader>cC",
-        block = "<leader>cB",
+        line = "gc",
+        block = "gc",
       },
       extra = {
-        above = "<leader>cO",
-        below = "<leader>co",
-        eol = "<leader>cA",
+        above = "gcO",
+        below = "gco",
+        eol = "gcA",
       },
       mappings = {
         basic = true,
