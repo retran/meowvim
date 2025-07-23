@@ -1,3 +1,5 @@
+-- lua/plugins/copilot-cmp.lua
+
 return {
   "zbirenbaum/copilot-cmp",
   dependencies = { "copilot.lua" },

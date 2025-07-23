@@ -1,3 +1,5 @@
+-- lua/plugins/auto-session.lua
+
 return {
   'rmagatti/auto-session',
   lazy = false,

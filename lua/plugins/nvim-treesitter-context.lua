@@ -1,3 +1,5 @@
+-- lua/plugins/nvim-treesitter-context.lua
+
 return {
   "nvim-treesitter/nvim-treesitter-context",
   dependencies = { "nvim-treesitter/nvim-treesitter" },

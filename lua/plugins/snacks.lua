@@ -1,3 +1,5 @@
+-- lua/plugins/snacks.lua
+
 return {
   "folke/snacks.nvim",
   event = "VeryLazy",
