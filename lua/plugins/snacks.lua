@@ -1,5 +1,3 @@
-local session = require("utils.session")
-
 return {
   "folke/snacks.nvim",
   event = "VeryLazy",
@@ -74,28 +72,6 @@ return {
         },
         projects = {
           hidden = true,
-          confirm = function(picker, item)
-            local verbose = false
-
-            picker:close()
-
-            session.save(verbose)
-
-            if verbose then
-              vim.notify("Resetting Vim state...", vim.log.levels.INFO)
-              vim.cmd("%bdelete!")
-            else
-              vim.cmd("silent! %bdelete!")
-            end
-
-            local new_project_dir = item.file
-            vim.fn.chdir(new_project_dir)
-            if verbose then
-              vim.notify("Changed directory to " .. vim.fn.fnamemodify(new_project_dir, ":t"), vim.log.levels.INFO)
-            end
-
-            session.load(new_project_dir, verbose)
-          end,
         },
       },
     },
