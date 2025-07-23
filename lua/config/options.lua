@@ -57,7 +57,7 @@ opt.iskeyword:append("-")
 opt.formatoptions:remove({ "c", "r", "o" })
 opt.shortmess:append({ W = true, I = true, c = true, C = true })
 
-opt.sessionoptions = "buffers,tabpages,curdir,folds,winpos,winsize"
+opt.sessionoptions = "buffers,curdir,folds,globals,tabpages,winpos,winsize"
 
 opt.title = true
 opt.titlestring = "Meowvim - Purr-fect Neovim"

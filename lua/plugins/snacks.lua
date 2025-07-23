@@ -33,9 +33,16 @@ return {
             padding = 1
           },
           {
+            section = "projects",
+            padding = 1,
+            action = function(dir)
+              vim.fn.chdir(dir)
+            end,
+          },
+          {
             section = "keys",
             gap = 0,
-            padding = { 6, 2 },
+            padding = 1,
           },
           {
             section = "startup",
