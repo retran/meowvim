@@ -35,9 +35,6 @@ return {
           {
             section = "projects",
             padding = 1,
-            action = function(dir)
-              vim.fn.chdir(dir)
-            end,
           },
           {
             section = "keys",
