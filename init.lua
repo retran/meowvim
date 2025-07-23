@@ -63,5 +63,8 @@ require("lazy").setup({
 
 require("utils.hooks").setup()
 require("utils.patches").setup()
+require('xkbswitch').setup()
+
 require("config/keymaps")
+
 

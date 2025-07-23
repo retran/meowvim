@@ -1,4 +1,4 @@
--- File: lua/plugins/noice.lua
+-- lua/plugins/noice.lua
 
 return {
   "folke/noice.nvim",

@@ -1,3 +1,5 @@
+-- lua/plugins/auto-save.lua
+
 return {
   "okuuva/auto-save.nvim",
   event = { "InsertLeave", "TextChanged" },

@@ -1,4 +1,4 @@
--- File: lua/plugins/indent-blankline.lua
+-- lua/plugins/indent-blankline.lua
 
 return {
   "lukas-reineke/indent-blankline.nvim",

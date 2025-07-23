@@ -1,3 +1,5 @@
+-- lua/plugins/leap.lua
+
 return {
   "ggandor/leap.nvim",
   event = "VeryLazy",

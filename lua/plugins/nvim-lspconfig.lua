@@ -1,3 +1,5 @@
+-- lua/plugins/nvim-lspconfig.lua
+
 return {
   "neovim/nvim-lspconfig",
   lazy = false,
