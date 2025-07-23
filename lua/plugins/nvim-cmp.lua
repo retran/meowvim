@@ -15,14 +15,6 @@ return {
     local luasnip = require("luasnip")
     local lspkind = require("lspkind")
 
-    local has_words_before = function()
-      if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then
-        return false
-      end
-      local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-      return col ~= 0 and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match("^%s*$") == nil
-    end
-
     cmp.setup({
       snippet = {
         expand = function(args)
@@ -31,9 +23,9 @@ return {
       },
 
       sources = cmp.config.sources({
-        { name = "copilot" },
         { name = "nvim_lsp" },
         { name = "luasnip" },
+        { name = "copilot" },
         { name = "buffer" },
         { name = "path" },
       }),
@@ -41,28 +33,23 @@ return {
       formatting = {
         format = lspkind.cmp_format({
           mode = "symbol_text",
-          maxwidth = 50,
+          maxwidth = 60,
           ellipsis_char = "...",
           symbol_map = { Copilot = "" },
         }),
       },
 
       mapping = {
-        ["<C-n>"] = cmp.mapping.select_next_item(),
-        ["<C-p>"] = cmp.mapping.select_prev_item(),
-        ["<C-d>"] = cmp.mapping.scroll_docs(-4),
-        ["<C-u>"] = cmp.mapping.scroll_docs(4),
-        ["<C-Space>"] = cmp.mapping.complete(),
-        ["<CR>"] = cmp.mapping.confirm({ select = true }),
-        ["<Tab>"] = vim.schedule_wrap(function(fallback)
-          if cmp.visible() and has_words_before() then
-            cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+        ["<Tab>"] = cmp.mapping(function(fallback)
+          if cmp.visible() then
+            cmp.select_next_item()
           elseif luasnip.expand_or_jumpable() then
             luasnip.expand_or_jump()
           else
             fallback()
           end
-        end),
+        end, { "i", "s" }),
+
         ["<S-Tab>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
             cmp.select_prev_item()
@@ -72,6 +59,22 @@ return {
             fallback()
           end
         end, { "i", "s" }),
+        ['<CR>'] = cmp.mapping.confirm({
+          behavior = cmp.ConfirmBehavior.Replace,
+          select = true,
+        }),
+        ["<Esc>"] = cmp.mapping(function(fallback)
+          if cmp.visible() then
+            cmp.abort()
+          else
+            fallback()
+          end
+        end),
+        ["<C-Space>"] = cmp.mapping.complete(),
+        ["<C-n>"] = cmp.mapping.select_next_item(),
+        ["<C-p>"] = cmp.mapping.select_prev_item(),
+        ["<C-d>"] = cmp.mapping.scroll_docs(-4),
+        ["<C-u>"] = cmp.mapping.scroll_docs(4),
       },
 
       sorting = {
@@ -82,12 +85,18 @@ return {
           cmp.config.compare.exact,
           cmp.config.compare.score,
           cmp.config.compare.recently_used,
-          cmp.config.compare.locality,
           cmp.config.compare.kind,
           cmp.config.compare.sort_text,
           cmp.config.compare.length,
           cmp.config.compare.order,
         },
+      },
+      experimental = {
+        ghost_text = true,
+      },
+      window = {
+        completion = cmp.config.window.bordered(),
+        documentation = cmp.config.window.bordered(),
       },
     })
   end,

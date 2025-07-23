@@ -63,3 +63,4 @@ opt.title = true
 opt.titlestring = "Meowvim - Purr-fect Neovim"
 
 vim.g.disable_autoformat = true
+

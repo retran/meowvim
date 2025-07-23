@@ -28,7 +28,7 @@ if wk_ok then
     { "<leader>wj", "<C-w>j",                                             desc = "Move to Bottom Window" },
     { "<leader>wk", "<C-w>k",                                             desc = "Move to Top Window" },
     { "<leader>wl", "<C-w>l",                                             desc = "Move to Right Window" },
-    { "<leader>wc", "<C-w>c",                                             desc = "Close Current Window" },
+    { "<leader>wd", "<C-w>c",                                             desc = "Close Current Window" },
     { "<leader>wo", "<C-w>o",                                             desc = "Close Other Windows" },
     { "<leader>ws", "<C-w>s",                                             desc = "Split Horizontal" },
     { "<leader>wv", "<C-w>v",                                             desc = "Split Vertical" },
@@ -83,12 +83,13 @@ if wk_ok then
     { "<leader>Dt", function() require("dap").terminate() end,            desc = "Terminate" },
     { "<leader>DU", function() require("dapui").toggle() end,             desc = "Toggle UI" },
 
-    -- Search
+    -- LSP Navigation
     { "<leader>s",  group = "+search" },
     { "<leader>sa", function() snacks.picker.grep() end,                  desc = "All Files" },
     { "<leader>sb", function() snacks.picker.grep_buffers() end,          desc = "Opened Files" },
     { "<leader>sg", function() snacks.picker.git_grep() end,              desc = "Git Files" },
     { "<leader>sd", function() snacks.picker.lsp_definitions() end,       desc = "Definitions" },
+    { "<leader>sD", function() snacks.picker.lsp_declarations() end,     desc = "Pick Declaration" },
     { "<leader>sr", function() snacks.picker.lsp_references() end,        desc = "References" },
     { "<leader>si", function() snacks.picker.lsp_implementations() end,   desc = "Implementations" },
     { "<leader>st", function() snacks.picker.lsp_type_definitions() end,  desc = "Type Definitions" },
