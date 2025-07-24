@@ -50,16 +50,28 @@ return {
         },
       },
     },
-    notifier = {},
-    input = {},
-    terminal = {},
+
     bigfile = {},
     dim = {},
     explorer = {},
+    input = {},
+    notifier = {},
+    terminal = {},
     image = {},
     scope = {},
+    scratch = {
+      ft = function()
+        return "markdown"
+      end,
+      filekey = {
+        cwd = true,
+        branch = false,
+        count = true,
+      },
+
+    },
     styles = {},
-    toggle = {},
+
     picker = {
       hidden = true,
       layout = { preset = "ivy" },

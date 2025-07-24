@@ -13,50 +13,100 @@ local snacks = require("snacks")
 local wk_ok, wk = pcall(require, "which-key")
 if wk_ok then
   local mappings = {
+    -- Scratch
+    { "<leader>.",  group = "+scratch" },
+    {
+      "<leader>..",
+      function()
+        local list = snacks.scratch.list()
+        if #list > 0 then
+          local latest = list[1]
+          snacks.scratch({ name = latest.name, ft = latest.ft })
+        else
+          snacks.scratch()
+        end
+      end,
+      desc = "Open Last/Default"
+    },
+    { "<leader>.f", function() snacks.scratch.select() end, desc = "Find" },
+    {
+      "<leader>.n",
+      function()
+        vim.ui.input({ prompt = "Scratch name: " }, function(name)
+          if name and name ~= "" then
+            require("snacks").scratch({ name = name })
+          end
+        end)
+      end,
+      desc = "New"
+    },
+
     -- Undo
-    { "<leader>u",  function() snacks.picker.undo() end,                  desc = "Undo History" },
-    { "<leader>U",  function() snacks.picker.redo() end,                  desc = "Redo History" },
+    { "<leader>u",  function() snacks.picker.undo() end, desc = "Undo History" },
+    { "<leader>U",  function() snacks.picker.redo() end, desc = "Redo History" },
 
     -- Quit
     { "<leader>q",  group = "+quit" },
-    { "<leader>qq", ":qa<CR>",                                            desc = "Quit All" },
-    { "<leader>qQ", ":qa!<CR>",                                           desc = "Force Quit All" },
+    { "<leader>qq", ":qa<CR>",                           desc = "Quit All" },
+    { "<leader>qQ", ":qa!<CR>",                          desc = "Force Quit All" },
 
     -- Window
     { "<leader>w",  group = "+window" },
-    { "<leader>wh", "<C-w>h",                                             desc = "Move to Left Window" },
-    { "<leader>wj", "<C-w>j",                                             desc = "Move to Bottom Window" },
-    { "<leader>wk", "<C-w>k",                                             desc = "Move to Top Window" },
-    { "<leader>wl", "<C-w>l",                                             desc = "Move to Right Window" },
-    { "<leader>wd", "<C-w>c",                                             desc = "Close Current Window" },
-    { "<leader>wo", "<C-w>o",                                             desc = "Close Other Windows" },
-    { "<leader>ws", "<C-w>s",                                             desc = "Split Horizontal" },
-    { "<leader>wv", "<C-w>v",                                             desc = "Split Vertical" },
-    { "<leader>w=", "<C-w>=",                                             desc = "Equalize" },
-    { "<leader>w>", "<C-w>>",                                             desc = "Increase Width" },
-    { "<leader>w<", "<C-w><",                                             desc = "Decrease Width" },
-    { "<leader>w+", "<C-w>+",                                             desc = "Increase Height" },
-    { "<leader>w-", "<C-w>-",                                             desc = "Decrease Height" },
-    { "<leader>wH", "<C-w>H",                                             desc = "Move to Far Left" },
-    { "<leader>wL", "<C-w>L",                                             desc = "Move to Far Right" },
-    { "<leader>wK", "<C-w>K",                                             desc = "Move to Far Top" },
-    { "<leader>wJ", "<C-w>J",                                             desc = "Move to Far Bottom" },
+    { "<leader>wh", "<C-w>h",                            desc = "Move to Left Window" },
+    { "<leader>wj", "<C-w>j",                            desc = "Move to Bottom Window" },
+    { "<leader>wk", "<C-w>k",                            desc = "Move to Top Window" },
+    { "<leader>wl", "<C-w>l",                            desc = "Move to Right Window" },
+    { "<leader>wd", "<C-w>c",                            desc = "Close Current Window" },
+    { "<leader>wo", "<C-w>o",                            desc = "Close Other Windows" },
+    { "<leader>ws", "<C-w>s",                            desc = "Split Horizontal" },
+    { "<leader>wv", "<C-w>v",                            desc = "Split Vertical" },
+    { "<leader>w=", "<C-w>=",                            desc = "Equalize" },
+    { "<leader>w>", "<C-w>>",                            desc = "Increase Width" },
+    { "<leader>w<", "<C-w><",                            desc = "Decrease Width" },
+    { "<leader>w+", "<C-w>+",                            desc = "Increase Height" },
+    { "<leader>w-", "<C-w>-",                            desc = "Decrease Height" },
+    { "<leader>wH", "<C-w>H",                            desc = "Move to Far Left" },
+    { "<leader>wL", "<C-w>L",                            desc = "Move to Far Right" },
+    { "<leader>wK", "<C-w>K",                            desc = "Move to Far Top" },
+    { "<leader>wJ", "<C-w>J",                            desc = "Move to Far Bottom" },
 
     -- File
     { "<leader>f",  group = "+file" },
+    {
+      "<leader>fn",
+      function()
+        vim.ui.input({ prompt = "File name: ", completion = "file" }, function(filepath)
+          if not filepath or filepath == "" then
+            return
+          end
+
+          local stat = vim.loop.fs_stat(filepath)
+          if not stat then
+            local dir = vim.fn.fnamemodify(filepath, ":h")
+
+            if dir ~= "." and dir ~= "" then
+              vim.loop.fs_mkdir(dir, 493)
+            end
+
+            vim.cmd.edit(filepath) -- TODO if file opened in another buffer, switch to it
+          end
+        end)
+      end,
+      desc = "New",
+    },
     { "<leader>ff", function() snacks.picker.smart() end,                 desc = "Smart Find File", },
     { "<leader>fF", function() snacks.picker.files() end,                 desc = "Find File", },
     { "<leader>fg", function() snacks.picker.git_files() end,             desc = "Find in Git", },
     { "<leader>fr", function() snacks.picker.recent() end,                desc = "Find Recent", },
     { "<leader>fs", ":w<CR>",                                             desc = "Save" },
     { "<leader>fS", ":wa<CR>",                                            desc = "Save All" },
-    { "<leader>fn", ":enew<CR>",                                          desc = "New" },
     { "<leader>fe", function() snacks.explorer() end,                     desc = "Toggle Explorer", },
     { "<leader>fp", function() snacks.picker.projects() end,              desc = "Find Projects", },
 
     -- Buffer
     { "<leader>b",  group = "+buffer" },
     { "<leader>bb", function() snacks.picker.buffers() end,               desc = "Buffers" },
+    { "<leader>bn", ":enew<CR>",                                          desc = "New" },
     { "<leader>bp", ":BufferLineTogglePin<CR>",                           desc = "Toggle Pin" },
     { "<leader>bP", ":BufferLinePick<CR>",                                desc = "Pick" },
     { "<leader>br", ":BufRename<CR>",                                     desc = "Rename" },
@@ -89,7 +139,7 @@ if wk_ok then
     { "<leader>sb", function() snacks.picker.grep_buffers() end,          desc = "Opened Files" },
     { "<leader>sg", function() snacks.picker.git_grep() end,              desc = "Git Files" },
     { "<leader>sd", function() snacks.picker.lsp_definitions() end,       desc = "Definitions" },
-    { "<leader>sD", function() snacks.picker.lsp_declarations() end,     desc = "Pick Declaration" },
+    { "<leader>sD", function() snacks.picker.lsp_declarations() end,      desc = "Pick Declaration" },
     { "<leader>sr", function() snacks.picker.lsp_references() end,        desc = "References" },
     { "<leader>si", function() snacks.picker.lsp_implementations() end,   desc = "Implementations" },
     { "<leader>st", function() snacks.picker.lsp_type_definitions() end,  desc = "Type Definitions" },
@@ -354,13 +404,13 @@ if wk_ok then
 
     -- Terminal
     {
-      "<F12>",
+      "<F2>",
       function() snacks.terminal.toggle() end,
       desc = "Toggle Terminal",
       mode = { "n", "i", "v" }
     },
     {
-      "<F12>",
+      "<F2>",
       function()
         vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, false, true), "n", false)
         snacks.terminal.toggle()
@@ -369,6 +419,36 @@ if wk_ok then
       mode = "t"
     },
   }
+
+  if vim.g.neovide then
+    table.insert(mappings, {
+      "<leader>o+",
+      function()
+        if vim.g.neovide then
+          vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + 0.1
+        end
+      end,
+      desc = "Scale Up",
+    })
+
+    table.insert(mappings, {
+      "<leader>o-",
+      function()
+        if vim.g.neovide then
+          vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - 0.1
+        end
+      end,
+      desc = "Scale Down",
+    })
+
+    table.insert(mappings, {
+      "<leader>of",
+      function()
+        vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen
+      end,
+      desc = "Toggle Fullscreen",
+    })
+  end
 
   for _, mapping in ipairs(mappings) do
     local mode = mapping.mode or "n"

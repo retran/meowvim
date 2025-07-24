@@ -31,11 +31,6 @@ return {
         always_show_bufferline = false,
 
         custom_filter = function(buf_number)
-          local filetype = vim.bo[buf_number].filetype
-          if filetype == "NvimTree" then
-            return false
-          end
-
           local bufname = vim.fn.bufname(buf_number)
           if bufname:match("^fugitive://") then
             return false

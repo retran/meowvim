@@ -34,15 +34,43 @@ return {
     inactive_winbar = {},
     sections = {
       lualine_a = { "mode" },
-      lualine_b = {},
+      lualine_b = {
+
+      },
       lualine_c = {
         "branch",
+        "diff",
+        "gitsigns",
         { "filename", path = 1 },
       },
       lualine_x = {
-        "diff",
         "diagnostics",
-        "gitsigns",
+        {
+          'copilot',
+          symbols = {
+            status = {
+              icons = {
+                enabled = "",
+                sleep = "",
+                disabled = "",
+                warning = "",
+                unknown = ""
+              },
+              hl = {
+                enabled = "#50FA7B",
+                sleep = "#AEB7D0",
+                disabled = "#6272A4",
+                warning = "#FFB86C",
+                unknown = "#FF5555"
+              }
+            },
+            spinners = "dots",
+            spinner_color = "#6272A4"
+          },
+          show_colors = true,
+          show_loading = true
+        },
+        "filetype",
         "encoding",
         {
           "fileformat",
@@ -52,9 +80,10 @@ return {
             mac = "CR",
           },
         },
-        "filetype",
       },
-      lualine_y = { "copilot" },
+      lualine_y = {
+
+      },
       lualine_z = {
         "progress",
         "location",
