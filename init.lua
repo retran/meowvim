@@ -5,6 +5,9 @@ if vim.fn.has("macunix") then
 end
 
 require("config/options")
+if vim.g.neovide then
+  require("config/neovide")
+end
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
