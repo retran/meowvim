@@ -53,7 +53,7 @@ return {
 
     vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
     vim.lsp.handlers["textDocument/signatureHelp"] =
-      vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
+        vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
 
     local caps = vim.lsp.protocol.make_client_capabilities()
     caps = require("cmp_nvim_lsp").default_capabilities(caps)
@@ -70,6 +70,12 @@ return {
         cmd = { "nc", "localhost", "6005" },
         filetypes = { "gd", "gdscript", "gdscript3" },
         root_dir = lspconfig.util.root_pattern("project.godot", ".git"),
+        on_attach = function(client, bufnr)
+          client.server_capabilities.documentFormattingProvider = false
+          client.server_capabilities.documentRangeFormattingProvider = false
+
+          vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
+        end,
       },
       gopls = {
         settings = {

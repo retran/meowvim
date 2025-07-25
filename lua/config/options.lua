@@ -64,3 +64,5 @@ opt.titlestring = "Meowvim - Purr-fect Neovim"
 
 vim.g.disable_autoformat = true
 
+vim.opt.timeoutlen = 300
+vim.opt.ttimeoutlen = 10

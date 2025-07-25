@@ -17,7 +17,7 @@ return {
       json = { "jsonlint" },
       dockerfile = { "hadolint" },
       vim = { "vint" },
-      gdscript = { "gdtoolkit" },
+      gdscript = { "gdlint" },
     },
 
     linters = {
