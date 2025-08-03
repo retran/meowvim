@@ -57,10 +57,12 @@ opt.iskeyword:append("-")
 opt.formatoptions:remove({ "c", "r", "o" })
 opt.shortmess:append({ W = true, I = true, c = true, C = true })
 
-opt.sessionoptions = "buffers,curdir,folds,globals,tabpages,winpos,winsize"
+opt.sessionoptions = "buffers,curdir,folds,globals,tabpages,winpos,winsize,localoptions"
 
 opt.title = true
 opt.titlestring = "Meowvim - Purr-fect Neovim"
 
 vim.g.disable_autoformat = true
 
+vim.opt.timeoutlen = 300
+vim.opt.ttimeoutlen = 10

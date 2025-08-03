@@ -9,12 +9,15 @@ function M.map(mode, lhs, rhs, opts)
 end
 
 local snacks = require("snacks")
+local dap = require("dap")
+local dapui = require("dapui")
+local widgets = require("dap.ui.widgets")
 
 local wk_ok, wk = pcall(require, "which-key")
 if wk_ok then
   local mappings = {
     -- Scratch
-    { "<leader>.",  group = "+scratch" },
+    { "<leader>.", group = "+scratch" },
     {
       "<leader>..",
       function()
@@ -26,9 +29,15 @@ if wk_ok then
           snacks.scratch()
         end
       end,
-      desc = "Open Last/Default"
+      desc = "Open Last/Default",
     },
-    { "<leader>.f", function() snacks.scratch.select() end, desc = "Find" },
+    {
+      "<leader>.f",
+      function()
+        snacks.scratch.select()
+      end,
+      desc = "Find",
+    },
     {
       "<leader>.n",
       function()
@@ -38,40 +47,52 @@ if wk_ok then
           end
         end)
       end,
-      desc = "New"
+      desc = "New",
     },
 
     -- Undo
-    { "<leader>u",  function() snacks.picker.undo() end, desc = "Undo History" },
-    { "<leader>U",  function() snacks.picker.redo() end, desc = "Redo History" },
+    {
+      "<leader>u",
+      function()
+        snacks.picker.undo()
+      end,
+      desc = "Undo History",
+    },
+    {
+      "<leader>U",
+      function()
+        snacks.picker.redo()
+      end,
+      desc = "Redo History",
+    },
 
     -- Quit
-    { "<leader>q",  group = "+quit" },
-    { "<leader>qq", ":qa<CR>",                           desc = "Quit All" },
-    { "<leader>qQ", ":qa!<CR>",                          desc = "Force Quit All" },
+    { "<leader>q", group = "+quit" },
+    { "<leader>qq", ":qa<CR>", desc = "Quit All" },
+    { "<leader>qQ", ":qa!<CR>", desc = "Force Quit All" },
 
     -- Window
-    { "<leader>w",  group = "+window" },
-    { "<leader>wh", "<C-w>h",                            desc = "Move to Left Window" },
-    { "<leader>wj", "<C-w>j",                            desc = "Move to Bottom Window" },
-    { "<leader>wk", "<C-w>k",                            desc = "Move to Top Window" },
-    { "<leader>wl", "<C-w>l",                            desc = "Move to Right Window" },
-    { "<leader>wd", "<C-w>c",                            desc = "Close Current Window" },
-    { "<leader>wo", "<C-w>o",                            desc = "Close Other Windows" },
-    { "<leader>ws", "<C-w>s",                            desc = "Split Horizontal" },
-    { "<leader>wv", "<C-w>v",                            desc = "Split Vertical" },
-    { "<leader>w=", "<C-w>=",                            desc = "Equalize" },
-    { "<leader>w>", "<C-w>>",                            desc = "Increase Width" },
-    { "<leader>w<", "<C-w><",                            desc = "Decrease Width" },
-    { "<leader>w+", "<C-w>+",                            desc = "Increase Height" },
-    { "<leader>w-", "<C-w>-",                            desc = "Decrease Height" },
-    { "<leader>wH", "<C-w>H",                            desc = "Move to Far Left" },
-    { "<leader>wL", "<C-w>L",                            desc = "Move to Far Right" },
-    { "<leader>wK", "<C-w>K",                            desc = "Move to Far Top" },
-    { "<leader>wJ", "<C-w>J",                            desc = "Move to Far Bottom" },
+    { "<leader>w", group = "+window" },
+    { "<leader>wh", "<C-w>h", desc = "Move to Left Window" },
+    { "<leader>wj", "<C-w>j", desc = "Move to Bottom Window" },
+    { "<leader>wk", "<C-w>k", desc = "Move to Top Window" },
+    { "<leader>wl", "<C-w>l", desc = "Move to Right Window" },
+    { "<leader>wd", "<C-w>c", desc = "Close Current Window" },
+    { "<leader>wo", "<C-w>o", desc = "Close Other Windows" },
+    { "<leader>ws", "<C-w>s", desc = "Split Horizontal" },
+    { "<leader>wv", "<C-w>v", desc = "Split Vertical" },
+    { "<leader>w=", "<C-w>=", desc = "Equalize" },
+    { "<leader>w>", "<C-w>>", desc = "Increase Width" },
+    { "<leader>w<", "<C-w><", desc = "Decrease Width" },
+    { "<leader>w+", "<C-w>+", desc = "Increase Height" },
+    { "<leader>w-", "<C-w>-", desc = "Decrease Height" },
+    { "<leader>wH", "<C-w>H", desc = "Move to Far Left" },
+    { "<leader>wL", "<C-w>L", desc = "Move to Far Right" },
+    { "<leader>wK", "<C-w>K", desc = "Move to Far Top" },
+    { "<leader>wJ", "<C-w>J", desc = "Move to Far Bottom" },
 
     -- File
-    { "<leader>f",  group = "+file" },
+    { "<leader>f", group = "+file" },
     {
       "<leader>fn",
       function()
@@ -94,139 +115,327 @@ if wk_ok then
       end,
       desc = "New",
     },
-    { "<leader>ff", function() snacks.picker.smart() end,                 desc = "Smart Find File", },
-    { "<leader>fF", function() snacks.picker.files() end,                 desc = "Find File", },
-    { "<leader>fg", function() snacks.picker.git_files() end,             desc = "Find in Git", },
-    { "<leader>fr", function() snacks.picker.recent() end,                desc = "Find Recent", },
-    { "<leader>fs", ":w<CR>",                                             desc = "Save" },
-    { "<leader>fS", ":wa<CR>",                                            desc = "Save All" },
-    { "<leader>fe", function() snacks.explorer() end,                     desc = "Toggle Explorer", },
-    { "<leader>fp", function() snacks.picker.projects() end,              desc = "Find Projects", },
+    {
+      "<leader>ff",
+      function()
+        snacks.picker.smart()
+      end,
+      desc = "Smart Find File",
+    },
+    {
+      "<leader>fF",
+      function()
+        snacks.picker.files()
+      end,
+      desc = "Find File",
+    },
+    {
+      "<leader>fg",
+      function()
+        snacks.picker.git_files()
+      end,
+      desc = "Find in Git",
+    },
+    {
+      "<leader>fr",
+      function()
+        snacks.picker.recent()
+      end,
+      desc = "Find Recent",
+    },
+    { "<leader>fs", ":w<CR>", desc = "Save" },
+    { "<leader>fS", ":wa<CR>", desc = "Save All" },
+    {
+      "<leader>fe",
+      function()
+        snacks.explorer()
+      end,
+      desc = "Toggle Explorer",
+    },
+    {
+      "<leader>fp",
+      function()
+        snacks.picker.projects()
+      end,
+      desc = "Find Projects",
+    },
 
     -- Buffer
-    { "<leader>b",  group = "+buffer" },
-    { "<leader>bb", function() snacks.picker.buffers() end,               desc = "Buffers" },
-    { "<leader>bn", ":enew<CR>",                                          desc = "New" },
-    { "<leader>bp", ":BufferLineTogglePin<CR>",                           desc = "Toggle Pin" },
-    { "<leader>bP", ":BufferLinePick<CR>",                                desc = "Pick" },
-    { "<leader>br", ":BufRename<CR>",                                     desc = "Rename" },
-    { "<leader>bl", ":BufMoveRight<CR>",                                  desc = "Move Right" },
-    { "<leader>bh", ":BufMoveLeft<CR>",                                   desc = "Move Left" },
-    { "<Tab>",      ":BufferLineCycleNext<CR>",                           desc = "Buffer -> Next" },
-    { "<S-Tab>",    ":BufferLineCyclePrev<CR>",                           desc = "Buffer -> Previous" },
-    { "L",          ":BufferLineCycleNext<CR>",                           desc = "Buffer -> Next" },
-    { "H",          ":BufferLineCyclePrev<CR>",                           desc = "Buffer -> Previous" },
-    { "<leader>bd", function() snacks.bufdelete() end,                    desc = "Delete Buffer" },
-    { "<leader>bx", function() snacks.bufdelete({ force = true }) end,    desc = "Force Delete Buffer" },
-    { "<leader>bo", function() snacks.bufdelete.other() end,              desc = "Delete Other Buffers" },
-    { "<leader>bO", function() snacks.bufdelete.all() end,                desc = "Delete All Buffers" },
-
-    -- Debug
-    { "<leader>D",  group = "+debug" },
-    { "<leader>Db", function() require("dap").toggle_breakpoint() end,    desc = "Toggle Breakpoint" },
-    { "<leader>Dc", function() require("dap").continue() end,             desc = "Continue" },
-    { "<leader>Di", function() require("dap").step_into() end,            desc = "Step Into" },
-    { "<leader>Do", function() require("dap").step_over() end,            desc = "Step Over" },
-    { "<leader>Du", function() require("dap").step_out() end,             desc = "Step Out" },
-    { "<leader>Dr", function() require("dap").repl.open() end,            desc = "Open REPL" },
-    { "<leader>Dl", function() require("dap").run_last() end,             desc = "Run Last" },
-    { "<leader>Dt", function() require("dap").terminate() end,            desc = "Terminate" },
-    { "<leader>DU", function() require("dapui").toggle() end,             desc = "Toggle UI" },
+    { "<leader>b", group = "+buffer" },
+    {
+      "<leader>bb",
+      function()
+        snacks.picker.buffers()
+      end,
+      desc = "Buffers",
+    },
+    { "<leader>bn", ":new<CR>", desc = "New" },
+    { "<leader>bp", ":BufferLineTogglePin<CR>", desc = "Toggle Pin" },
+    { "<leader>bP", ":BufferLinePick<CR>", desc = "Pick" },
+    { "<leader>br", ":BufRename<CR>", desc = "Rename" },
+    { "<leader>bl", ":BufMoveRight<CR>", desc = "Move Right" },
+    { "<leader>bh", ":BufMoveLeft<CR>", desc = "Move Left" },
+    { "<Tab>", ":BufferLineCycleNext<CR>", desc = "Buffer -> Next" },
+    { "<S-Tab>", ":BufferLineCyclePrev<CR>", desc = "Buffer -> Previous" },
+    { "L", ":BufferLineCycleNext<CR>", desc = "Buffer -> Next" },
+    { "H", ":BufferLineCyclePrev<CR>", desc = "Buffer -> Previous" },
+    {
+      "<leader>bd",
+      function()
+        snacks.bufdelete()
+      end,
+      desc = "Delete Buffer",
+    },
+    {
+      "<leader>bx",
+      function()
+        snacks.bufdelete({ force = true })
+      end,
+      desc = "Force Delete Buffer",
+    },
+    {
+      "<leader>bo",
+      function()
+        snacks.bufdelete.other()
+      end,
+      desc = "Delete Other Buffers",
+    },
+    {
+      "<leader>bO",
+      function()
+        snacks.bufdelete.all()
+      end,
+      desc = "Delete All Buffers",
+    },
 
     -- LSP Navigation
-    { "<leader>s",  group = "+search" },
-    { "<leader>sa", function() snacks.picker.grep() end,                  desc = "All Files" },
-    { "<leader>sb", function() snacks.picker.grep_buffers() end,          desc = "Opened Files" },
-    { "<leader>sg", function() snacks.picker.git_grep() end,              desc = "Git Files" },
-    { "<leader>sd", function() snacks.picker.lsp_definitions() end,       desc = "Definitions" },
-    { "<leader>sD", function() snacks.picker.lsp_declarations() end,      desc = "Pick Declaration" },
-    { "<leader>sr", function() snacks.picker.lsp_references() end,        desc = "References" },
-    { "<leader>si", function() snacks.picker.lsp_implementations() end,   desc = "Implementations" },
-    { "<leader>st", function() snacks.picker.lsp_type_definitions() end,  desc = "Type Definitions" },
-    { "<leader>ss", function() snacks.picker.lsp_workspace_symbols() end, desc = "Workspace Symbols" },
-    { "<leader>sS", function() snacks.picker.lsp_symbols() end,           desc = "Document Symbols" },
+    { "<leader>s", group = "+search" },
+    {
+      "<leader>sa",
+      function()
+        snacks.picker.grep()
+      end,
+      desc = "All Files",
+    },
+    {
+      "<leader>sb",
+      function()
+        snacks.picker.grep_buffers()
+      end,
+      desc = "Opened Files",
+    },
+    {
+      "<leader>sg",
+      function()
+        snacks.picker.git_grep()
+      end,
+      desc = "Git Files",
+    },
+    {
+      "<leader>sd",
+      function()
+        snacks.picker.lsp_definitions()
+      end,
+      desc = "Definitions",
+    },
+    {
+      "<leader>sD",
+      function()
+        snacks.picker.lsp_declarations()
+      end,
+      desc = "Pick Declaration",
+    },
+    {
+      "<leader>sr",
+      function()
+        snacks.picker.lsp_references()
+      end,
+      desc = "References",
+    },
+    {
+      "<leader>si",
+      function()
+        snacks.picker.lsp_implementations()
+      end,
+      desc = "Implementations",
+    },
+    {
+      "<leader>st",
+      function()
+        snacks.picker.lsp_type_definitions()
+      end,
+      desc = "Type Definitions",
+    },
+    {
+      "<leader>ss",
+      function()
+        snacks.picker.lsp_workspace_symbols()
+      end,
+      desc = "Workspace Symbols",
+    },
+    {
+      "<leader>sS",
+      function()
+        snacks.picker.lsp_symbols()
+      end,
+      desc = "Document Symbols",
+    },
 
     -- Introspect
-    { "<leader>S",  group = "+introspect" },
-    { "<leader>Sh", function() snacks.picker.help() end,                  desc = "Search Help", },
-    { "<leader>Sc", function() snacks.picker.commands() end,              desc = "Search Commands", },
-    { "<leader>Sk", function() snacks.picker.keymaps() end,               desc = "Search Keymaps", },
-    { "<leader>Sm", function() snacks.picker.marks() end,                 desc = "Search Marks", },
+    { "<leader>S", group = "+introspect" },
+    {
+      "<leader>Sh",
+      function()
+        snacks.picker.help()
+      end,
+      desc = "Search Help",
+    },
+    {
+      "<leader>Sc",
+      function()
+        snacks.picker.commands()
+      end,
+      desc = "Search Commands",
+    },
+    {
+      "<leader>Sk",
+      function()
+        snacks.picker.keymaps()
+      end,
+      desc = "Search Keymaps",
+    },
+    {
+      "<leader>Sm",
+      function()
+        snacks.picker.marks()
+      end,
+      desc = "Search Marks",
+    },
 
     -- Git
-    { "<leader>G",  group = "+git" },
-    { "<leader>Gs", function() snacks.picker.git_status() end,            desc = "Status", },
-    { "<leader>Gb", function() snacks.picker.git_branches() end,          desc = "Branches", },
-    { "<leader>Gl", function() snacks.picker.git_log() end,               desc = "Log", },
-    { "<leader>GL", function() snacks.picker.git_log_file() end,          desc = "Log (Current File)", },
-    { "<leader>Gc", ":Git commit<CR>",                                    desc = "Commit" },
-    { "<leader>Gp", ":Git pull<CR>",                                      desc = "Pull" },
-    { "<leader>GP", ":Git push<CR>",                                      desc = "Push" },
-    { "<leader>GB", ":Git blame<CR>",                                     desc = "Blame" }, -- TODO use plugin
-    { "<leader>Gd", ":Gdiffsplit<CR>",                                    desc = "Diff" },
-    { "<leader>GD", ":Gdiffsplit!<CR>",                                   desc = "Force Diff" },
-    { "<leader>GA", ":Git add .<CR>",                                     desc = "Add All" },
-    { "<leader>Ga", ":Git add %<CR>",                                     desc = "Add Current File" },
-    { "<leader>Gm", ":Git mergetool<CR>",                                 desc = "Mergetool" },
+    { "<leader>G", group = "+git" },
+    {
+      "<leader>Gs",
+      function()
+        snacks.picker.git_status()
+      end,
+      desc = "Status",
+    },
+    {
+      "<leader>Gb",
+      function()
+        snacks.picker.git_branches()
+      end,
+      desc = "Branches",
+    },
+    {
+      "<leader>Gl",
+      function()
+        snacks.picker.git_log()
+      end,
+      desc = "Log",
+    },
+    {
+      "<leader>GL",
+      function()
+        snacks.picker.git_log_file()
+      end,
+      desc = "Log (Current File)",
+    },
+    { "<leader>Gc", ":Git commit<CR>", desc = "Commit" },
+    { "<leader>Gp", ":Git pull<CR>", desc = "Pull" },
+    { "<leader>GP", ":Git push<CR>", desc = "Push" },
+    { "<leader>GB", ":Git blame<CR>", desc = "Blame" }, -- TODO use plugin
+    { "<leader>Gd", ":Gdiffsplit<CR>", desc = "Diff" },
+    { "<leader>GD", ":Gdiffsplit!<CR>", desc = "Force Diff" },
+    { "<leader>GA", ":Git add .<CR>", desc = "Add All" },
+    { "<leader>Ga", ":Git add %<CR>", desc = "Add Current File" },
+    { "<leader>Gm", ":Git mergetool<CR>", desc = "Mergetool" },
 
     -- Diagnostics
-    { "<leader>d",  group = "+diagnostics" },
-    { "<leader>dp", vim.diagnostic.open_float,                            desc = "Show Hover" },
+    { "<leader>d", group = "+diagnostics" },
+    { "<leader>dp", vim.diagnostic.open_float, desc = "Show Hover" },
     {
       "<leader>dw",
       ":lua vim.diagnostic.setloclist({severity=vim.diagnostic.severity.WARN})<CR>", -- TODO use plugin
       desc = "List Warnings",
     },
     { "<leader>da", ":lua vim.diagnostic.setloclist()<CR>", desc = "List All" },
-    { "]d",         vim.diagnostic.goto_next,               desc = "Goto Next",                 mode = "n" },
-    { "[d",         vim.diagnostic.goto_prev,               desc = "Goto Previous",             mode = "n" },
+    { "]d", vim.diagnostic.goto_next, desc = "Goto Next", mode = "n" },
+    { "[d", vim.diagnostic.goto_prev, desc = "Goto Previous", mode = "n" },
 
     -- Workspace
-    { "<leader>W",  group = "+workspace" },
-    { "<leader>Wa", vim.lsp.buf.add_workspace_folder,       desc = "Workspace -> Add Folder" },
-    { "<leader>Wr", vim.lsp.buf.remove_workspace_folder,    desc = "Workspace -> Remove Folder" },
-    { "<leader>Wl", vim.lsp.buf.list_workspace_folders,     desc = "Workspace -> List Folders" },
+    { "<leader>W", group = "+workspace" },
+    { "<leader>Wa", vim.lsp.buf.add_workspace_folder, desc = "Workspace -> Add Folder" },
+    { "<leader>Wr", vim.lsp.buf.remove_workspace_folder, desc = "Workspace -> Remove Folder" },
+    { "<leader>Wl", vim.lsp.buf.list_workspace_folders, desc = "Workspace -> List Folders" },
 
     -- Signature Help
-    { "<C-k>",      vim.lsp.buf.signature_help,             desc = "Signature Help",            mode = "i" },
-    { "<C-k>",      vim.lsp.buf.signature_help,             desc = "Signature Help",            mode = "n" },
-
+    { "<C-k>", vim.lsp.buf.signature_help, desc = "Signature Help", mode = "i" },
+    { "<C-k>", vim.lsp.buf.signature_help, desc = "Signature Help", mode = "n" },
 
     -- Refactor
-    { "<leader>x",  group = "+refactor" },
-    { "<leader>xx", vim.lsp.buf.code_action,                desc = "Context Action" },
-    { "<leader>xr", vim.lsp.buf.rename,                     desc = "Rename" }, -- TODO revise (F2?)
+    { "<leader>x", group = "+refactor" },
+    { "<leader>xx", vim.lsp.buf.code_action, desc = "Context Action" },
+    { "<leader>xr", vim.lsp.buf.rename, desc = "Rename" }, -- TODO revise (F2?)
     {
       "<leader>xR",
       function()
         require("refactoring").select_refactor({ prefer_ex_cmd = true })
       end,
-      desc = "Refactor"
+      desc = "Refactor",
     },
-    { "<leader>xi", ":Refactor inline_var<CR>",                           desc = "Inline Variable",       mode = "n" },
-    { "<leader>xi", ":Refactor inline_var<CR>",                           desc = "Inline Variable",       mode = "x" },
-    { "<leader>xI", ":Refactor inline_func<CR>",                          desc = "Inline Function" },
-    { "<leader>xe", ":Refactor extract <CR>",                             desc = "Extract Function",      mode = "x", silent = false },
-    { "<leader>xf", ":Refactor extract_to_file <CR>",                     desc = "Extract to File",       mode = "x", silent = false },
-    { "<leader>xv", ":Refactor extract_var <CR>",                         desc = "Extract Variable",      mode = "x", silent = false },
-    { "<leader>xb", ":Refactor extract_block <CR>",                       desc = "Extract Block",         mode = "x", silent = false },
-    { "<leader>xB", ":Refactor extract_block_to_file <CR>",               desc = "Extract Block to File", mode = "x", silent = false },
-
-    -- Replace
-    -- TODO proper descs
-    { "<leader>r",  group = "+replace" },
-    { "<leader>rw", ":%s/\\<<C-r><C-w>\\>/.../g<CR>",                     desc = "Word" },
-    { "<leader>rr", '"hy:%s/<C-r>h/.../g<CR>',                            desc = "From Register" },
-    { "<leader>rt", ":RemoveTrailingWhitespace<CR>",                      desc = "Trim Whitespace" },
-    { "<leader>rs", ":%s//gc<CR>",                                        desc = "Confirm" },
-    { "<leader>rv", ":s/",                                                desc = "Visual Selection",      mode = "x", noremap = false },
+    { "<leader>xi", ":Refactor inline_var<CR>", desc = "Inline Variable", mode = "n" },
+    { "<leader>xi", ":Refactor inline_var<CR>", desc = "Inline Variable", mode = "x" },
+    { "<leader>xI", ":Refactor inline_func<CR>", desc = "Inline Function" },
+    {
+      "<leader>xe",
+      ":Refactor extract <CR>",
+      desc = "Extract Function",
+      mode = "x",
+      silent = false,
+    },
+    {
+      "<leader>xf",
+      ":Refactor extract_to_file <CR>",
+      desc = "Extract to File",
+      mode = "x",
+      silent = false,
+    },
+    {
+      "<leader>xv",
+      ":Refactor extract_var <CR>",
+      desc = "Extract Variable",
+      mode = "x",
+      silent = false,
+    },
+    {
+      "<leader>xb",
+      ":Refactor extract_block <CR>",
+      desc = "Extract Block",
+      mode = "x",
+      silent = false,
+    },
+    {
+      "<leader>xB",
+      ":Refactor extract_block_to_file <CR>",
+      desc = "Extract Block to File",
+      mode = "x",
+      silent = false,
+    },
 
     -- Format
-    { "<leader>F",  function() vim.lsp.buf.format({ async = false }) end, desc = "Format" },
+    {
+      "<leader>F",
+      function()
+        require("conform").format({ async = true, lsp_fallback = true })
+      end,
+      desc = "Format",
+    },
 
     -- Options
-    { "<leader>o",  group = "+toggle" },
-    { "<leader>og", ":IBLToggle<CR>",                                     desc = "Indent Guides" },
+    { "<leader>o", group = "+toggle" },
+    { "<leader>og", ":IBLToggle<CR>", desc = "Indent Guides" },
     {
       "<leader>on",
       function()
@@ -242,13 +451,13 @@ if wk_ok then
           vim.wo.relativenumber = false
         end
       end,
-      desc = "Numbers"
+      desc = "Numbers",
     },
-    { "<leader>ow", ":set wrap!<CR>",         desc = "Wrap" },
-    { "<leader>os", ":set spell!<CR>",        desc = "Spell" },
-    { "<leader>oc", ":set cursorline!<CR>",   desc = "Cursorline" },
+    { "<leader>ow", ":set wrap!<CR>", desc = "Wrap" },
+    { "<leader>os", ":set spell!<CR>", desc = "Spell" },
+    { "<leader>oc", ":set cursorline!<CR>", desc = "Cursorline" },
     { "<leader>oC", ":set cursorcolumn!<CR>", desc = "Cursorcolumn" },
-    { "<leader>ot", ":FormatToggle<CR>",      desc = "format-on-save" },
+    { "<leader>ot", ":FormatToggle<CR>", desc = "format-on-save" },
     {
       "<leader>od",
       function()
@@ -259,7 +468,7 @@ if wk_ok then
           snacks.dim.disable()
         end
       end,
-      desc = "Dim"
+      desc = "Dim",
     },
 
     -- Test
@@ -405,9 +614,11 @@ if wk_ok then
     -- Terminal
     {
       "<F2>",
-      function() snacks.terminal.toggle() end,
+      function()
+        snacks.terminal.toggle()
+      end,
       desc = "Toggle Terminal",
-      mode = { "n", "i", "v" }
+      mode = { "n", "i", "v" },
     },
     {
       "<F2>",
@@ -416,8 +627,14 @@ if wk_ok then
         snacks.terminal.toggle()
       end,
       desc = "Toggle Terminal",
-      mode = "t"
+      mode = "t",
     },
+
+    -- Run
+    { "<leader>r", group = "+run" },
+    { "<leader>rU", group = "+ui" },
+    { "<leader>rB", group = "+breakpoints" },
+
   }
 
   if vim.g.neovide then
@@ -457,6 +674,9 @@ if wk_ok then
       { mode = mode, mapping },
     })
   end
+
+  vim.keymap.set("i", "jj", "<Esc>", { desc = "Escape" })
+  vim.keymap.set("i", "оо", "<Esc>", { desc = "Escape" })
 end
 
 return M

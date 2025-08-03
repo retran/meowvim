@@ -68,9 +68,7 @@ return {
         prepend_args = { "--line-length", "88" },
       },
       gdformat = {
-        command = "gdformat",
-        args = { "-" },
-        stdin = true,
+        command = "gdformat"
       },
     },
   },
