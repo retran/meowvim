@@ -629,6 +629,12 @@ if wk_ok then
       desc = "Toggle Terminal",
       mode = "t",
     },
+
+    -- Run
+    { "<leader>r", group = "+run" },
+    { "<leader>rU", group = "+ui" },
+    { "<leader>rB", group = "+breakpoints" },
+
   }
 
   if vim.g.neovide then

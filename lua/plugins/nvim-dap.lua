@@ -126,8 +126,6 @@ return {
         end,
         "Open REPL",
       },
-
-      { "n", "<leader>rB", function() end, "+breakpoints" },
       {
         "n",
         "<leader>rBc",
@@ -160,8 +158,6 @@ return {
         end,
         "Exception Breakpoints",
       },
-
-      { "n", "<leader>rU", function() end, "+ui" },
       {
         "n",
         "<leader>rUs",
@@ -206,7 +202,6 @@ return {
     -- TODO to add an autocommand to register/unregister maps based on DAP state
     register_dap_maps()
 
-    vim.keymap.set("n", "<leader>r", function() end, { desc = "+run" })
     vim.keymap.set("n", "<leader>rr", function()
       dap.continue()
     end, { desc = "Run / Continue" })
