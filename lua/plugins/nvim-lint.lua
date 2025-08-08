@@ -3,8 +3,8 @@
 return {
   "mfussenegger/nvim-lint",
   event = { "BufReadPre", "BufNewFile" },
-  opts = {
-    linters_by_ft = {
+  opts = function()
+    local desired_linters_by_ft = {
       python = { "pylint", "mypy" },
       javascript = { "eslint_d" },
       typescript = { "eslint_d" },
@@ -18,27 +18,43 @@ return {
       dockerfile = { "hadolint" },
       vim = { "vint" },
       gdscript = { "gdlint" },
-    },
+    }
 
-    linters = {
-      luacheck = {
-        args = { "--globals", "vim", "--read-globals", "love", "--formatter", "plain", "--codes", "--ranges", "-" },
-      },
-      pylint = {
-        args = { "-f", "json", "--disable=C0111", "--disable=C0103" },
-      },
-      golangcilint = {
-        args = {
-          "run",
-          "--out-format",
-          "json",
+    local linters_by_ft = {}
+    for ft, linters in pairs(desired_linters_by_ft) do
+      local available_linters = {}
+      for _, linter in ipairs(linters) do
+        if vim.fn.executable(linter) == 1 then
+          table.insert(available_linters, linter)
+        end
+      end
+      if #available_linters > 0 then
+        linters_by_ft[ft] = available_linters
+      end
+    end
+
+    return {
+      linters_by_ft = linters_by_ft,
+      linters = {
+        luacheck = {
+          args = { "--globals", "vim", "--read-globals", "love", "--formatter", "plain", "--codes", "--ranges", "-" },
+        },
+        pylint = {
+          args = { "-f", "json", "--disable=C0111", "--disable=C0103" },
+        },
+        golangcilint = {
+          args = {
+            "run",
+            "--out-format",
+            "json",
+          },
+        },
+        markdownlint = {
+          args = { "--stdin", "--config", vim.fn.expand("~/.markdownlint.json") },
         },
       },
-      markdownlint = {
-        args = { "--stdin", "--config", vim.fn.expand("~/.markdownlint.json") },
-      },
-    },
-  },
+    }
+  end,
 
   config = function(_, opts)
     local lint = require("lint")

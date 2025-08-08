@@ -4,8 +4,8 @@ return {
   "stevearc/conform.nvim",
   event = { "BufWritePre" },
   cmd = { "ConformInfo" },
-  opts = {
-    formatters_by_ft = {
+  opts = function()
+    local desired_formatters_by_ft = {
       lua = { "stylua" },
       python = { "ruff_format", "ruff_organize_imports" },
       javascript = { "prettierd", "prettier", stop_after_first = true },
@@ -30,48 +30,74 @@ return {
       gdscript = { "gdformat" },
       gdshader = { "clang_format" },
       ["*"] = { "codespell" },
-      ["_"] = { "trim_whitespace" },
-    },
+    }
 
-    default_format_opts = {
-      timeout_ms = 3000,
-      async = false,
-      quiet = false,
-      lsp_format = "fallback",
-    },
+    local formatters_by_ft = {}
 
-    format_on_save = function(bufnr)
-      if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
-        return
+    for ft, formatters in pairs(desired_formatters_by_ft) do
+      local available_formatters = {}
+      for key, value in pairs(formatters) do
+        if type(key) == "string" then
+          available_formatters[key] = value
+        end
       end
-      local bufname = vim.api.nvim_buf_get_name(bufnr)
-      if bufname:match("/node_modules/") then
-        return
-      end
-      return { timeout_ms = 500 }
-    end,
 
-    formatters = {
-      shfmt = {
-        prepend_args = { "-i", "2", "-ci" },
+      for _, formatter in ipairs(formatters) do
+        if type(formatter) == "string" and vim.fn.executable(formatter) == 1 then
+          table.insert(available_formatters, formatter)
+        end
+      end
+
+      if #available_formatters > 0 then
+        formatters_by_ft[ft] = available_formatters
+      end
+    end
+
+    formatters_by_ft["_"] = { "trim_whitespace" }
+
+    return {
+      formatters_by_ft = formatters_by_ft,
+
+      default_format_opts = {
+        timeout_ms = 3000,
+        async = false,
+        quiet = false,
+        lsp_format = "fallback",
       },
-      stylua = {
-        prepend_args = { "--indent-type", "Spaces", "--indent-width", "2" },
+
+      format_on_save = function(bufnr)
+        if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
+          return
+        end
+        local bufname = vim.api.nvim_buf_get_name(bufnr)
+        if bufname:match("/node_modules/") then
+          return
+        end
+        return { timeout_ms = 500 }
+      end,
+
+      formatters = {
+        shfmt = {
+          prepend_args = { "-i", "2", "-ci" },
+        },
+        stylua = {
+          prepend_args = { "--indent-type", "Spaces", "--indent-width", "2" },
+        },
+        prettier = {
+          prepend_args = { "--tab-width", "2" },
+        },
+        prettierd = {
+          prepend_args = { "--tab-width", "2" },
+        },
+        black = {
+          prepend_args = { "--line-length", "88" },
+        },
+        gdformat = {
+          command = "gdformat",
+        },
       },
-      prettier = {
-        prepend_args = { "--tab-width", "2" },
-      },
-      prettierd = {
-        prepend_args = { "--tab-width", "2" },
-      },
-      black = {
-        prepend_args = { "--line-length", "88" },
-      },
-      gdformat = {
-        command = "gdformat"
-      },
-    },
-  },
+    }
+  end,
 
   init = function()
     vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"

@@ -17,13 +17,14 @@ return {
           { icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
           { icon = " ", key = "q", desc = "Quit", action = ":qa" },
         },
-        header = [[Meowvim
+        header = [[meowvim
 -------]],
       },
       sections = {
         {
           pane = 1,
           height = 17,
+          width = 40,
           padding = 1,
           section = "terminal",
           cmd = "~/.config/nvim/scripts/icon.sh",

@@ -1,4 +1,4 @@
-# 🐱 Meowvim
+# 🐱 meowvim
 
 > The purr-fect Neovim configuration for a cozy coding session. May or may not increase your productivity by a feline factor.
 
@@ -12,22 +12,22 @@
 </div>
 
 <div align="center">
-<img src="assets/icon_small.png" alt="Meowvim Logo" width="200">
+<img src="assets/icon_small.png" alt="meowvim logo" width="200">
 <br>
-<strong>Meowvim - Purr-fect Neovim</strong>
+<strong>meowvim - Purr-fect Neovim</strong>
 </div>
 
-A carefully crafted Neovim configuration that provides a modern development environment. Part of the `project meow`, `Meowvim` includes curated plugins, intelligent defaults, and a consistent user experience.
+A carefully crafted Neovim configuration that provides a modern development environment. Part of the `project meow`, `meowvim` includes curated plugins, intelligent defaults, and a consistent user experience.
 
 ## 🖼️ Screenshots
 
 <div align="center">
 
 ### Dashboard
-<img src="assets/screenshot_dashboard.png" alt="Meowvim Dashboard" width="800">
+<img src="assets/screenshot_dashboard.png" alt="meowvim Dashboard" width="800">
 
 ### Editor
-<img src="assets/screenshot_editor.png" alt="Meowvim Editor" width="800">
+<img src="assets/screenshot_editor.png" alt="meowvim Editor" width="800">
 
 </div>
 
@@ -55,7 +55,7 @@ A carefully crafted Neovim configuration that provides a modern development envi
 
 ## ✨ Features
 
-`Meowvim` includes these development features:
+`meowvim` includes these development features:
 
 ### 🧠 Intelligence & Completion
 
@@ -101,7 +101,7 @@ A carefully crafted Neovim configuration that provides a modern development envi
 
 ## 📋 Prerequisites
 
-Before installing `Meowvim`, ensure you have the following:
+Before installing `meowvim`, ensure you have the following:
 
 ### Required
 
@@ -133,14 +133,14 @@ If you're starting fresh or want to replace your current Neovim config:
 # Backup your existing config (if any)
 mv ~/.config/nvim ~/.config/nvim.backup
 
-# Clone Meowvim
+# Clone meowvim
 git clone https://github.com/retran/meowvim.git ~/.config/nvim
 
 # Start Neovim - plugins will install automatically
 nvim
 ```
 
-### Option 2: As Part of Meow System
+### Option 2: As Part of `meow` System
 
 If you're using [`meow` dotfiles management system](https://github.com/retran/meow):
 
@@ -167,7 +167,7 @@ After installation, follow these steps to get started:
 nvim
 ```
 
-On first launch, `Meowvim` will:
+On first launch, `meowvim` will:
 
 - Install the Lazy.nvim plugin manager
 - Download and install all plugins
@@ -188,7 +188,7 @@ On first launch, `Meowvim` will:
 
 ## ⚙️ Configuration
 
-`Meowvim` is highly customizable. Here's how to make it your own:
+`meowvim` is highly customizable. Here's how to make it your own:
 
 ### File Structure
 
@@ -269,7 +269,7 @@ nvim --headless "+Lazy sync" +qa
    :LspInfo
    ```
 
-2. Language servers are managed by the `meow`. If you installed `Meowvim` as part of `meow`, they should be automatically available.
+2. Language servers are managed by the `meow`. If you installed `meowvim` as part of `meow`, they should be automatically available.
 3. For standalone installation, you may need to install servers manually:
 
    ```bash
@@ -323,7 +323,7 @@ Install [JetBrains Mono Nerd Font](https://www.nerdfonts.com/font-downloads).
 
 ## 🤝 Contributing
 
-Contributions are welcome to help improve `Meowvim`! Here's how you can help:
+Contributions are welcome to help improve `meowvim`! Here's how you can help:
 
 ### Ways to Contribute
 
@@ -339,7 +339,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## 🙏 Acknowledgments
 
-`Meowvim` builds on the excellent work of the Neovim community.
+`meowvim` builds on the excellent work of the Neovim community.
 
 ### Core Dependencies
 
@@ -402,7 +402,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ### Author
 
-`Meowvim` is developed by Andrew Vasilyev with help from GitHub Copilot and feline assistants Sonya Blade, Mila, and Marcus Fenix.
+`meowvim` is developed by Andrew Vasilyev with help from GitHub Copilot and feline assistants Sonya Blade, Mila, and Marcus Fenix.
 
 ---
 
