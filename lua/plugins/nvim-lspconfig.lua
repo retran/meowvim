@@ -11,8 +11,6 @@ return {
     "b0o/SchemaStore.nvim",
   },
   config = function()
-    -- suppress deprecation warnings
-    -- TODO remove this after update to next version
     vim.deprecate = function(...) end
 
     require("neodev").setup()
@@ -53,7 +51,7 @@ return {
 
     vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
     vim.lsp.handlers["textDocument/signatureHelp"] =
-        vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
+      vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
 
     local caps = vim.lsp.protocol.make_client_capabilities()
     caps = require("cmp_nvim_lsp").default_capabilities(caps)
@@ -65,7 +63,6 @@ return {
     local servers = {
       lua_ls = {},
       bashls = { filetypes = { "sh", "bash", "zsh" } },
-      -- TODO C#
       gdscript = {
         cmd = { "nc", "localhost", "6005" },
         filetypes = { "gd", "gdscript", "gdscript3" },
@@ -73,7 +70,6 @@ return {
         on_attach = function(client, bufnr)
           client.server_capabilities.documentFormattingProvider = false
           client.server_capabilities.documentRangeFormattingProvider = false
-
           vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
         end,
       },
@@ -123,11 +119,20 @@ return {
       },
     }
 
+    local server_executables = {
+      lua_ls = "lua-language-server",
+      ts_ls = "typescript-language-server",
+      jsonls = "vscode-json-languageserver",
+    }
+
     for name, cfg in pairs(servers) do
-      lspconfig[name].setup(vim.tbl_deep_extend("force", {
-        on_attach = on_attach,
-        capabilities = caps,
-      }, cfg))
+      local exec_name = server_executables[name] or name
+      if name == "gdscript" or vim.fn.executable(exec_name) == 1 then
+        lspconfig[name].setup(vim.tbl_deep_extend("force", {
+          on_attach = on_attach,
+          capabilities = caps,
+        }, cfg))
+      end
     end
   end,
 }

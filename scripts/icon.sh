@@ -1,4 +1,12 @@
-#!/bin/bash
-# Use the ICON_PATH environment variable if set, otherwise default to ~/.config/nvim/assets/icon.ascii
+#!/bin/sh
+
 ICON_PATH="${ICON_PATH:-$HOME/.config/nvim/assets/icon.ascii}"
-cat "$ICON_PATH"
+
+if [ ! -f "$ICON_PATH" ]; then
+  exit 0
+fi
+
+while IFS= read -r line; do
+  echo "$line"
+  sleep 0.001
+done < "$ICON_PATH"

@@ -1,10 +1,6 @@
 vim.o.guifont = "JetBrainsMono Nerd Font Mono:h15"
 vim.g.neovide_theme = "dark"
 
--- vim.g.neovide_opacity = 0.9
--- vim.g.neovide_normal_opacity = 0.9
--- vim.g.neovide_window_blurred = true
-
 vim.g.neovide_scroll_animation_length = 0.1
 vim.g.neovide_position_animation_length = 0.1
 
@@ -20,5 +16,5 @@ vim.g.neovide_remember_window_size = true
 vim.g.neovide_input_macos_option_key_is_meta = "both"
 
 vim.opt.title = true
-vim.opt.titlestring = "Meowvim - Purr-fect Neovim"
+vim.opt.titlestring = "meowvim - Purr-fect Neovim"
 vim.opt.linespace = 3

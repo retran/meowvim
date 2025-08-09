@@ -9,9 +9,6 @@ function M.map(mode, lhs, rhs, opts)
 end
 
 local snacks = require("snacks")
-local dap = require("dap")
-local dapui = require("dapui")
-local widgets = require("dap.ui.widgets")
 
 local wk_ok, wk = pcall(require, "which-key")
 if wk_ok then
