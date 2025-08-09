@@ -1,0 +1,101 @@
+---
+generate:
+  defaultProvider: "gemini"
+  defaultModel: "gemini-2.5-flash"
+  defaultTimeout: "5m"
+  defaultSystemPrompt: >-
+    You are a Neovim expert and senior Lua developer.
+    You specialize in creating clean, fast, and maintainable Neovim configurations.
+    You are familiar with the latest Neovim APIs (0.10+), the 'lazy.nvim' plugin manager,
+    and the modern Lua-based plugin ecosystem.
+    Prioritize idiomatic Lua, performance (lazy-loading), and clear API usage.
+
+  tasks:
+    lua:review:
+      provider: "gemini"
+      model: "gemini-2.5-pro"
+      userPrompt: >-
+        Perform a thorough code review of the following Neovim configuration code written in Lua.
+
+        Focus areas:
+          - Correctness (use of pcall/xpcall, nil handling, API function signatures).
+          - Neovim Best Practices (using vim.keymap.set, vim.api, avoiding legacy commands).
+          - Performance (unnecessary work on startup, lazy-loading opportunities for plugins/modules).
+          - Maintainability (modular structure, avoiding globals, clear variable names).
+          - Readability (consistent formatting, comments for complex logic).
+
+        Output format:
+          1) Summary — 2–4 bullets.
+          2) Findings — numbered list with short, actionable suggestions.
+          3) Quick wins — checklist of small fixes.
+
+    lua:commit:
+      provider: "gemini"
+      model: "gemini-2.5-pro"
+      userPrompt: >-
+        Generate a Conventional Commit message for the provided changes to a Neovim configuration.
+
+        Rules:
+          - Use one of: feat, fix, refactor, style, docs, chore, perf.
+          - Subject: imperative, ≤72 chars, no trailing period.
+          - Infer a scope like (lsp), (ui), (plugin:telescope), (core), (keymaps), etc.
+
+        Output format:
+          - Single-line header
+          - Optional body explaining motivation
+          - Optional footers
+
+    lua:doc:
+      provider: "gemini"
+      model: "gemini-2.5-flash"
+      userPrompt: >-
+        Write a complete documentation comment block for the following Lua function,
+        using EmmyLua/LDoc annotation syntax for Neovim.
+        Requirements:
+          - A concise summary of what the function does.
+          - @param annotations for each parameter with its type and description.
+          - @return annotation for the return value(s).
+          - Mention any side effects within Neovim (e.g., sets an option, defines a command).
+
+        Do NOT include the function's code; only the comment block.
+
+    lua:refactor:
+      provider: "gemini"
+      model: "gemini-2.5-pro"
+      userPrompt: >-
+        Refactor the following Neovim Lua code to improve performance, readability, and use of modern APIs,
+        while preserving its original behavior.
+
+        Output:
+          1) A single code block with the refactored Lua code.
+          2) A short bullet list explaining key changes (e.g., switched to a newer API, improved lazy-loading, modularized code).
+
+        Focus on using idiomatic 'lazy.nvim' structure and current Neovim functions.
+
+    nvim:suggest-plugin:
+      provider: "gemini"
+      model: "gemini-2.5-pro"
+      userPrompt: >-
+        I need a plugin to solve the following problem in Neovim: [DESCRIBE PROBLEM HERE].
+
+        Suggest one or two modern, well-maintained plugins written in Lua.
+        For each suggestion, provide:
+          - A brief reason why it's a good choice.
+          - A minimal but complete plugin specification to be used with 'lazy.nvim'.
+          - One or two essential keymap suggestions using 'vim.keymap.set'.
+
+    nvim:explain-keymap:
+      provider: "gemini"
+      model: "gemini-2.5-flash"
+      userPrompt: >-
+        Provide a detailed, step-by-step explanation of what the following Lua keymap definition does.
+        Explain the mode, the key sequence, the action (what function/command it calls),
+        and the meaning of all the options (noremap, silent, etc.).
+
+    pr:
+      provider: "gemini"
+      model: "gemini-2.5-pro"
+      userPrompt: >-
+        Create a clear and actionable Pull Request description from the provided diff for a Neovim config project.
+        Produce Markdown in a standard PR template format.
+        Infer scope/labels (e.g., area/lsp, type/feat, plugin/telescope) where reasonable.
