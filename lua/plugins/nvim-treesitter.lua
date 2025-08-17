@@ -4,6 +4,7 @@ return {
   "nvim-treesitter/nvim-treesitter",
   event = { "BufReadPost", "BufNewFile" },
   build = ":TSUpdate",
+  dependencies = {},
   opts = {
     ensure_installed = {
       "lua",
@@ -13,8 +14,11 @@ return {
       "bash",
       "markdown",
       "markdown_inline",
+      "html",
+      "yaml",
+      "typst",
       "go",
-      "gdscript"
+      "gdscript",
     },
 
     sync_install = false,
