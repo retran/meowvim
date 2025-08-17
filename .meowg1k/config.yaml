@@ -11,7 +11,7 @@ generate:
     Prioritize idiomatic Lua, performance (lazy-loading), and clear API usage.
 
   tasks:
-    lua:review:
+    review:
       provider: "gemini"
       model: "gemini-2.5-pro"
       userPrompt: >-
@@ -29,7 +29,7 @@ generate:
           2) Findings — numbered list with short, actionable suggestions.
           3) Quick wins — checklist of small fixes.
 
-    lua:commit:
+    commit:
       provider: "gemini"
       model: "gemini-2.5-pro"
       userPrompt: >-
@@ -45,7 +45,7 @@ generate:
           - Optional body explaining motivation
           - Optional footers
 
-    lua:doc:
+    doc:
       provider: "gemini"
       model: "gemini-2.5-flash"
       userPrompt: >-
@@ -59,7 +59,7 @@ generate:
 
         Do NOT include the function's code; only the comment block.
 
-    lua:refactor:
+    refactor:
       provider: "gemini"
       model: "gemini-2.5-pro"
       userPrompt: >-
@@ -72,7 +72,7 @@ generate:
 
         Focus on using idiomatic 'lazy.nvim' structure and current Neovim functions.
 
-    nvim:suggest-plugin:
+    suggest-plugin:
       provider: "gemini"
       model: "gemini-2.5-pro"
       userPrompt: >-
@@ -83,14 +83,6 @@ generate:
           - A brief reason why it's a good choice.
           - A minimal but complete plugin specification to be used with 'lazy.nvim'.
           - One or two essential keymap suggestions using 'vim.keymap.set'.
-
-    nvim:explain-keymap:
-      provider: "gemini"
-      model: "gemini-2.5-flash"
-      userPrompt: >-
-        Provide a detailed, step-by-step explanation of what the following Lua keymap definition does.
-        Explain the mode, the key sequence, the action (what function/command it calls),
-        and the meaning of all the options (noremap, silent, etc.).
 
     pr:
       provider: "gemini"
