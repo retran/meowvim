@@ -154,7 +154,7 @@ git submodule init
 git submodule update
 
 # Follow the meow installation instructions
-./install.sh
+./bin/meowctl install personal
 ```
 
 ## ⚡ Quick Start
