@@ -123,6 +123,7 @@ return {
       lua_ls = "lua-language-server",
       ts_ls = "typescript-language-server",
       jsonls = "vscode-json-languageserver",
+      bashls = "bash-language-server",
     }
 
     for name, cfg in pairs(servers) do

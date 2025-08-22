@@ -15,6 +15,4 @@ vim.g.neovide_remember_window_size = true
 
 vim.g.neovide_input_macos_option_key_is_meta = "both"
 
-vim.opt.title = true
-vim.opt.titlestring = "meowvim - Purr-fect Neovim"
 vim.opt.linespace = 3
