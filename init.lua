@@ -64,7 +64,4 @@ require("lazy").setup({
 
 require("utils.hooks").setup()
 require("utils.patches").setup()
-
-require("config/keymaps")
-
-
+require("config/keymaps").setup()

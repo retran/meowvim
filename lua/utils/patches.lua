@@ -5,7 +5,7 @@ function M.setup()
 
   snacks.dashboard.sections.session = function(item)
     return setmetatable({
-      action = ":silent! SessionRestore",
+      action = ":silent! AutoSession restore",
       section = false,
     }, { __index = item })
   end
