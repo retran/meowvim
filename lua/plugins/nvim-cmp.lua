@@ -1,21 +1,49 @@
 -- lua/plugins/nvim-cmp.lua
 
+local dependencies = {
+  "hrsh7th/cmp-nvim-lsp",
+  "hrsh7th/cmp-buffer",
+  "hrsh7th/cmp-path",
+  "L3MON4D3/LuaSnip",
+  "saadparwaiz1/cmp_luasnip",
+  "onsails/lspkind.nvim",
+}
+
+if vim.env.MEOW_ENABLE_COPILOT == "true" or false then
+  table.insert(dependencies, 1, "zbirenbaum/copilot-cmp")
+end
+
 return {
   "hrsh7th/nvim-cmp",
   event = "InsertEnter",
-  dependencies = {
-    "hrsh7th/cmp-nvim-lsp",
-    "hrsh7th/cmp-buffer",
-    "hrsh7th/cmp-path",
-    "L3MON4D3/LuaSnip",
-    "saadparwaiz1/cmp_luasnip",
-    "onsails/lspkind.nvim",
-    "zbirenbaum/copilot-cmp",
-  },
+  dependencies = dependencies,
   config = function()
     local cmp = require("cmp")
     local luasnip = require("luasnip")
     local lspkind = require("lspkind")
+
+    local sources = {
+      { name = "nvim_lsp" },
+      { name = "luasnip" },
+      { name = "buffer" },
+      { name = "path" },
+    }
+
+    local comparators = {
+      cmp.config.compare.offset,
+      cmp.config.compare.exact,
+      cmp.config.compare.score,
+      cmp.config.compare.recently_used,
+      cmp.config.compare.kind,
+      cmp.config.compare.sort_text,
+      cmp.config.compare.length,
+      cmp.config.compare.order,
+    }
+
+    if vim.env.MEOW_ENABLE_COPILOT == "true" or false then
+      table.insert(sources, 1, { name = "copilot" })
+      table.insert(comparators, 1, require("copilot_cmp.comparators").prioritize)
+    end
 
     cmp.setup({
       snippet = {
@@ -24,13 +52,7 @@ return {
         end,
       },
 
-      sources = cmp.config.sources({
-        { name = "nvim_lsp" },
-        { name = "luasnip" },
-        { name = "copilot" },
-        { name = "buffer" },
-        { name = "path" },
-      }),
+      sources = cmp.config.sources(sources),
 
       formatting = {
         format = lspkind.cmp_format({
@@ -61,7 +83,7 @@ return {
             fallback()
           end
         end, { "i", "s" }),
-        ['<CR>'] = cmp.mapping.confirm({
+        ["<CR>"] = cmp.mapping.confirm({
           behavior = cmp.ConfirmBehavior.Replace,
           select = true,
         }),
@@ -81,17 +103,7 @@ return {
 
       sorting = {
         priority_weight = 2,
-        comparators = {
-          require("copilot_cmp.comparators").prioritize,
-          cmp.config.compare.offset,
-          cmp.config.compare.exact,
-          cmp.config.compare.score,
-          cmp.config.compare.recently_used,
-          cmp.config.compare.kind,
-          cmp.config.compare.sort_text,
-          cmp.config.compare.length,
-          cmp.config.compare.order,
-        },
+        comparators = comparators,
       },
       experimental = {
         ghost_text = true,

@@ -72,18 +72,6 @@ generate:
 
         Focus on using idiomatic 'lazy.nvim' structure and current Neovim functions.
 
-    suggest-plugin:
-      provider: "gemini"
-      model: "gemini-2.5-pro"
-      userPrompt: >-
-        I need a plugin to solve the following problem in Neovim: [DESCRIBE PROBLEM HERE].
-
-        Suggest one or two modern, well-maintained plugins written in Lua.
-        For each suggestion, provide:
-          - A brief reason why it's a good choice.
-          - A minimal but complete plugin specification to be used with 'lazy.nvim'.
-          - One or two essential keymap suggestions using 'vim.keymap.set'.
-
     pr:
       provider: "gemini"
       model: "gemini-2.5-pro"
