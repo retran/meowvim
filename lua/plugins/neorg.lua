@@ -2,6 +2,8 @@
 
 return {
   "nvim-neorg/neorg",
+  lazy = false,
+  version = "*",
   dependencies = {
     "vhyrro/luarocks.nvim",
     "nvim-lua/plenary.nvim",
