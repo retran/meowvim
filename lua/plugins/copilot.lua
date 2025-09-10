@@ -2,7 +2,7 @@
 
 return {
   "zbirenbaum/copilot.lua",
-  enabled = vim.env.MEOW_ENABLE_COPILOT == "true" or false,
+  enabled = vim.env.MEOW_ENABLE_COPILOT == "true",
   cmd = "Copilot",
   event = "InsertEnter",
   config = function()
