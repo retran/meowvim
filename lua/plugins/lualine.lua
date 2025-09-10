@@ -19,7 +19,7 @@ local lualine_x = {
   },
 }
 
-if vim.env.MEOW_ENABLE_COPILOT == "true" or false then
+if vim.env.MEOW_ENABLE_COPILOT == "true" then
   local copilot = {
     "copilot",
     symbols = {
