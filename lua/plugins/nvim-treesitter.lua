@@ -30,10 +30,10 @@ return {
         "vim",
         "vimdoc",
         "yaml",
+        -- TODO add gdscript
       },
 
       sync_install = false,
-
       auto_install = true,
 
       highlight = {

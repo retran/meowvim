@@ -376,6 +376,11 @@ function M.setup()
       { "<leader>x", group = "+refactor" },
       { "<leader>xx", vim.lsp.buf.code_action, desc = "Context Action", mode = { "v", "n" } },
       { "<leader>xr", vim.lsp.buf.rename, desc = "Rename" }, -- TODO revise (F2?)
+      {
+        "<leader>xl",
+        vim.lsp.codelens.run,
+        desc = "Run Code Lens",
+      },
 
       -- Format
       {
@@ -424,11 +429,9 @@ function M.setup()
         desc = "Dim",
       },
       {
-        "<leader>oi",
-        function()
-          vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ 0 }), { 0 })
-        end,
-        desc = "Inlay Hints",
+        "<leader>oL",
+        vim.lsp.codelens.refresh,
+        desc = "Refresh Code Lenses",
       },
 
       -- Test

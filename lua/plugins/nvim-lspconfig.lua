@@ -54,6 +54,18 @@ return {
 
     local on_attach = function(client, bufnr)
       vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
+
+      if client.server_capabilities.inlayHintProvider then
+        vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+      end
+
+      if client.server_capabilities.codeLensProvider then
+        vim.lsp.codelens.refresh()
+        vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+          buffer = bufnr,
+          callback = vim.lsp.codelens.refresh,
+        })
+      end
     end
 
     if vim.fn.executable("lua-language-server") == 1 then
@@ -111,13 +123,11 @@ return {
             completeUnimported = true,
             directoryFilters = { "-.git", "-.vscode", "-.idea", "-.vscode-test", "-node_modules" },
             semanticTokens = true,
-
             codelenses = {
               run_govulncheck = true,
               gc_details = false,
               test = true,
             },
-
             hints = {
               assignVariableTypes = true,
               compositeLiteralFields = true,
@@ -128,7 +138,6 @@ return {
               parameterNames = true,
               rangeVariableTypes = true,
             },
-
             analyses = {
               asmdecl = true,
               assign = true,
