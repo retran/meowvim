@@ -206,35 +206,35 @@ function M.setup()
         desc = "Delete All Buffers",
       },
 
-      -- LSP Navigation
+      -- Navigation
       { "<leader>s", group = "+search" },
       {
         "<leader>sa",
         function()
           snacks.picker.grep()
         end,
-        desc = "All Files",
+        desc = "Go to File",
       },
       {
         "<leader>sb",
         function()
           snacks.picker.grep_buffers()
         end,
-        desc = "Opened Files",
+        desc = "Go to File (opened)",
       },
       {
         "<leader>sg",
         function()
           snacks.picker.git_grep()
         end,
-        desc = "Git Files",
+        desc = "Go to File (in Git)",
       },
       {
         "<leader>sd",
         function()
           snacks.picker.lsp_definitions()
         end,
-        desc = "Definitions",
+        desc = "Go to Definition",
       },
       {
         "<leader>sD",
@@ -248,35 +248,35 @@ function M.setup()
         function()
           snacks.picker.lsp_references()
         end,
-        desc = "References",
+        desc = "Go to Reference",
       },
       {
         "<leader>si",
         function()
           snacks.picker.lsp_implementations()
         end,
-        desc = "Implementations",
+        desc = "Go to Implementation",
       },
       {
         "<leader>st",
         function()
           snacks.picker.lsp_type_definitions()
         end,
-        desc = "Type Definitions",
+        desc = "Go to Type Definition",
       },
       {
         "<leader>ss",
         function()
           snacks.picker.lsp_workspace_symbols()
         end,
-        desc = "Workspace Symbols",
+        desc = "Go to Symbol",
       },
       {
         "<leader>sS",
         function()
           snacks.picker.lsp_symbols()
         end,
-        desc = "Document Symbols",
+        desc = "Go to Document Symbol",
       },
 
       -- Introspect
@@ -374,53 +374,8 @@ function M.setup()
 
       -- Refactor
       { "<leader>x", group = "+refactor" },
-      { "<leader>xx", vim.lsp.buf.code_action, desc = "Context Action" },
+      { "<leader>xx", vim.lsp.buf.code_action, desc = "Context Action", mode = { "v", "n" } },
       { "<leader>xr", vim.lsp.buf.rename, desc = "Rename" }, -- TODO revise (F2?)
-      {
-        "<leader>xR",
-        function()
-          require("refactoring").select_refactor({ prefer_ex_cmd = true })
-        end,
-        desc = "Refactor",
-      },
-      { "<leader>xi", ":Refactor inline_var<CR>", desc = "Inline Variable", mode = "n" },
-      { "<leader>xi", ":Refactor inline_var<CR>", desc = "Inline Variable", mode = "x" },
-      { "<leader>xI", ":Refactor inline_func<CR>", desc = "Inline Function" },
-      {
-        "<leader>xe",
-        ":Refactor extract <CR>",
-        desc = "Extract Function",
-        mode = "x",
-        silent = false,
-      },
-      {
-        "<leader>xf",
-        ":Refactor extract_to_file <CR>",
-        desc = "Extract to File",
-        mode = "x",
-        silent = false,
-      },
-      {
-        "<leader>xv",
-        ":Refactor extract_var <CR>",
-        desc = "Extract Variable",
-        mode = "x",
-        silent = false,
-      },
-      {
-        "<leader>xb",
-        ":Refactor extract_block <CR>",
-        desc = "Extract Block",
-        mode = "x",
-        silent = false,
-      },
-      {
-        "<leader>xB",
-        ":Refactor extract_block_to_file <CR>",
-        desc = "Extract Block to File",
-        mode = "x",
-        silent = false,
-      },
 
       -- Format
       {
@@ -467,6 +422,13 @@ function M.setup()
           end
         end,
         desc = "Dim",
+      },
+      {
+        "<leader>oi",
+        function()
+          vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ 0 }), { 0 })
+        end,
+        desc = "Inlay Hints",
       },
 
       -- Test

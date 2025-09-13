@@ -103,6 +103,9 @@ return {
         projects = {
           hidden = true,
         },
+        lsp_workspace_symbols = {
+          tree = true,
+        },
       },
     },
   },
