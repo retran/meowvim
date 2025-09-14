@@ -21,7 +21,7 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/comment.lua
--- @brief: Neovim plugin configuration for comment.
+-- @brief: Smart commenting with language-aware toggle functionality.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --

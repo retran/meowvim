@@ -21,7 +21,7 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/nvim-dap.lua
--- @brief: Neovim plugin configuration for dap.
+-- @brief: Debug Adapter Protocol (DAP) client for debugging integration.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --

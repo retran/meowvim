@@ -21,7 +21,7 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/nvim-cmp.lua
--- @brief: Neovim plugin configuration for cmp.
+-- @brief: Auto-completion engine and snippet integration configuration.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --

@@ -21,7 +21,7 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/nvim-treesitter-context.lua
--- @brief: Neovim plugin configuration for treesitter context.
+-- @brief: Sticky context header showing current function/class scope.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --

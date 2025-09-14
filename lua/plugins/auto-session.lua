@@ -21,7 +21,7 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/auto-session.lua
--- @brief: Neovim plugin configuration for auto session.
+-- @brief: Session management with automatic save and restore functionality.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --

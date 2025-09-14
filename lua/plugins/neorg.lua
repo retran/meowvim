@@ -21,7 +21,7 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/neorg.lua
--- @brief: Neovim plugin configuration for neorg.
+-- @brief: Note-taking and organization system with structured markup.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --

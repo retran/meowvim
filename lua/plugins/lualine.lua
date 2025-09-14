@@ -21,7 +21,7 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/lualine.lua
--- @brief: Neovim plugin configuration for lualine.
+-- @brief: Customizable statusline with Git, LSP, and mode indicators.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --

@@ -21,7 +21,7 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/nvim-treesitter.lua
--- @brief: Neovim plugin configuration for treesitter.
+-- @brief: Tree-sitter syntax highlighting and parsing engine configuration.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --

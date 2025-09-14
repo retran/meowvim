@@ -21,7 +21,7 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/nvim-lint.lua
--- @brief: Neovim plugin configuration for lint.
+-- @brief: Asynchronous linting engine with multiple linter support.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --

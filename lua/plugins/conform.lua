@@ -21,7 +21,7 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/conform.lua
--- @brief: Neovim plugin configuration for conform.
+-- @brief: Code formatting engine with multiple formatter support.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --

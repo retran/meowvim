@@ -21,7 +21,7 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/tokyonight.lua
--- @brief: Neovim plugin configuration for tokyonight.
+-- @brief: Tokyo Night colorscheme theme configuration.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --

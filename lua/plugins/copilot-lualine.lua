@@ -21,7 +21,7 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/copilot-lualine.lua
--- @brief: Neovim plugin configuration for copilot lualine.
+-- @brief: Copilot status indicator for lualine statusbar.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --

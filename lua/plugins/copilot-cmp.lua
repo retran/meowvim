@@ -21,7 +21,7 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/copilot-cmp.lua
--- @brief: Neovim plugin configuration for copilot cmp.
+-- @brief: Copilot integration with nvim-cmp completion engine.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --

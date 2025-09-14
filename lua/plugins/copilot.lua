@@ -21,7 +21,7 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/copilot.lua
--- @brief: Neovim plugin configuration for copilot.
+-- @brief: GitHub Copilot AI code completion and assistance plugin configuration.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --

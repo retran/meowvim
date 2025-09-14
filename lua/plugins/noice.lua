@@ -21,7 +21,7 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/noice.lua
--- @brief: Neovim plugin configuration for noice.
+-- @brief: Enhanced UI components for messages, cmdline, and popupmenu.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --

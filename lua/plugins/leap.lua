@@ -21,7 +21,7 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/leap.lua
--- @brief: Neovim plugin configuration for leap.
+-- @brief: Fast cursor movement and navigation with two-character search.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --

@@ -21,7 +21,7 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/neotest.lua
--- @brief: Neovim plugin configuration for neotest.
+-- @brief: Framework for running and displaying test results interactively.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --

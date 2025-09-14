@@ -21,7 +21,7 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/luasnip.lua
--- @brief: Neovim plugin configuration for luasnip.
+-- @brief: Snippet engine with expansion and template support.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --

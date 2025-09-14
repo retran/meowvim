@@ -21,7 +21,7 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/auto-save.lua
--- @brief: Neovim plugin configuration for auto save.
+-- @brief: Automatic file saving when leaving insert mode or text changes.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --

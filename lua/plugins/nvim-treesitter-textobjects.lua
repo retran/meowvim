@@ -21,7 +21,7 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/nvim-treesitter-textobjects.lua
--- @brief: Neovim plugin configuration for treesitter textobjects.
+-- @brief: Tree-sitter powered text objects for functions, classes, and blocks.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --

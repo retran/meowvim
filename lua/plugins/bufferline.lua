@@ -21,7 +21,7 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/bufferline.lua
--- @brief: Neovim plugin configuration for bufferline.
+-- @brief: Enhanced buffer/tab line with file icons and styling.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --

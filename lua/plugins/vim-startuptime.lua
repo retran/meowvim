@@ -21,7 +21,7 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/vim-startuptime.lua
--- @brief: Neovim plugin configuration for vim startuptime.
+-- @brief: Neovim startup time profiling and optimization tool.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --

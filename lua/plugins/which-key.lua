@@ -21,7 +21,7 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/which-key.lua
--- @brief: Neovim plugin configuration for which key.
+-- @brief: Interactive keymap guide and command discovery popup.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --

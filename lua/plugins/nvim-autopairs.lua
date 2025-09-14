@@ -21,7 +21,7 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/nvim-autopairs.lua
--- @brief: Neovim plugin configuration for autopairs.
+-- @brief: Automatic bracket, quote, and parenthesis pairing.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --

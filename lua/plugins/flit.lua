@@ -21,7 +21,7 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/flit.lua
--- @brief: Neovim plugin configuration for flit.
+-- @brief: Enhanced f/F/t/T motions with clever repeat functionality.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --

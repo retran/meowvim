@@ -21,7 +21,7 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/nvim-lspconfig.lua
--- @brief: Neovim plugin configuration for lspconfig.
+-- @brief: Language Server Protocol (LSP) client configuration and setup.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --

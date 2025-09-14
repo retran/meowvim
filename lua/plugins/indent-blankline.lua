@@ -21,7 +21,7 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/indent-blankline.lua
--- @brief: Neovim plugin configuration for indent blankline.
+-- @brief: Visual indentation guides and scope highlighting.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --

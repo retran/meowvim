@@ -21,7 +21,7 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/snacks.lua
--- @brief: Neovim plugin configuration for snacks.
+-- @brief: Collection of useful utilities and UI components.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --
