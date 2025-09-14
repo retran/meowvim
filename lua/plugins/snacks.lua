@@ -33,7 +33,7 @@ return {
           pane = 2,
           {
             section = "header",
-            padding = 1
+            padding = 1,
           },
           {
             section = "projects",
@@ -54,7 +54,9 @@ return {
 
     bigfile = {},
     dim = {},
-    explorer = {},
+    explorer = {
+      replace_netrw = true,
+    },
     input = {},
     notifier = {},
     terminal = {},
@@ -69,7 +71,6 @@ return {
         branch = false,
         count = true,
       },
-
     },
     styles = {},
 
@@ -87,10 +88,23 @@ return {
           hidden = true,
         },
         explorer = {
+          layout = {
+            layout = {
+              position = "right",
+            },
+          },
           hidden = true,
+          follow_file = true,
+          auto_close = true,
+          jump = {
+            close = true,
+          },
         },
         projects = {
           hidden = true,
+        },
+        lsp_workspace_symbols = {
+          tree = true,
         },
       },
     },

@@ -4,95 +4,54 @@ return {
   "nvim-treesitter/nvim-treesitter",
   event = { "BufReadPost", "BufNewFile" },
   build = ":TSUpdate",
-  dependencies = {},
-  opts = {
-    ensure_installed = {
-      "asm",
-      "awk",
-      "bash",
-      "c",
-      "c_sharp",
-      "cmake",
-      "cpp",
-      "css",
-      "csv",
-      "diff",
-      "dockerfile",
-      "editorconfig",
-      "fsharp",
-      "gdscript",
-      "gdshader",
-      "git_config",
-      "git_rebase",
-      "gitattributes",
-      "gitcommit",
-      "gitignore",
-      "glsl",
-      "go",
-      "godot_resource",
-      "gomod",
-      "gosum",
-      "gpg",
-      "graphql",
-      "hlsl",
-      "html",
-      "http",
-      "ini",
-      "java",
-      "javadoc",
-      "javascript",
-      "jq",
-      "jsdoc",
-      "json",
-      "json5",
-      "kotlin",
-      "lua",
-      "luadoc",
-      "make",
-      "markdown",
-      "markdown_inline",
-      "mermaid",
-      "nginx",
-      "passwd",
-      "powershell",
-      "properties",
-      "proto",
-      "pymanifest",
-      "python",
-      "query",
-      "readline",
-      "regex",
-      "ruby",
-      "rust",
-      "sql",
-      "ssh_config",
-      "tmux",
-      "toml",
-      "typescript",
-      "typst",
-      "vim",
-      "vimdoc",
-      "xml",
-      "yaml"
-    },
+  config = function()
+    require("nvim-treesitter.configs").setup({
+      ensure_installed = {
+        "bash",
+        "c",
+        "cpp",
+        "go",
+        "gomod",
+        "gosum",
+        "gowork",
+        "html",
+        "css",
+        "javascript",
+        "typescript",
+        "json",
+        "lua",
+        "luadoc",
+        "markdown",
+        "markdown_inline",
+        "python",
+        "query",
+        "regex",
+        "rust",
+        "vim",
+        "vimdoc",
+        "yaml",
+        -- TODO add gdscript
+      },
 
-    sync_install = true,
-    auto_install = true,
+      sync_install = false,
+      auto_install = true,
 
-    highlight = {
-      enable = true,
-      disable = function(lang, buf)
-        local max_filesize = 100 * 1024 -- 100 KB
-        local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-        if ok and stats and stats.size > max_filesize then
-          return true
-        end
-      end,
-      additional_vim_regex_highlighting = false,
-    },
-    indent = {
-      enable = true,
-      disable = { "python", "yaml" },
-    },
-  },
+      highlight = {
+        enable = true,
+        disable = function(lang, buf)
+          local max_filesize = 1024 * 1024 -- 1 MB
+          local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+          if ok and stats and stats.size > max_filesize then
+            return true
+          end
+        end,
+        additional_vim_regex_highlighting = false,
+      },
+
+      indent = {
+        enable = true,
+        disable = { "python", "yaml" },
+      },
+    })
+  end,
 }

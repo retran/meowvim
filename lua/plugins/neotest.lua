@@ -8,12 +8,14 @@ return {
     "antoinemadec/FixCursorHold.nvim",
     "nvim-neotest/neotest-go",
     "mfussenegger/nvim-dap",
+    "leoluz/nvim-dap-go",
   },
   config = function()
     require("neotest").setup({
       adapters = {
-        ["neotest-go"] = {
-          args = { "-count=1", "-timeout=60s" },
+        ["neotest-golang"] = {
+          go_test_args = { "-v", "-race", "-count=1", "-timeout=60s" },
+          dap_go_enabled = true,
         },
       },
 
