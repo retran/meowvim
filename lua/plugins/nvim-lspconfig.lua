@@ -200,7 +200,7 @@ return {
     end
 
     if vim.fn.executable("typescript-language-server") == 1 then
-      lspconfig.tsserver.setup({
+      lspconfig.ts_ls.setup({
         on_attach = on_attach,
         capabilities = caps,
         settings = {
