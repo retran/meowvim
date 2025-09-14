@@ -37,6 +37,8 @@ A carefully crafted Neovim configuration that provides a modern development envi
 
 - **🚀 Zero Configuration**: Works out of the box with sensible defaults
 - **🎨 Modern Interface**: Tokyo Night theme with clean UI components
+- **🖥️ GUI Support**: Optimized for both terminal and Neovide GUI experience
+- **📱 Raycast Integration**: Quick launcher scripts for macOS productivity
 - **🧠 AI-Powered**: GitHub Copilot integration for coding assistance
 - **⚡ Performance**: Optimized with lazy loading
 - **🔧 Customizable**: Easy to extend and modify
@@ -109,7 +111,7 @@ Before installing `meowvim`, ensure you have the following:
 
 ### Required
 
-- **Neovim** ≥ 0.9.0
+- **Neovim** ≥ 0.10.0
 - **Git** (for plugin management)
 - **A terminal** with true color support
 
@@ -126,6 +128,7 @@ Before installing `meowvim`, ensure you have the following:
 ### Optional
 
 - **GitHub Copilot** subscription (for AI features)
+- **Neovide** (for GUI experience with enhanced visual features)
 
 ## 🚀 Installation
 
@@ -180,8 +183,9 @@ On first launch, `meowvim` will:
 ### 2. Basic Navigation
 
 - **Leader key**: `Space` (main entry point for features)
-- **Open project**: `Space, f, p`
-- **Open smart file finder**: `Space, Space`
+- **Open project**: `Space, f, p` (or `p` from dashboard)
+- **Find files**: `Space, f, f` (or `f` from dashboard) 
+- **Leap motion**: `Space, Space` for quick cursor jumps
 - **Open scratch buffer**: `Space, .`
 - **Dashboard navigation**: Use the shortcuts shown on the dashboard
 
@@ -208,6 +212,7 @@ On first launch, `meowvim` will:
 │   ├── plugins/          # Plugin configurations
 │   ├── utils/            # Utility functions and patches
 ├── scripts/              # Helper scripts (icon display)
+├── bin/                  # Raycast integration scripts
 └── assets/               # Icons and resources
 ```
 
@@ -266,6 +271,15 @@ vim.cmd.colorscheme("tokyonight-storm")  -- or "tokyonight-day"
 ```
 
 Use `:Neorg workspace main` to access your notes workspace.
+
+### Raycast Integration
+
+`meowvim` includes Raycast scripts for quick launching:
+
+- `bin/meowvim.sh` - Launch meowvim with Neovide
+- `bin/meowvim-container.sh` - Connect to litterbox container
+
+Copy these scripts to your Raycast script directory to enable quick access.
 
 ## 🔧 Troubleshooting
 
