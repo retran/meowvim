@@ -4,17 +4,21 @@
 
 <div align="center">
 
-![Neovim](https://img.shields.io/badge/neovim-%23019733.svg?style=for-the-badge&logo=neovim&logoColor=white)
-![License](https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge)
-![GitHub stars](https://img.shields.io/github/stars/retran/meowvim?style=for-the-badge)
-![GitHub forks](https://img.shields.io/github/forks/retran/meowvim?style=for-the-badge)
+   ![Neovim](https://img.shields.io/badge/neovim-%23019733.svg?style=for-the-badge&logo=neovim&logoColor=white)
+   ![License](https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge)
+   ![GitHub stars](https://img.shields.io/github/stars/retran/meowvim?style=for-the-badge)
+   ![GitHub forks](https://img.shields.io/github/forks/retran/meowvim?style=for-the-badge)
 
 </div>
 
 <div align="center">
-<img src="assets/icon_small.png" alt="meowvim logo" width="200">
-<br>
-<strong>meowvim - Purr-fect Neovim</strong>
+
+   <img src="assets/icon_small.png" alt="meowvim logo" width="200">
+
+   <br>
+
+   <strong>meowvim - Purr-fect Neovim</strong>
+
 </div>
 
 A carefully crafted Neovim configuration that provides a modern development environment. Part of the `project meow`, `meowvim` includes curated plugins, intelligent defaults, and a consistent user experience.
@@ -402,17 +406,13 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - [LazyVim](https://github.com/LazyVim/LazyVim) - Modern Neovim configuration
 - [Spacemacs](https://github.com/syl20bnr/spacemacs) - Emacs configuration framework
 
-### Author
-
-`meowvim` is developed by Andrew Vasilyev with help from GitHub Copilot and feline assistants Sonya Blade, Mila, and Marcus Fenix.
-
 ---
 
 <div align="center">
 
 **Happy coding with `project meow`! 🐱**
 
-Made with ❤️ by Andrew Vasilyev and feline assistants
+Made with ❤️ by Andrew Vasilyev and feline assistants Sonya Blade, Mila, and Marcus Fenix.
 
 [Report Bug](https://github.com/retran/meow/issues) · [Request Feature](https://github.com/retran/meow/issues) · [Contribute](https://github.com/retran/meow/pulls)
 

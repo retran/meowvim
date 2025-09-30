@@ -20,16 +20,14 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 --
--- @file: lua/plugins/copilot-cmp.lua
--- @brief: Copilot integration with nvim-cmp completion engine.
+-- @file: lua/config/neovide.lua
+-- @brief: User-specific options.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --
+
 return {
-  "zbirenbaum/copilot-cmp",
-  enabled = Meow.enable_copilot,
-  dependencies = { "copilot.lua" },
-  config = function()
-    require("copilot_cmp").setup()
-  end,
+--  theme = vim.env.MEOW_THEME or "catppuccin",
+  theme = "catppuccin",
+  enable_copilot = vim.env.MEOW_ENABLE_COPILOT == "true"
 }

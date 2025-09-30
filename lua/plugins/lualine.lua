@@ -44,7 +44,7 @@ local lualine_x = {
   },
 }
 
-if vim.env.MEOW_ENABLE_COPILOT == "true" then
+if Meow.enable_copilot then
   local copilot = {
     "copilot",
     symbols = {
@@ -80,7 +80,7 @@ return {
   dependencies = dependencies,
   opts = {
     options = {
-      theme = "tokyonight",
+      theme = Meow.theme,
 
       icons_enabled = true,
 

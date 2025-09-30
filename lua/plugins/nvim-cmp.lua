@@ -34,7 +34,7 @@ local dependencies = {
   "onsails/lspkind.nvim",
 }
 
-if vim.env.MEOW_ENABLE_COPILOT == "true" or false then
+if Meow.enable_copilot then
   table.insert(dependencies, 1, "zbirenbaum/copilot-cmp")
 end
 
@@ -66,7 +66,7 @@ return {
       cmp.config.compare.order,
     }
 
-    if vim.env.MEOW_ENABLE_COPILOT == "true" or false then
+    if Meow.enable_copilot or false then
       table.insert(sources, 1, { name = "copilot" })
       table.insert(comparators, 1, require("copilot_cmp.comparators").prioritize)
     end

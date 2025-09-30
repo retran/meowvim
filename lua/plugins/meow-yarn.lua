@@ -20,16 +20,15 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 --
--- @file: lua/plugins/copilot-cmp.lua
--- @brief: Copilot integration with nvim-cmp completion engine.
+-- @file: lua/plugins/meow-yarn.lua
+-- @brief: Visualizer of LSP hierarchies.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --
 return {
-  "zbirenbaum/copilot-cmp",
-  enabled = Meow.enable_copilot,
-  dependencies = { "copilot.lua" },
-  config = function()
-    require("copilot_cmp").setup()
-  end,
+    "retran/meow.yarn.nvim",
+    dependencies = { "MunifTanjim/nui.nvim" },
+    config = function()
+        require("meow.yarn").setup({})
+    end,
 }

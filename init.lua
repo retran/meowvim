@@ -31,6 +31,8 @@ if vim.fn.has("macunix") then
   vim.opt.runtimepath:append("/Users/retran/.meow/config/nvim")
 end
 
+Meow = require("config.custom")
+
 require("config/options")
 require("config/neovide")
 
@@ -46,6 +48,7 @@ vim.g.maplocalleader = "\\"
 
 require("lazy").setup({
   spec = { { import = "plugins" } },
+
   checker = {
     enabled = true,
     notify = false,

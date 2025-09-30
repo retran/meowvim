@@ -27,5 +27,5 @@
 --
 return {
   "AndreM222/copilot-lualine",
-  enabled = vim.env.MEOW_ENABLE_COPILOT == "true",
+  enabled = Meow.enable_copilot,
 }
