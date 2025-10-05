@@ -27,10 +27,6 @@
 --
 vim.loader.enable()
 
-if vim.fn.has("macunix") then
-  vim.opt.runtimepath:append("/Users/retran/.meow/config/nvim")
-end
-
 Meow = require("config.custom")
 
 require("config/options")

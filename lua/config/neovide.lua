@@ -25,7 +25,7 @@
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --
-vim.o.guifont = "JetBrainsMono Nerd Font Mono:h15"
+vim.o.guifont = "JetBrainsMono Nerd Font Mono:h14"
 vim.g.neovide_theme = "dark"
 
 vim.g.neovide_scroll_animation_length = 0.1

@@ -26,8 +26,12 @@
 -- @license: MIT
 --
 
+local theme = "catppuccin"
+if vim.env.MEOW_THEME == "tokyonight" then
+  theme = "tokyonight"
+end
+
 return {
---  theme = vim.env.MEOW_THEME or "catppuccin",
-  theme = "catppuccin",
+  theme = theme,
   enable_copilot = vim.env.MEOW_ENABLE_COPILOT == "true"
 }
