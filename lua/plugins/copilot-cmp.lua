@@ -27,7 +27,7 @@
 --
 return {
   "zbirenbaum/copilot-cmp",
-  enabled = vim.env.MEOW_ENABLE_COPILOT == "true",
+  enabled = Meow.enable_copilot,
   dependencies = { "copilot.lua" },
   config = function()
     require("copilot_cmp").setup()

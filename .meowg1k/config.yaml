@@ -26,21 +26,35 @@
 # @license: MIT
 #
 ---
+profiles:
+  fast:
+    provider: "openrouter"
+    model: "qwen/qwen3-coder-flash"
+    requestsPerMinute: 60
+    tokensPerMinute: 1000000
+    requestsPerDay: 10000
+
+  smart:
+    provider: "openrouter"
+    model: "qwen/qwen3-coder-plus"
+    timeout: "10m"
+    requestsPerMinute: 60
+    tokensPerMinute: 1000000
+    requestsPerDay: 10000
+
 generate:
-  defaultProvider: "gemini"
-  defaultModel: "gemini-2.5-flash"
-  defaultTimeout: "5m"
-  defaultSystemPrompt: >-
-    You are a Neovim expert and senior Lua developer.
-    You specialize in creating clean, fast, and maintainable Neovim configurations.
-    You are familiar with the latest Neovim APIs (0.10+), the 'lazy.nvim' plugin manager,
-    and the modern Lua-based plugin ecosystem.
-    Prioritize idiomatic Lua, performance (lazy-loading), and clear API usage.
+  default:
+    profile: "fast"
+    systemPrompt: >-
+      You are a Neovim expert and senior Lua developer.
+      You specialize in creating clean, fast, and maintainable Neovim configurations.
+      You are familiar with the latest Neovim APIs (0.10+), the 'lazy.nvim' plugin manager,
+      and the modern Lua-based plugin ecosystem.
+      Prioritize idiomatic Lua, performance (lazy-loading), and clear API usage.
 
   tasks:
     review:
-      provider: "gemini"
-      model: "gemini-2.5-pro"
+      profile: "smart"
       userPrompt: >-
         Perform a thorough code review of the following Neovim configuration code written in Lua.
 
@@ -57,8 +71,7 @@ generate:
           3) Quick wins — checklist of small fixes.
 
     commit:
-      provider: "gemini"
-      model: "gemini-2.5-pro"
+      profile: "smart"
       userPrompt: >-
         Generate a Conventional Commit message for the provided changes to a Neovim configuration.
 
@@ -73,8 +86,7 @@ generate:
           - Optional footers
 
     doc:
-      provider: "gemini"
-      model: "gemini-2.5-flash"
+      profile: "fast"
       userPrompt: >-
         Write a complete documentation comment block for the following Lua function,
         using EmmyLua/LDoc annotation syntax for Neovim.
@@ -86,23 +98,51 @@ generate:
 
         Do NOT include the function's code; only the comment block.
 
-    refactor:
-      provider: "gemini"
-      model: "gemini-2.5-pro"
-      userPrompt: >-
-        Refactor the following Neovim Lua code to improve performance, readability, and use of modern APIs,
-        while preserving its original behavior.
-
-        Output:
-          1) A single code block with the refactored Lua code.
-          2) A short bullet list explaining key changes (e.g., switched to a newer API, improved lazy-loading, modularized code).
-
-        Focus on using idiomatic 'lazy.nvim' structure and current Neovim functions.
-
     pr:
-      provider: "gemini"
-      model: "gemini-2.5-pro"
+      profile: "smart"
       userPrompt: >-
         Create a clear and actionable Pull Request description from the provided diff for a Neovim config project.
         Produce Markdown in a standard PR template format.
         Infer scope/labels (e.g., area/lsp, type/feat, plugin/telescope) where reasonable.
+
+filter:
+  ignore:
+    - "**/*.lock"
+    - "lazy-lock.json"
+    - "dist/**"
+    - "bin/**"
+    - ".git/**"
+
+summarize:
+  default:
+    profile: "fast"
+    strategy:
+      type: "plain"
+      sendFullFile: false
+    systemPrompt: "Briefly describe the main change in the following input."
+  rules:
+    - match: "*.lua"
+      profile: "smart"
+      strategy:
+        includeFullFile: true
+      systemPrompt: "Describe the changes in the following Lua code for Neovim."
+    - match: "LICENSE"
+      skip: true
+    - match: "*.md"
+      profile: "fast"
+      strategy:
+        type: "plain"
+        sendFullFile: false
+      systemPrompt: "Summarize the documentation changes."
+
+commit:
+  profile: "smart"
+  systemPrompt: |
+    You are an expert software engineer.
+    Write a commit message in the Conventional Commits format based on the user's input.
+
+pr:
+  profile: "smart"
+  systemPrompt: |
+    You are an AI assistant writing a Pull Request description.
+    Based on the user's input, write a clear and detailed PR description.
