@@ -303,8 +303,35 @@ function M.setup()
         end,
         desc = "Go to Document Symbol",
       },
-
-      -- Introspect
+      {
+        "<leader>sH",
+        function()
+          require("meow.yarn").open_tree("type_hierarchy", "supertypes")
+        end,
+        desc = "Type Hierarchy (Super)",
+      },
+      {
+        "<leader>sh",
+        function()
+          require("meow.yarn").open_tree("type_hierarchy", "subtypes")
+        end,
+        desc = "Type Hierarchy (Sub)",
+      },
+      {
+        "<leader>sc",
+        function()
+          require("meow.yarn").open_tree("call_hierarchy", "callers")
+        end,
+        desc = "Call Hierarchy (Callers)",
+      },
+      {
+        "<leader>sC",
+        function()
+          require("meow.yarn").open_tree("call_hierarchy", "callees")
+        end,
+        desc = "Call Hierarchy (Callees)",
+      },
+     -- Introspect
       { "<leader>S", group = "+introspect" },
       {
         "<leader>Sh",
