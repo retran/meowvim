@@ -20,7 +20,7 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 --
--- @file: lua/config/neovide.lua
+-- @file: lua/config/custom.lua
 -- @brief: User-specific options.
 -- @author: Andrew Vasilyev
 -- @license: MIT
