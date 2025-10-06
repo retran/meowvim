@@ -51,6 +51,7 @@ return {
       zsh = { "shfmt" },
       c = { "clang_format" },
       cpp = { "clang_format" },
+      cs = { "csharpier", "dotnet_format", lsp_format = "fallback" },
       java = { "google-java-format" },
       gdscript = { "gdformat" },
       gdshader = { "clang_format" },

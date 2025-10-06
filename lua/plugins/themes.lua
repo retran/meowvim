@@ -20,8 +20,8 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 --
--- @file: lua/plugins/tokyonight.lua
--- @brief: Tokyo Night colorscheme theme configuration.
+-- @file: lua/plugins/themes.lua
+-- @brief: Themes configuration.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --

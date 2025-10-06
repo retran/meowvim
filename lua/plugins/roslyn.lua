@@ -20,18 +20,12 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 --
--- @file: lua/config/custom.lua
--- @brief: User-specific options.
+-- @file: lua/plugins/roslyn.lua
+-- @brief: Plugin for C# development using Roslyn
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --
-
-local theme = "catppuccin"
-if vim.env.MEOW_THEME == "tokyonight" then
-  theme = "tokyonight"
-end
-
 return {
-  theme = theme,
-  enable_copilot = vim.env.MEOW_ENABLE_COPILOT == "true"
+  "seblyng/roslyn.nvim",
+  opts = {},
 }

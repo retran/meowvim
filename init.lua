@@ -29,6 +29,8 @@ vim.loader.enable()
 
 Meow = require("config.custom")
 
+vim.o.runtimepath = vim.o.runtimepath .. '/Users/retran/workspace/Microsoft.CodeAnalysis.LanguageServer/'
+
 require("config/options")
 require("config/neovide")
 

@@ -255,5 +255,32 @@ return {
         },
       })
     end
+
+    local home = os.getenv("HOME")
+
+    local roslyn_dll_path = home
+      .. "/.meow/.downloads/Microsoft.CodeAnalysis.LanguageServer/Microsoft.CodeAnalysis.LanguageServer.dll"
+
+    if vim.fn.filereadable(roslyn_dll_path) == 1 then
+      vim.lsp.config("roslyn", {
+        on_attach = on_attach,
+        cmd = {
+          "dotnet",
+          roslyn_dll_path,
+          "--logLevel=Debug",
+          "--extensionLogDirectory=" .. vim.fn.stdpath("state"),
+          "--stdio",
+        },
+        settings = {
+          ["csharp|inlay_hints"] = {
+            csharp_enable_inlay_hints_for_implicit_object_creation = true,
+            csharp_enable_inlay_hints_for_implicit_variable_types = true,
+          },
+          ["csharp|code_lens"] = {
+            dotnet_enable_references_code_lens = true,
+          },
+        },
+      })
+    end
   end,
 }
