@@ -34,7 +34,6 @@ return {
       config = function()
         local dapui = require("dapui")
         dapui.setup()
-
         local dap = require("dap")
         dap.listeners.after.event_initialized["dapui_config"] = function()
           dapui.open()
@@ -57,10 +56,19 @@ return {
         require("dap-go").setup()
       end,
     },
+    {
+      "Cliffback/netcoredbg-macOS-arm64.nvim",
+    },
   },
   config = function()
     local dap = require("dap")
     local dapui = require("dapui")
+
+    dap.adapters.coreclr = {
+      type = "executable",
+      command = vim.fn.stdpath("data") .. "/lazy/netcoredbg-macOS-arm64.nvim/netcoredbg/netcoredbg",
+      args = { "--interpreter=vscode" },
+    }
 
     dap.adapters.godot = {
       type = "server",
@@ -75,6 +83,38 @@ return {
         name = "Launch scene",
         project = "${workspaceFolder}",
         launch_scene = true,
+      },
+    }
+
+    dap.configurations.cs = {
+      {
+        type = "coreclr",
+        name = "Build and Launch .NET",
+        request = "launch",
+        console = "integratedTerminal",
+        program = function()
+          local project_path = vim.fn.input("Path to project: ", vim.fn.getcwd() .. "/", "file")
+
+          if project_path == "" then
+            return nil
+          end
+
+          local get_dll_path_command = "dotnet build '"
+            .. project_path
+            .. "' -nologo -v q --getProperty:TargetPath"
+
+          local dll_path = vim.fn.system(get_dll_path_command)
+
+          dll_path = vim.trim(dll_path)
+
+          if vim.fn.filereadable(dll_path) == 1 then
+            print("Debugger will launch: " .. dll_path)
+            return dll_path
+          else
+            print("Error: Could not determine DLL path. Build failed or command returned empty.")
+            return nil
+          end
+        end,
       },
     }
 
@@ -215,16 +255,6 @@ return {
       end
     end
 
-    local function unregister_dap_maps()
-      for _, map in ipairs(dap_context_maps) do
-        pcall(vim.keymap.del, map[1], map[2])
-      end
-      vim.keymap.del("n", "<leader>rb")
-      vim.keymap.del("n", "<leader>rs")
-      vim.keymap.del("n", "<leader>ru")
-    end
-
-    -- TODO to add an autocommand to register/unregister maps based on DAP state
     register_dap_maps()
 
     vim.keymap.set("n", "<leader>rr", function()
