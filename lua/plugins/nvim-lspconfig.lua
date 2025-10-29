@@ -226,13 +226,21 @@ return {
 
     if vim.fn.executable("typescript-language-server") == 1 then
       -- Create the LspOrganize command once globally to avoid duplication warnings
+      -- Use force = true to allow recreation on config reload
       vim.api.nvim_create_user_command("LspOrganize", function()
+        -- Check if a TypeScript LSP client is attached to the current buffer
+        local clients = vim.lsp.get_clients({ bufnr = 0, name = "ts_ls" })
+        if #clients == 0 then
+          vim.notify("No TypeScript LSP client attached to current buffer", vim.log.levels.WARN)
+          return
+        end
+        
         vim.lsp.buf.execute_command({
           command = "_typescript.organizeImports",
           arguments = { vim.api.nvim_buf_get_name(0) },
           title = "",
         })
-      end, { desc = "Organize Imports" })
+      end, { desc = "Organize Imports", force = true })
 
       lspconfig.ts_ls.setup({
         on_attach = function(client, bufnp)
