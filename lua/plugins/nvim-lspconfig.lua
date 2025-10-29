@@ -243,12 +243,12 @@ return {
       end, { desc = "Organize Imports", force = true })
 
       lspconfig.ts_ls.setup({
-        on_attach = function(client, bufnp)
-          on_attach(client, bufnp)
+        on_attach = function(client, bufnr)
+          on_attach(client, bufnr)
 
           client.server_capabilities.documentFormattingProvider = false
           client.server_capabilities.documentRangeFormattingProvider = false
-          local keymap_opts = { buffer = bufnp, noremap = true, silent = true }
+          local keymap_opts = { buffer = bufnr, noremap = true, silent = true }
           vim.keymap.set("n", "<leader>xo", "<cmd>LspOrganize<CR>", keymap_opts)
         end,
         capabilities = caps,
