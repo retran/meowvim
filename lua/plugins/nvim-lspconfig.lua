@@ -226,11 +226,71 @@ return {
 
     if vim.fn.executable("typescript-language-server") == 1 then
       lspconfig.ts_ls.setup({
-        on_attach = on_attach,
+        on_attach = function(client, bufnp)
+          on_attach(client, bufnp)
+
+          client.server_capabilities.documentFormattingProvider = false
+          client.server_capabilities.documentRangeFormattingProvider = false
+          local keymap_opts = { buffer = bufnp, noremap = true, silent = true }
+          vim.keymap.set("n", "<leader>xo", "<cmd>LspOrganize<CR>", keymap_opts)
+          vim.api.nvim_create_user_command("LspOrganize", function()
+            vim.lsp.buf.execute_command({
+              command = "_typescript.organizeImports",
+              arguments = { vim.api.nvim_buf_get_name(0) },
+              title = "",
+            })
+          end, { desc = "Organize Imports" })
+        end,
         capabilities = caps,
+        filetypes = {
+          "javascript",
+          "typescript",
+          "javascriptreact",
+          "typescriptreact",
+          "javascript.jsx",
+          "typescript.tsx",
+        },
         settings = {
-          typescript = { inlayHints = { includeInlayParameterNameHints = "literal" } },
-          javascript = { inlayHints = { includeInlayParameterNameHints = "literal" } },
+          typescript = {
+            diagnostics = {
+              enable = true,
+              workspace = true,
+            },
+            codeActions = {
+              enable = true,
+            },
+            inlayHints = {
+              includeInlayParameterNameHints = "all",
+              includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+              includeInlayFunctionParameterTypeHints = true,
+              includeInlayVariableTypeHints = true,
+              includeInlayPropertyDeclarationTypeHints = true,
+              includeInlayEnumMemberValueHints = true,
+            },
+            updateImportsOnFileMove = {
+              enable = true,
+            },
+          },
+          javascript = {
+            diagnostics = {
+              enable = true,
+              workspace = true,
+            },
+            codeActions = {
+              enable = true,
+            },
+            inlayHints = {
+              includeInlayParameterNameHints = "all",
+              includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+              includeInlayFunctionParameterTypeHints = true,
+              includeInlayVariableTypeHints = true,
+              includeInlayPropertyDeclarationTypeHints = true,
+              includeInlayEnumMemberValueHints = true,
+            },
+            updateImportsOnFileMove = {
+              enable = true,
+            },
+          },
         },
       })
     end

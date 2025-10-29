@@ -24,11 +24,14 @@
 -- @brief: Auto-completion engine and snippet integration configuration.
 -- @author: Andrew Vasilyev
 -- @license: MIT
---
+
 local dependencies = {
   "hrsh7th/cmp-nvim-lsp",
   "hrsh7th/cmp-buffer",
   "hrsh7th/cmp-path",
+  "hrsh7th/cmp-nvim-lua",
+  "hrsh7th/cmp-cmdline",
+  "f3fora/cmp-spell",
   "L3MON4D3/LuaSnip",
   "saadparwaiz1/cmp_luasnip",
   "onsails/lspkind.nvim",
@@ -47,28 +50,58 @@ return {
     local luasnip = require("luasnip")
     local lspkind = require("lspkind")
 
-    local sources = {
-      { name = "nvim_lsp" },
-      { name = "luasnip" },
-      { name = "neorg" },
-      { name = "buffer" },
-      { name = "path" },
-    }
+    local format_kinds = function(entry, vim_item)
+      vim_item = lspkind.cmp_format({
+        mode = "symbol_text",
+        maxwidth = 50,
+        ellipsis_char = "...",
+        symbol_map = { Copilot = "" },
+      })(entry, vim_item)
+
+      local kind = vim_item.kind
+      local source_name = entry.source.name
+      local source_icons = {
+        nvim_lsp = " LSP",
+        luasnip = " Snip",
+        buffer = " Buffer",
+        path = " Path",
+        copilot = " Copilot",
+        spell = " Spell",
+        nvim_lua = "NVIM API",
+        cmdline = " Command",
+      }
+
+      if source_icons[source_name] then
+        vim_item.kind = string.format("%s %s", source_icons[source_name], kind)
+      end
+
+      return vim_item
+    end
 
     local comparators = {
+      cmp.config.compare.recently_used,
+      cmp.config.compare.score,
       cmp.config.compare.offset,
       cmp.config.compare.exact,
-      cmp.config.compare.score,
-      cmp.config.compare.recently_used,
       cmp.config.compare.kind,
       cmp.config.compare.sort_text,
-      cmp.config.compare.length,
       cmp.config.compare.order,
     }
 
     if Meow.enable_copilot or false then
-      table.insert(sources, 1, { name = "copilot" })
       table.insert(comparators, 1, require("copilot_cmp.comparators").prioritize)
+    end
+
+    local global_sources = {
+      { name = "nvim_lsp" },
+      { name = "luasnip" },
+      { name = "path" },
+      { name = "spell" },
+      { name = "buffer", keyword_length = 3 },
+    }
+
+    if Meow.enable_copilot or false then
+      table.insert(global_sources, 1, { name = "copilot" })
     end
 
     cmp.setup({
@@ -77,14 +110,9 @@ return {
           luasnip.lsp_expand(args.body)
         end,
       },
-      sources = cmp.config.sources(sources),
+      sources = cmp.config.sources(global_sources),
       formatting = {
-        format = lspkind.cmp_format({
-          mode = "symbol_text",
-          maxwidth = 60,
-          ellipsis_char = "...",
-          symbol_map = { Copilot = "" },
-        }),
+        format = format_kinds,
       },
       mapping = {
         ["<Tab>"] = cmp.mapping(function(fallback)
@@ -105,22 +133,15 @@ return {
             fallback()
           end
         end, { "i", "s" }),
-        ["<CR>"] = cmp.mapping.confirm({
-          behavior = cmp.ConfirmBehavior.Replace,
-          select = true,
-        }),
-        ["<Esc>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
-            cmp.abort()
+        ["<CR>"] = cmp.mapping(function(fallback)
+          if cmp.visible() and cmp.get_selected_entry() then
+            cmp.confirm({ select = true, behavior = cmp.ConfirmBehavior.Replace })
           else
             fallback()
           end
-        end),
+        end, { "i", "s" }),
+        ["<Esc>"] = cmp.mapping.abort(),
         ["<C-Space>"] = cmp.mapping.complete(),
-        ["<C-n>"] = cmp.mapping.select_next_item(),
-        ["<C-p>"] = cmp.mapping.select_prev_item(),
-        ["<C-d>"] = cmp.mapping.scroll_docs(-4),
-        ["<C-u>"] = cmp.mapping.scroll_docs(4),
       },
       sorting = {
         priority_weight = 2,
@@ -133,6 +154,26 @@ return {
         completion = cmp.config.window.bordered(),
         documentation = cmp.config.window.bordered(),
       },
+    })
+
+    cmp.setup.filetype("lua", {
+      sources = cmp.config.sources({
+        { name = "nvim_lsp" },
+        { name = "nvim_lua" },
+        { name = "luasnip" },
+        { name = "path" },
+        { name = "buffer", keyword_length = 3 },
+      }),
+    })
+
+    cmp.setup.cmdline({ "/", "?" }, {
+      mapping = cmp.mapping.preset.cmdline(),
+      sources = { { name = "buffer" } },
+    })
+
+    cmp.setup.cmdline(":", {
+      mapping = cmp.mapping.preset.cmdline(),
+      sources = cmp.config.sources({ { name = "path" }, { name = "cmdline" } }),
     })
   end,
 }

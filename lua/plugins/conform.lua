@@ -109,12 +109,6 @@ return {
         stylua = {
           prepend_args = { "--indent-type", "Spaces", "--indent-width", "2" },
         },
-        prettier = {
-          prepend_args = { "--tab-width", "2" },
-        },
-        prettierd = {
-          prepend_args = { "--tab-width", "2" },
-        },
         black = {
           prepend_args = { "--line-length", "88" },
         },
