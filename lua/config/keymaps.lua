@@ -114,6 +114,52 @@ function M.setup()
       { "<leader>wK", "<C-w>K", desc = "Move to Far Top" },
       { "<leader>wJ", "<C-w>J", desc = "Move to Far Bottom" },
 
+      -- Motion (Flash)
+      {
+        "s",
+        function()
+          local ok, flash = pcall(require, "flash")
+          if ok then
+            flash.jump({ multi_window = false })
+          end
+        end,
+        desc = "Flash Jump",
+        mode = { "n", "x", "o" },
+      },
+      {
+        "S",
+        function()
+          local ok, flash = pcall(require, "flash")
+          if ok then
+            flash.treesitter()
+          end
+        end,
+        desc = "Flash Treesitter",
+        mode = { "n", "x", "o" },
+      },
+      {
+        "<leader><space>",
+        function()
+          local ok, flash = pcall(require, "flash")
+          if ok then
+            flash.jump({ multi_window = true })
+          end
+        end,
+        desc = "Flash Jump (All Windows)",
+        mode = { "n", "x", "o" },
+      },
+      {
+        "gs",
+        function()
+          local ok, flash = pcall(require, "flash")
+          if ok then
+            flash.remote()
+          end
+        end,
+        desc = "Flash Remote",
+        mode = { "n", "x", "o" },
+      },
+
       -- File
       { "<leader>f", group = "+file" },
       {
@@ -181,6 +227,39 @@ function M.setup()
           snacks.picker.projects()
         end,
         desc = "Find Projects",
+      },
+
+      -- Session
+      { "<leader>m", group = "+session" },
+      {
+        "<leader>ms",
+        function()
+          local ok, persistence = pcall(require, "persistence")
+          if ok then
+            persistence.load()
+          end
+        end,
+        desc = "Restore Session",
+      },
+      {
+        "<leader>ml",
+        function()
+          local ok, persistence = pcall(require, "persistence")
+          if ok then
+            persistence.load({ last = true })
+          end
+        end,
+        desc = "Restore Last Session",
+      },
+      {
+        "<leader>mx",
+        function()
+          local ok, persistence = pcall(require, "persistence")
+          if ok then
+            persistence.stop()
+          end
+        end,
+        desc = "Session Save Off",
       },
 
       -- Buffer

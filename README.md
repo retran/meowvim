@@ -94,8 +94,8 @@ A carefully crafted Neovim configuration that provides a modern development envi
 
 - **Fuzzy Finder**: File and text search with Snacks
 - **Auto-save**: Automatic file saving
-- **Session Management**: Session persistence with auto-session
-- **Quick Navigation**: Leap motion and Flit for cursor movement
+- **Session Management**: Session persistence with persistence.nvim
+- **Quick Navigation**: Flash search-based motions for cursor movement
 - **Comment Handling**: Smart comment toggling
 - **Auto-pairs**: Automatic bracket and quote pairing
 - **Note Taking**: Neorg integration for organized note-taking
@@ -256,6 +256,14 @@ Edit `lua/config/keymaps.lua` to add your own key mappings:
 { "<leader>mp", ":MyPlugin<CR>", desc = "My Plugin" },
 ```
 
+### Session Workflow
+
+Session management uses [`persistence.nvim`](https://github.com/folke/persistence.nvim):
+
+- `<leader>ms` – restore the session for the current working directory
+- `<leader>ml` – restore the most recent session
+- `<leader>mx` – stop saving the current session (useful before quitting)
+
 ### Theme Customization
 
 Switch themes by editing `lua/plugins/tokyonight.lua`:
@@ -386,7 +394,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ### Plugins
 
 - [auto-save.nvim](https://github.com/okuuva/auto-save.nvim) - Automatic file saving
-- [auto-session](https://github.com/rmagatti/auto-session) - Session management and persistence
+- [persistence.nvim](https://github.com/folke/persistence.nvim) - Session management and persistence
 - [bufferline.nvim](https://github.com/akinsho/bufferline.nvim) - Buffer line with tabs
 - [cmp-buffer](https://github.com/hrsh7th/cmp-buffer) - Buffer completion source
 - [cmp-nvim-lsp](https://github.com/hrsh7th/cmp-nvim-lsp) - LSP completion source
@@ -398,11 +406,10 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - [copilot-cmp](https://github.com/zbirenbaum/copilot-cmp) - Copilot completion source
 - [copilot-lualine](https://github.com/AndreM222/copilot-lualine) - Copilot status in lualine
 - [FixCursorHold.nvim](https://github.com/antoinemadec/FixCursorHold.nvim) - Fix CursorHold performance
-- [flit.nvim](https://github.com/ggandor/flit.nvim) - Enhanced f/t motions
+- [flash.nvim](https://github.com/folke/flash.nvim) - Search-based jumps and motions
 - [friendly-snippets](https://github.com/rafamadriz/friendly-snippets) - Snippet collection
 - [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) - Git integration
 - [indent-blankline.nvim](https://github.com/lukas-reineke/indent-blankline.nvim) - Indentation guides
-- [leap.nvim](https://github.com/ggandor/leap.nvim) - Quick navigation
 - [lspkind.nvim](https://github.com/onsails/lspkind.nvim) - LSP kind icons
 - [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim) - Status line
 - [luarocks.nvim](https://github.com/vhyrro/luarocks.nvim) - Lua package manager
@@ -432,7 +439,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - [SchemaStore.nvim](https://github.com/b0o/SchemaStore.nvim) - JSON schema store
 - [snacks.nvim](https://github.com/folke/snacks.nvim) - Collection of utilities
 - [vim-fugitive](https://github.com/tpope/vim-fugitive) - Git commands
-- [vim-repeat](https://github.com/tpope/vim-repeat) - Repeat plugin commands
 - [vim-rhubarb](https://github.com/tpope/vim-rhubarb) - GitHub integration for fugitive
 - [vim-startuptime](https://github.com/dstein64/vim-startuptime) - Startup profiling
 - [which-key.nvim](https://github.com/folke/which-key.nvim) - Keybinding help

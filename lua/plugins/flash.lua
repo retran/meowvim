@@ -20,22 +20,31 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 --
--- @file: lua/plugins/leap.lua
--- @brief: Fast cursor movement and navigation with two-character search.
+-- @file: lua/plugins/flash.lua
+-- @brief: Search-based motion with contextual highlighting.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --
 return {
-  "ggandor/leap.nvim",
+  "folke/flash.nvim",
   event = "VeryLazy",
-  dependencies = {
-    "tpope/vim-repeat",
+  opts = {
+    modes = {
+      search = {
+        multi_window = true,
+        highlight = { backdrop = true },
+      },
+      char = {
+        enabled = true,
+        multi_line = false,
+      },
+    },
   },
-  config = function()
-    vim.api.nvim_set_hl(0, "LeapBackdrop", { link = "Comment" })
-    vim.keymap.set({ "n", "x", "o" }, "<leader><space>", "<Plug>(leap)")
-    vim.keymap.set({ "n", "x", "o" }, "s", "<Plug>(leap-forward)")
-    vim.keymap.set({ "n", "x", "o" }, "S", "<Plug>(leap-backward)")
-    vim.keymap.set({ "n", "x", "o" }, "gs", "<Plug>(leap-from-window)")
+  config = function(_, opts)
+    local flash = require("flash")
+    flash.setup(opts)
+
+    -- Match the previous Leap backdrop styling.
+    vim.api.nvim_set_hl(0, "FlashBackdrop", { link = "Comment" })
   end,
 }

@@ -32,7 +32,12 @@ function M.setup()
 
   snacks.dashboard.sections.session = function(item)
     return setmetatable({
-      action = ":silent! AutoSession restore",
+      action = function()
+        local ok, persistence = pcall(require, "persistence")
+        if ok then
+          persistence.load()
+        end
+      end,
       section = false,
     }, { __index = item })
   end

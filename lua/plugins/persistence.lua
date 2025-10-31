@@ -20,17 +20,24 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 --
--- @file: lua/plugins/auto-session.lua
--- @brief: Session management with automatic save and restore functionality.
+-- @file: lua/plugins/persistence.lua
+-- @brief: Lightweight session management that respects sessionoptions.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --
 return {
-  'rmagatti/auto-session',
-  lazy = false,
+  "folke/persistence.nvim",
+  event = "BufReadPre",
   opts = {
-    suppressed_dirs = { '~/' },
-    cwd_change_handling = true,
-    purge_after_minutes = 1440,
-  }
+    options = {
+      "buffers",
+      "curdir",
+      "folds",
+      "globals",
+      "tabpages",
+      "winpos",
+      "winsize",
+      "localoptions",
+    },
+  },
 }
