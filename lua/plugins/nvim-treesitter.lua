@@ -77,6 +77,10 @@ return {
         enable = true,
         disable = { "python", "yaml" },
       },
+
+      autotag = {
+        enable = true,
+      },
     })
   end,
 }

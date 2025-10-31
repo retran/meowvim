@@ -149,7 +149,7 @@ function M.setup()
         mode = { "n", "x", "o" },
       },
       {
-        "gs",
+        "gr",
         function()
           local ok, flash = pcall(require, "flash")
           if ok then
@@ -159,6 +159,17 @@ function M.setup()
         desc = "Flash Remote",
         mode = { "n", "x", "o" },
       },
+
+      { "gs", group = "+surround", mode = { "n", "x" } },
+      { "gsa", desc = "Surround Add", mode = { "n", "x" } },
+      { "gsd", desc = "Surround Delete", mode = "n" },
+      { "gsr", desc = "Surround Replace", mode = { "n", "x" } },
+      { "gsf", desc = "Surround Find Right", mode = "n" },
+      { "gsF", desc = "Surround Find Left", mode = "n" },
+      { "gsh", desc = "Surround Highlight", mode = "n" },
+      { "gsn", desc = "Surround Update N Lines", mode = "n" },
+      { "gsL", desc = "Surround Suffix Last", mode = "n" },
+      { "gsN", desc = "Surround Suffix Next", mode = "n" },
 
       { "gc", group = "+comment", mode = { "n", "x" } },
       { "gcc", desc = "Comment -> Line", mode = "n" },
@@ -532,7 +543,53 @@ function M.setup()
 
       -- Options
       { "<leader>o", group = "+toggle" },
-      { "<leader>og", ":IBLToggle<CR>", desc = "Indent Guides" },
+      {
+        "<leader>og",
+        function()
+          local ok, indentscope = pcall(require, "mini.indentscope")
+          if not ok then
+            return
+          end
+
+          vim.g.miniindentscope_disable = not vim.g.miniindentscope_disable
+          indentscope.refresh()
+
+          local level = vim.g.miniindentscope_disable and vim.log.levels.WARN or vim.log.levels.INFO
+          local state = vim.g.miniindentscope_disable and "OFF" or "ON"
+          vim.notify("Indent scope: " .. state, level)
+        end,
+        desc = "Indent Guides",
+      },
+      {
+        "<leader>oz",
+        function()
+          local ok, ufo = pcall(require, "ufo")
+          if ok then
+            ufo.closeAllFolds()
+          end
+        end,
+        desc = "Folds Close All",
+      },
+      {
+        "<leader>oZ",
+        function()
+          local ok, ufo = pcall(require, "ufo")
+          if ok then
+            ufo.openAllFolds()
+          end
+        end,
+        desc = "Folds Open All",
+      },
+      {
+        "<leader>op",
+        function()
+          local ok, ufo = pcall(require, "ufo")
+          if ok then
+            ufo.peekFoldedLinesUnderCursor()
+          end
+        end,
+        desc = "Fold Peek",
+      },
       {
         "<leader>on",
         function()

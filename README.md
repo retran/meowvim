@@ -97,6 +97,8 @@ A carefully crafted Neovim configuration that provides a modern development envi
 - **Session Management**: Session persistence with persistence.nvim
 - **Quick Navigation**: Flash search-based motions for cursor movement
 - **Comment Handling**: Treesitter-aware toggles with ts-comments + mini.comment
+- **Surround Editing**: MiniSurround for adding/removing surroundings
+- **Markup Editing**: Auto-complete and rename tags with nvim-ts-autotag
 - **Clipboard History**: Yanky ring with Snacks picker integration
 - **Auto-pairs**: Automatic bracket and quote pairing
 - **Note Taking**: Neorg integration for organized note-taking
@@ -274,6 +276,29 @@ Commenting is handled by [`ts-comments.nvim`](https://github.com/folke/ts-commen
 - `gc{motion}` – toggle a motion (for example, `gc}` or `gcap`)
 - `gcb` – toggle a block comment
 
+### Surround Workflow
+
+[`mini.surround`](https://github.com/echasnovski/mini.surround) provides surround manipulation:
+
+- `gsa{motion}{text}` – add surrounds (for example, `gsaiw"`)
+- `gsd` – delete the nearest surround
+- `gsr` – replace the nearest surround
+- `gsh` – highlight the current surround region
+
+### Indent Guides
+
+[`mini.indentscope`](https://github.com/echasnovski/mini.indentscope) is disabled by default. Toggle it with:
+
+- `<leader>og` – enable/disable indent guides for the current session
+
+### Folding
+
+Folding is powered by [`nvim-ufo`](https://github.com/kevinhwang91/nvim-ufo):
+
+- `<leader>oZ` – open all folds
+- `<leader>oz` – close all folds
+- `<leader>op` – peek folded lines under the cursor
+
 ### Theme Customization
 
 Switch themes by editing `lua/plugins/tokyonight.lua`:
@@ -418,7 +443,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - [flash.nvim](https://github.com/folke/flash.nvim) - Search-based jumps and motions
 - [friendly-snippets](https://github.com/rafamadriz/friendly-snippets) - Snippet collection
 - [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) - Git integration
-- [indent-blankline.nvim](https://github.com/lukas-reineke/indent-blankline.nvim) - Indentation guides
 - [lspkind.nvim](https://github.com/onsails/lspkind.nvim) - LSP kind icons
 - [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim) - Status line
 - [luarocks.nvim](https://github.com/vhyrro/luarocks.nvim) - Lua package manager
@@ -442,8 +466,11 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) - Syntax highlighting
 - [nvim-treesitter-context](https://github.com/nvim-treesitter/nvim-treesitter-context) - Context display
 - [nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects) - Text objects
+- [nvim-ts-autotag](https://github.com/windwp/nvim-ts-autotag) - Auto close/rename tags
 - [ts-comments.nvim](https://github.com/folke/ts-comments.nvim) - Treesitter-aware commentstrings
 - [mini.comment](https://github.com/echasnovski/mini.comment) - Lightweight commenting operator
+- [mini.surround](https://github.com/echasnovski/mini.surround) - Surround manipulation
+- [mini.indentscope](https://github.com/echasnovski/mini.indentscope) - Indentation guides
 - [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons) - File icons
 - [plenary.nvim](https://github.com/nvim-lua/plenary.nvim) - Lua utilities
 - [SchemaStore.nvim](https://github.com/b0o/SchemaStore.nvim) - JSON schema store

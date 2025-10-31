@@ -76,7 +76,8 @@ opt.mousefocus = true
 
 opt.foldmethod = "expr"
 opt.foldexpr = "nvim_treesitter#foldexpr()"
-opt.foldenable = false
+opt.foldcolumn = "1"
+opt.foldenable = true
 opt.foldlevel = 99
 
 opt.backspace = "indent,eol,start"
