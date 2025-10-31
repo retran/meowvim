@@ -77,7 +77,7 @@ A carefully crafted Neovim configuration that provides a modern development envi
 
 - **Tokyo Night Theme**: Modern, readable colorscheme
 - **Status Line**: Informative status bar with Git integration
-- **Buffer Management**: Buffer navigation and organization
+- **Buffer Management**: Lualine bufferline with pinning and quick picking
 - **Icons**: Consistent iconography throughout
 - **Indent Guides**: Visual indentation helpers
 
@@ -103,6 +103,7 @@ A carefully crafted Neovim configuration that provides a modern development envi
 - **Markup Editing**: Auto-complete and rename tags with nvim-ts-autotag
 - **Project Search**: Visual find/replace with Spectre
 - **TODO Tracking**: Highlight and gather TODO comments with todo-comments.nvim
+- **Task Runner**: Overseer templates for npm, Go, and dotnet workflows
 - **Permalinks**: Copy or open repository URLs with Gitlinker
 - **Clipboard History**: Yanky ring with Snacks picker integration
 - **Auto-pairs**: Automatic bracket and quote pairing
@@ -289,6 +290,14 @@ Commenting is handled by [`ts-comments.nvim`](https://github.com/folke/ts-commen
 
 Snacks-powered pickers (`<leader>sa/sb/sg`) remain available for fuzzy file and text searches.
 
+### Task Runner
+
+[`overseer.nvim`](https://github.com/stevearc/overseer.nvim) manages reusable tasks:
+
+- `<leader>rr` – run a template (npm, Go, dotnet, shell)
+- `<leader>rR` – restart the most recent task
+- `<leader>ro` – toggle the task list sidebar
+
 ### Surround Workflow
 
 [`mini.surround`](https://github.com/echasnovski/mini.surround) provides surround manipulation:
@@ -458,7 +467,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 - [auto-save.nvim](https://github.com/okuuva/auto-save.nvim) - Automatic file saving
 - [persistence.nvim](https://github.com/folke/persistence.nvim) - Session management and persistence
-- [bufferline.nvim](https://github.com/akinsho/bufferline.nvim) - Buffer line with tabs
 - [cmp-buffer](https://github.com/hrsh7th/cmp-buffer) - Buffer completion source
 - [cmp-nvim-lsp](https://github.com/hrsh7th/cmp-nvim-lsp) - LSP completion source
 - [cmp-path](https://github.com/hrsh7th/cmp-path) - Path completion source
@@ -497,6 +505,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) - LSP configuration
 - [nvim-nio](https://github.com/nvim-neotest/nvim-nio) - Async I/O library
 - [nvim-notify](https://github.com/rcarriga/nvim-notify) - Notification system
+- [overseer.nvim](https://github.com/stevearc/overseer.nvim) - Task runner and job manager
 - [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) - Syntax highlighting
 - [nvim-treesitter-context](https://github.com/nvim-treesitter/nvim-treesitter-context) - Context display
 - [nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects) - Text objects

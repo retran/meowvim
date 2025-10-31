@@ -291,15 +291,15 @@ function M.setup()
         desc = "Buffers",
       },
       { "<leader>bn", ":new<CR>", desc = "New" },
-      { "<leader>bp", ":BufferLineTogglePin<CR>", desc = "Toggle Pin" },
-      { "<leader>bP", ":BufferLinePick<CR>", desc = "Pick" },
+      { "<leader>bp", ":LualineBuffersTogglePin<CR>", desc = "Toggle Pin" },
+      { "<leader>bP", ":LualineBuffersPick<CR>", desc = "Pick Buffer" },
       { "<leader>br", ":BufRename<CR>", desc = "Rename" },
-      { "<leader>bl", ":BufMoveRight<CR>", desc = "Move Right" },
-      { "<leader>bh", ":BufMoveLeft<CR>", desc = "Move Left" },
-      { "<Tab>", ":BufferLineCycleNext<CR>", desc = "Buffer -> Next" },
-      { "<S-Tab>", ":BufferLineCyclePrev<CR>", desc = "Buffer -> Previous" },
-      { "L", ":BufferLineCycleNext<CR>", desc = "Buffer -> Next" },
-      { "H", ":BufferLineCyclePrev<CR>", desc = "Buffer -> Previous" },
+      { "<leader>bl", ":bnext<CR>", desc = "Next Buffer" },
+      { "<leader>bh", ":bprevious<CR>", desc = "Previous Buffer" },
+      { "<Tab>", ":bnext<CR>", desc = "Buffer -> Next" },
+      { "<S-Tab>", ":bprevious<CR>", desc = "Buffer -> Previous" },
+      { "L", ":bnext<CR>", desc = "Buffer -> Next" },
+      { "H", ":bprevious<CR>", desc = "Buffer -> Previous" },
       {
         "<leader>bd",
         function()
@@ -946,6 +946,43 @@ function M.setup()
 
       -- Run
       { "<leader>r", group = "+run" },
+      {
+        "<leader>rr",
+        function()
+          local ok, overseer = pcall(require, "overseer")
+          if ok then
+            overseer.run_template()
+          end
+        end,
+        desc = "Task -> Run Template",
+      },
+      {
+        "<leader>rR",
+        function()
+          local ok, overseer = pcall(require, "overseer")
+          if not ok then
+            return
+          end
+          local tasks = overseer.list_tasks({ recent_first = true })
+          local task = tasks[1]
+          if task then
+            overseer.run_action(task, "restart")
+          else
+            vim.notify("No recent tasks", vim.log.levels.WARN)
+          end
+        end,
+        desc = "Task -> Restart Last",
+      },
+      {
+        "<leader>ro",
+        function()
+          local ok, overseer = pcall(require, "overseer")
+          if ok then
+            overseer.toggle({ enter = false })
+          end
+        end,
+        desc = "Task -> Toggle List",
+      },
       { "<leader>rU", group = "+ui" },
       { "<leader>rB", group = "+breakpoints" },
     }

@@ -45,6 +45,7 @@ local lualine_x = {
 }
 
 if Meow.enable_copilot then
+  -- Catppuccin Mocha colors for Copilot
   local copilot = {
     "copilot",
     symbols = {
@@ -57,15 +58,15 @@ if Meow.enable_copilot then
           unknown = "",
         },
         hl = {
-          enabled = "#50FA7B",
-          sleep = "#AEB7D0",
-          disabled = "#6272A4",
-          warning = "#FFB86C",
-          unknown = "#FF5555",
+          enabled = "#a6e3a1", -- Catppuccin Green
+          sleep = "#89b4fa", -- Catppuccin Blue
+          disabled = "#6c7086", -- Catppuccin Overlay0
+          warning = "#fab387", -- Catppuccin Peach
+          unknown = "#f38ba8", -- Catppuccin Red
         },
       },
       spinners = "dots",
-      spinner_color = "#6272A4",
+      spinner_color = "#89b4fa", -- Catppuccin Blue
     },
     show_colors = true,
     show_loading = true,
@@ -79,54 +80,52 @@ return {
   "nvim-lualine/lualine.nvim",
   dependencies = dependencies,
   opts = {
-    options = {
-      theme = Meow.theme,
-
-      icons_enabled = true,
-
-      component_separators = { left = "|", right = "|" },
-      section_separators = { left = "", right = "" },
-      ignore_focus = {},
-      refresh = {
-        statusline = 50,
-        winbar = 50,
+      options = {
+        theme = "catppuccin", -- Use catppuccin theme for lualine
+        icons_enabled = true,
+        component_separators = { left = "|", right = "|" },
+        section_separators = { left = "", right = "" },
+        ignore_focus = {},
+        refresh = {
+          statusline = 50,
+          winbar = 50,
+          tabline = 50,
+        },
+        always_divide_middle = true,
+        always_show_tabline = true, -- Always show tabline (it controls vim tabs, not buffers)
+        globalstatus = true,
+        disabled_filetypes = {
+          statusline = {},
+          winbar = {},
+        },
       },
-
-      always_divide_middle = true,
-      globalstatus = true,
-
-      disabled_filetypes = {
-        statusline = {},
-        winbar = {},
+      tabline = {},
+      winbar = {},
+      inactive_winbar = {},
+      sections = {
+        lualine_a = { "mode" },
+        lualine_b = {},
+        lualine_c = {
+          "branch",
+          "diff",
+          "gitsigns",
+          { "filename", path = 1 },
+        },
+        lualine_x = lualine_x,
+        lualine_y = {},
+        lualine_z = {
+          "progress",
+          "location",
+        },
       },
-    },
-    tabline = {},
-    winbar = {},
-    inactive_winbar = {},
-    sections = {
-      lualine_a = { "mode" },
-      lualine_b = {},
-      lualine_c = {
-        "branch",
-        "diff",
-        "gitsigns",
-        { "filename", path = 1 },
+      inactive_sections = {
+        lualine_a = {},
+        lualine_b = {},
+        lualine_c = { { "filename", path = 1 } },
+        lualine_x = { "progress", "location" },
+        lualine_y = {},
+        lualine_z = {},
       },
-      lualine_x = lualine_x,
-      lualine_y = {},
-      lualine_z = {
-        "progress",
-        "location",
-      },
-    },
-    inactive_sections = {
-      lualine_a = {},
-      lualine_b = {},
-      lualine_c = { { "filename", path = 1 } },
-      lualine_x = { "progress", "location" },
-      lualine_y = {},
-      lualine_z = {},
-    },
-    extensions = { "lazy", "nvim-tree" },
+      extensions = { "lazy", "nvim-tree", "trouble" },
   },
 }
