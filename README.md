@@ -84,6 +84,8 @@ A carefully crafted Neovim configuration that provides a modern development envi
 ### 🔧 Development Tools
 
 - **Git Integration**: Neogit status, Diffview history, Git Conflict helpers, and GH.nvim reviews
+- **Diagnostics Explorer**: Triage issues via Trouble.nvim
+- **LSP Peek**: VSCode-style previews with Glance
 - **Code Formatting**: Automatic formatting with Conform.nvim
 - **Linting**: Real-time code linting with nvim-lint
 - **Debugging**: Debugging support with nvim-dap and specialized Go support
@@ -99,6 +101,8 @@ A carefully crafted Neovim configuration that provides a modern development envi
 - **Comment Handling**: Treesitter-aware toggles with ts-comments + mini.comment
 - **Surround Editing**: MiniSurround for adding/removing surroundings
 - **Markup Editing**: Auto-complete and rename tags with nvim-ts-autotag
+- **Project Search**: Visual find/replace with Spectre
+- **TODO Tracking**: Highlight and gather TODO comments with todo-comments.nvim
 - **Permalinks**: Copy or open repository URLs with Gitlinker
 - **Clipboard History**: Yanky ring with Snacks picker integration
 - **Auto-pairs**: Automatic bracket and quote pairing
@@ -277,6 +281,14 @@ Commenting is handled by [`ts-comments.nvim`](https://github.com/folke/ts-commen
 - `gc{motion}` – toggle a motion (for example, `gc}` or `gcap`)
 - `gcb` – toggle a block comment
 
+### Search & Replace
+
+[`nvim-spectre`](https://github.com/nvim-pack/nvim-spectre) handles project-wide search/replace:
+
+- `<leader>sr` – open Spectre (visual mode opens with the selection pre-filled)
+
+Snacks-powered pickers (`<leader>sa/sb/sg`) remain available for fuzzy file and text searches.
+
 ### Surround Workflow
 
 [`mini.surround`](https://github.com/echasnovski/mini.surround) provides surround manipulation:
@@ -291,6 +303,21 @@ Commenting is handled by [`ts-comments.nvim`](https://github.com/folke/ts-commen
 [`mini.indentscope`](https://github.com/echasnovski/mini.indentscope) is disabled by default. Toggle it with:
 
 - `<leader>og` – enable/disable indent guides for the current session
+
+### Diagnostics Explorer
+
+[`trouble.nvim`](https://github.com/folke/trouble.nvim) aggregates diagnostics, quickfix, and symbols:
+
+- `<leader>dd` – project diagnostics
+- `<leader>db` – buffer diagnostics
+- `<leader>dq` / `<leader>dl` – quickfix and loclist views
+- `<leader>ds` – document symbols
+
+### TODO Management
+
+[`todo-comments.nvim`](https://github.com/folke/todo-comments.nvim) highlights annotations:
+
+- `<leader>st` – list TODO/FIXME/HACK comments via Trouble
 
 ### Folding
 
@@ -474,6 +501,9 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - [nvim-treesitter-context](https://github.com/nvim-treesitter/nvim-treesitter-context) - Context display
 - [nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects) - Text objects
 - [nvim-ts-autotag](https://github.com/windwp/nvim-ts-autotag) - Auto close/rename tags
+- [trouble.nvim](https://github.com/folke/trouble.nvim) - Diagnostics and LSP lists
+- [nvim-spectre](https://github.com/nvim-pack/nvim-spectre) - Project-wide search/replace
+- [glance.nvim](https://github.com/dnlhc/glance.nvim) - Peek LSP results
 - [ts-comments.nvim](https://github.com/folke/ts-comments.nvim) - Treesitter-aware commentstrings
 - [mini.comment](https://github.com/echasnovski/mini.comment) - Lightweight commenting operator
 - [mini.surround](https://github.com/echasnovski/mini.surround) - Surround manipulation
@@ -483,6 +513,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - [SchemaStore.nvim](https://github.com/b0o/SchemaStore.nvim) - JSON schema store
 - [snacks.nvim](https://github.com/folke/snacks.nvim) - Collection of utilities
 - [yanky.nvim](https://github.com/gbprod/yanky.nvim) - Yank history and enhanced put
+- [todo-comments.nvim](https://github.com/folke/todo-comments.nvim) - Highlight and list TODOs
 - [vim-startuptime](https://github.com/dstein64/vim-startuptime) - Startup profiling
 - [which-key.nvim](https://github.com/folke/which-key.nvim) - Keybinding help
 

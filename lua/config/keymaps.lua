@@ -353,11 +353,31 @@ function M.setup()
         desc = "Go to File (in Git)",
       },
       {
+        "<leader>sr",
+        function()
+          local ok, spectre = pcall(require, "spectre")
+          if not ok then
+            return
+          end
+          local mode = vim.fn.mode()
+          if mode == "v" or mode == "V" then
+            spectre.open_visual()
+          else
+            spectre.open()
+          end
+        end,
+        desc = "Search/Replace (Spectre)",
+        mode = { "n", "x" },
+      },
+      {
         "<leader>sd",
         function()
-          snacks.picker.lsp_definitions()
+          local ok, glance = pcall(require, "glance")
+          if ok then
+            glance.open("definitions")
+          end
         end,
-        desc = "Go to Definition",
+        desc = "Glance Definitions",
       },
       {
         "<leader>sD",
@@ -367,25 +387,34 @@ function M.setup()
         desc = "Pick Declaration",
       },
       {
-        "<leader>sr",
+        "<leader>sR",
         function()
-          snacks.picker.lsp_references()
+          local ok, glance = pcall(require, "glance")
+          if ok then
+            glance.open("references")
+          end
         end,
-        desc = "Go to Reference",
+        desc = "Glance References",
       },
       {
         "<leader>si",
         function()
-          snacks.picker.lsp_implementations()
+          local ok, glance = pcall(require, "glance")
+          if ok then
+            glance.open("implementations")
+          end
         end,
-        desc = "Go to Implementation",
+        desc = "Glance Implementations",
       },
       {
-        "<leader>st",
+        "<leader>sT",
         function()
-          snacks.picker.lsp_type_definitions()
+          local ok, glance = pcall(require, "glance")
+          if ok then
+            glance.open("type_definitions")
+          end
         end,
-        desc = "Go to Type Definition",
+        desc = "Glance Type Definitions",
       },
       {
         "<leader>ss",
@@ -400,6 +429,11 @@ function M.setup()
           snacks.picker.lsp_symbols()
         end,
         desc = "Go to Document Symbol",
+      },
+      {
+        "<leader>st",
+        "<cmd>TodoTrouble<CR>",
+        desc = "TODO Comments",
       },
       {
         "<leader>sH",
@@ -579,13 +613,57 @@ function M.setup()
 
       -- Diagnostics
       { "<leader>d", group = "+diagnostics" },
-      { "<leader>dp", vim.diagnostic.open_float, desc = "Show Hover" },
       {
-        "<leader>dw",
-        ":lua vim.diagnostic.setloclist({severity=vim.diagnostic.severity.WARN})<CR>", -- TODO use plugin
-        desc = "List Warnings",
+        "<leader>dd",
+        function()
+          local ok, trouble = pcall(require, "trouble")
+          if ok then
+            trouble.toggle("diagnostics")
+          end
+        end,
+        desc = "Diagnostics (Trouble)",
       },
-      { "<leader>da", ":lua vim.diagnostic.setloclist()<CR>", desc = "List All" },
+      {
+        "<leader>db",
+        function()
+          local ok, trouble = pcall(require, "trouble")
+          if ok then
+            trouble.toggle("diagnostics", { filter = { buf = 0 } })
+          end
+        end,
+        desc = "Buffer Diagnostics",
+      },
+      {
+        "<leader>dq",
+        function()
+          local ok, trouble = pcall(require, "trouble")
+          if ok then
+            trouble.toggle("quickfix")
+          end
+        end,
+        desc = "Quickfix (Trouble)",
+      },
+      {
+        "<leader>dl",
+        function()
+          local ok, trouble = pcall(require, "trouble")
+          if ok then
+            trouble.toggle("loclist")
+          end
+        end,
+        desc = "Loclist (Trouble)",
+      },
+      {
+        "<leader>ds",
+        function()
+          local ok, trouble = pcall(require, "trouble")
+          if ok then
+            trouble.toggle("symbols", { focus = false })
+          end
+        end,
+        desc = "Document Symbols (Trouble)",
+      },
+      { "<leader>dp", vim.diagnostic.open_float, desc = "Show Hover" },
       { "]d", vim.diagnostic.goto_next, desc = "Goto Next", mode = "n" },
       { "[d", vim.diagnostic.goto_prev, desc = "Goto Previous", mode = "n" },
 
