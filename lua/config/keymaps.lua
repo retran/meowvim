@@ -160,6 +160,10 @@ function M.setup()
         mode = { "n", "x", "o" },
       },
 
+      { "gc", group = "+comment", mode = { "n", "x" } },
+      { "gcc", desc = "Comment -> Line", mode = "n" },
+      { "gcb", desc = "Comment -> Block", mode = "n" },
+
       -- File
       { "<leader>f", group = "+file" },
       {
@@ -261,6 +265,10 @@ function M.setup()
         end,
         desc = "Session Save Off",
       },
+
+      -- Paste / Yank history
+      { "<leader>p", group = "+paste" },
+      { "<leader>p?", desc = "Yank History" },
 
       -- Buffer
       { "<leader>b", group = "+buffer" },

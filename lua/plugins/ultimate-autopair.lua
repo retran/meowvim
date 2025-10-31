@@ -20,25 +20,42 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 --
--- @file: lua/plugins/nvim-autopairs.lua
--- @brief: Automatic bracket, quote, and parenthesis pairing.
--- @author: Andrew Vasilyev
+-- @file: lua/plugins/ultimate-autopair.lua
+-- @brief: Advanced autopairing with Treesitter-aware behaviour and CMP integration.
+---@author: Andrew Vasilyev
 -- @license: MIT
 --
 return {
-  "windwp/nvim-autopairs",
-  event = "InsertEnter",
-  opts = {
-    check_ts = true,
-    disable_filetype = { "vim" },
-    map_cr = true,
-  },
-  config = function(_, opts)
-    local autopairs = require("nvim-autopairs")
-    local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-    local cmp = require("cmp")
+  "altermo/ultimate-autopair.nvim",
+  branch = "v0.6",
+  event = { "InsertEnter", "CmdlineEnter" },
+  config = function()
+    local autopair = require("ultimate-autopair")
+    local config = autopair.extend_default()
 
-    autopairs.setup(opts)
-    cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+    local filetype_ext = config.extensions.filetype
+    local blacklist = {
+      "snacks_terminal",
+      "snacks_input",
+      "snacks_picker_input",
+      "snacks_picker_list",
+    }
+    local seen = {}
+    for _, ft in ipairs(filetype_ext.nft or {}) do
+      seen[ft] = true
+    end
+    for _, ft in ipairs(blacklist) do
+      if not seen[ft] then
+        table.insert(filetype_ext.nft, ft)
+      end
+    end
+
+    local configs = { config }
+    local cmp_ok, cmpair = pcall(require, "ultimate-autopair.experimental.cmpair")
+    if cmp_ok then
+      table.insert(configs, { profile = cmpair.init })
+    end
+
+    autopair.init(configs)
   end,
 }

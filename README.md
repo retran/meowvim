@@ -96,7 +96,8 @@ A carefully crafted Neovim configuration that provides a modern development envi
 - **Auto-save**: Automatic file saving
 - **Session Management**: Session persistence with persistence.nvim
 - **Quick Navigation**: Flash search-based motions for cursor movement
-- **Comment Handling**: Smart comment toggling
+- **Comment Handling**: Treesitter-aware toggles with ts-comments + mini.comment
+- **Clipboard History**: Yanky ring with Snacks picker integration
 - **Auto-pairs**: Automatic bracket and quote pairing
 - **Note Taking**: Neorg integration for organized note-taking
 - **Scratch Buffers**: Quick scratch notes and temporary buffers
@@ -264,6 +265,15 @@ Session management uses [`persistence.nvim`](https://github.com/folke/persistenc
 - `<leader>ml` – restore the most recent session
 - `<leader>mx` – stop saving the current session (useful before quitting)
 
+### Comment Workflow
+
+Commenting is handled by [`ts-comments.nvim`](https://github.com/folke/ts-comments.nvim) and
+[`mini.comment`](https://github.com/echasnovski/mini.comment):
+
+- `gcc` – toggle the current line
+- `gc{motion}` – toggle a motion (for example, `gc}` or `gcap`)
+- `gcb` – toggle a block comment
+
 ### Theme Customization
 
 Switch themes by editing `lua/plugins/tokyonight.lua`:
@@ -400,7 +410,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - [cmp-nvim-lsp](https://github.com/hrsh7th/cmp-nvim-lsp) - LSP completion source
 - [cmp-path](https://github.com/hrsh7th/cmp-path) - Path completion source
 - [cmp_luasnip](https://github.com/saadparwaiz1/cmp_luasnip) - LuaSnip completion source
-- [Comment.nvim](https://github.com/numToStr/Comment.nvim) - Smart commenting
 - [conform.nvim](https://github.com/stevearc/conform.nvim) - Code formatting
 - [copilot.lua](https://github.com/zbirenbaum/copilot.lua) - GitHub Copilot integration
 - [copilot-cmp](https://github.com/zbirenbaum/copilot-cmp) - Copilot completion source
@@ -420,7 +429,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - [neotest-go](https://github.com/nvim-neotest/neotest-go) - Go test adapter
 - [noice.nvim](https://github.com/folke/noice.nvim) - Improved UI
 - [nui.nvim](https://github.com/MunifTanjim/nui.nvim) - UI components library
-- [nvim-autopairs](https://github.com/windwp/nvim-autopairs) - Auto-pairing
+- [ultimate-autopair.nvim](https://github.com/altermo/ultimate-autopair.nvim) - Auto-pairing
 - [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) - Completion engine
 - [nvim-dap](https://github.com/mfussenegger/nvim-dap) - Debug adapter protocol
 - [nvim-dap-go](https://github.com/leoluz/nvim-dap-go) - Go debug adapter
@@ -433,11 +442,13 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) - Syntax highlighting
 - [nvim-treesitter-context](https://github.com/nvim-treesitter/nvim-treesitter-context) - Context display
 - [nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects) - Text objects
-- [nvim-ts-context-commentstring](https://github.com/JoosepAlviste/nvim-ts-context-commentstring) - Context-aware commenting
+- [ts-comments.nvim](https://github.com/folke/ts-comments.nvim) - Treesitter-aware commentstrings
+- [mini.comment](https://github.com/echasnovski/mini.comment) - Lightweight commenting operator
 - [nvim-web-devicons](https://github.com/nvim-tree/nvim-web-devicons) - File icons
 - [plenary.nvim](https://github.com/nvim-lua/plenary.nvim) - Lua utilities
 - [SchemaStore.nvim](https://github.com/b0o/SchemaStore.nvim) - JSON schema store
 - [snacks.nvim](https://github.com/folke/snacks.nvim) - Collection of utilities
+- [yanky.nvim](https://github.com/gbprod/yanky.nvim) - Yank history and enhanced put
 - [vim-fugitive](https://github.com/tpope/vim-fugitive) - Git commands
 - [vim-rhubarb](https://github.com/tpope/vim-rhubarb) - GitHub integration for fugitive
 - [vim-startuptime](https://github.com/dstein64/vim-startuptime) - Startup profiling
