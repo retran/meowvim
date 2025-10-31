@@ -465,9 +465,40 @@ function M.setup()
       {
         "<leader>Gs",
         function()
+          local ok, neogit = pcall(require, "neogit")
+          if ok then
+            neogit.open({ kind = "replace" })
+          end
+        end,
+        desc = "Neogit Status",
+      },
+      {
+        "<leader>Gc",
+        function()
+          vim.cmd("Neogit commit")
+        end,
+        desc = "Neogit Commit",
+      },
+      {
+        "<leader>Gp",
+        function()
+          vim.cmd("Neogit pull")
+        end,
+        desc = "Neogit Pull",
+      },
+      {
+        "<leader>GP",
+        function()
+          vim.cmd("Neogit push")
+        end,
+        desc = "Neogit Push",
+      },
+      {
+        "<leader>G.",
+        function()
           snacks.picker.git_status()
         end,
-        desc = "Status",
+        desc = "Status (Picker)",
       },
       {
         "<leader>Gb",
@@ -490,15 +521,61 @@ function M.setup()
         end,
         desc = "Log (Current File)",
       },
-      { "<leader>Gc", ":Git commit<CR>", desc = "Commit" },
-      { "<leader>Gp", ":Git pull<CR>", desc = "Pull" },
-      { "<leader>GP", ":Git push<CR>", desc = "Push" },
-      { "<leader>GB", ":Git blame<CR>", desc = "Blame" }, -- TODO use plugin
-      { "<leader>Gd", ":Gdiffsplit<CR>", desc = "Diff" },
-      { "<leader>GD", ":Gdiffsplit!<CR>", desc = "Force Diff" },
-      { "<leader>GA", ":Git add .<CR>", desc = "Add All" },
-      { "<leader>Ga", ":Git add %<CR>", desc = "Add Current File" },
-      { "<leader>Gm", ":Git mergetool<CR>", desc = "Mergetool" },
+      {
+        "<leader>Gy",
+        function()
+          local ok, gitlinker = pcall(require, "gitlinker")
+          if not ok then
+            return
+          end
+          local actions = require("gitlinker.actions")
+          local mode = vim.fn.mode()
+          if mode == "v" or mode == "V" then
+            gitlinker.get_buf_range_url("v", { action_callback = actions.copy_to_clipboard })
+          else
+            gitlinker.get_buf_range_url("n", { action_callback = actions.copy_to_clipboard })
+          end
+          vim.notify("Link copied to clipboard", vim.log.levels.INFO)
+        end,
+        desc = "Git Link -> Copy",
+        mode = { "n", "v" },
+      },
+      {
+        "<leader>GY",
+        function()
+          local ok, gitlinker = pcall(require, "gitlinker")
+          if not ok then
+            return
+          end
+          local actions = require("gitlinker.actions")
+          local mode = vim.fn.mode()
+          if mode == "v" or mode == "V" then
+            gitlinker.get_buf_range_url("v", { action_callback = actions.open_in_browser })
+          else
+            gitlinker.get_buf_range_url("n", { action_callback = actions.open_in_browser })
+          end
+        end,
+        desc = "Git Link -> Browser",
+        mode = { "n", "v" },
+      },
+      { "<leader>Gd", ":DiffviewOpen<CR>", desc = "Diffview Open" },
+      { "<leader>GD", ":DiffviewClose<CR>", desc = "Diffview Close" },
+      { "<leader>Gf", ":DiffviewFileHistory %<CR>", desc = "File History" },
+      { "<leader>GF", ":DiffviewFileHistory<CR>", desc = "Repository History" },
+      { "<leader>GX", group = "+conflict" },
+      { "<leader>GXn", ":GitConflictNextConflict<CR>", desc = "Conflict Next" },
+      { "<leader>GXp", ":GitConflictPrevConflict<CR>", desc = "Conflict Prev" },
+      { "<leader>GXo", ":GitConflictChooseOurs<CR>", desc = "Conflict Choose Ours" },
+      { "<leader>GXt", ":GitConflictChooseTheirs<CR>", desc = "Conflict Choose Theirs" },
+      { "<leader>GXb", ":GitConflictChooseBoth<CR>", desc = "Conflict Choose Both" },
+      { "<leader>GX0", ":GitConflictChooseNone<CR>", desc = "Conflict Choose None" },
+      { "<leader>GXl", ":GitConflictListQf<CR>", desc = "Conflict List QF" },
+      { "<leader>GXr", ":GitConflictRefresh<CR>", desc = "Conflict Refresh" },
+      { "<leader>GI", "<cmd>GHSearchIssues<CR>", desc = "GitHub Search Issues" },
+      { "<leader>Gq", "<cmd>GHSearchPRs<CR>", desc = "GitHub Search PRs" },
+      { "<leader>Gv", "<cmd>GHToggleThreads<CR>", desc = "GitHub Toggle Threads" },
+      { "<leader>Gm", "<cmd>GHOpenPR<CR>", desc = "GitHub Open PR" },
+      { "<leader>Gi", "<cmd>GHOpenIssue<CR>", desc = "GitHub Open Issue" },
 
       -- Diagnostics
       { "<leader>d", group = "+diagnostics" },

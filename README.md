@@ -83,7 +83,7 @@ A carefully crafted Neovim configuration that provides a modern development envi
 
 ### 🔧 Development Tools
 
-- **Git Integration**: Git workflow with Gitsigns and Fugitive
+- **Git Integration**: Neogit status, Diffview history, Git Conflict helpers, and GH.nvim reviews
 - **Code Formatting**: Automatic formatting with Conform.nvim
 - **Linting**: Real-time code linting with nvim-lint
 - **Debugging**: Debugging support with nvim-dap and specialized Go support
@@ -99,6 +99,7 @@ A carefully crafted Neovim configuration that provides a modern development envi
 - **Comment Handling**: Treesitter-aware toggles with ts-comments + mini.comment
 - **Surround Editing**: MiniSurround for adding/removing surroundings
 - **Markup Editing**: Auto-complete and rename tags with nvim-ts-autotag
+- **Permalinks**: Copy or open repository URLs with Gitlinker
 - **Clipboard History**: Yanky ring with Snacks picker integration
 - **Auto-pairs**: Automatic bracket and quote pairing
 - **Note Taking**: Neorg integration for organized note-taking
@@ -443,6 +444,12 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - [flash.nvim](https://github.com/folke/flash.nvim) - Search-based jumps and motions
 - [friendly-snippets](https://github.com/rafamadriz/friendly-snippets) - Snippet collection
 - [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) - Git integration
+- [neogit](https://github.com/NeogitOrg/neogit) - Interactive git UI
+- [diffview.nvim](https://github.com/sindrets/diffview.nvim) - Git diff viewer and history
+- [git-conflict.nvim](https://github.com/akinsho/git-conflict.nvim) - Merge conflict resolution
+- [litee.nvim](https://github.com/ldelossa/litee.nvim) - UI framework for gh.nvim
+- [gh.nvim](https://github.com/ldelossa/gh.nvim) - GitHub pull request and issue management
+- [gitlinker.nvim](https://github.com/linrongbin16/gitlinker.nvim) - Generate shareable permalinks
 - [lspkind.nvim](https://github.com/onsails/lspkind.nvim) - LSP kind icons
 - [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim) - Status line
 - [luarocks.nvim](https://github.com/vhyrro/luarocks.nvim) - Lua package manager
@@ -476,8 +483,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - [SchemaStore.nvim](https://github.com/b0o/SchemaStore.nvim) - JSON schema store
 - [snacks.nvim](https://github.com/folke/snacks.nvim) - Collection of utilities
 - [yanky.nvim](https://github.com/gbprod/yanky.nvim) - Yank history and enhanced put
-- [vim-fugitive](https://github.com/tpope/vim-fugitive) - Git commands
-- [vim-rhubarb](https://github.com/tpope/vim-rhubarb) - GitHub integration for fugitive
 - [vim-startuptime](https://github.com/dstein64/vim-startuptime) - Startup profiling
 - [which-key.nvim](https://github.com/folke/which-key.nvim) - Keybinding help
 

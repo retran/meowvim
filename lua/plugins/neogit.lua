@@ -20,30 +20,31 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 --
--- @file: lua/plugins/fugitive.lua
--- @brief: Neovim plugin configuration for fugitive.
+-- @file: lua/plugins/neogit.lua
+-- @brief: Git UI leveraging Neovim buffers with Diffview integration.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --
 return {
-  "tpope/vim-fugitive",
-  cmd = {
-    "Git",
-    "G",
-    "Gdiffsplit",
-    "Gread",
-    "Gwrite",
-    "Ggrep",
-    "GMove",
-    "GDelete",
-    "GBrowse",
-    "GRemove",
-    "GRename",
-    "Glgrep",
-    "Gedit",
-  },
-  ft = { "fugitive" },
+  "NeogitOrg/neogit",
+  cmd = { "Neogit" },
   dependencies = {
-    "tpope/vim-rhubarb",
+    "nvim-lua/plenary.nvim",
+    "sindrets/diffview.nvim",
+    "nvim-tree/nvim-web-devicons",
+  },
+  opts = {
+    disable_commit_confirmation = true,
+    integrations = {
+      diffview = true,
+    },
+    commit_popup = {
+      kind = "floating",
+    },
+    signs = {
+      section = { "", "" },
+      item = { "", "" },
+      hunk = { "", "" },
+    },
   },
 }
