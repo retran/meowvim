@@ -40,7 +40,6 @@ return {
           { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
           { icon = " ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
           { icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
-          { icon = " ", key = "g", desc = "Open Neogit", action = ":Neogit<CR>" },
           { icon = " ", key = "q", desc = "Quit", action = ":qa" },
         },
         header = [[meowvim
