@@ -22,8 +22,5 @@ return {
   config = function(_, opts)
     local flash = require("flash")
     flash.setup(opts)
-
-    -- Match the previous Leap backdrop styling.
-    vim.api.nvim_set_hl(0, "FlashBackdrop", { link = "Comment" })
   end,
 }

@@ -352,11 +352,12 @@ Folding is powered by [`nvim-ufo`](https://github.com/kevinhwang91/nvim-ufo):
 
 ### Theme Customization
 
-Switch themes by editing `lua/plugins/tokyonight.lua`:
+`meowvim` ships with the [Catppuccin](https://github.com/catppuccin/nvim) colorscheme. Tweak the flavour or transparency in `lua/plugins/themes.lua`:
 
 ```lua
--- Change variant
-vim.cmd.colorscheme("tokyonight-storm")  -- or "tokyonight-day"
+require("catppuccin").setup({
+  flavour = "macchiato",
+})
 ```
 
 ### Note-Taking with Neorg
@@ -473,7 +474,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 - [Neovim](https://neovim.io/) - The extensible text editor
 - [Lazy.nvim](https://github.com/folke/lazy.nvim) - Modern plugin manager
-- [Tokyo Night](https://github.com/folke/tokyonight.nvim) - Beautiful colorscheme
 
 ### Plugins
 

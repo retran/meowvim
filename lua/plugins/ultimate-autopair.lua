@@ -12,7 +12,6 @@ return {
     local autopair = require("ultimate-autopair")
     local config = autopair.extend_default()
 
-    -- Add blacklisted filetypes
     local filetype_ext = config.extensions.filetype
     filetype_ext.nft = filetype_ext.nft or {}
     local seen = {}

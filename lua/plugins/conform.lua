@@ -32,7 +32,7 @@ local desired_formatters_by_ft = {
   java = { "google-java-format" },
   gdscript = { "gdformat" },
   gdshader = { "clang_format" },
-  ["*"] = { "codespell" },
+  ["_"] = { "codespell" },
 }
 
 local function collect_formatters()
@@ -69,14 +69,12 @@ local function collect_formatters()
     seen[item] = true
   end
 
-  -- Collect from formatters_by_ft
   for _, formatters in pairs(desired_formatters_by_ft) do
     for _, formatter in ipairs(formatters) do
       add(formatter)
     end
   end
 
-  -- Add explicit formatters
   for _, formatter in ipairs({ "shfmt", "stylua", "black", "gdformat" }) do
     add(formatter)
   end
@@ -112,14 +110,15 @@ return {
       end
     end
 
-    formatters_by_ft["_"] = { "trim_whitespace" }
+    formatters_by_ft["_"] = formatters_by_ft["_"] or {}
+    table.insert(formatters_by_ft["_"], "trim_whitespace")
 
     return {
       formatters_by_ft = formatters_by_ft,
 
       default_format_opts = {
         timeout_ms = 3000,
-        async = false,
+        async = true,
         quiet = false,
         lsp_format = "fallback",
       },
@@ -132,7 +131,20 @@ return {
         if bufname:match("/node_modules/") then
           return
         end
-        return { timeout_ms = 500 }
+        local line_count = vim.api.nvim_buf_line_count(bufnr)
+        if line_count > 5000 then
+          return
+        end
+
+        local opts = {
+          timeout_ms = line_count > 2000 and 2000 or 750,
+        }
+
+        if line_count > 800 then
+          opts.async = true
+        end
+
+        return opts
       end,
 
       formatters = {
@@ -150,6 +162,11 @@ return {
         },
         pg_format = {
           prepend_args = { "--spaces", "2", "--comma-start", "--keyword-case", "1" },
+        },
+        codespell = {
+          condition = function(ctx)
+            return vim.api.nvim_buf_line_count(ctx.bufnr) <= 1000
+          end,
         },
       },
     }

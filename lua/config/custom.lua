@@ -4,12 +4,7 @@
 -- @file: lua/config/custom.lua
 -- @brief: User-specific options.
 
-local theme = "catppuccin"
-if vim.env.MEOW_THEME == "tokyonight" then
-  theme = "tokyonight"
-end
-
 return {
-  theme = theme,
+  theme = "catppuccin",
   enable_copilot = vim.env.MEOW_ENABLE_COPILOT == "true",
 }

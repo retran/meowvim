@@ -5,16 +5,9 @@
 -- @brief: Neovim key mapping configurations and shortcuts.
 
 local M = {}
-local default_opts = { noremap = true, silent = true }
-
-function M.map(mode, lhs, rhs, opts)
-  opts = vim.tbl_extend("force", default_opts, opts or {})
-  vim.keymap.set(mode, lhs, rhs, opts)
-end
 
 local snacks = require("snacks")
 
--- Helper functions for common plugin calls
 local function safe_require(module)
   local ok, result = pcall(require, module)
   return ok and result or nil
@@ -176,7 +169,7 @@ function M.setup()
               local dir = vim.fn.fnamemodify(filepath, ":h")
 
               if dir ~= "." and dir ~= "" then
-                vim.loop.fs_mkdir(dir, 493)
+                vim.fn.mkdir(dir, "p")
               end
 
               vim.cmd.edit(filepath) -- TODO if file opened in another buffer, switch to it

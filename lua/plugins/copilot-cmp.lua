@@ -4,6 +4,8 @@
 -- @file: lua/plugins/copilot-cmp.lua
 -- @brief: Copilot integration with nvim-cmp completion engine.
 
+local Meow = require("config.custom")
+
 return {
   "zbirenbaum/copilot-cmp",
   enabled = Meow.enable_copilot,

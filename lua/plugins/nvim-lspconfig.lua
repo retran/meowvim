@@ -60,6 +60,44 @@ return {
       },
     })
 
+    local catppuccin_lsp_ok, catppuccin_lsp = pcall(require, "catppuccin.integrations.lsp")
+    if catppuccin_lsp_ok then
+      if type(catppuccin_lsp) == "table" and type(catppuccin_lsp.setup) == "function" then
+        catppuccin_lsp.setup()
+      elseif type(catppuccin_lsp) == "function" then
+        catppuccin_lsp()
+      end
+    end
+
+    local registry_ok, registry = pcall(require, "mason-registry")
+    local optional_servers = {
+      postgres_lsp = true,
+    }
+
+    local function package_supported(name)
+      if not registry_ok then
+        return true
+      end
+
+      if not registry.has_package(name) then
+        return false
+      end
+
+      local ok_pkg, pkg = pcall(registry.get_package, name)
+      if not ok_pkg then
+        return false
+      end
+
+      if pkg.is_supported then
+        local ok_supported, supported = pcall(pkg.is_supported, pkg)
+        if ok_supported then
+          return supported
+        end
+      end
+
+      return true
+    end
+
     local icons = { Error = "󰅚", Warn = "󰀪", Hint = "󰌶", Info = "󰋼" }
     for type, icon in pairs(icons) do
       vim.fn.sign_define("DiagnosticSign" .. type, { text = icon, texthl = "DiagnosticSign" .. type, numhl = "" })
@@ -197,9 +235,18 @@ return {
       postgres_lsp = {},
     }
 
-    local ensure_servers = vim.tbl_keys(server_settings)
+    local ensure_servers = {}
+    for server, _ in pairs(server_settings) do
+      if not optional_servers[server] or package_supported(server) then
+        table.insert(ensure_servers, server)
+      end
+    end
+
     mason_registry.ensure_servers(ensure_servers)
-    mason_registry.ensure_servers({ "roslyn" })
+
+    if package_supported("roslyn") then
+      mason_registry.ensure_servers({ "roslyn" })
+    end
 
     mason_lspconfig.setup({
       ensure_installed = ensure_servers,
@@ -207,6 +254,10 @@ return {
     })
 
     local function setup_server(server_name)
+      if optional_servers[server_name] and not package_supported(server_name) then
+        return
+      end
+
       local server_opts = vim.tbl_deep_extend("force", {}, server_settings[server_name] or {})
       local custom_on_attach = server_opts.on_attach
 
@@ -240,19 +291,21 @@ return {
     })
     vim.lsp.enable("gdscript")
 
-    vim.lsp.config("roslyn", {
-      on_attach = on_attach,
-      settings = {
-        ["csharp|inlay_hints"] = {
-          csharp_enable_inlay_hints_for_implicit_object_creation = true,
-          csharp_enable_inlay_hints_for_implicit_variable_types = true,
+    if package_supported("roslyn") then
+      vim.lsp.config("roslyn", {
+        on_attach = on_attach,
+        settings = {
+          ["csharp|inlay_hints"] = {
+            csharp_enable_inlay_hints_for_implicit_object_creation = true,
+            csharp_enable_inlay_hints_for_implicit_variable_types = true,
+          },
+          ["csharp|code_lens"] = {
+            dotnet_enable_references_code_lens = true,
+          },
         },
-        ["csharp|code_lens"] = {
-          dotnet_enable_references_code_lens = true,
-        },
-      },
-    })
-    vim.lsp.enable("roslyn")
+      })
+      vim.lsp.enable("roslyn")
+    end
 
     mason_tool_installer.setup({
       ensure_installed = mason_registry.get_all_tools(),

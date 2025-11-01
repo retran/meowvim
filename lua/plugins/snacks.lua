@@ -6,9 +6,7 @@
 
 return {
   "folke/snacks.nvim",
-  event = "VeryLazy",
   lazy = false,
-  priority = 1000,
   opts = {
     dashboard = {
       width = 44,
@@ -63,9 +61,9 @@ return {
     },
     input = {},
     notifier = {},
-    terminal = {},
-    image = {},
-    scope = {},
+    terminal = { enabled = false },
+    image = { enabled = false },
+    scope = { enabled = false },
     scratch = {
       ft = function()
         return "markdown"
@@ -76,7 +74,7 @@ return {
         count = true,
       },
     },
-    styles = {},
+    styles = { enabled = false },
 
     picker = {
       hidden = true,

@@ -13,8 +13,6 @@ if vim.fn.isdirectory(mason_bin) == 1 and not (vim.env.PATH or ""):find(mason_bi
   vim.env.PATH = mason_bin .. separator .. (vim.env.PATH or "")
 end
 
-Meow = require("config.custom")
-
 require("config/options")
 require("config/neovide")
 

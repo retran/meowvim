@@ -4,6 +4,8 @@
 -- @file: lua/plugins/copilot.lua
 -- @brief: GitHub Copilot AI code completion and assistance plugin configuration.
 
+local Meow = require("config.custom")
+
 return {
   "zbirenbaum/copilot.lua",
   enabled = Meow.enable_copilot,

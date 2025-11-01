@@ -4,6 +4,8 @@
 -- @file: lua/plugins/lualine.lua
 -- @brief: Customizable statusline with Git, LSP, and mode indicators.
 
+local Meow = require("config.custom")
+
 local function get_dependencies()
   local deps = {
     "nvim-tree/nvim-web-devicons",
@@ -29,8 +31,31 @@ local lualine_x = {
   },
 }
 
+local function get_lualine_theme()
+  local ok, catppuccin = pcall(require, "catppuccin.utils.lualine")
+  if ok then
+    return catppuccin.setup()
+  end
+  return "auto"
+end
+
 if Meow.enable_copilot then
-  -- Catppuccin Mocha colors for Copilot
+  local palette = (function()
+    local ok, catppuccin = pcall(require, "catppuccin.palettes")
+    if ok then
+      local flavour = vim.g.catppuccin_flavour or "mocha"
+      return catppuccin.get_palette(flavour)
+    end
+    return nil
+  end)()
+  local colors = palette
+    or {
+      green = "#a6e3a1",
+      blue = "#89b4fa",
+      overlay0 = "#6c7086",
+      peach = "#fab387",
+      red = "#f38ba8",
+    }
   local copilot = {
     "copilot",
     symbols = {
@@ -43,15 +68,15 @@ if Meow.enable_copilot then
           unknown = "",
         },
         hl = {
-          enabled = "#a6e3a1", -- Catppuccin Green
-          sleep = "#89b4fa", -- Catppuccin Blue
-          disabled = "#6c7086", -- Catppuccin Overlay0
-          warning = "#fab387", -- Catppuccin Peach
-          unknown = "#f38ba8", -- Catppuccin Red
+          enabled = colors.green,
+          sleep = colors.blue,
+          disabled = colors.overlay0,
+          warning = colors.peach,
+          unknown = colors.red,
         },
       },
       spinners = "dots",
-      spinner_color = "#89b4fa", -- Catppuccin Blue
+      spinner_color = colors.blue,
     },
     show_colors = true,
     show_loading = true,
@@ -65,7 +90,7 @@ return {
   dependencies = get_dependencies(),
   opts = {
     options = {
-      theme = "catppuccin", -- Use catppuccin theme for lualine
+      theme = get_lualine_theme(),
       icons_enabled = true,
       component_separators = { left = "|", right = "|" },
       section_separators = { left = "", right = "" },
@@ -73,17 +98,14 @@ return {
       refresh = {
         statusline = 50,
         winbar = 50,
-        tabline = 50,
       },
       always_divide_middle = true,
-      always_show_tabline = true, -- Always show tabline (it controls vim tabs, not buffers)
       globalstatus = true,
       disabled_filetypes = {
         statusline = {},
         winbar = {},
       },
     },
-    tabline = {},
     winbar = {},
     inactive_winbar = {},
     sections = {
