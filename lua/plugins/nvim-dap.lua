@@ -1,29 +1,8 @@
--- MIT License
---
+-- SPDX-License-Identifier: MIT
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
---
--- Permission is hereby granted, free of charge, to any person obtaining a copy
--- of this software and associated documentation files (the "Software"), to deal
--- in the Software without restriction, including without limitation the rights
--- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
--- copies of the Software, and to permit persons to whom the Software is
--- furnished to do so, subject to the following conditions:
---
--- The above copyright notice and this permission notice shall be included in
--- all copies or substantial portions of the Software.
---
--- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
--- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
--- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
--- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
--- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
--- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
--- THE SOFTWARE.
---
+
+-- @file: lua/plugins/nvim-dap.lua
 -- @brief: Debug Adapter Protocol (DAP) client for debugging integration.
--- @author: Andrew Vasilyev
--- @license: MIT
---
 
 require("config.mason").ensure_debuggers({ "delve", "netcoredbg" })
 
@@ -64,61 +43,10 @@ return {
     local dap = require("dap")
     local dapui = require("dapui")
 
-    local mason_registry = require("mason-registry")
-    local function get_netcoredbg()
-      local ok, pkg = pcall(mason_registry.get_package, "netcoredbg")
-      if not ok or not pkg:is_installed() then
-        return nil
-      end
-
-      local uv = vim.uv or vim.loop
-      local sysname = uv.os_uname().sysname:lower()
-      local is_windows = sysname:find("windows") or sysname:find("mingw")
-
-      local function can_execute(path)
-        return type(path) == "string"
-          and path ~= ""
-          and (vim.fn.executable(path) == 1 or vim.fn.filereadable(path) == 1)
-      end
-
-      local exe_from_path = vim.fn.exepath("netcoredbg")
-      if can_execute(exe_from_path) then
-        return exe_from_path
-      end
-
-      local mason_root = vim.env.MASON
-      if not mason_root or mason_root == "" then
-        mason_root = vim.fs.joinpath(vim.fn.stdpath("data"), "mason")
-      end
-
-      local candidates = {
-        vim.fs.joinpath(mason_root, "bin", "netcoredbg"),
-      }
-
-      if is_windows then
-        table.insert(candidates, vim.fs.joinpath(mason_root, "bin", "netcoredbg.cmd"))
-        table.insert(candidates, vim.fs.joinpath(mason_root, "bin", "netcoredbg.exe"))
-      end
-
-      for _, candidate in ipairs(candidates) do
-        if can_execute(candidate) then
-          return candidate
-        end
-      end
-    end
-
-    local netcoredbg = get_netcoredbg()
-    if not netcoredbg then
-      vim.notify(
-        "netcoredbg debugger not found. Install it with :MasonInstall netcoredbg.",
-        vim.log.levels.WARN,
-        { title = "DAP" }
-      )
-    end
-
+    -- netcoredbg adapter
     dap.adapters.coreclr = {
       type = "executable",
-      command = netcoredbg or "netcoredbg",
+      command = vim.fn.stdpath("data") .. "/mason/bin/netcoredbg",
       args = { "--interpreter=vscode" },
     }
 
@@ -141,32 +69,17 @@ return {
     dap.configurations.cs = {
       {
         type = "coreclr",
-        name = "Build and Launch .NET",
+        name = "Launch .NET",
         request = "launch",
-        console = "integratedTerminal",
         program = function()
-          local project_path = vim.fn.input("Path to project: ", vim.fn.getcwd() .. "/", "file")
-
-          if project_path == "" then
-            return nil
-          end
-
-          local get_dll_path_command = "dotnet build '"
-            .. project_path
-            .. "' -nologo -v q --getProperty:TargetPath"
-
-          local dll_path = vim.fn.system(get_dll_path_command)
-
-          dll_path = vim.trim(dll_path)
-
-          if vim.fn.filereadable(dll_path) == 1 then
-            print("Debugger will launch: " .. dll_path)
-            return dll_path
-          else
-            print("Error: Could not determine DLL path. Build failed or command returned empty.")
-            return nil
-          end
+          return vim.fn.input("Path to DLL: ", vim.fn.getcwd() .. "/bin/Debug/", "file")
         end,
+      },
+      {
+        type = "coreclr",
+        name = "Attach to process",
+        request = "attach",
+        processId = require("dap.utils").pick_process,
       },
     }
 

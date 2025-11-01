@@ -1,29 +1,7 @@
--- MIT License
---
+-- SPDX-License-Identifier: MIT
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
---
--- Permission is hereby granted, free of charge, to any person obtaining a copy
--- of this software and associated documentation files (the "Software"), to deal
--- in the Software without restriction, including without limitation the rights
--- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
--- copies of the Software, and to permit persons to whom the Software is
--- furnished to do so, subject to the following conditions:
---
--- The above copyright notice and this permission notice shall be included in
--- all copies or substantial portions of the Software.
---
--- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
--- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
--- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
--- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
--- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
--- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
--- THE SOFTWARE.
---
+
 -- @file: lua/plugins/conform.lua
--- @author: Andrew Vasilyev
--- @license: MIT
---
 
 local mason_registry = require("config.mason")
 
@@ -57,9 +35,7 @@ local desired_formatters_by_ft = {
   ["*"] = { "codespell" },
 }
 
-do
-  local ensured_formatters = {}
-  local seen = {}
+local function collect_formatters()
   local alias_map = {
     clang_format = "clang-format",
     dotnet_format = false,
@@ -70,44 +46,43 @@ do
     ruff_organize_imports = "ruff",
     rustfmt = false,
   }
-  local function collect(item)
-    if type(item) == "string" and not seen[item] then
-      local package = alias_map[item]
-      if package == false then
-        seen[item] = true
-        return
-      end
-      if not package then
-        package = item
-      end
-      if not seen[package] then
-        table.insert(ensured_formatters, package)
-        seen[package] = true
-      end
+
+  local seen = {}
+  local result = {}
+
+  local function add(item)
+    if type(item) ~= "string" or seen[item] then return end
+
+    local package = alias_map[item]
+    if package == false then
       seen[item] = true
+      return
     end
+
+    package = package or item
+    if not seen[package] then
+      table.insert(result, package)
+      seen[package] = true
+    end
+    seen[item] = true
   end
 
+  -- Collect from formatters_by_ft
   for _, formatters in pairs(desired_formatters_by_ft) do
     for _, formatter in ipairs(formatters) do
-      collect(formatter)
-    end
-    for _, formatter in pairs(formatters) do
-      collect(formatter)
+      add(formatter)
     end
   end
 
-  for formatter, _ in pairs({
-    shfmt = true,
-    stylua = true,
-    black = true,
-    gdformat = true,
-  }) do
-    collect(formatter)
+  -- Add explicit formatters
+  for _, formatter in ipairs({ "shfmt", "stylua", "black", "gdformat" }) do
+    add(formatter)
   end
 
-  mason_registry.ensure_formatters(ensured_formatters)
+  return result
 end
+
+mason_registry.ensure_formatters(collect_formatters())
 
 return {
   "stevearc/conform.nvim",

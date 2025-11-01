@@ -1,34 +1,19 @@
--- MIT License
---
+-- SPDX-License-Identifier: MIT
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
---
--- Permission is hereby granted, free of charge, to any person obtaining a copy
--- of this software and associated documentation files (the "Software"), to deal
--- in the Software without restriction, including without limitation the rights
--- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
--- copies of the Software, and to permit persons to whom the Software is
--- furnished to do so, subject to the following conditions:
---
--- The above copyright notice and this permission notice shall be included in
--- all copies or substantial portions of the Software.
---
--- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
--- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
--- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
--- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
--- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
--- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
--- THE SOFTWARE.
---
+
 -- @file: lua/plugins/lualine.lua
 -- @brief: Customizable statusline with Git, LSP, and mode indicators.
--- @author: Andrew Vasilyev
--- @license: MIT
---
-local dependencies = {
-  "nvim-tree/nvim-web-devicons",
-  "lewis6991/gitsigns.nvim",
-}
+
+local function get_dependencies()
+  local deps = {
+    "nvim-tree/nvim-web-devicons",
+    "lewis6991/gitsigns.nvim",
+  }
+  if Meow.enable_copilot then
+    table.insert(deps, "AndreM222/copilot-lualine")
+  end
+  return deps
+end
 
 local lualine_x = {
   "diagnostics",
@@ -72,13 +57,12 @@ if Meow.enable_copilot then
     show_loading = true,
   }
 
-  table.insert(dependencies, 1, "AndreM222/copilot-lualine")
   table.insert(lualine_x, 2, copilot)
 end
 
 return {
   "nvim-lualine/lualine.nvim",
-  dependencies = dependencies,
+  dependencies = get_dependencies(),
   opts = {
       options = {
         theme = "catppuccin", -- Use catppuccin theme for lualine

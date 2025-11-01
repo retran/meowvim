@@ -1,29 +1,8 @@
--- MIT License
---
+-- SPDX-License-Identifier: MIT
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
---
--- Permission is hereby granted, free of charge, to any person obtaining a copy
--- of this software and associated documentation files (the "Software"), to deal
--- in the Software without restriction, including without limitation the rights
--- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
--- copies of the Software, and to permit persons to whom the Software is
--- furnished to do so, subject to the following conditions:
---
--- The above copyright notice and this permission notice shall be included in
--- all copies or substantial portions of the Software.
---
--- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
--- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
--- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
--- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
--- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
--- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
--- THE SOFTWARE.
---
+
+-- @file: lua/plugins/nvim-lint.lua
 -- @brief: Asynchronous linting engine with multiple linter support.
--- @author: Andrew Vasilyev
--- @license: MIT
---
 
 local mason_registry = require("config.mason")
 
@@ -45,36 +24,41 @@ local desired_linters_by_ft = {
   gdscript = { "gdlint" },
 }
 
-do
-  local ensured_linters = {}
-  local seen = {}
+local function collect_linters()
   local alias_map = {
     clippy = false,
     gdlint = "gdtoolkit",
     golangcilint = "golangci-lint",
   }
+
+  local seen = {}
+  local result = {}
+
   for _, linters in pairs(desired_linters_by_ft) do
     for _, linter in ipairs(linters) do
-      if not seen[linter] then
-        local package = alias_map[linter]
-        if package == false then
-          seen[linter] = true
-          goto continue
-        end
-        if package == nil then
-          package = linter
-        end
-        if not seen[package] then
-          table.insert(ensured_linters, package)
-          seen[package] = true
-        end
+      if seen[linter] then goto continue end
+
+      local package = alias_map[linter]
+      if package == false then
         seen[linter] = true
+        goto continue
       end
+
+      package = package or linter
+      if not seen[package] then
+        table.insert(result, package)
+        seen[package] = true
+      end
+      seen[linter] = true
+
       ::continue::
     end
   end
-  mason_registry.ensure_linters(ensured_linters)
+
+  return result
 end
+
+mason_registry.ensure_linters(collect_linters())
 
 return {
   "mfussenegger/nvim-lint",

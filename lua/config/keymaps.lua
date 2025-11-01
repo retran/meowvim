@@ -1,30 +1,9 @@
--- MIT License
---
+-- SPDX-License-Identifier: MIT
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
---
--- Permission is hereby granted, free of charge, to any person obtaining a copy
--- of this software and associated documentation files (the "Software"), to deal
--- in the Software without restriction, including without limitation the rights
--- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
--- copies of the Software, and to permit persons to whom the Software is
--- furnished to do so, subject to the following conditions:
---
--- The above copyright notice and this permission notice shall be included in
--- all copies or substantial portions of the Software.
---
--- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
--- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
--- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
--- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
--- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
--- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
--- THE SOFTWARE.
---
+
 -- @file: lua/config/keymaps.lua
 -- @brief: Neovim key mapping configurations and shortcuts.
--- @author: Andrew Vasilyev
--- @license: MIT
---
+
 local M = {}
 local default_opts = { noremap = true, silent = true }
 
@@ -34,6 +13,51 @@ function M.map(mode, lhs, rhs, opts)
 end
 
 local snacks = require("snacks")
+
+-- Helper functions for common plugin calls
+local function safe_require(module)
+  local ok, result = pcall(require, module)
+  return ok and result or nil
+end
+
+local function flash_action(action_name, multi_window)
+  return function()
+    local flash = safe_require("flash")
+    if flash then
+      if action_name == "jump" then
+        flash.jump({ multi_window = multi_window or false })
+      elseif action_name == "treesitter" then
+        flash.treesitter()
+      elseif action_name == "remote" then
+        flash.remote()
+      end
+    end
+  end
+end
+
+local function glance_action(action_type)
+  return function()
+    local glance = safe_require("glance")
+    if glance then
+      glance.open(action_type)
+    end
+  end
+end
+
+local function trouble_action(mode, filter)
+  return function()
+    local trouble = safe_require("trouble")
+    if trouble then
+      trouble.toggle(mode, filter)
+    end
+  end
+end
+
+local function gitsigns_action(action_name)
+  return function()
+    require("gitsigns")[action_name]()
+  end
+end
 
 function M.setup()
   local wk_ok, wk = pcall(require, "which-key")
@@ -117,50 +141,10 @@ function M.setup()
       { "<leader>wJ", "<C-w>J", desc = "Move to Far Bottom" },
 
       -- Motion (Flash)
-      {
-        "s",
-        function()
-          local ok, flash = pcall(require, "flash")
-          if ok then
-            flash.jump({ multi_window = false })
-          end
-        end,
-        desc = "Flash Jump",
-        mode = { "n", "x", "o" },
-      },
-      {
-        "S",
-        function()
-          local ok, flash = pcall(require, "flash")
-          if ok then
-            flash.treesitter()
-          end
-        end,
-        desc = "Flash Treesitter",
-        mode = { "n", "x", "o" },
-      },
-      {
-        "<leader><space>",
-        function()
-          local ok, flash = pcall(require, "flash")
-          if ok then
-            flash.jump({ multi_window = true })
-          end
-        end,
-        desc = "Flash Jump (All Windows)",
-        mode = { "n", "x", "o" },
-      },
-      {
-        "gr",
-        function()
-          local ok, flash = pcall(require, "flash")
-          if ok then
-            flash.remote()
-          end
-        end,
-        desc = "Flash Remote",
-        mode = { "n", "x", "o" },
-      },
+      { "s", flash_action("jump", false), desc = "Flash Jump", mode = { "n", "x", "o" } },
+      { "S", flash_action("treesitter"), desc = "Flash Treesitter", mode = { "n", "x", "o" } },
+      { "<leader><space>", flash_action("jump", true), desc = "Flash Jump (All Windows)", mode = { "n", "x", "o" } },
+      { "gr", flash_action("remote"), desc = "Flash Remote", mode = { "n", "x", "o" } },
 
       { "gs", group = "+surround", mode = { "n", "x" } },
       { "gsa", desc = "Surround Add", mode = { "n", "x" } },
@@ -387,53 +371,11 @@ function M.setup()
         desc = "Search/Replace (Spectre)",
         mode = { "n", "x" },
       },
-      {
-        "<leader>sd",
-        function()
-          local ok, glance = pcall(require, "glance")
-          if ok then
-            glance.open("definitions")
-          end
-        end,
-        desc = "Glance Definitions",
-      },
-      {
-        "<leader>sD",
-        function()
-          snacks.picker.lsp_declarations()
-        end,
-        desc = "Pick Declaration",
-      },
-      {
-        "<leader>sR",
-        function()
-          local ok, glance = pcall(require, "glance")
-          if ok then
-            glance.open("references")
-          end
-        end,
-        desc = "Glance References",
-      },
-      {
-        "<leader>si",
-        function()
-          local ok, glance = pcall(require, "glance")
-          if ok then
-            glance.open("implementations")
-          end
-        end,
-        desc = "Glance Implementations",
-      },
-      {
-        "<leader>sT",
-        function()
-          local ok, glance = pcall(require, "glance")
-          if ok then
-            glance.open("type_definitions")
-          end
-        end,
-        desc = "Glance Type Definitions",
-      },
+      { "<leader>sd", glance_action("definitions"), desc = "Glance Definitions" },
+      { "<leader>sD", function() snacks.picker.lsp_declarations() end, desc = "Pick Declaration" },
+      { "<leader>sR", glance_action("references"), desc = "Glance References" },
+      { "<leader>si", glance_action("implementations"), desc = "Glance Implementations" },
+      { "<leader>sT", glance_action("type_definitions"), desc = "Glance Type Definitions" },
       {
         "<leader>ss",
         function()
@@ -636,56 +578,11 @@ function M.setup()
 
       -- Diagnostics
       { "<leader>d", group = "+diagnostics" },
-      {
-        "<leader>dd",
-        function()
-          local ok, trouble = pcall(require, "trouble")
-          if ok then
-            trouble.toggle("diagnostics")
-          end
-        end,
-        desc = "Diagnostics (Trouble)",
-      },
-      {
-        "<leader>db",
-        function()
-          local ok, trouble = pcall(require, "trouble")
-          if ok then
-            trouble.toggle("diagnostics", { filter = { buf = 0 } })
-          end
-        end,
-        desc = "Buffer Diagnostics",
-      },
-      {
-        "<leader>dq",
-        function()
-          local ok, trouble = pcall(require, "trouble")
-          if ok then
-            trouble.toggle("quickfix")
-          end
-        end,
-        desc = "Quickfix (Trouble)",
-      },
-      {
-        "<leader>dl",
-        function()
-          local ok, trouble = pcall(require, "trouble")
-          if ok then
-            trouble.toggle("loclist")
-          end
-        end,
-        desc = "Loclist (Trouble)",
-      },
-      {
-        "<leader>ds",
-        function()
-          local ok, trouble = pcall(require, "trouble")
-          if ok then
-            trouble.toggle("symbols", { focus = false })
-          end
-        end,
-        desc = "Document Symbols (Trouble)",
-      },
+      { "<leader>dd", trouble_action("diagnostics"), desc = "Diagnostics (Trouble)" },
+      { "<leader>db", trouble_action("diagnostics", { filter = { buf = 0 } }), desc = "Buffer Diagnostics" },
+      { "<leader>dq", trouble_action("quickfix"), desc = "Quickfix (Trouble)" },
+      { "<leader>dl", trouble_action("loclist"), desc = "Loclist (Trouble)" },
+      { "<leader>ds", trouble_action("symbols", { focus = false }), desc = "Document Symbols (Trouble)" },
       { "<leader>dp", vim.diagnostic.open_float, desc = "Show Hover" },
       { "]d", vim.diagnostic.goto_next, desc = "Goto Next", mode = "n" },
       { "[d", vim.diagnostic.goto_prev, desc = "Goto Previous", mode = "n" },
@@ -862,91 +759,19 @@ function M.setup()
 
       -- Git Signs
       { "<leader>h", group = "+gitsigns" },
-      {
-        "<leader>hj",
-        function()
-          require("gitsigns").nav_hunk("next")
-        end,
-        desc = "Next Hunk",
-      },
-      {
-        "<leader>hk",
-        function()
-          require("gitsigns").nav_hunk("prev")
-        end,
-        desc = "Previous Hunk",
-      },
-      {
-        "<leader>hs",
-        function()
-          require("gitsigns").stage_hunk()
-        end,
-        desc = "Stage Hunk",
-      },
-      {
-        "<leader>hr",
-        function()
-          require("gitsigns").reset_hunk()
-        end,
-        desc = "Reset Hunk",
-      },
-      {
-        "<leader>hS",
-        function()
-          require("gitsigns").stage_buffer()
-        end,
-        desc = "Stage Buffer",
-      },
-      {
-        "<leader>hR",
-        function()
-          require("gitsigns").reset_buffer()
-        end,
-        desc = "Reset Buffer",
-      },
-      {
-        "<leader>hp",
-        function()
-          require("gitsigns").preview_hunk()
-        end,
-        desc = "Preview Hunk",
-      },
-      {
-        "<leader>hb",
-        function()
-          require("gitsigns").blame_line({ full = true })
-        end,
-        desc = "Blame Line",
-      },
-      {
-        "<leader>hd",
-        function()
-          require("gitsigns").diffthis()
-        end,
-        desc = "Diff This",
-      },
+      { "<leader>hj", function() require("gitsigns").nav_hunk("next") end, desc = "Next Hunk" },
+      { "<leader>hk", function() require("gitsigns").nav_hunk("prev") end, desc = "Previous Hunk" },
+      { "<leader>hs", gitsigns_action("stage_hunk"), desc = "Stage Hunk" },
+      { "<leader>hr", gitsigns_action("reset_hunk"), desc = "Reset Hunk" },
+      { "<leader>hS", gitsigns_action("stage_buffer"), desc = "Stage Buffer" },
+      { "<leader>hR", gitsigns_action("reset_buffer"), desc = "Reset Buffer" },
+      { "<leader>hp", gitsigns_action("preview_hunk"), desc = "Preview Hunk" },
+      { "<leader>hb", function() require("gitsigns").blame_line({ full = true }) end, desc = "Blame Line" },
+      { "<leader>hd", gitsigns_action("diffthis"), desc = "Diff This" },
       { "<leader>ht", group = "+toggle" },
-      {
-        "<leader>htb",
-        function()
-          require("gitsigns").toggle_current_line_blame()
-        end,
-        desc = "Toggle Blame",
-      },
-      {
-        "<leader>htw",
-        function()
-          require("gitsigns").toggle_word_diff()
-        end,
-        desc = "Toggle Word Diff",
-      },
-      {
-        "<leader>hts",
-        function()
-          require("gitsigns").toggle_signs()
-        end,
-        desc = "Toggle Signs",
-      },
+      { "<leader>htb", gitsigns_action("toggle_current_line_blame"), desc = "Toggle Blame" },
+      { "<leader>htw", gitsigns_action("toggle_word_diff"), desc = "Toggle Word Diff" },
+      { "<leader>hts", gitsigns_action("toggle_signs"), desc = "Toggle Signs" },
 
       -- Terminal
       {

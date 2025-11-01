@@ -1,8 +1,9 @@
--- MIT License
---
+-- SPDX-License-Identifier: MIT
+-- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
+
 -- @file: lua/plugins/overseer.lua
 -- @brief: Task runner integration using overseer.nvim.
---
+
 local function find_root(patterns)
   local cwd = vim.fn.getcwd()
   local match = vim.fs.find(patterns, { upward = true, path = cwd, limit = 1 })[1]
