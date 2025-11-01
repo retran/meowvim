@@ -64,52 +64,52 @@ return {
   "nvim-lualine/lualine.nvim",
   dependencies = get_dependencies(),
   opts = {
-      options = {
-        theme = "catppuccin", -- Use catppuccin theme for lualine
-        icons_enabled = true,
-        component_separators = { left = "|", right = "|" },
-        section_separators = { left = "", right = "" },
-        ignore_focus = {},
-        refresh = {
-          statusline = 50,
-          winbar = 50,
-          tabline = 50,
-        },
-        always_divide_middle = true,
-        always_show_tabline = true, -- Always show tabline (it controls vim tabs, not buffers)
-        globalstatus = true,
-        disabled_filetypes = {
-          statusline = {},
-          winbar = {},
-        },
+    options = {
+      theme = "catppuccin", -- Use catppuccin theme for lualine
+      icons_enabled = true,
+      component_separators = { left = "|", right = "|" },
+      section_separators = { left = "", right = "" },
+      ignore_focus = {},
+      refresh = {
+        statusline = 50,
+        winbar = 50,
+        tabline = 50,
       },
-      tabline = {},
-      winbar = {},
-      inactive_winbar = {},
-      sections = {
-        lualine_a = { "mode" },
-        lualine_b = {},
-        lualine_c = {
-          "branch",
-          "diff",
-          "gitsigns",
-          { "filename", path = 1 },
-        },
-        lualine_x = lualine_x,
-        lualine_y = {},
-        lualine_z = {
-          "progress",
-          "location",
-        },
+      always_divide_middle = true,
+      always_show_tabline = true, -- Always show tabline (it controls vim tabs, not buffers)
+      globalstatus = true,
+      disabled_filetypes = {
+        statusline = {},
+        winbar = {},
       },
-      inactive_sections = {
-        lualine_a = {},
-        lualine_b = {},
-        lualine_c = { { "filename", path = 1 } },
-        lualine_x = { "progress", "location" },
-        lualine_y = {},
-        lualine_z = {},
+    },
+    tabline = {},
+    winbar = {},
+    inactive_winbar = {},
+    sections = {
+      lualine_a = { "mode" },
+      lualine_b = {},
+      lualine_c = {
+        "branch",
+        "diff",
+        "gitsigns",
+        { "filename", path = 1 },
       },
-      extensions = { "lazy", "nvim-tree", "trouble" },
+      lualine_x = lualine_x,
+      lualine_y = {},
+      lualine_z = {
+        "progress",
+        "location",
+      },
+    },
+    inactive_sections = {
+      lualine_a = {},
+      lualine_b = {},
+      lualine_c = { { "filename", path = 1 } },
+      lualine_x = { "progress", "location" },
+      lualine_y = {},
+      lualine_z = {},
+    },
+    extensions = { "lazy", "nvim-tree", "trouble" },
   },
 }

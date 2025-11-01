@@ -372,7 +372,13 @@ function M.setup()
         mode = { "n", "x" },
       },
       { "<leader>sd", glance_action("definitions"), desc = "Glance Definitions" },
-      { "<leader>sD", function() snacks.picker.lsp_declarations() end, desc = "Pick Declaration" },
+      {
+        "<leader>sD",
+        function()
+          snacks.picker.lsp_declarations()
+        end,
+        desc = "Pick Declaration",
+      },
       { "<leader>sR", glance_action("references"), desc = "Glance References" },
       { "<leader>si", glance_action("implementations"), desc = "Glance Implementations" },
       { "<leader>sT", glance_action("type_definitions"), desc = "Glance Type Definitions" },
@@ -423,7 +429,7 @@ function M.setup()
         end,
         desc = "Call Hierarchy (Callees)",
       },
-     -- Introspect
+      -- Introspect
       { "<leader>S", group = "+introspect" },
       {
         "<leader>Sh",
@@ -759,14 +765,32 @@ function M.setup()
 
       -- Git Signs
       { "<leader>h", group = "+gitsigns" },
-      { "<leader>hj", function() require("gitsigns").nav_hunk("next") end, desc = "Next Hunk" },
-      { "<leader>hk", function() require("gitsigns").nav_hunk("prev") end, desc = "Previous Hunk" },
+      {
+        "<leader>hj",
+        function()
+          require("gitsigns").nav_hunk("next")
+        end,
+        desc = "Next Hunk",
+      },
+      {
+        "<leader>hk",
+        function()
+          require("gitsigns").nav_hunk("prev")
+        end,
+        desc = "Previous Hunk",
+      },
       { "<leader>hs", gitsigns_action("stage_hunk"), desc = "Stage Hunk" },
       { "<leader>hr", gitsigns_action("reset_hunk"), desc = "Reset Hunk" },
       { "<leader>hS", gitsigns_action("stage_buffer"), desc = "Stage Buffer" },
       { "<leader>hR", gitsigns_action("reset_buffer"), desc = "Reset Buffer" },
       { "<leader>hp", gitsigns_action("preview_hunk"), desc = "Preview Hunk" },
-      { "<leader>hb", function() require("gitsigns").blame_line({ full = true }) end, desc = "Blame Line" },
+      {
+        "<leader>hb",
+        function()
+          require("gitsigns").blame_line({ full = true })
+        end,
+        desc = "Blame Line",
+      },
       { "<leader>hd", gitsigns_action("diffthis"), desc = "Diff This" },
       { "<leader>ht", group = "+toggle" },
       { "<leader>htb", gitsigns_action("toggle_current_line_blame"), desc = "Toggle Blame" },

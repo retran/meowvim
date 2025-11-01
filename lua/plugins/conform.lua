@@ -51,7 +51,9 @@ local function collect_formatters()
   local result = {}
 
   local function add(item)
-    if type(item) ~= "string" or seen[item] then return end
+    if type(item) ~= "string" or seen[item] then
+      return
+    end
 
     local package = alias_map[item]
     if package == false then

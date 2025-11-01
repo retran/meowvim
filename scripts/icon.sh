@@ -15,4 +15,4 @@ fi
 while IFS= read -r line; do
   echo "$line"
   sleep 0.001
-done < "$ICON_PATH"
+done <"$ICON_PATH"

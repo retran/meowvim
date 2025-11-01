@@ -5,9 +5,13 @@
 -- @brief: Themes configuration.
 
 local function is_headless()
-  if not vim.v.argv then return false end
+  if not vim.v.argv then
+    return false
+  end
   for _, arg in ipairs(vim.v.argv) do
-    if arg == "--headless" then return true end
+    if arg == "--headless" then
+      return true
+    end
   end
   return false
 end

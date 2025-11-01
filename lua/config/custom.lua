@@ -11,5 +11,5 @@ end
 
 return {
   theme = theme,
-  enable_copilot = vim.env.MEOW_ENABLE_COPILOT == "true"
+  enable_copilot = vim.env.MEOW_ENABLE_COPILOT == "true",
 }

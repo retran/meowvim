@@ -5,9 +5,9 @@
 -- @brief: Visualizer of LSP hierarchies.
 
 return {
-    "retran/meow.yarn.nvim",
-    dependencies = { "MunifTanjim/nui.nvim" },
-    config = function()
-        require("meow.yarn").setup({})
-    end,
+  "retran/meow.yarn.nvim",
+  dependencies = { "MunifTanjim/nui.nvim" },
+  config = function()
+    require("meow.yarn").setup({})
+  end,
 }

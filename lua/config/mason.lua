@@ -12,7 +12,9 @@ local M = {
 }
 
 local function extend(target, items)
-  if not items then return end
+  if not items then
+    return
+  end
   for _, item in ipairs(items) do
     if type(item) == "string" and not vim.tbl_contains(target, item) then
       table.insert(target, item)
