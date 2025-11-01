@@ -8,10 +8,6 @@ return {
   {
     "folke/ts-comments.nvim",
     event = { "BufReadPre", "BufNewFile" },
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter",
-      branch = "main",
-    },
     opts = {},
   },
   {

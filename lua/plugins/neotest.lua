@@ -8,7 +8,6 @@ return {
   "nvim-neotest/neotest",
   dependencies = {
     "nvim-lua/plenary.nvim",
-    { "nvim-treesitter/nvim-treesitter", branch = "main" },
     "antoinemadec/FixCursorHold.nvim",
     "nvim-neotest/neotest-go",
     "mfussenegger/nvim-dap",

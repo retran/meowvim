@@ -11,6 +11,23 @@ return {
     "MunifTanjim/nui.nvim",
     "rcarriga/nvim-notify",
   },
+  init = function()
+    -- Defensive patch: wrap LSP progress handler to safely handle nil tokens
+    local original_handler = vim.lsp.handlers["$/progress"]
+    vim.lsp.handlers["$/progress"] = function(err, result, ctx, config)
+      -- Ensure token is never nil to prevent concatenation errors
+      if result and result.token == nil then
+        result.token = ""
+      end
+      if result and result.value and result.value.token == nil then
+        result.value.token = ""
+      end
+      -- Call original handler with sanitized data
+      if original_handler then
+        return original_handler(err, result, ctx, config)
+      end
+    end
+  end,
   opts = {
     lsp = {
       override = {
@@ -18,9 +35,13 @@ return {
         ["vim.lsp.util.stylize_markdown"] = true,
         ["cmp.entry.get_documentation"] = true,
       },
-    },
-    lsp_progress = {
-      enabled = true,
+      progress = {
+        enabled = true,
+        format = "lsp_progress",
+        format_done = "lsp_progress_done",
+        throttle = 1000 / 30, -- frequency to update lsp progress message
+        view = "mini",
+      },
     },
     presets = {
       bottom_search = true,
