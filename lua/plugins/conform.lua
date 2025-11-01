@@ -21,43 +21,99 @@
 -- THE SOFTWARE.
 --
 -- @file: lua/plugins/conform.lua
--- @brief: Code formatting engine with multiple formatter support.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --
+
+local mason_registry = require("config.mason")
+
+local desired_formatters_by_ft = {
+  lua = { "stylua" },
+  python = { "ruff_format", "ruff_organize_imports" },
+  javascript = { "prettierd", "prettier", stop_after_first = true },
+  typescript = { "prettierd", "prettier", stop_after_first = true },
+  javascriptreact = { "prettierd", "prettier", stop_after_first = true },
+  typescriptreact = { "prettierd", "prettier", stop_after_first = true },
+  json = { "prettierd", "prettier", stop_after_first = true },
+  jsonc = { "prettierd", "prettier", stop_after_first = true },
+  yaml = { "prettierd", "prettier", stop_after_first = true },
+  markdown = { "prettierd", "prettier", "mdformat", stop_after_first = true },
+  html = { "prettierd", "prettier", stop_after_first = true },
+  css = { "prettierd", "prettier", stop_after_first = true },
+  scss = { "prettierd", "prettier", stop_after_first = true },
+  go = { "goimports", "gofmt" },
+  sql = { "pg_format" },
+  plpgsql = { "pg_format" },
+  rust = { "rustfmt", lsp_format = "fallback" },
+  sh = { "shfmt" },
+  bash = { "shfmt" },
+  zsh = { "shfmt" },
+  c = { "clang_format" },
+  cpp = { "clang_format" },
+  cs = { "csharpier", "dotnet_format", lsp_format = "fallback" },
+  java = { "google-java-format" },
+  gdscript = { "gdformat" },
+  gdshader = { "clang_format" },
+  ["*"] = { "codespell" },
+}
+
+do
+  local ensured_formatters = {}
+  local seen = {}
+  local alias_map = {
+    clang_format = "clang-format",
+    dotnet_format = false,
+    gdformat = "gdtoolkit",
+    gofmt = false,
+    pg_format = "pgformatter",
+    ruff_format = "ruff",
+    ruff_organize_imports = "ruff",
+    rustfmt = false,
+  }
+  local function collect(item)
+    if type(item) == "string" and not seen[item] then
+      local package = alias_map[item]
+      if package == false then
+        seen[item] = true
+        return
+      end
+      if not package then
+        package = item
+      end
+      if not seen[package] then
+        table.insert(ensured_formatters, package)
+        seen[package] = true
+      end
+      seen[item] = true
+    end
+  end
+
+  for _, formatters in pairs(desired_formatters_by_ft) do
+    for _, formatter in ipairs(formatters) do
+      collect(formatter)
+    end
+    for _, formatter in pairs(formatters) do
+      collect(formatter)
+    end
+  end
+
+  for formatter, _ in pairs({
+    shfmt = true,
+    stylua = true,
+    black = true,
+    gdformat = true,
+  }) do
+    collect(formatter)
+  end
+
+  mason_registry.ensure_formatters(ensured_formatters)
+end
+
 return {
   "stevearc/conform.nvim",
   event = { "BufWritePre" },
   cmd = { "ConformInfo" },
   opts = function()
-    local desired_formatters_by_ft = {
-      lua = { "stylua" },
-      python = { "ruff_format", "ruff_organize_imports" },
-      javascript = { "prettierd", "prettier", stop_after_first = true },
-      typescript = { "prettierd", "prettier", stop_after_first = true },
-      javascriptreact = { "prettierd", "prettier", stop_after_first = true },
-      typescriptreact = { "prettierd", "prettier", stop_after_first = true },
-      json = { "prettierd", "prettier", stop_after_first = true },
-      jsonc = { "prettierd", "prettier", stop_after_first = true },
-      yaml = { "prettierd", "prettier", stop_after_first = true },
-      markdown = { "prettierd", "prettier", stop_after_first = true },
-      html = { "prettierd", "prettier", stop_after_first = true },
-      css = { "prettierd", "prettier", stop_after_first = true },
-      scss = { "prettierd", "prettier", stop_after_first = true },
-      go = { "goimports", "gofmt" },
-      rust = { "rustfmt", lsp_format = "fallback" },
-      sh = { "shfmt" },
-      bash = { "shfmt" },
-      zsh = { "shfmt" },
-      c = { "clang_format" },
-      cpp = { "clang_format" },
-      cs = { "csharpier", "dotnet_format", lsp_format = "fallback" },
-      java = { "google-java-format" },
-      gdscript = { "gdformat" },
-      gdshader = { "clang_format" },
-      ["*"] = { "codespell" },
-    }
-
     local formatters_by_ft = {}
 
     for ft, formatters in pairs(desired_formatters_by_ft) do
@@ -114,6 +170,9 @@ return {
         },
         gdformat = {
           command = "gdformat",
+        },
+        pg_format = {
+          prepend_args = { "--spaces", "2", "--comma-start", "--keyword-case", "1" },
         },
       },
     }

@@ -20,11 +20,13 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 --
--- @file: lua/plugins/nvim-lspconfig.lua
 -- @brief: Language Server Protocol (LSP) client configuration and setup.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --
+
+local mason_registry = require("config.mason")
+
 return {
   "neovim/nvim-lspconfig",
   lazy = false,
@@ -32,23 +34,42 @@ return {
     "hrsh7th/nvim-cmp",
     "hrsh7th/cmp-nvim-lsp",
     "onsails/lspkind.nvim",
-    "folke/neodev.nvim",
     "b0o/SchemaStore.nvim",
+    "mason-org/mason.nvim",
+    "williamboman/mason-lspconfig.nvim",
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
   },
   config = function()
     vim.deprecate = function(...) end
 
-    require("neodev").setup()
-
-    local ok, lspkind = pcall(require, "lspkind")
-    if ok then
+    local ok_lspkind, lspkind = pcall(require, "lspkind")
+    if ok_lspkind then
       lspkind.init({
         mode = "symbol_text",
         preset = "codicons",
       })
     end
 
+    local mason = require("mason")
+    mason.setup({
+      registries = {
+        "github:mason-org/mason-registry",
+        "github:Crashdummyy/mason-registry",
+      },
+      ui = {
+        border = "rounded",
+        icons = {
+          package_installed = "󰄬",
+          package_pending = "󰪠",
+          package_uninstalled = "󰅘",
+        },
+      },
+    })
+
+    local mason_lspconfig = require("mason-lspconfig")
+    local mason_tool_installer = require("mason-tool-installer")
     local lspconfig = require("lspconfig")
+    local util = require("lspconfig.util")
 
     vim.diagnostic.config({
       virtual_text = { prefix = "", spacing = 2 },
@@ -79,7 +100,6 @@ return {
 
     local on_attach = function(client, bufnr)
       vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
-
       if client.server_capabilities.inlayHintProvider then
         vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
       end
@@ -93,40 +113,35 @@ return {
       end
     end
 
-    if vim.fn.executable("lua-language-server") == 1 then
-      lspconfig.lua_ls.setup({
-        on_attach = on_attach,
-        capabilities = caps,
-      })
-    end
+    vim.api.nvim_create_user_command("LspOrganize", function()
+      local clients = vim.lsp.get_clients({ bufnr = 0, name = "ts_ls" })
+      if #clients == 0 then
+        vim.notify("No TypeScript LSP client attached to current buffer", vim.log.levels.WARN)
+        return
+      end
 
-    if vim.fn.executable("bash-language-server") == 1 then
-      lspconfig.bashls.setup({
-        on_attach = on_attach,
-        capabilities = caps,
+      vim.lsp.buf.execute_command({
+        command = "_typescript.organizeImports",
+        arguments = { vim.api.nvim_buf_get_name(0) },
+        title = "",
+      })
+    end, { desc = "Organize Imports", force = true })
+
+    local server_settings = {
+      lua_ls = {
+        settings = {
+          Lua = {
+            completion = { callSnippet = "Replace" },
+            diagnostics = { globals = { "vim" } },
+            workspace = { checkThirdParty = false },
+          },
+        },
+      },
+      bashls = {
         filetypes = { "sh", "bash", "zsh" },
-      })
-    end
-
-    if vim.fn.executable("nc") == 1 then
-      lspconfig.gdscript.setup({
-        capabilities = caps,
-        cmd = { "nc", "localhost", "6005" },
-        filetypes = { "gd", "gdscript", "gdscript3" },
-        root_dir = lspconfig.util.root_pattern("project.godot", ".git"),
-        on_attach = function(client, bufnr)
-          client.server_capabilities.documentFormattingProvider = false
-          client.server_capabilities.documentRangeFormattingProvider = false
-          vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
-        end,
-      })
-    end
-
-    if vim.fn.executable("gopls") == 1 then
-      lspconfig.gopls.setup({
-        capabilities = caps,
-        on_attach = function(client, bufnr)
-          on_attach(client, bufnr)
+      },
+      gopls = {
+        on_attach = function(client, _)
           if not client.server_capabilities.semanticTokensProvider then
             local semantic = client.config.capabilities.textDocument.semanticTokens
             client.server_capabilities.semanticTokensProvider = {
@@ -201,57 +216,27 @@ return {
             },
           },
         },
-      })
-    end
-
-    if vim.fn.executable("rust-analyzer") == 1 then
-      lspconfig.rust_analyzer.setup({
-        on_attach = on_attach,
-        capabilities = caps,
+      },
+      rust_analyzer = {
         settings = {
           ["rust-analyzer"] = { checkOnSave = { command = "clippy" } },
         },
-      })
-    end
-
-    if vim.fn.executable("pyright") == 1 then
-      lspconfig.pyright.setup({
-        on_attach = on_attach,
-        capabilities = caps,
+      },
+      pyright = {
         settings = {
           python = { analysis = { typeCheckingMode = "basic" } },
         },
-      })
-    end
-
-    if vim.fn.executable("typescript-language-server") == 1 then
-      -- Create the LspOrganize command once globally to avoid duplication warnings
-      -- Use force = true to allow recreation on config reload
-      vim.api.nvim_create_user_command("LspOrganize", function()
-        -- Check if a TypeScript LSP client is attached to the current buffer
-        local clients = vim.lsp.get_clients({ bufnr = 0, name = "ts_ls" })
-        if #clients == 0 then
-          vim.notify("No TypeScript LSP client attached to current buffer", vim.log.levels.WARN)
-          return
-        end
-        
-        vim.lsp.buf.execute_command({
-          command = "_typescript.organizeImports",
-          arguments = { vim.api.nvim_buf_get_name(0) },
-          title = "",
-        })
-      end, { desc = "Organize Imports", force = true })
-
-      lspconfig.ts_ls.setup({
+      },
+      ts_ls = {
         on_attach = function(client, bufnr)
-          on_attach(client, bufnr)
-
           client.server_capabilities.documentFormattingProvider = false
           client.server_capabilities.documentRangeFormattingProvider = false
-          local keymap_opts = { buffer = bufnr, noremap = true, silent = true }
-          vim.keymap.set("n", "<leader>xo", "<cmd>LspOrganize<CR>", keymap_opts)
+          vim.keymap.set("n", "<leader>xo", "<cmd>LspOrganize<CR>", {
+            buffer = bufnr,
+            noremap = true,
+            silent = true,
+          })
         end,
-        capabilities = caps,
         filetypes = {
           "javascript",
           "typescript",
@@ -262,13 +247,8 @@ return {
         },
         settings = {
           typescript = {
-            diagnostics = {
-              enable = true,
-              workspace = true,
-            },
-            codeActions = {
-              enable = true,
-            },
+            diagnostics = { enable = true, workspace = true },
+            codeActions = { enable = true },
             inlayHints = {
               includeInlayParameterNameHints = "all",
               includeInlayParameterNameHintsWhenArgumentMatchesName = false,
@@ -277,18 +257,11 @@ return {
               includeInlayPropertyDeclarationTypeHints = true,
               includeInlayEnumMemberValueHints = true,
             },
-            updateImportsOnFileMove = {
-              enable = true,
-            },
+            updateImportsOnFileMove = { enable = true },
           },
           javascript = {
-            diagnostics = {
-              enable = true,
-              workspace = true,
-            },
-            codeActions = {
-              enable = true,
-            },
+            diagnostics = { enable = true, workspace = true },
+            codeActions = { enable = true },
             inlayHints = {
               includeInlayParameterNameHints = "all",
               includeInlayParameterNameHintsWhenArgumentMatchesName = false,
@@ -297,60 +270,182 @@ return {
               includeInlayPropertyDeclarationTypeHints = true,
               includeInlayEnumMemberValueHints = true,
             },
-            updateImportsOnFileMove = {
-              enable = true,
+            updateImportsOnFileMove = { enable = true },
+          },
+        },
+      },
+      html = {
+        filetypes = { "html" },
+        init_options = { provideFormatter = false },
+        on_attach = function(client)
+          client.server_capabilities.documentFormattingProvider = false
+          client.server_capabilities.documentRangeFormattingProvider = false
+        end,
+      },
+      cssls = {
+        settings = {
+          css = { validate = true },
+          less = { validate = true },
+          scss = { validate = true },
+        },
+        on_attach = function(client)
+          client.server_capabilities.documentFormattingProvider = false
+          client.server_capabilities.documentRangeFormattingProvider = false
+        end,
+      },
+      emmet_language_server = {
+        filetypes = {
+          "css",
+          "eruby",
+          "html",
+          "javascriptreact",
+          "less",
+          "sass",
+          "scss",
+          "svelte",
+          "typescriptreact",
+          "vue",
+        },
+        init_options = {
+          html = {
+            options = {
+              ["bem.enabled"] = true,
             },
           },
         },
-      })
-    end
-
-    if vim.fn.executable("marksman") == 1 then
-      lspconfig.marksman.setup({
-        on_attach = on_attach,
-        capabilities = caps,
-        filetypes = { "markdown", "md" },
-      })
-    end
-
-    if vim.fn.executable("vscode-json-languageserver") == 1 then
-      lspconfig.jsonls.setup({
-        on_attach = on_attach,
-        capabilities = caps,
+      },
+      marksman = {
+        filetypes = { "markdown", "md", "mdx" },
+      },
+      jsonls = {
         settings = {
           json = {
             schemas = require("schemastore").json.schemas(),
             validate = { enable = true },
           },
         },
-      })
-    end
-
-    local home = os.getenv("HOME")
-
-    local roslyn_dll_path = home
-      .. "/.meow/.downloads/Microsoft.CodeAnalysis.LanguageServer/Microsoft.CodeAnalysis.LanguageServer.dll"
-
-    if vim.fn.filereadable(roslyn_dll_path) == 1 then
-      vim.lsp.config("roslyn", {
-        on_attach = on_attach,
-        cmd = {
-          "dotnet",
-          roslyn_dll_path,
-          "--logLevel=Debug",
-          "--extensionLogDirectory=" .. vim.fn.stdpath("state"),
-          "--stdio",
+      },
+      dockerls = {
+        settings = {
+          docker = {
+            languageserver = {
+              formatter = { ignoreMultilineInstructions = true },
+            },
+          },
+        },
+      },
+      docker_compose_language_service = {
+        filetypes = { "yaml.docker-compose", "docker-compose.yaml", "docker-compose.yml" },
+      },
+      ltex = {
+        filetypes = {
+          "bib",
+          "gitcommit",
+          "markdown",
+          "md",
+          "mdx",
+          "plaintex",
+          "rst",
+          "rnoweb",
+          "tex",
         },
         settings = {
-          ["csharp|inlay_hints"] = {
-            csharp_enable_inlay_hints_for_implicit_object_creation = true,
-            csharp_enable_inlay_hints_for_implicit_variable_types = true,
-          },
-          ["csharp|code_lens"] = {
-            dotnet_enable_references_code_lens = true,
+          ltex = {
+            checkFrequency = "save",
+            language = "en-US",
+            additionalRules = {
+              enablePickyRules = true,
+            },
+            dictionary = {
+              ["en-US"] = {},
+            },
           },
         },
+      },
+      postgres_lsp = {
+        filetypes = { "sql", "plpgsql" },
+        single_file_support = true,
+        settings = {
+          postgres_lsp = {
+            enabled = true,
+          },
+        },
+      },
+    }
+
+    local ensure_servers = vim.tbl_keys(server_settings)
+    mason_registry.ensure_servers(ensure_servers)
+    mason_registry.ensure_servers({ "roslyn" })
+
+    mason_lspconfig.setup({
+      ensure_installed = ensure_servers,
+      automatic_installation = false,
+    })
+
+    local function setup_server(server_name)
+      local server_opts = vim.tbl_deep_extend("force", {}, server_settings[server_name] or {})
+      local custom_on_attach = server_opts.on_attach
+      server_opts.capabilities = vim.tbl_deep_extend("force", {}, caps, server_opts.capabilities or {})
+      server_opts.on_attach = function(client, bufnr)
+        on_attach(client, bufnr)
+        if custom_on_attach then
+          custom_on_attach(client, bufnr)
+        end
+      end
+      if lspconfig[server_name] then
+        lspconfig[server_name].setup(server_opts)
+      end
+    end
+
+    if mason_lspconfig.setup_handlers then
+      mason_lspconfig.setup_handlers({
+        function(server_name)
+          setup_server(server_name)
+        end,
+      })
+    else
+      for _, server_name in ipairs(ensure_servers) do
+        setup_server(server_name)
+      end
+    end
+
+    if vim.fn.executable("nc") == 1 then
+      lspconfig.gdscript.setup({
+        capabilities = caps,
+        cmd = { "nc", "localhost", "6005" },
+        filetypes = { "gd", "gdscript", "gdscript3" },
+        root_dir = util.root_pattern("project.godot", ".git"),
+        on_attach = function(client, bufnr)
+          on_attach(client, bufnr)
+          client.server_capabilities.documentFormattingProvider = false
+          client.server_capabilities.documentRangeFormattingProvider = false
+        end,
       })
     end
+
+    vim.lsp.config("roslyn", {
+      on_attach = on_attach,
+      settings = {
+        ["csharp|inlay_hints"] = {
+          csharp_enable_inlay_hints_for_implicit_object_creation = true,
+          csharp_enable_inlay_hints_for_implicit_variable_types = true,
+        },
+        ["csharp|code_lens"] = {
+          dotnet_enable_references_code_lens = true,
+        },
+      },
+    })
+
+    mason_tool_installer.setup({
+      ensure_installed = mason_registry.get_all_tools(),
+      auto_update = false,
+      run_on_start = false,
+      start_delay = 0,
+      integrations = {
+        ["mason-lspconfig"] = true,
+        ["mason-null-ls"] = false,
+        ["mason-nvim-dap"] = true,
+      },
+    })
   end,
 }

@@ -20,18 +20,23 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 --
--- @file: lua/plugins/roslyn.lua
--- @brief: Plugin for C# development using Roslyn
+-- @file: lua/plugins/lazydev.lua
+-- @brief: Enhanced LuaLS workspace management and completion integration.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --
+
 return {
-  "seblyng/roslyn.nvim",
-  init = function()
-    require("config.mason").ensure_servers({ "roslyn" })
-  end,
-  opts = {},
-  config = function(_, opts)
-    require("roslyn").setup(opts)
-  end,
+  "folke/lazydev.nvim",
+  ft = "lua",
+  opts = {
+    library = {
+      "lazy.nvim",
+    },
+    integrations = {
+      lspconfig = true,
+      cmp = true,
+    },
+  },
 }
+

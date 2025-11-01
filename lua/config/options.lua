@@ -93,5 +93,46 @@ opt.titlestring = "meowvim - Purr-fect Neovim"
 
 vim.g.disable_autoformat = true
 
+opt.spelllang = { "en_us" }
+opt.spellsuggest = { "best", "9" }
+opt.spelloptions:append("camel")
+
+local spell_dir = vim.fn.stdpath("config") .. "/spell"
+if vim.fn.isdirectory(spell_dir) == 0 then
+  vim.fn.mkdir(spell_dir, "p")
+end
+opt.spellfile = spell_dir .. "/en.utf-8.add"
+
+local spell_group = vim.api.nvim_create_augroup("meowvim-spell", { clear = true })
+
+local function enable_spell(bufnr, opts)
+  opts = opts or {}
+  vim.api.nvim_buf_call(bufnr, function()
+    vim.opt_local.spell = true
+    vim.opt_local.spelllang = opt.spelllang:get()
+    vim.opt_local.spellcapcheck = ""
+    if opts.conceal ~= false then
+      vim.opt_local.concealcursor = ""
+    end
+  end)
+end
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = spell_group,
+  pattern = {
+    "gitcommit",
+    "markdown",
+    "md",
+    "mdx",
+    "text",
+    "norg",
+    "rst",
+    "tex",
+  },
+  callback = function(args)
+    enable_spell(args.buf)
+  end,
+})
+
 vim.opt.timeoutlen = 300
 vim.opt.ttimeoutlen = 10

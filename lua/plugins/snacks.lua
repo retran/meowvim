@@ -127,6 +127,55 @@ return {
         },
         projects = {
           hidden = true,
+          dev = {
+            vim.fn.expand("~/workspace"),
+            vim.fn.expand("~/dev"),
+            vim.fn.expand("~/projects"),
+          },
+          projects = {
+            vim.fn.fnamemodify(vim.fn.expand("~/workspace/meowvim"), ":p"),
+          },
+          confirm = function(picker, item)
+            picker:close()
+            if not item or not item.file then
+              return
+            end
+
+            local dir = item.file
+            local session_loaded = false
+            vim.api.nvim_create_autocmd("SessionLoadPost", {
+              once = true,
+              callback = function()
+                session_loaded = true
+              end,
+            })
+
+            vim.defer_fn(function()
+              if not session_loaded then
+                Snacks.picker.files()
+              end
+            end, 100)
+
+            vim.fn.chdir(dir)
+            local session = Snacks.dashboard.sections.session()
+            if not session then
+              return
+            end
+
+            local action = session.action
+            if type(action) == "function" then
+              action()
+              return
+            end
+
+            if type(action) == "string" then
+              if action:sub(1, 1) == ":" then
+                vim.cmd(action:sub(2))
+              else
+                vim.cmd(action)
+              end
+            end
+          end,
         },
         lsp_workspace_symbols = {
           tree = true,

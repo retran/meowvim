@@ -20,31 +20,66 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 --
--- @file: lua/plugins/nvim-lint.lua
 -- @brief: Asynchronous linting engine with multiple linter support.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --
+
+local mason_registry = require("config.mason")
+
+local desired_linters_by_ft = {
+  python = { "pylint", "mypy" },
+  javascript = { "eslint_d" },
+  typescript = { "eslint_d" },
+  javascriptreact = { "eslint_d" },
+  typescriptreact = { "eslint_d" },
+  go = { "golangcilint" },
+  rust = { "clippy" },
+  markdown = { "markdownlint" },
+  yaml = { "yamllint" },
+  json = { "jsonlint" },
+  sql = { "sqlfluff" },
+  plpgsql = { "sqlfluff" },
+  dockerfile = { "hadolint" },
+  vim = { "vint" },
+  gdscript = { "gdlint" },
+}
+
+do
+  local ensured_linters = {}
+  local seen = {}
+  local alias_map = {
+    clippy = false,
+    gdlint = "gdtoolkit",
+    golangcilint = "golangci-lint",
+  }
+  for _, linters in pairs(desired_linters_by_ft) do
+    for _, linter in ipairs(linters) do
+      if not seen[linter] then
+        local package = alias_map[linter]
+        if package == false then
+          seen[linter] = true
+          goto continue
+        end
+        if package == nil then
+          package = linter
+        end
+        if not seen[package] then
+          table.insert(ensured_linters, package)
+          seen[package] = true
+        end
+        seen[linter] = true
+      end
+      ::continue::
+    end
+  end
+  mason_registry.ensure_linters(ensured_linters)
+end
+
 return {
   "mfussenegger/nvim-lint",
   event = { "BufReadPre", "BufNewFile" },
   opts = function()
-    local desired_linters_by_ft = {
-      python = { "pylint", "mypy" },
-      javascript = { "eslint_d" },
-      typescript = { "eslint_d" },
-      javascriptreact = { "eslint_d" },
-      typescriptreact = { "eslint_d" },
-      go = { "golangcilint" },
-      rust = { "clippy" },
-      markdown = { "markdownlint" },
-      yaml = { "yamllint" },
-      json = { "jsonlint" },
-      dockerfile = { "hadolint" },
-      vim = { "vint" },
-      gdscript = { "gdlint" },
-    }
-
     local linters_by_ft = {}
     for ft, linters in pairs(desired_linters_by_ft) do
       local available_linters = {}
@@ -75,7 +110,23 @@ return {
           },
         },
         markdownlint = {
-          args = { "--stdin", "--config", vim.fn.expand("~/.markdownlint.json") },
+          args = function()
+            local config = vim.fn.expand("~/.markdownlint.json")
+            if vim.fn.filereadable(config) == 1 then
+              return { "--stdin", "--config", config }
+            end
+            return { "--stdin" }
+          end,
+        },
+        sqlfluff = {
+          args = {
+            "lint",
+            "--format",
+            "json",
+            "--dialect",
+            "postgres",
+            "-",
+          },
         },
       },
     }

@@ -65,6 +65,7 @@ return {
         luasnip = " Snip",
         buffer = " Buffer",
         path = " Path",
+        lazydev = " LazyDev",
         copilot = " Copilot",
         spell = " Spell",
         nvim_lua = "NVIM API",
@@ -158,6 +159,7 @@ return {
 
     cmp.setup.filetype("lua", {
       sources = cmp.config.sources({
+        { name = "lazydev", group_index = 0 },
         { name = "nvim_lsp" },
         { name = "nvim_lua" },
         { name = "luasnip" },

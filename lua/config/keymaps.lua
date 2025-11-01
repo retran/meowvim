@@ -54,6 +54,8 @@ function M.setup()
         end,
         desc = "Open Last/Default",
       },
+      { "]s", "]s", desc = "Next Spelling Issue" },
+      { "[s", "[s", desc = "Previous Spelling Issue" },
       {
         "<leader>.f",
         function()
@@ -276,6 +278,22 @@ function M.setup()
         end,
         desc = "Session Save Off",
       },
+      {
+        "zg",
+        function()
+          vim.cmd("silent normal! zg")
+          vim.notify("Word added to spellfile", vim.log.levels.INFO)
+        end,
+        desc = "Spelling Add",
+      },
+      {
+        "zw",
+        function()
+          vim.cmd("silent normal! zw")
+          vim.notify("Word marked incorrect", vim.log.levels.INFO)
+        end,
+        desc = "Spelling Remove",
+      },
 
       -- Paste / Yank history
       { "<leader>p", group = "+paste" },
@@ -493,6 +511,11 @@ function M.setup()
         end,
         desc = "Search Marks",
       },
+
+      -- Tooling
+      { "<leader>M", group = "+mason" },
+      { "<leader>Mm", "<cmd>Mason<CR>", desc = "Open Mason" },
+      { "<leader>MT", "<cmd>MasonToolsInstall<CR>", desc = "Install Missing Tools" },
 
       -- Git
       { "<leader>G", group = "+git" },

@@ -27,9 +27,17 @@
 --
 vim.loader.enable()
 
-Meow = require("config.custom")
+do
+  local mason_bin = vim.fn.stdpath("data") .. "/mason/bin"
+  if vim.fn.isdirectory(mason_bin) == 1 then
+    local separator = vim.loop.os_uname().sysname:find("Windows") and ";" or ":"
+    if not vim.env.PATH or not vim.env.PATH:find(mason_bin, 1, true) then
+      vim.env.PATH = mason_bin .. separator .. (vim.env.PATH or "")
+    end
+  end
+end
 
-vim.o.runtimepath = vim.o.runtimepath .. '/Users/retran/workspace/Microsoft.CodeAnalysis.LanguageServer/'
+Meow = require("config.custom")
 
 require("config/options")
 require("config/neovide")

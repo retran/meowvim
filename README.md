@@ -70,6 +70,7 @@ A carefully crafted Neovim configuration that provides a modern development envi
 - **LSP Support**: Language Server Protocol integration with automatic setup
 - **GitHub Copilot**: AI-powered code completion and suggestions
 - **Completion Engine**: Context-aware autocompletion with nvim-cmp
+- **Lua Workspace Boost**: LazyDev keeps LuaLS tuned to the plugins you actually load
 - **Code Snippets**: Snippet collection with LuaSnip
 - **Syntax Highlighting**: Syntax highlighting with Treesitter
 
@@ -86,6 +87,7 @@ A carefully crafted Neovim configuration that provides a modern development envi
 - **Git Integration**: Neogit status, Diffview history, Git Conflict helpers, and GH.nvim reviews
 - **Diagnostics Explorer**: Triage issues via Trouble.nvim
 - **LSP Peek**: VSCode-style previews with Glance
+- **Unified Tool Manager**: Mason keeps LSP servers, formatters, linters, and debuggers in sync
 - **Code Formatting**: Automatic formatting with Conform.nvim
 - **Linting**: Real-time code linting with nvim-lint
 - **Debugging**: Debugging support with nvim-dap and specialized Go support
@@ -202,7 +204,13 @@ On first launch, `meowvim` will:
 - **Open scratch buffer**: `Space, .`
 - **Dashboard navigation**: Use the shortcuts shown on the dashboard
 
-### 3. Set Up GitHub Copilot (Optional)
+### 3. Install Language Tooling
+
+- Open the Mason manager with `Space, M, m` (or run `:Mason`) to review tool status
+- Install or update required servers, formatters, linters, and debuggers with `Space, M, T` (`:MasonToolsInstall`)
+- Mason bin paths are added automatically, so tools work immediately after installation
+
+### 4. Set Up GitHub Copilot (Optional)
 
 ```vim
 :Copilot auth
@@ -241,6 +249,12 @@ vim.opt.shiftwidth = 4
 -- Example: Enable line wrapping
 vim.opt.wrap = true
 ```
+
+#### Spelling Tips
+
+`zg` adds the word under the cursor to your personal spellfile (`~/.config/nvim/spell/en.utf-8.add` by default).  
+`zw` marks a word as incorrect.  
+Use `]s` / `[s` to jump between spelling issues.
 
 ### Adding Plugins
 
@@ -385,22 +399,20 @@ nvim --headless "+Lazy sync" +qa
    :LspInfo
    ```
 
-2. Language servers are managed by the `meow`. If you installed `meowvim` as part of `meow`, they should be automatically available.
-3. For standalone installation, you may need to install servers manually:
+2. Open the Mason UI to check tool status:
 
-   ```bash
-   # TypeScript/JavaScript
-   npm install -g typescript typescript-language-server
-
-   # Python
-   pip install python-lsp-server
-
-   # Go
-   go install golang.org/x/tools/gopls@latest
-
-   # Rust
-   rustup component add rust-analyzer
+   ```vim
+   :Mason
    ```
+
+   - Press `i` to install any missing language server
+   - For C#, install `roslyn` (or `roslyn-unstable` for nightly builds)
+   - For Godot/GDScript, install `gdtoolkit` to get `gdformat` and `gdlint`
+   - For Postgres, install `postgres_lsp`, `pg_format`, and `sqlfluff`
+   - For Docker, install `dockerls`, `docker_compose_language_service`, and `hadolint`
+   - For Markdown, install `marksman`, `mdformat`, and `markdownlint`
+   - For spelling/grammar, install `ltex-ls`
+   - Use `:MasonToolsInstall` to sync every tool declared by the config
 
 #### Copilot Not Working
 

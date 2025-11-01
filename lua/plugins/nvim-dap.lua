@@ -20,14 +20,17 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 --
--- @file: lua/plugins/nvim-dap.lua
 -- @brief: Debug Adapter Protocol (DAP) client for debugging integration.
 -- @author: Andrew Vasilyev
 -- @license: MIT
 --
+
+require("config.mason").ensure_debuggers({ "delve", "netcoredbg" })
+
 return {
   "mfussenegger/nvim-dap",
   dependencies = {
+    "mason-org/mason.nvim",
     {
       "rcarriga/nvim-dap-ui",
       dependencies = { "nvim-neotest/nvim-nio" },
@@ -56,17 +59,53 @@ return {
         require("dap-go").setup()
       end,
     },
-    {
-      "Cliffback/netcoredbg-macOS-arm64.nvim",
-    },
   },
   config = function()
     local dap = require("dap")
     local dapui = require("dapui")
 
+    local mason_registry = require("mason-registry")
+    local function get_netcoredbg()
+      local ok, pkg = pcall(mason_registry.get_package, "netcoredbg")
+      if not ok or not pkg:is_installed() then
+        return nil
+      end
+
+      local uv = vim.uv or vim.loop
+      local sysname = uv.os_uname().sysname:lower()
+      local is_windows = sysname:find("windows") or sysname:find("mingw")
+
+      local exe = is_windows and "netcoredbg.exe" or "netcoredbg"
+      local install_path = pkg:get_install_path()
+      local path = vim.fs.joinpath(install_path, exe)
+      if vim.fn.filereadable(path) == 1 then
+        return path
+      end
+
+      local shim = vim.fs.joinpath(
+        vim.fn.stdpath("data"),
+        "mason",
+        "bin",
+        "netcoredbg" .. (is_windows and ".cmd" or "")
+      )
+      local fallback = is_windows and shim or vim.fs.joinpath(vim.fn.stdpath("data"), "mason", "bin", "netcoredbg")
+      if vim.fn.filereadable(fallback) == 1 or vim.fn.executable(fallback) == 1 then
+        return fallback
+      end
+    end
+
+    local netcoredbg = get_netcoredbg()
+    if not netcoredbg then
+      vim.notify(
+        "netcoredbg debugger not found. Install it with :MasonInstall netcoredbg.",
+        vim.log.levels.WARN,
+        { title = "DAP" }
+      )
+    end
+
     dap.adapters.coreclr = {
       type = "executable",
-      command = vim.fn.stdpath("data") .. "/lazy/netcoredbg-macOS-arm64.nvim/netcoredbg/netcoredbg",
+      command = netcoredbg or "netcoredbg",
       args = { "--interpreter=vscode" },
     }
 
