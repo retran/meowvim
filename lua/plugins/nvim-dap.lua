@@ -75,22 +75,35 @@ return {
       local sysname = uv.os_uname().sysname:lower()
       local is_windows = sysname:find("windows") or sysname:find("mingw")
 
-      local exe = is_windows and "netcoredbg.exe" or "netcoredbg"
-      local install_path = pkg:get_install_path()
-      local path = vim.fs.joinpath(install_path, exe)
-      if vim.fn.filereadable(path) == 1 then
-        return path
+      local function can_execute(path)
+        return type(path) == "string"
+          and path ~= ""
+          and (vim.fn.executable(path) == 1 or vim.fn.filereadable(path) == 1)
       end
 
-      local shim = vim.fs.joinpath(
-        vim.fn.stdpath("data"),
-        "mason",
-        "bin",
-        "netcoredbg" .. (is_windows and ".cmd" or "")
-      )
-      local fallback = is_windows and shim or vim.fs.joinpath(vim.fn.stdpath("data"), "mason", "bin", "netcoredbg")
-      if vim.fn.filereadable(fallback) == 1 or vim.fn.executable(fallback) == 1 then
-        return fallback
+      local exe_from_path = vim.fn.exepath("netcoredbg")
+      if can_execute(exe_from_path) then
+        return exe_from_path
+      end
+
+      local mason_root = vim.env.MASON
+      if not mason_root or mason_root == "" then
+        mason_root = vim.fs.joinpath(vim.fn.stdpath("data"), "mason")
+      end
+
+      local candidates = {
+        vim.fs.joinpath(mason_root, "bin", "netcoredbg"),
+      }
+
+      if is_windows then
+        table.insert(candidates, vim.fs.joinpath(mason_root, "bin", "netcoredbg.cmd"))
+        table.insert(candidates, vim.fs.joinpath(mason_root, "bin", "netcoredbg.exe"))
+      end
+
+      for _, candidate in ipairs(candidates) do
+        if can_execute(candidate) then
+          return candidate
+        end
       end
     end
 
