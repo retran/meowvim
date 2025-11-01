@@ -52,14 +52,5 @@ return {
 
     map("n", "=p", "<Plug>(YankyPutAfterFilter)")
     map("n", "=P", "<Plug>(YankyPutBeforeFilter)")
-
-    map("n", "<leader>p?", function()
-      local ok, snacks = pcall(require, "yanky.sources.snacks")
-      if ok then
-        snacks.pick()
-      else
-        vim.notify("Snacks picker is unavailable", vim.log.levels.WARN)
-      end
-    end, { desc = "Yank History" })
-  end,
+ end,
 }

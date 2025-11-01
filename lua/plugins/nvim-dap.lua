@@ -86,7 +86,15 @@ return {
     local dap_context_maps = {
       {
         "n",
-        "<leader>rt",
+        "<leader>dc",
+        function()
+          dap.continue()
+        end,
+        "Continue / Run",
+      },
+      {
+        "n",
+        "<leader>dt",
         function()
           dap.terminate()
         end,
@@ -94,15 +102,7 @@ return {
       },
       {
         "n",
-        "<leader>rb",
-        function()
-          dap.toggle_breakpoint()
-        end,
-        "Toggle Breakpoint",
-      },
-      {
-        "n",
-        "<leader>rs",
+        "<leader>ds",
         function()
           dap.step_over()
         end,
@@ -110,7 +110,7 @@ return {
       },
       {
         "n",
-        "<leader>ri",
+        "<leader>di",
         function()
           dap.step_into()
         end,
@@ -118,7 +118,7 @@ return {
       },
       {
         "n",
-        "<leader>ro",
+        "<leader>do",
         function()
           dap.step_out()
         end,
@@ -126,31 +126,23 @@ return {
       },
       {
         "n",
-        "<leader>ru",
+        "<leader>dr",
+        function()
+          dap.run_to_cursor()
+        end,
+        "Run to Cursor",
+      },
+      {
+        "n",
+        "<leader>du",
         function()
           dapui.toggle()
         end,
         "Toggle UI",
       },
       {
-        { "n", "v" },
-        "<leader>rh",
-        function()
-          require("dap.ui.widgets").hover()
-        end,
-        "Hover Variable",
-      },
-      {
         "n",
-        "<leader>rg",
-        function()
-          dap.run_to_cursor()
-        end,
-        "Go to Cursor",
-      },
-      {
-        "n",
-        "<leader>rR",
+        "<leader>dR",
         function()
           dap.repl.open()
         end,
@@ -158,7 +150,15 @@ return {
       },
       {
         "n",
-        "<leader>rBc",
+        "<leader>dbt",
+        function()
+          dap.toggle_breakpoint()
+        end,
+        "Toggle Breakpoint",
+      },
+      {
+        "n",
+        "<leader>dbc",
         function()
           dap.set_breakpoint(vim.fn.input("Condition: "))
         end,
@@ -166,7 +166,7 @@ return {
       },
       {
         "n",
-        "<leader>rBl",
+        "<leader>dbl",
         function()
           dap.set_breakpoint(nil, nil, vim.fn.input("Log Message: "))
         end,
@@ -174,15 +174,15 @@ return {
       },
       {
         "n",
-        "<leader>rBd",
+        "<leader>dba",
         function()
           dap.clear_breakpoints()
         end,
-        "Delete All Breakpoints",
+        "Clear Breakpoints",
       },
       {
         "n",
-        "<leader>rBe",
+        "<leader>dbe",
         function()
           dap.set_exception_breakpoints()
         end,
@@ -190,23 +190,31 @@ return {
       },
       {
         "n",
-        "<leader>rUs",
+        "<leader>dvs",
         function()
           require("dap.ui.widgets").centered_float(require("dap.ui.widgets").scopes)
         end,
-        "Scopes",
+        "View Scopes",
       },
       {
         "n",
-        "<leader>rUf",
+        "<leader>dvf",
         function()
           require("dap.ui.widgets").centered_float(require("dap.ui.widgets").frames)
         end,
-        "Frames",
+        "View Frames",
       },
       {
         { "n", "v" },
-        "<leader>rUp",
+        "<leader>dvh",
+        function()
+          require("dap.ui.widgets").hover()
+        end,
+        "Inspect Hover",
+      },
+      {
+        { "n", "v" },
+        "<leader>dvp",
         function()
           require("dap.ui.widgets").preview()
         end,
@@ -221,9 +229,5 @@ return {
     end
 
     register_dap_maps()
-
-    vim.keymap.set("n", "<leader>rr", function()
-      dap.continue()
-    end, { desc = "Run / Continue" })
   end,
 }

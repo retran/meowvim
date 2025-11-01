@@ -133,11 +133,12 @@ return {
         return
       end
 
-      vim.lsp.buf.execute_command({
+      local params = {
         command = "_typescript.organizeImports",
         arguments = { vim.api.nvim_buf_get_name(0) },
         title = "",
-      })
+      }
+      vim.lsp.buf_request(0, "workspace/executeCommand", params)
     end, { desc = "Organize Imports", force = true })
 
     local server_settings = {
@@ -184,7 +185,7 @@ return {
         on_attach = function(client, bufnr)
           client.server_capabilities.documentFormattingProvider = false
           client.server_capabilities.documentRangeFormattingProvider = false
-          vim.keymap.set("n", "<leader>xo", "<cmd>LspOrganize<CR>", { buffer = bufnr })
+          vim.keymap.set("n", "<leader>co", "<cmd>LspOrganize<CR>", { buffer = bufnr })
         end,
         settings = {
           typescript = {
