@@ -162,6 +162,10 @@ This project is released under the [MIT License](./LICENSE).
 
 <div align="center">
 
-Maintained with love by Andrew Vasilyev and feline friends — happy hacking from the **project meow** pride! 🐾
+### Made with ❤️ by Andrew Vasilyev and feline assistants Sonya Blade, Mila, and Marcus Fenix
+
+**Happy coding with project meow! 🐱**
+
+[⭐ Star us on GitHub](https://github.com/retran/meowvim) • [🐛 Report Bug](https://github.com/retran/meowvim/issues) • [💡 Request Feature](https://github.com/retran/meowvim/issues) • [🔀 Contribute](https://github.com/retran/meowvim/pulls)
 
 </div>
