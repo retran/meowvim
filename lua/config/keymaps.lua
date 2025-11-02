@@ -73,28 +73,28 @@ function M.setup()
         function()
           snacks.picker.smart()
         end,
-        desc = "Smart Find File",
+        desc = "Find File",
       },
       {
         "<leader>fF",
         function()
           snacks.picker.files()
         end,
-        desc = "Find File",
+        desc = "Browse Files",
       },
       {
         "<leader>fg",
         function()
           snacks.picker.git_files()
         end,
-        desc = "Find in Git",
+        desc = "Find Git File",
       },
       {
         "<leader>fr",
         function()
           snacks.picker.recent()
         end,
-        desc = "Recent Files",
+        desc = "Show Recent Files",
       },
       {
         "<leader>fn",
@@ -118,34 +118,33 @@ function M.setup()
             end
           end)
         end,
-        desc = "New File",
+        desc = "Create File",
       },
       {
         "<leader>fe",
         function()
           snacks.explorer()
         end,
-        desc = "Toggle Explorer",
+        desc = "Toggle File Explorer",
       },
       {
         "<leader>fp",
         function()
           snacks.picker.projects()
         end,
-        desc = "Project Picker",
+        desc = "Switch Project",
       },
       { "<leader>fs", ":w<CR>", desc = "Save File" },
       { "<leader>fS", ":wa<CR>", desc = "Save All Files" },
 
       -- Flash Jump
-      { "<leader><space>", flash_action("jump", false), desc = "Jump", mode = { "n", "x", "o" } },
+      { "<leader><space>", flash_action("jump", false), desc = "Jump to Match", mode = { "n", "x", "o" } },
 
       -- Workspace
       { "<leader>oW", group = "+workspace" },
       { "<leader>oWa", vim.lsp.buf.add_workspace_folder, desc = "Add Workspace Folder" },
       { "<leader>oWR", vim.lsp.buf.remove_workspace_folder, desc = "Remove Workspace Folder" },
       { "<leader>oWL", vim.lsp.buf.list_workspace_folders, desc = "List Workspace Folders" },
-
 
       { "<leader>oS", group = "+session" },
       {
@@ -188,9 +187,9 @@ function M.setup()
         end,
         desc = "List Buffers",
       },
-      { "<leader>bn", ":new<CR>", desc = "New Buffer" },
-      { "<leader>bp", ":bprevious<CR>", desc = "Previous Buffer" },
-      { "<leader>bf", ":bnext<CR>", desc = "Next Buffer" },
+      { "<leader>bn", ":new<CR>", desc = "Create Buffer" },
+      { "<leader>bp", ":bprevious<CR>", desc = "Go To Previous Buffer" },
+      { "<leader>bf", ":bnext<CR>", desc = "Go To Next Buffer" },
       { "<leader>br", ":BufRename<CR>", desc = "Rename Buffer" },
       {
         "<leader>bd",
@@ -227,8 +226,8 @@ function M.setup()
       { "<leader>wj", "<C-w>j", desc = "Focus Lower Window" },
       { "<leader>wk", "<C-w>k", desc = "Focus Upper Window" },
       { "<leader>wl", "<C-w>l", desc = "Focus Right Window" },
-      { "<leader>ws", "<C-w>s", desc = "Split Horizontal" },
-      { "<leader>wv", "<C-w>v", desc = "Split Vertical" },
+      { "<leader>ws", "<C-w>s", desc = "Split Window Horizontally" },
+      { "<leader>wv", "<C-w>v", desc = "Split Window Vertically" },
       { "<leader>wc", "<C-w>c", desc = "Close Window" },
       { "<leader>wo", "<C-w>o", desc = "Close Other Windows" },
       { "<leader>w=", "<C-w>=", desc = "Equalize Windows" },
@@ -236,10 +235,10 @@ function M.setup()
       { "<leader>w<", "<C-w><", desc = "Decrease Width" },
       { "<leader>w+", "<C-w>+", desc = "Increase Height" },
       { "<leader>w-", "<C-w>-", desc = "Decrease Height" },
-      { "<leader>wH", "<C-w>H", desc = "Move Far Left" },
-      { "<leader>wL", "<C-w>L", desc = "Move Far Right" },
-      { "<leader>wK", "<C-w>K", desc = "Move Far Top" },
-      { "<leader>wJ", "<C-w>J", desc = "Move Far Bottom" },
+      { "<leader>wH", "<C-w>H", desc = "Move Window Far Left" },
+      { "<leader>wL", "<C-w>L", desc = "Move Window Far Right" },
+      { "<leader>wK", "<C-w>K", desc = "Move Window to Top" },
+      { "<leader>wJ", "<C-w>J", desc = "Move Window to Bottom" },
 
       -- Search & Navigaton
       { "<leader>s", group = "+search" },
@@ -248,7 +247,7 @@ function M.setup()
         function()
           snacks.picker.grep()
         end,
-        desc = "Search Project",
+        desc = "Search Project Text",
       },
       {
         "<leader>sb",
@@ -262,7 +261,7 @@ function M.setup()
         function()
           snacks.picker.git_grep()
         end,
-        desc = "Search in Git",
+        desc = "Search Git Repository",
       },
       {
         "<leader>sr",
@@ -278,88 +277,88 @@ function M.setup()
             spectre.open()
           end
         end,
-        desc = "Search/Replace (Spectre)",
+        desc = "Search and Replace Project",
         mode = { "n", "x" },
       },
-      { "<leader>st", "<cmd>TodoTrouble<CR>", desc = "TODO Comments" },
+      { "<leader>st", "<cmd>TodoTrouble<CR>", desc = "List TODO Comments" },
 
       -- Flash Jump
       { "<leader>j", group = "+jump" },
-      { "<leader>jj", flash_action("jump", false), desc = "Flash Jump", mode = { "n", "x", "o" } },
-      { "<leader>jt", flash_action("treesitter"), desc = "Flash Treesitter", mode = { "n", "x", "o" } },
-      { "<leader>ja", flash_action("jump", true), desc = "Flash Jump (All Windows)", mode = { "n", "x", "o" } },
-      { "<leader>jm", flash_action("remote"), desc = "Flash Remote", mode = { "n", "x", "o" } },
+      { "<leader>jj", flash_action("jump", false), desc = "Jump to Match", mode = { "n", "x", "o" } },
+      { "<leader>jt", flash_action("treesitter"), desc = "Jump to Treesitter Node", mode = { "n", "x", "o" } },
+      { "<leader>ja", flash_action("jump", true), desc = "Jump to Match in All Windows", mode = { "n", "x", "o" } },
+      { "<leader>jm", flash_action("remote"), desc = "Jump to Remote Target", mode = { "n", "x", "o" } },
 
       -- Navigation
       { "<leader>n", group = "+navigate" },
-      { "<leader>nd", glance_action("definitions"), desc = "Glance Definitions" },
+      { "<leader>nd", glance_action("definitions"), desc = "Go To Definitions" },
       {
         "<leader>nD",
         function()
           snacks.picker.lsp_declarations()
         end,
-        desc = "Pick Declaration",
+        desc = "Go To Declaration",
       },
-      { "<leader>nr", glance_action("references"), desc = "Glance References" },
-      { "<leader>ni", glance_action("implementations"), desc = "Glance Implementations" },
-      { "<leader>nt", glance_action("type_definitions"), desc = "Glance Type Definitions" },
+      { "<leader>nr", glance_action("references"), desc = "Go To References" },
+      { "<leader>ni", glance_action("implementations"), desc = "Go To Implementations" },
+      { "<leader>nt", glance_action("type_definitions"), desc = "Go To Type Definitions" },
       {
         "<leader>ns",
         function()
           snacks.picker.lsp_symbols()
         end,
-        desc = "Document Symbols",
+        desc = "Go To Document Symbols",
       },
       {
         "<leader>nw",
         function()
           snacks.picker.lsp_workspace_symbols()
         end,
-        desc = "Workspace Symbols",
+        desc = "Go To Workspace Symbols",
       },
       {
         "<leader>nh",
         function()
           require("meow.yarn").open_tree("type_hierarchy", "subtypes")
         end,
-        desc = "Type Hierarchy (Subtypes)",
+        desc = "Show Type Hierarchy (Subtypes)",
       },
       {
         "<leader>nH",
         function()
           require("meow.yarn").open_tree("type_hierarchy", "supertypes")
         end,
-        desc = "Type Hierarchy (Supertypes)",
+        desc = "Show Type Hierarchy (Supertypes)",
       },
       {
         "<leader>nc",
         function()
           require("meow.yarn").open_tree("call_hierarchy", "callers")
         end,
-        desc = "Call Hierarchy (Callers)",
+        desc = "Show Call Hierarchy (Callers)",
       },
       {
         "<leader>nC",
         function()
           require("meow.yarn").open_tree("call_hierarchy", "callees")
         end,
-        desc = "Call Hierarchy (Callees)",
+        desc = "Show Call Hierarchy (Callees)",
       },
 
       -- Code Intelligence
       { "<leader>c", group = "+code" },
       { "<leader>cd", group = "+diagnostics" },
-      { "<leader>cda", trouble_action("diagnostics"), desc = "Diagnostics (Project)" },
-      { "<leader>cdb", trouble_action("diagnostics", { filter = { buf = 0 } }), desc = "Diagnostics (Buffer)" },
-      { "<leader>cdq", trouble_action("quickfix"), desc = "Quickfix (Trouble)" },
-      { "<leader>cdl", trouble_action("loclist"), desc = "Loclist (Trouble)" },
-      { "<leader>cds", trouble_action("symbols", { focus = false }), desc = "Symbols (Trouble)" },
-      { "<leader>cdh", vim.diagnostic.open_float, desc = "Line Diagnostics" },
-      { "]d", vim.diagnostic.goto_next, desc = "Next Diagnostic", mode = "n" },
-      { "[d", vim.diagnostic.goto_prev, desc = "Previous Diagnostic", mode = "n" },
-      { "<leader>cc", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "v" } },
+      { "<leader>cda", trouble_action("diagnostics"), desc = "Show Project Diagnostics" },
+      { "<leader>cdb", trouble_action("diagnostics", { filter = { buf = 0 } }), desc = "Show Buffer Diagnostics" },
+      { "<leader>cdq", trouble_action("quickfix"), desc = "Open Quickfix List" },
+      { "<leader>cdl", trouble_action("loclist"), desc = "Open Location List" },
+      { "<leader>cds", trouble_action("symbols", { focus = false }), desc = "Browse Symbols" },
+      { "<leader>cdh", vim.diagnostic.open_float, desc = "Show Line Diagnostics" },
+      { "]d", vim.diagnostic.goto_next, desc = "Go To Next Diagnostic", mode = "n" },
+      { "[d", vim.diagnostic.goto_prev, desc = "Go To Previous Diagnostic", mode = "n" },
+      { "<leader>cc", vim.lsp.buf.code_action, desc = "Apply Code Action", mode = { "n", "v" } },
       { "<leader>cr", vim.lsp.buf.rename, desc = "Rename Symbol" },
-      { "<leader>cl", vim.lsp.codelens.run, desc = "Run Code Lens" },
+      { "<leader>cl", vim.lsp.codelens.run, desc = "Run CodeLens" },
       {
         "<leader>cf",
         function()
@@ -370,7 +369,7 @@ function M.setup()
       {
         "<leader>cL",
         vim.lsp.codelens.refresh,
-        desc = "Refresh Code Lenses",
+        desc = "Refresh CodeLens",
       },
 
       -- Git & VCS
@@ -384,59 +383,59 @@ function M.setup()
             neogit.open({ kind = "replace" })
           end
         end,
-        desc = "Neogit Status",
+        desc = "View Git Status",
       },
       {
         "<leader>gsp",
         function()
           snacks.picker.git_status()
         end,
-        desc = "Git Status Picker",
+        desc = "Browse Git Status",
       },
       { "<leader>gc", group = "+changes" },
-      { "<leader>gcc", "<cmd>Neogit commit<CR>", desc = "Neogit Commit" },
-      { "<leader>gcp", "<cmd>Neogit pull<CR>", desc = "Neogit Pull" },
-      { "<leader>gcP", "<cmd>Neogit push<CR>", desc = "Neogit Push" },
+      { "<leader>gcc", "<cmd>Neogit commit<CR>", desc = "Commit Changes" },
+      { "<leader>gcp", "<cmd>Neogit pull<CR>", desc = "Pull Changes" },
+      { "<leader>gcP", "<cmd>Neogit push<CR>", desc = "Push Changes" },
       {
         "<leader>gcb",
         function()
           snacks.picker.git_branches()
         end,
-        desc = "Git Branches",
+        desc = "Browse Git Branches",
       },
       {
         "<leader>gcl",
         function()
           snacks.picker.git_log()
         end,
-        desc = "Git Log",
+        desc = "View Git Log",
       },
       {
         "<leader>gcL",
         function()
           snacks.picker.git_log_file()
         end,
-        desc = "Git Log (File)",
+        desc = "View File Git Log",
       },
       { "<leader>gd", group = "+diff" },
-      { "<leader>gdo", ":DiffviewOpen<CR>", desc = "Diffview Open" },
-      { "<leader>gdc", ":DiffviewClose<CR>", desc = "Diffview Close" },
-      { "<leader>gdf", ":DiffviewFileHistory %<CR>", desc = "File History" },
-      { "<leader>gdF", ":DiffviewFileHistory<CR>", desc = "Repository History" },
+      { "<leader>gdo", ":DiffviewOpen<CR>", desc = "Open Diff View" },
+      { "<leader>gdc", ":DiffviewClose<CR>", desc = "Close Diff View" },
+      { "<leader>gdf", ":DiffviewFileHistory %<CR>", desc = "Show File History" },
+      { "<leader>gdF", ":DiffviewFileHistory<CR>", desc = "Show Repository History" },
       { "<leader>gh", group = "+hunks" },
       {
         "<leader>ghn",
         function()
           require("gitsigns").nav_hunk("next")
         end,
-        desc = "Next Hunk",
+        desc = "Go To Next Hunk",
       },
       {
         "<leader>ghp",
         function()
           require("gitsigns").nav_hunk("prev")
         end,
-        desc = "Previous Hunk",
+        desc = "Go To Previous Hunk",
       },
       { "<leader>ghs", gitsigns_action("stage_hunk"), desc = "Stage Hunk" },
       { "<leader>ghr", gitsigns_action("reset_hunk"), desc = "Reset Hunk" },
@@ -448,9 +447,9 @@ function M.setup()
         function()
           require("gitsigns").blame_line({ full = true })
         end,
-        desc = "Blame Line",
+        desc = "Show Line Blame",
       },
-      { "<leader>ghd", gitsigns_action("diffthis"), desc = "Diff This" },
+      { "<leader>ghd", gitsigns_action("diffthis"), desc = "Compare Current Buffer" },
       { "<leader>ght", group = "+toggle" },
       { "<leader>ghtb", gitsigns_action("toggle_current_line_blame"), desc = "Toggle Blame" },
       { "<leader>ghtw", gitsigns_action("toggle_word_diff"), desc = "Toggle Word Diff" },
@@ -494,8 +493,8 @@ function M.setup()
         mode = { "n", "v" },
       },
       { "<leader>gx", group = "+conflicts" },
-      { "<leader>gxn", ":GitConflictNextConflict<CR>", desc = "Next Conflict" },
-      { "<leader>gxp", ":GitConflictPrevConflict<CR>", desc = "Previous Conflict" },
+      { "<leader>gxn", ":GitConflictNextConflict<CR>", desc = "Go To Next Conflict" },
+      { "<leader>gxp", ":GitConflictPrevConflict<CR>", desc = "Go To Previous Conflict" },
       { "<leader>gxo", ":GitConflictChooseOurs<CR>", desc = "Choose Ours" },
       { "<leader>gxt", ":GitConflictChooseTheirs<CR>", desc = "Choose Theirs" },
       { "<leader>gxb", ":GitConflictChooseBoth<CR>", desc = "Choose Both" },
@@ -503,9 +502,9 @@ function M.setup()
       { "<leader>gxl", ":GitConflictListQf<CR>", desc = "List Conflicts" },
       { "<leader>gxr", ":GitConflictRefresh<CR>", desc = "Refresh Conflicts" },
       { "<leader>go", group = "+github" },
-      { "<leader>gop", "<cmd>GHOpenPR<CR>", desc = "Open PR" },
+      { "<leader>gop", "<cmd>GHOpenPR<CR>", desc = "Open Pull Request" },
       { "<leader>goi", "<cmd>GHOpenIssue<CR>", desc = "Open Issue" },
-      { "<leader>goP", "<cmd>GHSearchPRs<CR>", desc = "Search PRs" },
+      { "<leader>goP", "<cmd>GHSearchPRs<CR>", desc = "Search Pull Requests" },
       { "<leader>goI", "<cmd>GHSearchIssues<CR>", desc = "Search Issues" },
       { "<leader>got", "<cmd>GHToggleThreads<CR>", desc = "Toggle Threads" },
 
@@ -516,42 +515,42 @@ function M.setup()
         function()
           require("neotest").run.run()
         end,
-        desc = "Run Nearest",
+        desc = "Run Nearest Test",
       },
       {
         "<leader>tf",
         function()
           require("neotest").run.run(vim.fn.expand("%"))
         end,
-        desc = "Run File",
+        desc = "Run File Tests",
       },
       {
         "<leader>ts",
         function()
           require("neotest").run.run_suite()
         end,
-        desc = "Run Suite",
+        desc = "Run Test Suite",
       },
       {
         "<leader>tS",
         function()
           require("neotest").summary.toggle()
         end,
-        desc = "Toggle Summary",
+        desc = "Toggle Test Summary",
       },
       {
         "<leader>to",
         function()
           require("neotest").output.open({ enter = true })
         end,
-        desc = "Show Output",
+        desc = "Show Test Output",
       },
       {
         "<leader>td",
         function()
           require("neotest").run.run({ strategy = "dap" })
         end,
-        desc = "Debug Nearest",
+        desc = "Debug Nearest Test",
       },
       {
         "<leader>tx",
@@ -640,7 +639,7 @@ function M.setup()
       },
       {
         "<leader>oZ",
-         function()
+        function()
           local ok, ufo = pcall(require, "ufo")
           if ok then
             ufo.openAllFolds()
@@ -690,7 +689,7 @@ function M.setup()
             snacks.dim.disable()
           end
         end,
-        desc = "Toggle Dim",
+        desc = "Toggle Dim Background",
       },
 
       -- Undo & Clipboard
@@ -700,14 +699,14 @@ function M.setup()
         function()
           snacks.picker.undo()
         end,
-        desc = "Undo History",
+        desc = "Show Undo History",
       },
       {
         "<leader>ur",
         function()
           snacks.picker.redo()
         end,
-        desc = "Redo History",
+        desc = "Show Redo History",
       },
 
       -- Yank history lives with registers
@@ -721,14 +720,32 @@ function M.setup()
             vim.notify("Snacks picker is unavailable", vim.log.levels.WARN)
           end
         end,
-        desc = "Yank History",
+        desc = "Show Yank History",
       },
 
       -- Notes & Scratch
       { "<leader>N", group = "+notes" },
-      { "<leader>.", function () open_scratch() end, desc = "Scratch" },
-      { "<leader>No", function () open_scratch() end, desc = "Open Scratch" },
-      { "<leader>Nf", function() snacks.scratch.select() end, desc = "Find Scratch" },
+      {
+        "<leader>.",
+        function()
+          open_scratch()
+        end,
+        desc = "Open Latest Scratch",
+      },
+      {
+        "<leader>No",
+        function()
+          open_scratch()
+        end,
+        desc = "Open Scratch Buffer",
+      },
+      {
+        "<leader>Nf",
+        function()
+          snacks.scratch.select()
+        end,
+        desc = "Find Scratch Buffer",
+      },
       {
         "<leader>Nn",
         function()
@@ -738,7 +755,7 @@ function M.setup()
             end
           end)
         end,
-        desc = "New Scratch",
+        desc = "Create Scratch Buffer",
       },
 
       -- Help & Discovery
@@ -772,9 +789,9 @@ function M.setup()
         desc = "Search Marks",
       },
 
-      -- Mason 
-      { "<leader>om", group = "+mason" },
-      { "<leader>omm", "<cmd>Mason<CR>", desc = "Mason UI" },
+      -- Mason
+      { "<leader>om", group = "+tools" },
+      { "<leader>omm", "<cmd>Mason<CR>", desc = "Open Tool Manager" },
       { "<leader>omi", "<cmd>MasonToolsInstall<CR>", desc = "Install Tools" },
 
       -- Quit
@@ -799,7 +816,7 @@ function M.setup()
           vim.cmd("silent normal! zg")
           vim.notify("Word added to spellfile", vim.log.levels.INFO)
         end,
-        desc = "Spelling Add",
+        desc = "Add Word to Dictionary",
       },
       {
         "zw",
@@ -807,7 +824,7 @@ function M.setup()
           vim.cmd("silent normal! zw")
           vim.notify("Word marked incorrect", vim.log.levels.INFO)
         end,
-        desc = "Spelling Remove",
+        desc = "Remove Word from Dictionary",
       },
     }
 
@@ -846,14 +863,14 @@ function M.setup()
     end
   end
 
-  vim.keymap.set("i", "jj", "<Esc>", { desc = "Escape" })
-  vim.keymap.set("i", "оо", "<Esc>", { desc = "Escape" })
+  vim.keymap.set("i", "jj", "<Esc>", { desc = "Exit Insert Mode" })
+  vim.keymap.set("i", "оо", "<Esc>", { desc = "Exit Insert Mode" })
 
-  vim.keymap.set("n", "<Tab>", ":bnext<CR>", { desc = "Buffer -> Next", silent = true })
-  vim.keymap.set("n", "<S-Tab>", ":bprevious<CR>", { desc = "Buffer -> Previous", silent = true })
+  vim.keymap.set("n", "<Tab>", ":bnext<CR>", { desc = "Go To Next Buffer", silent = true })
+  vim.keymap.set("n", "<S-Tab>", ":bprevious<CR>", { desc = "Go To Previous Buffer", silent = true })
 
-  vim.keymap.set("n", "L", ":bnext<CR>", { desc = "Buffer -> Next", silent = true })
-  vim.keymap.set("n", "H", ":bprevious<CR>", { desc = "Buffer -> Previous", silent = true })
+  vim.keymap.set("n", "L", ":bnext<CR>", { desc = "Go To Next Buffer", silent = true })
+  vim.keymap.set("n", "H", ":bprevious<CR>", { desc = "Go To Previous Buffer", silent = true })
 end
 
 return M

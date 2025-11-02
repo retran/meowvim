@@ -184,7 +184,7 @@ return {
         vim.notify("Format-on-save: OFF (Global)", vim.log.levels.WARN)
       end
     end, {
-      desc = "Disable format-on-save (Global or !Buffer)",
+      desc = "Disable Format on Save (Global or !Buffer)",
       bang = true,
     })
 
@@ -193,7 +193,7 @@ return {
       vim.g.disable_autoformat = false
       vim.notify("Format-on-save: ON", vim.log.levels.INFO)
     end, {
-      desc = "Enable format-on-save",
+      desc = "Enable Format on Save",
     })
 
     vim.api.nvim_create_user_command("FormatToggle", function(args)
@@ -213,7 +213,7 @@ return {
         end
       end
     end, {
-      desc = "Toggle format-on-save (Global or !Buffer)",
+      desc = "Toggle Format on Save (Global or !Buffer)",
       bang = true,
     })
   end,

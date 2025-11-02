@@ -14,10 +14,10 @@ return {
       preset = {
         keys = {
           { icon = " ", key = "p", desc = "Open Project", action = ":lua Snacks.dashboard.pick('projects')" },
-          { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
+          { icon = " ", key = "n", desc = "Create File", action = ":ene | startinsert" },
           { icon = " ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
-          { icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
-          { icon = " ", key = "q", desc = "Quit", action = ":qa" },
+          { icon = " ", key = "r", desc = "Show Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
+          { icon = " ", key = "q", desc = "Quit Neovim", action = ":qa" },
         },
         header = [[meowvim
 -------]],

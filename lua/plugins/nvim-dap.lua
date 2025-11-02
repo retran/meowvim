@@ -90,7 +90,7 @@ return {
         function()
           dap.continue()
         end,
-        "Continue / Run",
+        "Continue or Run",
       },
       {
         "n",
@@ -98,7 +98,7 @@ return {
         function()
           dap.terminate()
         end,
-        "Terminate",
+        "Terminate Debugger",
       },
       {
         "n",
@@ -138,7 +138,7 @@ return {
         function()
           dapui.toggle()
         end,
-        "Toggle UI",
+        "Toggle Debug UI",
       },
       {
         "n",
@@ -146,7 +146,7 @@ return {
         function()
           dap.repl.open()
         end,
-        "Open REPL",
+        "Open Debug REPL",
       },
       {
         "n",
@@ -162,7 +162,7 @@ return {
         function()
           dap.set_breakpoint(vim.fn.input("Condition: "))
         end,
-        "Conditional Breakpoint",
+        "Set Conditional Breakpoint",
       },
       {
         "n",
@@ -170,7 +170,7 @@ return {
         function()
           dap.set_breakpoint(nil, nil, vim.fn.input("Log Message: "))
         end,
-        "Log Point",
+        "Set Log Point",
       },
       {
         "n",
@@ -186,7 +186,7 @@ return {
         function()
           dap.set_exception_breakpoints()
         end,
-        "Exception Breakpoints",
+        "Set Exception Breakpoints",
       },
       {
         "n",
@@ -194,7 +194,7 @@ return {
         function()
           require("dap.ui.widgets").centered_float(require("dap.ui.widgets").scopes)
         end,
-        "View Scopes",
+        "View Debug Scopes",
       },
       {
         "n",
@@ -202,7 +202,7 @@ return {
         function()
           require("dap.ui.widgets").centered_float(require("dap.ui.widgets").frames)
         end,
-        "View Frames",
+        "View Debug Frames",
       },
       {
         { "n", "v" },
@@ -210,7 +210,7 @@ return {
         function()
           require("dap.ui.widgets").hover()
         end,
-        "Inspect Hover",
+        "Inspect Hover Value",
       },
       {
         { "n", "v" },
@@ -218,7 +218,7 @@ return {
         function()
           require("dap.ui.widgets").preview()
         end,
-        "Preview Variable",
+        "Preview Variable Value",
       },
     }
 

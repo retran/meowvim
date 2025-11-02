@@ -55,6 +55,7 @@ A carefully crafted Neovim configuration that provides a modern development envi
 - [📋 Prerequisites](#-prerequisites)
 - [🚀 Installation](#-installation)
 - [⚡ Quick Start](#-quick-start)
+- [🎹 Keymaps](#-keymaps)
 - [⚙️ Configuration](#️-configuration)
 - [🔧 Troubleshooting](#-troubleshooting)
 - [🤝 Contributing](#-contributing)
@@ -199,7 +200,7 @@ On first launch, `meowvim` will:
 
 - **Leader key**: `Space` (main entry point for features)
 - **Open project**: `Space, f, p` (or `p` from dashboard)
-- **Find files**: `Space, f, f` (or `f` from dashboard) 
+- **Find files**: `Space, f, f` (or `f` from dashboard)
 - **Leap motion**: `Space, Space` for quick cursor jumps
 - **Open scratch buffer**: `Space, .`
 - **Dashboard navigation**: Use the shortcuts shown on the dashboard
@@ -215,6 +216,35 @@ On first launch, `meowvim` will:
 ```vim
 :Copilot auth
 ```
+
+## 🎹 Keymaps
+
+meowvim comes with a comprehensive set of keybindings organized by function.
+The leader key is `<space>` (spacebar).
+
+### Quick Reference
+
+- `<leader>ff` - Smart find file
+- `<leader>s/` - Search in project
+- `<leader><space>` - Flash jump (quick navigation)
+- `<leader>gss` - Git status
+- `<leader>cc` - Code action
+- `<leader>cr` - Rename symbol
+
+### Full Documentation
+
+For a complete reference of all keymaps:
+
+- **[Complete Keymap Reference](docs/KEYMAPS.md)** - Comprehensive guide to
+  all keyboard shortcuts organized by category
+- **[Quick Reference Card](docs/KEYMAPS_QUICK_REFERENCE.md)** - Quick lookup
+  for the most commonly used keymaps
+
+You can also search keymaps interactively within Neovim:
+
+- `<leader>ohk` - Search all keymaps
+- `<leader>ohc` - Search all commands
+- `<leader>ohh` - Search help documentation
 
 ## ⚙️ Configuration
 
@@ -252,8 +282,8 @@ vim.opt.wrap = true
 
 #### Spelling Tips
 
-`zg` adds the word under the cursor to your personal spellfile (`~/.config/nvim/spell/en.utf-8.add` by default).  
-`zw` marks a word as incorrect.  
+`zg` adds the word under the cursor to your personal spellfile (`~/.config/nvim/spell/en.utf-8.add` by default).
+`zw` marks a word as incorrect.
 Use `]s` / `[s` to jump between spelling issues.
 
 ### Adding Plugins
@@ -276,7 +306,7 @@ Edit `lua/config/keymaps.lua` to add your own key mappings:
 
 ```lua
 -- Add your custom keymaps
-{ "<leader>mp", ":MyPlugin<CR>", desc = "My Plugin" },
+{ "<leader>mp", ":MyPlugin<CR>", desc = "Run Custom Command" },
 ```
 
 ### Session Workflow

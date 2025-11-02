@@ -149,12 +149,12 @@ return {
       else
         vim.notify("Linters for " .. ft .. ": " .. table.concat(linters_for_ft, ", "), vim.log.levels.INFO)
       end
-    end, { desc = "Show linters for current filetype" })
+    end, { desc = "Show Linters for Current Filetype" })
 
     vim.api.nvim_create_user_command("LintToggle", function()
       vim.g.lint_enabled = not vim.g.lint_enabled
       vim.notify("Linting " .. (vim.g.lint_enabled and "enabled" or "disabled"), vim.log.levels.INFO)
-    end, { desc = "Toggle linting on/off" })
+    end, { desc = "Toggle Linting" })
 
     vim.g.lint_enabled = true
   end,
