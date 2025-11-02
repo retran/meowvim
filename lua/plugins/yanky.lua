@@ -52,5 +52,5 @@ return {
 
     map("n", "=p", "<Plug>(YankyPutAfterFilter)")
     map("n", "=P", "<Plug>(YankyPutBeforeFilter)")
- end,
+  end,
 }
