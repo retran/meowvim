@@ -8,6 +8,213 @@ local M = {}
 
 local snacks = require("snacks")
 
+local ICON_EXACT = {
+  ["Add Word to Dictionary"] = "󰓆",
+  ["Add Workspace Folder"] = "",
+  ["Apply Code Action"] = "󰆳",
+  ["Browse Files"] = "",
+  ["Browse Git Branches"] = "",
+  ["Browse Git Status"] = "󰊢",
+  ["Browse Symbols"] = "󰌗",
+  ["Choose Both"] = "󰡖",
+  ["Choose None"] = "󰚝",
+  ["Choose Ours"] = "󰅂",
+  ["Choose Theirs"] = "󰅙",
+  ["Close All Folds"] = "󰂔",
+  ["Close Diff View"] = "󰅖",
+  ["Close Other Windows"] = "󰅖",
+  ["Close Window"] = "󰅖",
+  ["Commit Changes"] = "󰜘",
+  ["Compare Current Buffer"] = "",
+  ["Copy Git Link"] = "",
+  ["Create Buffer"] = "",
+  ["Create File"] = "",
+  ["Create Scratch"] = "󰎚",
+  ["Debug Nearest Test"] = "",
+  ["Decrease Height"] = "",
+  ["Decrease Width"] = "",
+  ["Delete All Buffers"] = "󰆴",
+  ["Delete Buffer"] = "󰆴",
+  ["Delete Other Buffers"] = "󰆴",
+  ["Equalize Windows"] = "󰞷",
+  ["Exit Insert Mode"] = "󱊷",
+  ["Find File"] = "",
+  ["Find Git File"] = "",
+  ["Find Scratch"] = "󰍉",
+  ["Focus Left Window"] = "",
+  ["Focus Lower Window"] = "",
+  ["Focus Right Window"] = "",
+  ["Focus Upper Window"] = "",
+  ["Force Delete Buffer"] = "󰗼",
+  ["Force Quit All"] = "󰅚",
+  ["Format Buffer"] = "󰉵",
+  ["Go To Declaration"] = "󰜢",
+  ["Go To Definitions"] = "󰜢",
+  ["Go To Document Symbols"] = "󰌗",
+  ["Go To Implementations"] = "󰅩",
+  ["Go To Next Buffer"] = "",
+  ["Go To Next Conflict"] = "",
+  ["Go To Next Diagnostic"] = "",
+  ["Go To Next Hunk"] = "",
+  ["Go To Previous Buffer"] = "",
+  ["Go To Previous Conflict"] = "",
+  ["Go To Previous Diagnostic"] = "",
+  ["Go To Previous Hunk"] = "",
+  ["Go To References"] = "󰈈",
+  ["Go To Type Definitions"] = "󰜢",
+  ["Go To Workspace Symbols"] = "󰙅",
+  ["Increase Height"] = "",
+  ["Increase Width"] = "",
+  ["Install Tools"] = "󰚰",
+  ["Jump"] = "",
+  ["Jump to Match"] = "",
+  ["Jump to Match in All Windows"] = "",
+  ["Jump to Remote Target"] = "󰈣",
+  ["Jump to Treesitter Node"] = "󰉖",
+  ["List Buffers"] = "󰕘",
+  ["List Conflicts"] = "󰦻",
+  ["List TODO Comments"] = "󰄴",
+  ["List Workspace Folders"] = "󰕘",
+  ["Move Window Far Left"] = "",
+  ["Move Window Far Right"] = "",
+  ["Move Window to Bottom"] = "",
+  ["Move Window to Top"] = "",
+  ["Open All Folds"] = "󰂓",
+  ["Open Diff View"] = "󰈈",
+  ["Open Git Link"] = "󰴂",
+  ["Open Issue"] = "󰞋",
+  ["Open Latest Scratch"] = "󰎚",
+  ["Open Location List"] = "󰉹",
+  ["Open Pull Request"] = "",
+  ["Open Quickfix List"] = "󰁨",
+  ["Scratch"] = "󰎚",
+  ["Open Tool Manager"] = "",
+  ["Peek Fold"] = "󰙵",
+  ["Preview Hunk"] = "󰈈",
+  ["Pull Changes"] = "󰳁",
+  ["Push Changes"] = "󰳂",
+  ["Quit All"] = "󰅚",
+  ["Refresh CodeLens"] = "",
+  ["Refresh Conflicts"] = "",
+  ["Remove Word from Dictionary"] = "󰹙",
+  ["Remove Workspace Folder"] = "",
+  ["Rename Buffer"] = "󰑕",
+  ["Rename Symbol"] = "󰑕",
+  ["Reset Buffer"] = "󰜺",
+  ["Reset Hunk"] = "󰜺",
+  ["Restart Last Task"] = "",
+  ["Restore Last Session"] = "󰁯",
+  ["Restore Session"] = "󰁯",
+  ["Run CodeLens"] = "󰈈",
+  ["Run File Tests"] = "󰙨",
+  ["Run Nearest Test"] = "󰙨",
+  ["Run Task Template"] = "",
+  ["Run Test Suite"] = "󰙨",
+  ["Save All Files"] = "󰆓",
+  ["Save File"] = "󰆓",
+  ["Scale Down"] = "",
+  ["Scale Up"] = "",
+  ["Search Commands"] = "󰘳",
+  ["Search Git Repository"] = "",
+  ["Search Help"] = "󰋖",
+  ["Search Issues"] = "󰞋",
+  ["Search Keymaps"] = "󰌌",
+  ["Search Marks"] = "󰧀",
+  ["Search Open Buffers"] = "",
+  ["Search Project Text"] = "",
+  ["Search Pull Requests"] = "",
+  ["Search and Replace Project"] = "󰛔",
+  ["Show Buffer Diagnostics"] = "󰒡",
+  ["Show Call Hierarchy (Callees)"] = "󰭻",
+  ["Show Call Hierarchy (Callers)"] = "󰭻",
+  ["Show File History"] = "󰋘",
+  ["Show Line Blame"] = "󰆘",
+  ["Show Line Diagnostics"] = "󰒡",
+  ["Show Project Diagnostics"] = "󰒡",
+  ["Show Recent Files"] = "󰋜",
+  ["Show Redo History"] = "󰑖",
+  ["Show Repository History"] = "󰋘",
+  ["Show Test Output"] = "󰙨",
+  ["Show Type Hierarchy (Subtypes)"] = "󰓼",
+  ["Show Type Hierarchy (Supertypes)"] = "󰓼",
+  ["Show Undo History"] = "󰦓",
+  ["Show Yank History"] = "",
+  ["Split Window Horizontally"] = "󰤼",
+  ["Split Window Vertically"] = "󰤻",
+  ["Stage Buffer"] = "󰄬",
+  ["Stage Hunk"] = "󰄬",
+  ["Stop Session Saving"] = "",
+  ["Stop Tests"] = "",
+  ["Switch Project"] = "󰙅",
+  ["Toggle Blame"] = "󰆘",
+  ["Toggle Cursorcolumn"] = "󰄮",
+  ["Toggle Cursorline"] = "󰄯",
+  ["Toggle Dim Background"] = "󰓃",
+  ["Toggle File Explorer"] = "󰙅",
+  ["Toggle Format on Save"] = "󰉵",
+  ["Toggle Fullscreen"] = "󰍹",
+  ["Toggle Indent Guides"] = "󰉢",
+  ["Toggle Numbers"] = "󰎠",
+  ["Toggle Signs"] = "󰨙",
+  ["Toggle Spell"] = "󰓆",
+  ["Toggle Task List"] = "󰑐",
+  ["Toggle Terminal"] = "",
+  ["Toggle Test Summary"] = "󰙨",
+  ["Toggle Threads"] = "󰓢",
+  ["Toggle Word Diff"] = "󰹭",
+  ["Toggle Wrap"] = "󰖶",
+  ["View File Git Log"] = "󰋘",
+  ["View Git Log"] = "󰋘",
+  ["View Git Status"] = "󰊢",
+}
+
+local ICON_PATTERNS = {
+  { pattern = "toggle", icon = "󰨙" },
+  { pattern = "search", icon = "" },
+  { pattern = "find", icon = "" },
+  { pattern = "browse", icon = "" },
+  { pattern = "list", icon = "󰕘" },
+  { pattern = "show", icon = "󰋼" },
+  { pattern = "open", icon = "" },
+  { pattern = "close", icon = "󰅖" },
+  { pattern = "create", icon = "" },
+  { pattern = "new", icon = "" },
+  { pattern = "save", icon = "󰆓" },
+  { pattern = "restore", icon = "󰁯" },
+  { pattern = "run", icon = "" },
+  { pattern = "stop", icon = "" },
+  { pattern = "debug", icon = "" },
+  { pattern = "jump", icon = "󰜈" },
+  { pattern = "go to", icon = "󰜢" },
+  { pattern = "format", icon = "󰉵" },
+  { pattern = "rename", icon = "󰑕" },
+  { pattern = "reset", icon = "󰜺" },
+  { pattern = "stage", icon = "󰄬" },
+  { pattern = "pull", icon = "󰳁" },
+  { pattern = "push", icon = "󰳂" },
+  { pattern = "commit", icon = "󰜘" },
+  { pattern = "diff", icon = "" },
+}
+
+local DEFAULT_ICON = "󰛡"
+
+local function icon_for(desc)
+  if not desc then
+    return nil
+  end
+  local exact = ICON_EXACT[desc]
+  if exact then
+    return exact
+  end
+  local lowered = desc:lower()
+  for _, rule in ipairs(ICON_PATTERNS) do
+    if lowered:find(rule.pattern, 1, true) then
+      return rule.icon
+    end
+  end
+  return DEFAULT_ICON
+end
+
 local function safe_require(module)
   local ok, result = pcall(require, module)
   return ok and result or nil
@@ -62,12 +269,33 @@ local function gitsigns_action(action_name)
   end
 end
 
+local function is_single_leader(lhs)
+  if type(lhs) ~= "string" then
+    return false
+  end
+
+  if not lhs:find("^<leader>") then
+    return false
+  end
+
+  local rest = lhs:gsub("^<leader>", "", 1)
+  if rest == "" then
+    return false
+  end
+
+  if rest:match("^<[^>]+>$") then
+    return true
+  end
+
+  return rest:len() == 1
+end
+
 function M.setup()
   local wk_ok, wk = pcall(require, "which-key")
   if wk_ok then
     local mappings = {
       -- Files
-      { "<leader>f", group = "+files" },
+      { "<leader>f", group = "Files", icon = "󰈞" },
       {
         "<leader>ff",
         function()
@@ -137,49 +365,8 @@ function M.setup()
       { "<leader>fs", ":w<CR>", desc = "Save File" },
       { "<leader>fS", ":wa<CR>", desc = "Save All Files" },
 
-      -- Flash Jump
-      { "<leader><space>", flash_action("jump", false), desc = "Jump to Match", mode = { "n", "x", "o" } },
-
-      -- Workspace
-      { "<leader>oW", group = "+workspace" },
-      { "<leader>oWa", vim.lsp.buf.add_workspace_folder, desc = "Add Workspace Folder" },
-      { "<leader>oWR", vim.lsp.buf.remove_workspace_folder, desc = "Remove Workspace Folder" },
-      { "<leader>oWL", vim.lsp.buf.list_workspace_folders, desc = "List Workspace Folders" },
-
-      { "<leader>oS", group = "+session" },
-      {
-        "<leader>oSr",
-        function()
-          local ok, persistence = pcall(require, "persistence")
-          if ok then
-            persistence.load()
-          end
-        end,
-        desc = "Restore Session",
-      },
-      {
-        "<leader>oSl",
-        function()
-          local ok, persistence = pcall(require, "persistence")
-          if ok then
-            persistence.load({ last = true })
-          end
-        end,
-        desc = "Restore Last Session",
-      },
-      {
-        "<leader>oSx",
-        function()
-          local ok, persistence = pcall(require, "persistence")
-          if ok then
-            persistence.stop()
-          end
-        end,
-        desc = "Stop Session Saving",
-      },
-
       -- Buffers
-      { "<leader>b", group = "+buffers" },
+      { "<leader>b", group = "Buffers", icon = "󰮍" },
       {
         "<leader>bb",
         function()
@@ -221,7 +408,7 @@ function M.setup()
       },
 
       -- Windows
-      { "<leader>w", group = "+windows" },
+      { "<leader>w", group = "Windows", icon = "" },
       { "<leader>wh", "<C-w>h", desc = "Focus Left Window" },
       { "<leader>wj", "<C-w>j", desc = "Focus Lower Window" },
       { "<leader>wk", "<C-w>k", desc = "Focus Upper Window" },
@@ -241,7 +428,7 @@ function M.setup()
       { "<leader>wJ", "<C-w>J", desc = "Move Window to Bottom" },
 
       -- Search & Navigaton
-      { "<leader>s", group = "+search" },
+      { "<leader>s", group = "Search", icon = "" },
       {
         "<leader>s/",
         function()
@@ -283,15 +470,16 @@ function M.setup()
       { "<leader>st", "<cmd>TodoTrouble<CR>", desc = "List TODO Comments" },
 
       -- Flash Jump
-      { "<leader>j", group = "+jump" },
+      { "<leader><space>", flash_action("jump", false), desc = "Jump", mode = { "n", "x", "o" } },
+      { "<leader>j", group = "Jump To", icon = "󰜈" },
       { "<leader>jj", flash_action("jump", false), desc = "Jump to Match", mode = { "n", "x", "o" } },
       { "<leader>jt", flash_action("treesitter"), desc = "Jump to Treesitter Node", mode = { "n", "x", "o" } },
       { "<leader>ja", flash_action("jump", true), desc = "Jump to Match in All Windows", mode = { "n", "x", "o" } },
       { "<leader>jm", flash_action("remote"), desc = "Jump to Remote Target", mode = { "n", "x", "o" } },
 
       -- Navigation
-      { "<leader>n", group = "+navigate" },
-      { "<leader>nd", glance_action("definitions"), desc = "Go To Definitions" },
+      { "<leader>n", group = "Go To", icon = "󰹸" },
+      { "<leader>nd", glance_action("definitions"), desc = "Go To Definition" },
       {
         "<leader>nD",
         function()
@@ -299,22 +487,22 @@ function M.setup()
         end,
         desc = "Go To Declaration",
       },
-      { "<leader>nr", glance_action("references"), desc = "Go To References" },
-      { "<leader>ni", glance_action("implementations"), desc = "Go To Implementations" },
-      { "<leader>nt", glance_action("type_definitions"), desc = "Go To Type Definitions" },
+      { "<leader>nr", glance_action("references"), desc = "Go To Reference" },
+      { "<leader>ni", glance_action("implementations"), desc = "Go To Implementation" },
+      { "<leader>nt", glance_action("type_definitions"), desc = "Go To Type Definition" },
       {
         "<leader>ns",
         function()
           snacks.picker.lsp_symbols()
         end,
-        desc = "Go To Document Symbols",
+        desc = "Go To Document Symbol",
       },
       {
         "<leader>nw",
         function()
           snacks.picker.lsp_workspace_symbols()
         end,
-        desc = "Go To Workspace Symbols",
+        desc = "Go To Workspace Symbol",
       },
       {
         "<leader>nh",
@@ -346,8 +534,8 @@ function M.setup()
       },
 
       -- Code Intelligence
-      { "<leader>c", group = "+code" },
-      { "<leader>cd", group = "+diagnostics" },
+      { "<leader>c", group = "Code", icon = "󰅩" },
+      { "<leader>cd", group = "Diagnostics", icon = "󰒡" },
       { "<leader>cda", trouble_action("diagnostics"), desc = "Show Project Diagnostics" },
       { "<leader>cdb", trouble_action("diagnostics", { filter = { buf = 0 } }), desc = "Show Buffer Diagnostics" },
       { "<leader>cdq", trouble_action("quickfix"), desc = "Open Quickfix List" },
@@ -373,8 +561,8 @@ function M.setup()
       },
 
       -- Git & VCS
-      { "<leader>g", group = "+git" },
-      { "<leader>gs", group = "+status" },
+      { "<leader>g", group = "Git", icon = "󰊢" },
+      { "<leader>gs", group = "Status", icon = "󰓫" },
       {
         "<leader>gss",
         function()
@@ -392,7 +580,7 @@ function M.setup()
         end,
         desc = "Browse Git Status",
       },
-      { "<leader>gc", group = "+changes" },
+      { "<leader>gc", group = "Changes", icon = "󰦕" },
       { "<leader>gcc", "<cmd>Neogit commit<CR>", desc = "Commit Changes" },
       { "<leader>gcp", "<cmd>Neogit pull<CR>", desc = "Pull Changes" },
       { "<leader>gcP", "<cmd>Neogit push<CR>", desc = "Push Changes" },
@@ -417,12 +605,12 @@ function M.setup()
         end,
         desc = "View File Git Log",
       },
-      { "<leader>gd", group = "+diff" },
+      { "<leader>gd", group = "Diff", icon = "󰩫" },
       { "<leader>gdo", ":DiffviewOpen<CR>", desc = "Open Diff View" },
       { "<leader>gdc", ":DiffviewClose<CR>", desc = "Close Diff View" },
       { "<leader>gdf", ":DiffviewFileHistory %<CR>", desc = "Show File History" },
       { "<leader>gdF", ":DiffviewFileHistory<CR>", desc = "Show Repository History" },
-      { "<leader>gh", group = "+hunks" },
+      { "<leader>gh", group = "Hunks", icon = "󰘬" },
       {
         "<leader>ghn",
         function()
@@ -450,11 +638,11 @@ function M.setup()
         desc = "Show Line Blame",
       },
       { "<leader>ghd", gitsigns_action("diffthis"), desc = "Compare Current Buffer" },
-      { "<leader>ght", group = "+toggle" },
+      { "<leader>ght", group = "Toggle", icon = "󰨙" },
       { "<leader>ghtb", gitsigns_action("toggle_current_line_blame"), desc = "Toggle Blame" },
       { "<leader>ghtw", gitsigns_action("toggle_word_diff"), desc = "Toggle Word Diff" },
       { "<leader>ghts", gitsigns_action("toggle_signs"), desc = "Toggle Signs" },
-      { "<leader>gy", group = "+yank" },
+      { "<leader>gy", group = "Yank", icon = "" },
       {
         "<leader>gyy",
         function()
@@ -492,7 +680,7 @@ function M.setup()
         desc = "Open Git Link",
         mode = { "n", "v" },
       },
-      { "<leader>gx", group = "+conflicts" },
+      { "<leader>gx", group = "Conflicts", icon = "󰦻" },
       { "<leader>gxn", ":GitConflictNextConflict<CR>", desc = "Go To Next Conflict" },
       { "<leader>gxp", ":GitConflictPrevConflict<CR>", desc = "Go To Previous Conflict" },
       { "<leader>gxo", ":GitConflictChooseOurs<CR>", desc = "Choose Ours" },
@@ -501,7 +689,7 @@ function M.setup()
       { "<leader>gx0", ":GitConflictChooseNone<CR>", desc = "Choose None" },
       { "<leader>gxl", ":GitConflictListQf<CR>", desc = "List Conflicts" },
       { "<leader>gxr", ":GitConflictRefresh<CR>", desc = "Refresh Conflicts" },
-      { "<leader>go", group = "+github" },
+      { "<leader>go", group = "GitHub", icon = "" },
       { "<leader>gop", "<cmd>GHOpenPR<CR>", desc = "Open Pull Request" },
       { "<leader>goi", "<cmd>GHOpenIssue<CR>", desc = "Open Issue" },
       { "<leader>goP", "<cmd>GHSearchPRs<CR>", desc = "Search Pull Requests" },
@@ -509,7 +697,7 @@ function M.setup()
       { "<leader>got", "<cmd>GHToggleThreads<CR>", desc = "Toggle Threads" },
 
       -- Tests
-      { "<leader>t", group = "+tests" },
+      { "<leader>t", group = "Tests", icon = "󰙨" },
       {
         "<leader>tn",
         function()
@@ -561,7 +749,7 @@ function M.setup()
       },
 
       -- Run & Tasks
-      { "<leader>r", group = "+run" },
+      { "<leader>r", group = "Run", icon = "" },
       {
         "<leader>rr",
         function()
@@ -601,15 +789,50 @@ function M.setup()
       },
 
       -- Treesitter
-      { "<leader>S", group = "+swap" },
+      { "<leader>S", group = "Swap", icon = "" },
 
       -- Debug (groups only; actual DAP bindings live in plugin config)
-      { "<leader>d", group = "+debug" },
-      { "<leader>db", group = "+breakpoints" },
-      { "<leader>dv", group = "+inspect" },
+      { "<leader>d", group = "Debug", icon = "" },
+      { "<leader>db", group = "Breakpoints", icon = "" },
+      { "<leader>dv", group = "Inspect", icon = "󰈈" },
 
       -- Options & UI
-      { "<leader>o", group = "+options" },
+      { "<leader>o", group = "Options", icon = "" },
+      { "<leader>oW", group = "Workspace", icon = "󰙅" },
+      { "<leader>oWa", vim.lsp.buf.add_workspace_folder, desc = "Add Workspace Folder" },
+      { "<leader>oWR", vim.lsp.buf.remove_workspace_folder, desc = "Remove Workspace Folder" },
+      { "<leader>oWL", vim.lsp.buf.list_workspace_folders, desc = "List Workspace Folders" },
+      { "<leader>oS", group = "Sessions", icon = "󰦀" },
+      {
+        "<leader>oSr",
+        function()
+          local ok, persistence = pcall(require, "persistence")
+          if ok then
+            persistence.load()
+          end
+        end,
+        desc = "Restore Session",
+      },
+      {
+        "<leader>oSl",
+        function()
+          local ok, persistence = pcall(require, "persistence")
+          if ok then
+            persistence.load({ last = true })
+          end
+        end,
+        desc = "Restore Last Session",
+      },
+      {
+        "<leader>oSx",
+        function()
+          local ok, persistence = pcall(require, "persistence")
+          if ok then
+            persistence.stop()
+          end
+        end,
+        desc = "Stop Session Saving",
+      },
       {
         "<leader>og",
         function()
@@ -693,7 +916,7 @@ function M.setup()
       },
 
       -- Undo & Clipboard
-      { "<leader>u", group = "+undo" },
+      { "<leader>u", group = "Undo", icon = "" },
       {
         "<leader>uu",
         function()
@@ -724,27 +947,27 @@ function M.setup()
       },
 
       -- Notes & Scratch
-      { "<leader>N", group = "+notes" },
+      { "<leader>N", group = "Notes", icon = "󰍔" },
       {
         "<leader>.",
         function()
           open_scratch()
         end,
-        desc = "Open Latest Scratch",
+        desc = "Scratch",
       },
       {
         "<leader>No",
         function()
           open_scratch()
         end,
-        desc = "Open Scratch Buffer",
+        desc = "Open Latest Scratch",
       },
       {
         "<leader>Nf",
         function()
           snacks.scratch.select()
         end,
-        desc = "Find Scratch Buffer",
+        desc = "Find Scratch",
       },
       {
         "<leader>Nn",
@@ -755,11 +978,11 @@ function M.setup()
             end
           end)
         end,
-        desc = "Create Scratch Buffer",
+        desc = "Create Scratch",
       },
 
       -- Help & Discovery
-      { "<leader>oh", group = "+help" },
+      { "<leader>oh", group = "Help", icon = "󰋖" },
       {
         "<leader>ohh",
         function()
@@ -790,12 +1013,12 @@ function M.setup()
       },
 
       -- Mason
-      { "<leader>om", group = "+tools" },
+      { "<leader>om", group = "Tools", icon = "" },
       { "<leader>omm", "<cmd>Mason<CR>", desc = "Open Tool Manager" },
       { "<leader>omi", "<cmd>MasonToolsInstall<CR>", desc = "Install Tools" },
 
       -- Quit
-      { "<leader>q", group = "+quit" },
+      { "<leader>q", group = "Quit", icon = "󰅚" },
       { "<leader>qq", ":qa<CR>", desc = "Quit All" },
       { "<leader>qQ", ":qa!<CR>", desc = "Force Quit All" },
 
@@ -854,7 +1077,28 @@ function M.setup()
       })
     end
 
+    local top_level_actions, other_mappings = {}, {}
     for _, mapping in ipairs(mappings) do
+      local lhs = mapping[1]
+      if mapping.desc and not mapping.group and lhs and is_single_leader(lhs) then
+        table.insert(top_level_actions, mapping)
+      else
+        table.insert(other_mappings, mapping)
+      end
+    end
+
+    local ordered_mappings = {}
+    for _, mapping in ipairs(top_level_actions) do
+      table.insert(ordered_mappings, mapping)
+    end
+    for _, mapping in ipairs(other_mappings) do
+      table.insert(ordered_mappings, mapping)
+    end
+
+    for _, mapping in ipairs(ordered_mappings) do
+      if mapping.desc and not mapping.icon then
+        mapping.icon = icon_for(mapping.desc)
+      end
       local mode = mapping.mode or "n"
       mapping.mode = nil
       wk.add({
