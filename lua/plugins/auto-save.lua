@@ -1,30 +1,9 @@
--- MIT License
---
+-- SPDX-License-Identifier: MIT
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
---
--- Permission is hereby granted, free of charge, to any person obtaining a copy
--- of this software and associated documentation files (the "Software"), to deal
--- in the Software without restriction, including without limitation the rights
--- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
--- copies of the Software, and to permit persons to whom the Software is
--- furnished to do so, subject to the following conditions:
---
--- The above copyright notice and this permission notice shall be included in
--- all copies or substantial portions of the Software.
---
--- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
--- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
--- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
--- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
--- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
--- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
--- THE SOFTWARE.
---
+
 -- @file: lua/plugins/auto-save.lua
 -- @brief: Automatic file saving when leaving insert mode or text changes.
--- @author: Andrew Vasilyev
--- @license: MIT
---
+
 return {
   "okuuva/auto-save.nvim",
   event = { "InsertLeave", "TextChanged" },
@@ -39,6 +18,19 @@ return {
     write_all_buffers = true,
     lockmarks = true,
     condition = function(buf)
+      if vim.g.disable_autosave then
+        return false
+      end
+
+      local buf_disabled = false
+      local ok, value = pcall(vim.api.nvim_buf_get_var, buf, "disable_autosave")
+      if ok then
+        buf_disabled = value
+      end
+      if buf_disabled then
+        return false
+      end
+
       local excluded_filetypes = {
         "gitcommit",
         "toggleterm",
@@ -57,4 +49,58 @@ return {
       return true
     end,
   },
+  init = function()
+    local toggles = require("utils.toggles")
+    toggles.ensure("disable_autosave")
+
+    vim.api.nvim_create_user_command("AutoSaveDisable", function(args)
+      if args.bang then
+        vim.b.disable_autosave = true
+        vim.notify("Auto-save: OFF (Buffer)", vim.log.levels.WARN)
+      else
+        vim.g.disable_autosave = true
+        toggles.update("disable_autosave")
+        vim.notify("Auto-save: OFF (Global)", vim.log.levels.WARN)
+      end
+    end, {
+      desc = "Disable Auto Save (Global or !Buffer)",
+      bang = true,
+    })
+
+    vim.api.nvim_create_user_command("AutoSaveEnable", function(args)
+      if args.bang then
+        vim.b.disable_autosave = false
+        vim.notify("Auto-save: ON (Buffer)", vim.log.levels.INFO)
+      else
+        vim.g.disable_autosave = false
+        toggles.update("disable_autosave")
+        vim.notify("Auto-save: ON (Global)", vim.log.levels.INFO)
+      end
+    end, {
+      desc = "Enable Auto Save (Global or !Buffer)",
+      bang = true,
+    })
+
+    vim.api.nvim_create_user_command("AutoSaveToggle", function(args)
+      if args.bang then
+        vim.b.disable_autosave = not vim.b.disable_autosave
+        if vim.b.disable_autosave then
+          vim.notify("Auto-save: OFF (Buffer)", vim.log.levels.WARN)
+        else
+          vim.notify("Auto-save: ON (Buffer)", vim.log.levels.INFO)
+        end
+      else
+        vim.g.disable_autosave = not vim.g.disable_autosave
+        toggles.update("disable_autosave")
+        if vim.g.disable_autosave then
+          vim.notify("Auto-save: OFF (Global)", vim.log.levels.WARN)
+        else
+          vim.notify("Auto-save: ON (Global)", vim.log.levels.INFO)
+        end
+      end
+    end, {
+      desc = "Toggle Auto Save (Global or !Buffer)",
+      bang = true,
+    })
+  end,
 }

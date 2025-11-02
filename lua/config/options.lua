@@ -1,30 +1,9 @@
--- MIT License
---
+-- SPDX-License-Identifier: MIT
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
---
--- Permission is hereby granted, free of charge, to any person obtaining a copy
--- of this software and associated documentation files (the "Software"), to deal
--- in the Software without restriction, including without limitation the rights
--- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
--- copies of the Software, and to permit persons to whom the Software is
--- furnished to do so, subject to the following conditions:
---
--- The above copyright notice and this permission notice shall be included in
--- all copies or substantial portions of the Software.
---
--- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
--- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
--- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
--- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
--- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
--- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
--- THE SOFTWARE.
---
+
 -- @file: lua/config/options.lua
 -- @brief: Neovim editor options and settings configuration.
--- @author: Andrew Vasilyev
--- @license: MIT
---
+
 local opt = vim.opt
 
 opt.updatetime = 250
@@ -76,7 +55,8 @@ opt.mousefocus = true
 
 opt.foldmethod = "expr"
 opt.foldexpr = "nvim_treesitter#foldexpr()"
-opt.foldenable = false
+opt.foldcolumn = "1"
+opt.foldenable = true
 opt.foldlevel = 99
 
 opt.backspace = "indent,eol,start"
@@ -84,13 +64,47 @@ opt.iskeyword:append("-")
 opt.formatoptions:remove({ "c", "r", "o" })
 opt.shortmess:append({ W = true, I = true, c = true, C = true })
 
-opt.sessionoptions = "buffers,curdir,folds,globals,tabpages,winpos,winsize,localoptions"
+opt.sessionoptions = "buffers,curdir,folds,globals,tabpages,winpos,winsize,localoptions,resize"
 
 opt.title = true
 
 opt.titlestring = "meowvim - Purr-fect Neovim"
 
-vim.g.disable_autoformat = true
+opt.spelllang = { "en_us" }
+opt.spellsuggest = { "best", "9" }
+opt.spelloptions:append("camel")
 
-vim.opt.timeoutlen = 300
-vim.opt.ttimeoutlen = 10
+local spell_dir = vim.fn.stdpath("config") .. "/spell"
+vim.fn.mkdir(spell_dir, "p")
+opt.spellfile = spell_dir .. "/en.utf-8.add"
+
+local spell_group = vim.api.nvim_create_augroup("meowvim-spell", { clear = true })
+
+local function enable_spell(bufnr, opts)
+  opts = opts or {}
+  vim.api.nvim_buf_call(bufnr, function()
+    vim.opt_local.spell = true
+    vim.opt_local.spelllang = opt.spelllang:get()
+    vim.opt_local.spellcapcheck = ""
+    if opts.conceal ~= false then
+      vim.opt_local.concealcursor = ""
+    end
+  end)
+end
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = spell_group,
+  pattern = {
+    "gitcommit",
+    "markdown",
+    "md",
+    "mdx",
+    "text",
+    "norg",
+    "rst",
+    "tex",
+  },
+  callback = function(args)
+    enable_spell(args.buf)
+  end,
+})

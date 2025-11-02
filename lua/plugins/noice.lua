@@ -1,30 +1,9 @@
--- MIT License
---
+-- SPDX-License-Identifier: MIT
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
---
--- Permission is hereby granted, free of charge, to any person obtaining a copy
--- of this software and associated documentation files (the "Software"), to deal
--- in the Software without restriction, including without limitation the rights
--- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
--- copies of the Software, and to permit persons to whom the Software is
--- furnished to do so, subject to the following conditions:
---
--- The above copyright notice and this permission notice shall be included in
--- all copies or substantial portions of the Software.
---
--- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
--- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
--- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
--- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
--- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
--- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
--- THE SOFTWARE.
---
+
 -- @file: lua/plugins/noice.lua
 -- @brief: Enhanced UI components for messages, cmdline, and popupmenu.
--- @author: Andrew Vasilyev
--- @license: MIT
---
+
 return {
   "folke/noice.nvim",
   event = "VeryLazy",
@@ -32,6 +11,20 @@ return {
     "MunifTanjim/nui.nvim",
     "rcarriga/nvim-notify",
   },
+  init = function()
+    local original_handler = vim.lsp.handlers["$/progress"]
+    vim.lsp.handlers["$/progress"] = function(err, result, ctx, config)
+      if result and result.token == nil then
+        result.token = ""
+      end
+      if result and result.value and result.value.token == nil then
+        result.value.token = ""
+      end
+      if original_handler then
+        return original_handler(err, result, ctx, config)
+      end
+    end
+  end,
   opts = {
     lsp = {
       override = {
@@ -39,9 +32,13 @@ return {
         ["vim.lsp.util.stylize_markdown"] = true,
         ["cmp.entry.get_documentation"] = true,
       },
-    },
-    lsp_progress = {
-      enabled = true,
+      progress = {
+        enabled = true,
+        format = "lsp_progress",
+        format_done = "lsp_progress_done",
+        throttle = 1000 / 30,
+        view = "mini",
+      },
     },
     presets = {
       bottom_search = true,

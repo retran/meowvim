@@ -1,33 +1,15 @@
--- MIT License
---
+-- SPDX-License-Identifier: MIT
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
---
--- Permission is hereby granted, free of charge, to any person obtaining a copy
--- of this software and associated documentation files (the "Software"), to deal
--- in the Software without restriction, including without limitation the rights
--- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
--- copies of the Software, and to permit persons to whom the Software is
--- furnished to do so, subject to the following conditions:
---
--- The above copyright notice and this permission notice shall be included in
--- all copies or substantial portions of the Software.
---
--- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
--- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
--- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
--- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
--- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
--- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
--- THE SOFTWARE.
---
+
 -- @file: lua/plugins/nvim-dap.lua
 -- @brief: Debug Adapter Protocol (DAP) client for debugging integration.
--- @author: Andrew Vasilyev
--- @license: MIT
---
+
+require("config.mason").ensure_debuggers({ "delve", "netcoredbg" })
+
 return {
   "mfussenegger/nvim-dap",
   dependencies = {
+    "mason-org/mason.nvim",
     {
       "rcarriga/nvim-dap-ui",
       dependencies = { "nvim-neotest/nvim-nio" },
@@ -56,17 +38,15 @@ return {
         require("dap-go").setup()
       end,
     },
-    {
-      "Cliffback/netcoredbg-macOS-arm64.nvim",
-    },
   },
   config = function()
     local dap = require("dap")
     local dapui = require("dapui")
 
+    -- netcoredbg adapter
     dap.adapters.coreclr = {
       type = "executable",
-      command = vim.fn.stdpath("data") .. "/lazy/netcoredbg-macOS-arm64.nvim/netcoredbg/netcoredbg",
+      command = vim.fn.stdpath("data") .. "/mason/bin/netcoredbg",
       args = { "--interpreter=vscode" },
     }
 
@@ -89,55 +69,40 @@ return {
     dap.configurations.cs = {
       {
         type = "coreclr",
-        name = "Build and Launch .NET",
+        name = "Launch .NET",
         request = "launch",
-        console = "integratedTerminal",
         program = function()
-          local project_path = vim.fn.input("Path to project: ", vim.fn.getcwd() .. "/", "file")
-
-          if project_path == "" then
-            return nil
-          end
-
-          local get_dll_path_command = "dotnet build '"
-            .. project_path
-            .. "' -nologo -v q --getProperty:TargetPath"
-
-          local dll_path = vim.fn.system(get_dll_path_command)
-
-          dll_path = vim.trim(dll_path)
-
-          if vim.fn.filereadable(dll_path) == 1 then
-            print("Debugger will launch: " .. dll_path)
-            return dll_path
-          else
-            print("Error: Could not determine DLL path. Build failed or command returned empty.")
-            return nil
-          end
+          return vim.fn.input("Path to DLL: ", vim.fn.getcwd() .. "/bin/Debug/", "file")
         end,
+      },
+      {
+        type = "coreclr",
+        name = "Attach to process",
+        request = "attach",
+        processId = require("dap.utils").pick_process,
       },
     }
 
     local dap_context_maps = {
       {
         "n",
-        "<leader>rt",
+        "<leader>dc",
+        function()
+          dap.continue()
+        end,
+        "Continue or Run",
+      },
+      {
+        "n",
+        "<leader>dt",
         function()
           dap.terminate()
         end,
-        "Terminate",
+        "Terminate Debugger",
       },
       {
         "n",
-        "<leader>rb",
-        function()
-          dap.toggle_breakpoint()
-        end,
-        "Toggle Breakpoint",
-      },
-      {
-        "n",
-        "<leader>rs",
+        "<leader>ds",
         function()
           dap.step_over()
         end,
@@ -145,7 +110,7 @@ return {
       },
       {
         "n",
-        "<leader>ri",
+        "<leader>di",
         function()
           dap.step_into()
         end,
@@ -153,7 +118,7 @@ return {
       },
       {
         "n",
-        "<leader>ro",
+        "<leader>do",
         function()
           dap.step_out()
         end,
@@ -161,91 +126,99 @@ return {
       },
       {
         "n",
-        "<leader>ru",
-        function()
-          dapui.toggle()
-        end,
-        "Toggle UI",
-      },
-      {
-        { "n", "v" },
-        "<leader>rh",
-        function()
-          require("dap.ui.widgets").hover()
-        end,
-        "Hover Variable",
-      },
-      {
-        "n",
-        "<leader>rg",
+        "<leader>dr",
         function()
           dap.run_to_cursor()
         end,
-        "Go to Cursor",
+        "Run to Cursor",
       },
       {
         "n",
-        "<leader>rR",
+        "<leader>du",
+        function()
+          dapui.toggle()
+        end,
+        "Toggle Debug UI",
+      },
+      {
+        "n",
+        "<leader>dR",
         function()
           dap.repl.open()
         end,
-        "Open REPL",
+        "Open Debug REPL",
       },
       {
         "n",
-        "<leader>rBc",
+        "<leader>dbt",
+        function()
+          dap.toggle_breakpoint()
+        end,
+        "Toggle Breakpoint",
+      },
+      {
+        "n",
+        "<leader>dbc",
         function()
           dap.set_breakpoint(vim.fn.input("Condition: "))
         end,
-        "Conditional Breakpoint",
+        "Set Conditional Breakpoint",
       },
       {
         "n",
-        "<leader>rBl",
+        "<leader>dbl",
         function()
           dap.set_breakpoint(nil, nil, vim.fn.input("Log Message: "))
         end,
-        "Log Point",
+        "Set Log Point",
       },
       {
         "n",
-        "<leader>rBd",
+        "<leader>dba",
         function()
           dap.clear_breakpoints()
         end,
-        "Delete All Breakpoints",
+        "Clear Breakpoints",
       },
       {
         "n",
-        "<leader>rBe",
+        "<leader>dbe",
         function()
           dap.set_exception_breakpoints()
         end,
-        "Exception Breakpoints",
+        "Set Exception Breakpoints",
       },
       {
         "n",
-        "<leader>rUs",
+        "<leader>dvs",
         function()
           require("dap.ui.widgets").centered_float(require("dap.ui.widgets").scopes)
         end,
-        "Scopes",
+        "View Debug Scopes",
       },
       {
         "n",
-        "<leader>rUf",
+        "<leader>dvf",
         function()
           require("dap.ui.widgets").centered_float(require("dap.ui.widgets").frames)
         end,
-        "Frames",
+        "View Debug Frames",
       },
       {
         { "n", "v" },
-        "<leader>rUp",
+        "<leader>dvh",
+        function()
+          require("dap.ui.widgets").hover()
+        end,
+        "Inspect Hover Value",
+      },
+      {
+        { "n", "v" },
+        "<leader>dvp",
         function()
           require("dap.ui.widgets").preview()
         end,
-        "Preview Variable",
+        "Preview Variable Value",
       },
     }
 
@@ -256,9 +229,5 @@ return {
     end
 
     register_dap_maps()
-
-    vim.keymap.set("n", "<leader>rr", function()
-      dap.continue()
-    end, { desc = "Run / Continue" })
   end,
 }

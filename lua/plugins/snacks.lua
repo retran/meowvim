@@ -1,35 +1,12 @@
--- MIT License
---
+-- SPDX-License-Identifier: MIT
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
---
--- Permission is hereby granted, free of charge, to any person obtaining a copy
--- of this software and associated documentation files (the "Software"), to deal
--- in the Software without restriction, including without limitation the rights
--- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
--- copies of the Software, and to permit persons to whom the Software is
--- furnished to do so, subject to the following conditions:
---
--- The above copyright notice and this permission notice shall be included in
--- all copies or substantial portions of the Software.
---
--- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
--- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
--- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
--- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
--- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
--- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
--- THE SOFTWARE.
---
+
 -- @file: lua/plugins/snacks.lua
 -- @brief: Collection of useful utilities and UI components.
--- @author: Andrew Vasilyev
--- @license: MIT
---
+
 return {
   "folke/snacks.nvim",
-  event = "VeryLazy",
   lazy = false,
-  priority = 1000,
   opts = {
     dashboard = {
       width = 44,
@@ -37,10 +14,10 @@ return {
       preset = {
         keys = {
           { icon = " ", key = "p", desc = "Open Project", action = ":lua Snacks.dashboard.pick('projects')" },
-          { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
+          { icon = " ", key = "n", desc = "Create File", action = ":ene | startinsert" },
           { icon = " ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
-          { icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
-          { icon = " ", key = "q", desc = "Quit", action = ":qa" },
+          { icon = " ", key = "r", desc = "Show Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
+          { icon = " ", key = "q", desc = "Quit Neovim", action = ":qa" },
         },
         header = [[meowvim
 -------]],
@@ -85,8 +62,8 @@ return {
     input = {},
     notifier = {},
     terminal = {},
-    image = {},
-    scope = {},
+    image = { enabled = false },
+    scope = { enabled = false },
     scratch = {
       ft = function()
         return "markdown"
@@ -97,7 +74,7 @@ return {
         count = true,
       },
     },
-    styles = {},
+    styles = { enabled = false },
 
     picker = {
       hidden = true,
@@ -127,6 +104,61 @@ return {
         },
         projects = {
           hidden = true,
+          dev = {
+            vim.fn.expand("~/workspace"),
+            vim.fn.expand("~/dev"),
+            vim.fn.expand("~/projects"),
+          },
+          projects = {
+            vim.fn.fnamemodify(vim.fn.expand("~/workspace/meowvim"), ":p"),
+          },
+          confirm = function(picker, item)
+            picker:close()
+            if not item or not item.file then
+              return
+            end
+
+            local dir = item.file
+            local session_utils = require("utils.session")
+
+            session_utils.save()
+
+            local session_loaded = false
+            vim.api.nvim_create_autocmd("SessionLoadPost", {
+              once = true,
+              callback = function()
+                session_loaded = true
+              end,
+            })
+
+            vim.defer_fn(function()
+              if not session_loaded then
+                require("snacks").picker.files()
+              end
+            end, 100)
+
+            session_utils.reset()
+
+            vim.fn.chdir(dir)
+            local session = require("snacks").dashboard.sections.session()
+            if not session then
+              return
+            end
+
+            local action = session.action
+            if type(action) == "function" then
+              action()
+              return
+            end
+
+            if type(action) == "string" then
+              if action:sub(1, 1) == ":" then
+                vim.cmd(action:sub(2))
+              else
+                vim.cmd(action)
+              end
+            end
+          end,
         },
         lsp_workspace_symbols = {
           tree = true,
