@@ -7,6 +7,7 @@
 local M = {}
 
 local snacks = require("snacks")
+local toggles = require("utils.toggles")
 
 local ICON_EXACT = {
   ["Add Word to Dictionary"] = "󰓆",
@@ -153,6 +154,7 @@ local ICON_EXACT = {
   ["Toggle File Explorer"] = "󰙅",
   ["Toggle Format on Save"] = "󰉵",
   ["Toggle Fullscreen"] = "󰍹",
+  ["Toggle Auto Save"] = "󰆓",
   ["Toggle Indent Guides"] = "󰉢",
   ["Toggle Numbers"] = "󰎠",
   ["Toggle Signs"] = "󰨙",
@@ -842,6 +844,7 @@ function M.setup()
           end
 
           vim.g.miniindentscope_disable = not vim.g.miniindentscope_disable
+          toggles.update("miniindentscope_disable")
           indentscope.refresh()
 
           local level = vim.g.miniindentscope_disable and vim.log.levels.WARN or vim.log.levels.INFO
@@ -901,11 +904,13 @@ function M.setup()
       { "<leader>os", ":set spell!<CR>", desc = "Toggle Spell" },
       { "<leader>oc", ":set cursorline!<CR>", desc = "Toggle Cursorline" },
       { "<leader>oC", ":set cursorcolumn!<CR>", desc = "Toggle Cursorcolumn" },
+      { "<leader>oa", ":AutoSaveToggle<CR>", desc = "Toggle Auto Save" },
       { "<leader>of", ":FormatToggle<CR>", desc = "Toggle Format on Save" },
       {
         "<leader>od",
         function()
           vim.g.snacks_dim = not vim.g.snacks_dim
+          toggles.update("snacks_dim")
           if vim.g.snacks_dim then
             snacks.dim.enable()
           else
@@ -1052,10 +1057,14 @@ function M.setup()
     }
 
     if vim.g.neovide then
+      toggles.ensure("neovide_scale_factor")
+      toggles.ensure("neovide_fullscreen")
+
       table.insert(mappings, {
         "<leader>o+",
         function()
           vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + 0.1
+          toggles.update("neovide_scale_factor")
         end,
         desc = "Scale Up",
       })
@@ -1064,6 +1073,7 @@ function M.setup()
         "<leader>o-",
         function()
           vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - 0.1
+          toggles.update("neovide_scale_factor")
         end,
         desc = "Scale Down",
       })
@@ -1072,6 +1082,7 @@ function M.setup()
         "<leader>of",
         function()
           vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen
+          toggles.update("neovide_fullscreen")
         end,
         desc = "Toggle Fullscreen",
       })

@@ -5,6 +5,7 @@
 -- @brief: Asynchronous linting engine with multiple linter support.
 
 local mason_registry = require("config.mason")
+local toggles = require("utils.toggles")
 
 local desired_linters_by_ft = {
   python = { "pylint", "mypy" },
@@ -141,6 +142,8 @@ return {
       callback = lint_callback,
     })
 
+    toggles.ensure("lint_enabled")
+
     vim.api.nvim_create_user_command("LintInfo", function()
       local ft = vim.bo.filetype
       local linters_for_ft = lint.linters_by_ft[ft] or {}
@@ -153,9 +156,8 @@ return {
 
     vim.api.nvim_create_user_command("LintToggle", function()
       vim.g.lint_enabled = not vim.g.lint_enabled
+      toggles.update("lint_enabled")
       vim.notify("Linting " .. (vim.g.lint_enabled and "enabled" or "disabled"), vim.log.levels.INFO)
     end, { desc = "Toggle Linting" })
-
-    vim.g.lint_enabled = true
   end,
 }

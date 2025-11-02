@@ -64,13 +64,11 @@ opt.iskeyword:append("-")
 opt.formatoptions:remove({ "c", "r", "o" })
 opt.shortmess:append({ W = true, I = true, c = true, C = true })
 
-opt.sessionoptions = "buffers,curdir,folds,globals,tabpages,winpos,winsize,localoptions"
+opt.sessionoptions = "buffers,curdir,folds,globals,tabpages,winpos,winsize,localoptions,resize"
 
 opt.title = true
 
 opt.titlestring = "meowvim - Purr-fect Neovim"
-
-vim.g.disable_autoformat = true
 
 opt.spelllang = { "en_us" }
 opt.spellsuggest = { "best", "9" }

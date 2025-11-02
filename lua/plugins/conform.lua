@@ -4,6 +4,7 @@
 -- @file: lua/plugins/conform.lua
 
 local mason_registry = require("config.mason")
+local toggles = require("utils.toggles")
 
 local desired_formatters_by_ft = {
   lua = { "stylua" },
@@ -173,6 +174,7 @@ return {
   end,
 
   init = function()
+    toggles.ensure("disable_autoformat")
     vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
 
     vim.api.nvim_create_user_command("FormatDisable", function(args)
@@ -181,6 +183,7 @@ return {
         vim.notify("Format-on-save: OFF (Buffer)", vim.log.levels.WARN)
       else
         vim.g.disable_autoformat = true
+        toggles.update("disable_autoformat")
         vim.notify("Format-on-save: OFF (Global)", vim.log.levels.WARN)
       end
     end, {
@@ -191,6 +194,7 @@ return {
     vim.api.nvim_create_user_command("FormatEnable", function()
       vim.b.disable_autoformat = false
       vim.g.disable_autoformat = false
+      toggles.update("disable_autoformat")
       vim.notify("Format-on-save: ON", vim.log.levels.INFO)
     end, {
       desc = "Enable Format on Save",
@@ -206,6 +210,7 @@ return {
         end
       else
         vim.g.disable_autoformat = not vim.g.disable_autoformat
+        toggles.update("disable_autoformat")
         if vim.g.disable_autoformat then
           vim.notify("Format-on-save: OFF (Global)", vim.log.levels.WARN)
         else

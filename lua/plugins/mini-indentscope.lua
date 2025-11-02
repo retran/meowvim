@@ -4,6 +4,8 @@
 -- @file: lua/plugins/mini-indentscope.lua
 -- @brief: Minimal indent guides with animation-free rendering.
 
+local toggles = require("utils.toggles")
+
 return {
   "echasnovski/mini.indentscope",
   version = false,
@@ -21,7 +23,7 @@ return {
       },
     })
 
-    vim.g.miniindentscope_disable = true
+    toggles.ensure("miniindentscope_disable")
 
     vim.api.nvim_create_autocmd("FileType", {
       pattern = {

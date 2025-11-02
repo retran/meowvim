@@ -119,6 +119,10 @@ return {
             end
 
             local dir = item.file
+            local session_utils = require("utils.session")
+
+            session_utils.save()
+
             local session_loaded = false
             vim.api.nvim_create_autocmd("SessionLoadPost", {
               once = true,
@@ -132,6 +136,8 @@ return {
                 require("snacks").picker.files()
               end
             end, 100)
+
+            session_utils.reset()
 
             vim.fn.chdir(dir)
             local session = require("snacks").dashboard.sections.session()
