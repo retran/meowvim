@@ -61,7 +61,7 @@ return {
     },
     input = {},
     notifier = {},
-    terminal = { enabled = false },
+    terminal = {},
     image = { enabled = false },
     scope = { enabled = false },
     scratch = {

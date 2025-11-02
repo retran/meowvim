@@ -550,6 +550,21 @@ function M.setup()
       { "<leader>cr", vim.lsp.buf.rename, desc = "Rename Symbol" },
       { "<leader>cl", vim.lsp.codelens.run, desc = "Run CodeLens" },
       {
+        "<leader>co",
+        function()
+          local ft = vim.bo.filetype
+          if ft ~= "typescript" and ft ~= "typescriptreact" and ft ~= "javascript" and ft ~= "javascriptreact" then
+            vim.notify("Organize Imports is available in TypeScript and JavaScript buffers", vim.log.levels.WARN)
+            return
+          end
+          local ok = pcall(vim.cmd.LspOrganize)
+          if not ok then
+            vim.notify("LspOrganize command is unavailable (tsserver not attached)", vim.log.levels.WARN)
+          end
+        end,
+        desc = "Organize Imports",
+      },
+      {
         "<leader>cf",
         function()
           require("conform").format({ async = true, lsp_fallback = true })
@@ -905,7 +920,7 @@ function M.setup()
       { "<leader>oc", ":set cursorline!<CR>", desc = "Toggle Cursorline" },
       { "<leader>oC", ":set cursorcolumn!<CR>", desc = "Toggle Cursorcolumn" },
       { "<leader>oa", ":AutoSaveToggle<CR>", desc = "Toggle Auto Save" },
-      { "<leader>of", ":FormatToggle<CR>", desc = "Toggle Format on Save" },
+      { "<leader>oF", ":FormatToggle<CR>", desc = "Toggle Format on Save" },
       {
         "<leader>od",
         function()
