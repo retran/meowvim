@@ -12,18 +12,38 @@ return {
     local autopair = require("ultimate-autopair")
     local config = autopair.extend_default()
 
-    local filetype_ext = config.extensions.filetype
-    filetype_ext.nft = filetype_ext.nft or {}
-    local seen = {}
-    for _, ft in ipairs(filetype_ext.nft) do
-      seen[ft] = true
-    end
+    config.bs.enable = false
 
-    for _, ft in ipairs({ "snacks_terminal", "snacks_input", "snacks_picker_input", "snacks_picker_list" }) do
-      if not seen[ft] then
-        table.insert(filetype_ext.nft, ft)
-      end
-    end
+    config.tabout = {
+      enable = true,
+      map = "<A-Tab>",
+      cmap = "<A-Tab>",
+      hopout = true,
+      do_nothing_if_fail = true,
+    }
+
+    config.fastwarp = {
+      enable = true,
+      map = "<A-e>",
+      rmap = "<A-E>",
+      nocursormove = true,
+      multiline = true,
+      do_nothing_if_fail = true,
+    }
+
+    config.close = {
+      enable = true,
+      map = "<A-)>",
+      cmap = "<A-)>",
+      do_nothing_if_fail = true,
+    }
+
+    config.space.enable = true
+
+    config.cr = {
+      enable = true,
+      autoclose = true,
+    }
 
     local configs = { config }
     local cmp_ok, cmpair = pcall(require, "ultimate-autopair.experimental.cmpair")
