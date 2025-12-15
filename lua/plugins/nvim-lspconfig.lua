@@ -192,7 +192,12 @@ return {
             inlayHints = {
               includeInlayParameterNameHints = "all",
               includeInlayFunctionParameterTypeHints = true,
-              includeInlayVariableTypeHints = true,
+              includeInlayVariableTypeHints = false,
+              includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+              includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+              includeInlayPropertyDeclarationTypeHints = true,
+              includeInlayFunctionLikeReturnTypeHints = true,
+              includeInlayEnumMemberValueHints = true,
             },
           },
           javascript = {
