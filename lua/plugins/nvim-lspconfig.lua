@@ -224,12 +224,44 @@ return {
           },
         },
       },
+      yamlls = {
+        settings = {
+          yaml = {
+            schemas = require("schemastore").yaml.schemas(),
+            validate = true,
+            hover = true,
+            completion = true,
+            format = { enable = true },
+          },
+        },
+      },
       dockerls = {},
       docker_compose_language_service = {},
       ltex = {
         settings = {
           ltex = {
             language = "en-US",
+          },
+        },
+      },
+      texlab = {
+        settings = {
+          texlab = {
+            build = {
+              executable = "latexmk",
+              args = { "-pdf", "-interaction=nonstopmode", "-synctex=1", "%f" },
+              onSave = true,
+            },
+            forwardSearch = {
+              executable = "open",
+              args = { "-a", "Skim", "%p" },
+            },
+            chktex = {
+              onOpenAndSave = true,
+            },
+            lint = {
+              onChange = true,
+            },
           },
         },
       },

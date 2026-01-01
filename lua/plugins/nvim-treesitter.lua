@@ -9,13 +9,14 @@ return {
   build = ":TSUpdate",
   event = { "BufReadPre", "BufNewFile" },
   dependencies = {
-    "windwp/nvim-ts-autotag",
     "nvim-treesitter/nvim-treesitter-textobjects",
+    "windwp/nvim-ts-autotag",
   },
-  opts = {
-    ensure_installed = {
+  config = function()
+    require("nvim-treesitter").install({
       "bash",
       "c",
+      "c_sharp",
       "css",
       "diff",
       "dockerfile",
@@ -23,11 +24,17 @@ return {
       "gitcommit",
       "go",
       "gomod",
+      "gosum",
       "gowork",
       "graphql",
       "html",
       "javascript",
+      "jsdoc",
       "json",
+      "json5",
+      "jsonc",
+      "jsx",
+      "latex",
       "lua",
       "luadoc",
       "markdown",
@@ -36,6 +43,7 @@ return {
       "query",
       "regex",
       "rust",
+      "scss",
       "sql",
       "toml",
       "tsx",
@@ -43,77 +51,8 @@ return {
       "vim",
       "vimdoc",
       "yaml",
-    },
-    auto_install = true,
-    sync_install = false,
-    highlight = {
-      enable = true,
-      additional_vim_regex_highlighting = false,
-    },
-    indent = {
-      enable = true,
-      disable = { "python" },
-    },
-    incremental_selection = {
-      enable = true,
-      keymaps = {
-        init_selection = "gnn",
-        node_incremental = "grn",
-        scope_incremental = "grc",
-        node_decremental = "grm",
-      },
-    },
-    autotag = {
-      enable = true,
-    },
-    textobjects = {
-      select = {
-        enable = true,
-        lookahead = true,
-        keymaps = {
-          ["af"] = "@function.outer",
-          ["if"] = "@function.inner",
-          ["ac"] = "@class.outer",
-          ["ic"] = "@class.inner",
-          ["aa"] = "@parameter.outer",
-          ["ia"] = "@parameter.inner",
-          ["al"] = "@loop.outer",
-          ["il"] = "@loop.inner",
-        },
-        include_surrounding_whitespace = true,
-      },
-      move = {
-        enable = true,
-        set_jumps = true,
-        goto_next_start = {
-          ["]m"] = "@function.outer",
-          ["]]"] = "@class.outer",
-        },
-        goto_next_end = {
-          ["]M"] = "@function.outer",
-          ["]["] = "@class.outer",
-        },
-        goto_previous_start = {
-          ["[m"] = "@function.outer",
-          ["[["] = "@class.outer",
-        },
-        goto_previous_end = {
-          ["[M"] = "@function.outer",
-          ["[]"] = "@class.outer",
-        },
-      },
-      swap = {
-        enable = true,
-        swap_next = {
-          ["<leader>S>"] = "@parameter.inner",
-        },
-        swap_previous = {
-          ["<leader>S<"] = "@parameter.inner",
-        },
-      },
-    },
-  },
-  config = function(_, opts)
-    require("nvim-treesitter.configs").setup(opts)
+    })
+
+    require("nvim-ts-autotag").setup()
   end,
 }
