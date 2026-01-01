@@ -91,9 +91,7 @@ return {
         },
         explorer = {
           layout = {
-            layout = {
-              position = "right",
-            },
+            position = "right",
           },
           hidden = true,
           follow_file = true,

@@ -33,6 +33,8 @@ local desired_formatters_by_ft = {
   java = { "google-java-format" },
   gdscript = { "gdformat" },
   gdshader = { "clang_format" },
+  tex = { "latexindent" },
+  bib = { "bibtex-tidy" },
   ["_"] = { "codespell" },
 }
 

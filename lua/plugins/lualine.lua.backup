@@ -4,21 +4,21 @@
 -- @file: lua/plugins/lualine.lua
 -- @brief: Customizable statusline with Git, LSP, and mode indicators.
 
-local Meow = require("config.custom")
-
-local deps = {
-  "nvim-tree/nvim-web-devicons",
-  "lewis6991/gitsigns.nvim",
-}
-if Meow.enable_copilot then
-  table.insert(deps, "AndreM222/copilot-lualine")
-end
-
 return {
   "nvim-lualine/lualine.nvim",
   lazy = false,
   priority = 1000,
-  dependencies = deps,
+  dependencies = function()
+    local Meow = require("config.custom")
+    local deps = {
+      "nvim-tree/nvim-web-devicons",
+      "lewis6991/gitsigns.nvim",
+    }
+    if Meow.enable_copilot then
+      table.insert(deps, "AndreM222/copilot-lualine")
+    end
+    return deps
+  end,
   opts = function()
     local Meow = require("config.custom")
 
@@ -85,7 +85,7 @@ return {
     local function get_lualine_theme()
       local ok, catppuccin = pcall(require, "catppuccin.utils.lualine")
       if ok then
-        return catppuccin()
+        return catppuccin.setup()
       end
       return "auto"
     end
