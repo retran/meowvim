@@ -41,7 +41,7 @@ cache:
   ttl: "24h"
 
 profiles:
-  gemini-flash:
+  fast:
     model: "gemini-flash"
     temperature: 0.3
     timeout: "10m"
@@ -49,26 +49,10 @@ profiles:
       enabled: true
       ttl: "24h"
 
-  gemini-pro:
+  smart:
     model: "gemini-pro"
     timeout: "10m"
     temperature: 0.2
-    topP: 0.95
-    cache:
-      enabled: true
-      ttl: "72h"
-
-  gemini-embeddings:
-    model: "gemini-embeddings"
-    timeout: "10m"
-    cache:
-      enabled: true
-      ttl: "72h"
-
-  smart:
-    model: "gemini-pro"
-    timeout: "15m"
-    temperature: 0.3
     topP: 0.95
     cache:
       enabled: true
@@ -83,7 +67,7 @@ profiles:
 
 write:
   default:
-    profile: "gemini-flash"
+    profile: "fast"
     systemPrompt: >-
       You are an elite software architect and code generation specialist.
       Your output must be production-grade, strictly following the user's requirements.
@@ -185,7 +169,7 @@ write:
         OUTPUT: Only the documentation comments and explanations.
 
     test:
-      profile: "gemini-pro"
+      profile: "smart"
       userPrompt: >-
         Write robust unit tests for the provided code.
         Requirements:
@@ -395,8 +379,16 @@ agent:
   personas:
     discover:
       role: "Discovery"
-      profile: "gemini-flash"
-      tools: ["list_files", "grep_files", "search_code", "read_file", "summarize", "memorize_fact"]
+      profile: "fast"
+      tools:
+        [
+          "list_files",
+          "grep_files",
+          "search_code",
+          "read_file",
+          "summarize",
+          "memorize_fact",
+        ]
       system_persona: >-
         Map the relevant code surface. Use `list_files` to find targets, then `grep_files` or `read_file`.
         Do not read entire repositories. Identify constraints and dependencies.
@@ -405,7 +397,7 @@ agent:
 
     plan:
       role: "Planner"
-      profile: "gemini-pro"
+      profile: "smart"
       tools: ["get_plan", "create_plan", "memorize_fact"]
       system_persona: >-
         Create a linear, step-by-step plan. Each step must be a concrete action (e.g., "Edit file X", "Run test Y").
@@ -415,8 +407,17 @@ agent:
 
     execute:
       role: "Executor"
-      profile: "gemini-pro"
-      tools: ["get_plan", "read_file", "write_file", "edit_file", "run_shell", "update_task", "memorize_fact"]
+      profile: "smart"
+      tools:
+        [
+          "get_plan",
+          "read_file",
+          "write_file",
+          "edit_file",
+          "run_shell",
+          "update_task",
+          "memorize_fact",
+        ]
       system_persona: >-
         Implement the plan. Write production-ready code.
         - Prefer `edit_file` for small changes, `write_file` for new files.
@@ -427,8 +428,15 @@ agent:
 
     verify:
       role: "Verifier"
-      profile: "gemini-flash"
-      tools: ["get_plan", "run_shell", "get_diff", "restart_with_instruction", "memorize_fact"]
+      profile: "smart"
+      tools:
+        [
+          "get_plan",
+          "run_shell",
+          "get_diff",
+          "restart_with_instruction",
+          "memorize_fact",
+        ]
       system_persona: >-
         Check the work. Run linters, tests, or compilation checks.
         If verification fails, use `restart_with_instruction` to send the agent back to Execute with specific fix instructions.
@@ -437,7 +445,7 @@ agent:
 
     final:
       role: "Reporter"
-      profile: "gemini-pro"
+      profile: "smart"
       tools: []
       system_persona: >-
         Summarize the work done.
@@ -446,7 +454,7 @@ agent:
 
 summarize:
   default:
-    profile: "gemini-flash"
+    profile: "fast"
     systemPrompt: >-
       Summarize the code change in one sentence. Focus on functional impact (what changed and why).
   rules:
@@ -458,61 +466,59 @@ summarize:
       skip: true
 
 commit:
-  default:
-    profile: "gemini-pro"
-    strategy: "summarize"
-    systemPrompt: >-
-      You are an expert on Git and Conventional Commits for meowvim.
+  profile: "smart"
+  strategy: "summarize"
+  systemPrompt: >-
+    You are an expert on Git and Conventional Commits for meowvim.
 
-      PROJECT CONTEXT:
-      Meowvim is a modern Neovim distribution featuring:
-      - Lua-based configuration with lazy.nvim plugin manager
-      - Modular plugin architecture (50+ curated plugins)
-      - Zero-configuration philosophy with sensible defaults
-      - Modern UI (lualine, bufferline, which-key, noice.nvim)
-      - Cross-platform with macOS optimization and Neovide GUI support
+    PROJECT CONTEXT:
+    Meowvim is a modern Neovim distribution featuring:
+    - Lua-based configuration with lazy.nvim plugin manager
+    - Modular plugin architecture (50+ curated plugins)
+    - Zero-configuration philosophy with sensible defaults
+    - Modern UI (lualine, bufferline, which-key, noice.nvim)
+    - Cross-platform with macOS optimization and Neovide GUI support
 
-      COMMIT TYPES:
-      - feat: New plugin, feature, or major configuration enhancement
-      - fix: Bug fix, broken plugin configuration, or startup issue
-      - refactor: Code reorganization, configuration cleanup, or pattern improvements
-      - perf: Performance improvement (startup time, lazy loading)
-      - docs: Documentation updates (README, comments)
-      - chore: Maintenance (plugin version updates, lock file changes)
+    COMMIT TYPES:
+    - feat: New plugin, feature, or major configuration enhancement
+    - fix: Bug fix, broken plugin configuration, or startup issue
+    - refactor: Code reorganization, configuration cleanup, or pattern improvements
+    - perf: Performance improvement (startup time, lazy loading)
+    - docs: Documentation updates (README, comments)
+    - chore: Maintenance (plugin version updates, lock file changes)
 
-      OUTPUT: Generate ONLY the commit message in Conventional Commits format.
+    OUTPUT: Generate ONLY the commit message in Conventional Commits format.
 
 pr:
-  default:
-    profile: "smart"
-    strategy: "summarize"
-    systemPrompt: >-
-      You are an expert Neovim configuration developer creating a PR description for meowvim.
+  profile: "smart"
+  strategy: "summarize"
+  systemPrompt: >-
+    You are an expert Neovim configuration developer creating a PR description for meowvim.
 
-      PROJECT CONTEXT:
-      - Modular architecture with separate plugin files in lua/plugins/
-      - lazy.nvim plugin manager with lazy loading
-      - Support for Catppuccin and Tokyo Night themes
-      - Cross-platform (macOS/Linux) and GUI (Neovide) support
+    PROJECT CONTEXT:
+    - Modular architecture with separate plugin files in lua/plugins/
+    - lazy.nvim plugin manager with lazy loading
+    - Support for Catppuccin and Tokyo Night themes
+    - Cross-platform (macOS/Linux) and GUI (Neovide) support
 
-      OUTPUT STRUCTURE (Markdown):
-      # <Clear, Descriptive PR Title>
+    OUTPUT STRUCTURE (Markdown):
+    # <Clear, Descriptive PR Title>
 
-      ## Summary
-      2-4 sentences explaining what this PR adds or fixes and why.
+    ## Summary
+    2-4 sentences explaining what this PR adds or fixes and why.
 
-      ## Changes
-      - **Plugin Configuration**: Changes to `lua/plugins/*.lua`
-      - **Core Configuration**: Changes to `lua/config/*.lua` or `init.lua`
-      - **UI/UX**: Theme or interface updates
-      - **Performance**: Startup time or lazy loading optimizations
+    ## Changes
+    - **Plugin Configuration**: Changes to `lua/plugins/*.lua`
+    - **Core Configuration**: Changes to `lua/config/*.lua` or `init.lua`
+    - **UI/UX**: Theme or interface updates
+    - **Performance**: Startup time or lazy loading optimizations
 
-      ## Technical Details
-      - **Implementation**: How the feature integrates with existing structure
-      - **Lazy Loading**: Strategy used (event/cmd/ft)
-      - **Dependencies**: New plugins or tools required
+    ## Technical Details
+    - **Implementation**: How the feature integrates with existing structure
+    - **Lazy Loading**: Strategy used (event/cmd/ft)
+    - **Dependencies**: New plugins or tools required
 
-      ## Testing
-      - Verified in terminal and Neovide
-      - Checked with Catppuccin and Tokyo Night themes
-      - Confirmed no startup errors
+    ## Testing
+    - Verified in terminal and Neovide
+    - Checked with Catppuccin and Tokyo Night themes
+    - Confirmed no startup errors
