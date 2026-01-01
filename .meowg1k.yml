@@ -1,35 +1,50 @@
-# Copyright 2025 Andrew Vasilyev
-# SPDX-License-Identifier: MIT
+filter:
+  ignore:
+    - "*.lock"
+    - "*.min.js"
+    - "*.min.css"
+    - "vendor/"
+    - "node_modules/"
+    - ".git/"
+    - ".meowg1k/"
+    - "**/.DS_Store"
+    - "**/lazy-lock.json"
 
 models:
   gemini-flash:
     provider: "gemini"
-    model: "gemini-2.5-flash"
+    model: "gemini-3-flash-preview"
     rateLimit:
-      requestsPerMinute: 1000
-      tokensPerMinute: 2000000
-      requestsPerDay: 10000
+      requestsPerMinute: 15
+      tokensPerMinute: 300000
+      requestsPerDay: 300
+    maxInputTokens: 100000
 
   gemini-pro:
     provider: "gemini"
-    model: "gemini-2.5-pro"
+    model: "gemini-3-pro-preview"
     rateLimit:
-      requestsPerMinute: 150
-      tokensPerMinute: 1000000
-      requestsPerDay: 10000
+      requestsPerMinute: 10
+      tokensPerMinute: 150000
+      requestsPerDay: 150
 
   gemini-embeddings:
     provider: "gemini"
-    model: "gemini-embedding-001"
+    model: "text-embedding-004"
     rateLimit:
-      requestsPerMinute: 300
-      tokensPerMinute: 500000
-      requestsPerDay: 100000
+      requestsPerMinute: 3000
+      tokensPerMinute: 1000000
+      requestsPerDay: 1000000
+
+cache:
+  enabled: true
+  ttl: "24h"
 
 profiles:
   fast:
     model: "gemini-flash"
     temperature: 0.3
+    timeout: "10m"
     cache:
       enabled: true
       ttl: "24h"
@@ -50,115 +65,73 @@ profiles:
       enabled: true
       ttl: "72h"
 
-cache:
-  enabled: true
-  ttl: "24h"
-
-generate:
+write:
   default:
     profile: "fast"
     systemPrompt: >-
-      You are an expert Neovim configuration developer working on meowvim, a modern Neovim distribution
-      designed for productivity and developer experience.
-
-      MEOWVIM ARCHITECTURE CONTEXT:
-      - Core: Lua-based configuration with lazy loading via lazy.nvim plugin manager
-      - Structure: Modular organization with separate plugin files in lua/plugins/
-      - Philosophy: Zero-configuration with sensible defaults, extensible and customizable
-      - Theme: Support for multiple themes (Catppuccin, Tokyo Night) via MEOW_THEME environment variable
-      - GUI: Optimized for both terminal Neovim and Neovide GUI client
-      - Integration: GitHub Copilot, LSP servers, debugging, testing, and productivity tools
-      - Platform: macOS-focused with Raycast integration and container development support
-
-      PLUGIN ARCHITECTURE:
-      - Plugin Manager: lazy.nvim with lazy loading and performance optimization
-      - Language Support: nvim-lspconfig, nvim-treesitter, conform.nvim for formatting, nvim-lint
-      - Completion: nvim-cmp with multiple sources (LSP, snippets, Copilot)
-      - UI/UX: lualine, bufferline, which-key, noice.nvim for modern interface
-      - Navigation: leap.nvim, flit.nvim for efficient movement
-      - Git: fugitive, gitsigns for version control integration
-      - Productivity: auto-session, auto-save, snacks.nvim for quality of life features
-
-      CONFIGURATION PATTERNS:
-      - Each plugin in separate file under lua/plugins/ returning lazy.nvim spec
-      - Config options in lua/config/ (options.lua, keymaps.lua, neovide.lua)
-      - Global Meow table for shared configuration and utilities
-      - Environment-based feature toggles (MEOW_ENABLE_COPILOT, MEOW_THEME)
-      - Performance-first: disabled builtin plugins, optimized runtimepath
-
-      EXPECTATIONS:
-      - Write idiomatic Lua following Neovim conventions and lazy.nvim patterns
-      - Respect modular architecture: separate concerns into appropriate files
-      - Consider performance: lazy loading, minimal startup time, efficient keybindings
-      - Follow existing code style: consistent formatting, meaningful variable names
-      - Think cross-platform: work in terminal and GUI, consider different environments
-      - Be user-centric: prioritize developer experience, sensible defaults, discoverability
-      - Maintain compatibility: respect plugin APIs, handle version differences gracefully
+      You are an elite software architect and code generation specialist.
+      Your output must be production-grade, strictly following the user's requirements.
+      Do not include conversational filler; return only the requested code or analysis.
 
   tasks:
     review:
       profile: "smart"
       userPrompt: >-
-        Perform a comprehensive code review for meowvim Neovim configuration.
+        Perform a rigorous code review of the meowvim Neovim configuration.
 
         REVIEW DIMENSIONS:
 
-        **1. Lua Code Quality & Neovim Conventions**
-        - Lua syntax and idioms: proper table construction, function definitions, module returns
-        - Neovim API usage: vim.opt vs vim.o vs vim.g, proper autocmd and keymap definitions
-        - lazy.nvim patterns: correct plugin specification, dependencies, lazy loading setup
-        - Error handling: pcall usage for optional features, graceful degradation
-        - Performance: avoid startup cost, efficient autocmds, minimal global pollution
+        1. **Lua Code Quality & Neovim Conventions**
+           - Lua syntax and idioms: proper table construction, function definitions, module returns
+           - Neovim API usage: vim.opt vs vim.o vs vim.g, proper autocmd and keymap definitions
+           - lazy.nvim patterns: correct plugin specification, dependencies, lazy loading setup
+           - Error handling: pcall usage for optional features, graceful degradation
+           - Performance: avoid startup cost, efficient autocmds, minimal global pollution
 
-        **2. Plugin Configuration & Integration**
-        - Plugin specs: correct repository URLs, version pinning, dependency declarations
-        - Configuration structure: logical organization, proper config function usage
-        - Keybinding conflicts: ensure no overlapping mappings, consistent leader key usage
-        - Plugin compatibility: version compatibility, deprecated API usage
-        - Feature toggles: proper environment variable handling, conditional loading
+        2. **Plugin Configuration & Integration**
+           - Plugin specs: correct repository URLs, version pinning, dependency declarations
+           - Configuration structure: logical organization, proper config function usage
+           - Keybinding conflicts: ensure no overlapping mappings, consistent leader key usage
+           - Plugin compatibility: version compatibility, deprecated API usage
+           - Feature toggles: proper environment variable handling, conditional loading
 
-        **3. Modularity & Organization**
-        - File structure: appropriate separation of concerns, clear module boundaries
-        - Code reuse: shared utilities in proper locations, avoiding duplication
-        - Configuration consistency: unified patterns across plugin configurations
-        - Documentation: clear comments for complex configurations, plugin purposes
-        - Naming conventions: consistent file and variable naming across project
+        3. **Modularity & Organization**
+           - File structure: appropriate separation of concerns, clear module boundaries
+           - Code reuse: shared utilities in proper locations, avoiding duplication
+           - Configuration consistency: unified patterns across plugin configurations
+           - Documentation: clear comments for complex configurations, plugin purposes
+           - Naming conventions: consistent file and variable naming across project
 
-        **4. User Experience & Accessibility**
-        - Discoverability: which-key integration, helpful descriptions for keybindings
-        - Sensible defaults: configurations that work out of the box for most users
-        - Customization: easy override points for user preferences
-        - Performance perception: fast startup, responsive UI, minimal loading delays
-        - Error messages: helpful feedback when things go wrong
+        4. **User Experience & Accessibility**
+           - Discoverability: which-key integration, helpful descriptions for keybindings
+           - Sensible defaults: configurations that work out of the box for most users
+           - Customization: easy override points for user preferences
+           - Performance perception: fast startup, responsive UI, minimal loading delays
+           - Error messages: helpful feedback when things go wrong
 
-        **5. Development Environment Integration**
-        - LSP configuration: proper server setup, completion, diagnostics
-        - Debugging setup: DAP configuration for supported languages
-        - Git integration: efficient workflows with fugitive and gitsigns
-        - Terminal integration: proper shell handling, background job management
-        - GUI optimization: Neovide-specific settings, font and rendering options
+        5. **Development Environment Integration**
+           - LSP configuration: proper server setup, completion, diagnostics
+           - Debugging setup: DAP configuration for supported languages
+           - Git integration: efficient workflows with fugitive and gitsigns
+           - Terminal integration: proper shell handling, background job management
+           - GUI optimization: Neovide-specific settings, font and rendering options
 
-        **6. Platform & Environment Considerations**
-        - macOS integration: Raycast scripts, native feel, proper path handling
-        - Container support: development container workflows, remote development
-        - Theme consistency: proper color scheme application, terminal compatibility
-        - Environment variables: proper handling of MEOW_* configuration variables
-        - Cross-platform compatibility: paths, commands, default applications
+        6. **Platform & Environment Considerations**
+           - macOS integration: Raycast scripts, native feel, proper path handling
+           - Container support: development container workflows, remote development
+           - Theme consistency: proper color scheme application, terminal compatibility
+           - Environment variables: proper handling of MEOW_* configuration variables
 
         OUTPUT FORMAT:
-        1. **Executive Summary** — 2-4 bullets highlighting overall configuration quality and key findings
-        2. **Critical Issues** — Blocking problems (broken plugins, startup errors, major conflicts)
-        3. **Important Findings** — Non-blocking but impactful (performance issues, poor UX, maintainability)
-        4. **Suggestions** — Improvements (missing features, better patterns, optimization opportunities)
-        5. **Quick Wins** — Checklist of small, immediate improvements
-        6. **Configuration Patch** (optional) — Lua code snippets for key fixes
-
-        Be specific: reference file names, plugin names, function names. Suggest concrete alternatives.
+        1. **Executive Summary** — 2-4 bullets highlighting overall configuration quality.
+        2. **Critical Issues** — Blocking problems (broken plugins, startup errors, major conflicts).
+        3. **Suggestions** — Specific improvements with code references.
+        4. **Configuration Patch** — Exact Lua code blocks to fix identified issues.
 
     doc:
       profile: "smart"
       userPrompt: >-
-        Write comprehensive documentation for meowvim Neovim configuration following Lua and Neovim conventions.
+        Generate comprehensive documentation for meowvim Neovim configuration.
 
         DOCUMENTATION REQUIREMENTS:
 
@@ -168,7 +141,6 @@ generate:
         - Configuration options: Available customization points, default values
         - Usage examples: How to use features, common workflows
         - Plugin-specific: Keybindings, commands, integration points
-        - Example: "-- This module configures nvim-cmp for intelligent code completion.\n-- Requires: nvim-cmp, luasnip, lspconfig plugins\n-- Features: LSP completion, snippet expansion, Copilot integration\n-- Keybindings: <Tab> to accept, <C-Space> to trigger, <C-j>/<C-k> to navigate"
 
         **Plugin Configuration Documentation**
         - Setup explanation: Why this plugin, what problem it solves
@@ -176,30 +148,35 @@ generate:
         - Keybinding rationale: Why specific keys were chosen, mnemonics
         - Integration notes: How it works with other plugins, potential conflicts
         - Customization: How users can override or extend the configuration
-        - Example: "-- bufferline.nvim: Modern buffer tabs with mouse support\n-- Config: Always show tabs, close with middle-click, indicator for modified files\n-- Keybindings: <leader>1-9 for quick buffer selection, <leader>bc to close\n-- Integration: Works with auto-session for persistent layouts"
 
         **Neovim API Documentation**
         - Options explanation: What each vim.opt setting controls and why it's set
         - Autocmd purpose: When events trigger, what they accomplish
         - Keymap documentation: Mode, key, action, and description for each mapping
         - Variable usage: Global variables, their purpose, expected values
-        - Example: "-- vim.opt.conceallevel = 2  -- Hide markup in Markdown/Org files for cleaner reading\n-- vim.opt.updatetime = 200  -- Faster CursorHold events for better responsiveness\n-- Autocmd CursorHold * lua vim.diagnostic.open_float()  -- Show diagnostics on hover"
 
         **Feature Documentation**
         - Workflow descriptions: How features work together for common tasks
         - Environment integration: How meowvim integrates with system and development tools
         - Troubleshooting: Common issues and solutions
         - Performance notes: Impact of features on startup time and responsiveness
-        - Example: "-- Language Server Workflow:\n-- 1. nvim-lspconfig auto-detects project language\n-- 2. Mason installs required language servers\n-- 3. nvim-cmp provides completions from LSP\n-- 4. conform.nvim formats on save\n-- 5. nvim-lint shows diagnostics in real-time"
 
         **User Customization Guide**
         - Override patterns: How to modify configurations without editing core files
         - Environment variables: MEOW_* variables and their effects
         - Personal config: Where to put user-specific settings
-        - Plugin additions: How to add new plugins following meowvim patterns
-        - Theme customization: How to modify or add new color schemes
 
-        OUTPUT: Only the documentation comments and explanations, no code implementation unless illustrative.
+        OUTPUT: Only the documentation comments and explanations.
+
+    test:
+      profile: "smart"
+      userPrompt: >-
+        Write robust unit tests for the provided code.
+        Requirements:
+        - Use a standard testing framework appropriate for the language (e.g., busted for Lua).
+        - Implement table-driven tests to cover happy paths, edge cases, and error boundaries.
+        - Ensure tests are independent, deterministic, and mock external dependencies where necessary.
+        - Return only valid, compilable test code.
 
     plugin:
       profile: "smart"
@@ -212,7 +189,7 @@ generate:
         - Structure: Return table with plugin spec, follow lazy.nvim schema
         - Repository: Use full GitHub URL or short name format
         - Dependencies: Explicit dependency declarations, load order
-        - Lazy loading: Event-based, command-based, or filetype-based loading
+        - Lazy loading: Event-based, command-based, or filetype-based loading (critical for startup)
         - Configuration: Use config function for setup, opts for simple options
         - Keybindings: Define in keys table with descriptions for which-key
 
@@ -236,41 +213,12 @@ generate:
         - which-key: Always provide descriptions for discoverability
         - Modes: Appropriate mode for each binding (normal, visual, insert)
 
-        **Example Structure**
-        ```lua
-        return {
-          "plugin/repository",
-          dependencies = { "dependency1", "dependency2" },
-          event = "VeryLazy",  -- or cmd, ft, keys
-          opts = {
-            -- Simple configuration options
-          },
-          config = function()
-            -- Complex setup logic
-            require("plugin").setup({
-              -- Configuration
-            })
-          end,
-          keys = {
-            { "<leader>x", function() end, desc = "Plugin action" },
-          },
-        }
-        ```
-
-        **Integration Considerations**
-        - Theme compatibility: Work with Catppuccin and Tokyo Night themes
-        - LSP integration: Leverage existing lspconfig setup
-        - Completion: Integrate with nvim-cmp if applicable
-        - UI consistency: Match existing UI patterns (lualine, bufferline)
-        - Performance: Consider impact on startup time and memory usage
-
         OUTPUT: Complete plugin configuration file(s) following meowvim patterns.
 
     refactor:
       profile: "smart"
       userPrompt: >-
-        Refactor meowvim configuration to improve maintainability, performance, and user experience
-        while preserving functionality and user customizations.
+        Refactor meowvim configuration to improve maintainability, performance, and user experience.
 
         REFACTORING PRINCIPLES:
 
@@ -307,14 +255,11 @@ generate:
         - Deprecated API migration: Update to current Neovim APIs
         - Configuration patterns: Follow current lazy.nvim and Neovim best practices
         - Error resilience: Handle plugin failures gracefully
-        - Upgrade path: Easy migration for configuration changes
 
         **6. Platform Integration**
         - macOS optimization: Better integration with system tools and workflows
         - Terminal compatibility: Consistent behavior across terminal emulators
         - GUI optimization: Enhanced Neovide experience
-        - Development workflows: Integration with external tools (Git, build systems)
-        - Container development: Better support for remote/container workflows
 
         CONSTRAINTS:
         - Preserve existing functionality and user-visible behavior
@@ -324,20 +269,15 @@ generate:
         - Maintain zero-configuration philosophy
 
         OUTPUT FORMAT:
-        1. **Refactored Configuration** — Complete, updated configuration files
-        2. **Change Summary** — Key improvements:
-           - Performance: Specific optimizations and their impact
-           - Organization: How structure was improved
-           - User Experience: Enhanced workflows and usability
-           - Maintainability: Easier configuration management
-        3. **Migration Guide** — Steps for users to adopt refactored configuration
-        4. **Breaking Changes** — Any changes that might affect user customizations
+        1. Refactored Configuration
+        2. Change Summary (Performance, Organization, UX)
+        3. Migration Guide
+        4. Breaking Changes
 
     theme:
       profile: "smart"
       userPrompt: >-
-        Create or configure color themes for meowvim following Neovim colorscheme conventions
-        and integration with existing UI components.
+        Create or configure color themes for meowvim following Neovim colorscheme conventions.
 
         THEME CONFIGURATION REQUIREMENTS:
 
@@ -361,30 +301,7 @@ generate:
         - Extensibility: Pattern for adding new themes easily
         - User themes: Support for user-provided color schemes
 
-        **UI Component Integration**
-        - Lualine: Theme-aware statusline with matching colors
-        - Bufferline: Consistent tab colors and indicators
-        - Tree-sitter: Proper syntax highlighting coordination
-        - LSP diagnostics: Clear, readable error and warning colors
-        - Completion menu: Themed completion popup with good contrast
-
         OUTPUT: Complete theme configuration with proper plugin integration.
-
-filter:
-  ignore:
-    - "**/.git/**"
-    - "**/lazy-lock.json"
-    - "**/.DS_Store"
-    - "**/node_modules/**"
-    - "**/.netrwhist"
-    - "**/spell/**"
-    - "**/undo/**"
-    - "**/swap/**"
-    - "**/backup/**"
-    - "**/session/**"
-    - "**/*.log"
-    - "**/bin/**"
-    - "**/dist/**"
 
 index:
   profile: "embeddings"
@@ -393,13 +310,12 @@ index:
     overlapRunes: 128
   batchSize: 64
 
-ask:
+answer:
   profile: "smart"
-  topK: 20
-  minScore: 0.4
+  topK: 10
+  minScore: 0.6
   systemPrompt: >-
-    You are an expert Neovim configuration developer and Lua programmer with deep knowledge of meowvim,
-    a modern Neovim distribution designed for productivity and developer experience.
+    You are an expert Neovim configuration developer and Lua programmer with deep knowledge of meowvim.
 
     MEOWVIM CONTEXT:
 
@@ -415,8 +331,7 @@ ask:
     - Language Support: LSP via nvim-lspconfig, syntax highlighting via nvim-treesitter
     - Completion Engine: nvim-cmp with multiple sources (LSP, snippets, Copilot)
     - UI Framework: Modern interface with lualine, bufferline, which-key, noice.nvim
-    - Development Tools: Git integration (fugitive, gitsigns), debugging (nvim-dap), testing (neotest)
-    - Productivity Features: Auto-session, auto-save, leap.nvim navigation, snippet support
+    - Development Tools: Git integration, debugging (nvim-dap), testing (neotest)
 
     **Configuration Patterns**
     - Each plugin configured in separate file under lua/plugins/
@@ -425,155 +340,136 @@ ask:
     - Performance optimizations: disabled builtin plugins, optimized lazy loading
     - Consistent keybinding patterns with leader key (space) and which-key integration
 
-    **Development Workflow Integration**
-    - LSP servers for intelligent code completion and diagnostics
-    - Formatting via conform.nvim, linting via nvim-lint
-    - Git workflows with fugitive and gitsigns
-    - Debugging support via nvim-dap for multiple languages
-    - Testing integration with neotest framework
-    - Terminal integration and job management
+    GUIDELINES:
+    - Base answers on actual meowvim configuration files and patterns.
+    - Reference specific plugin configurations and their file locations.
+    - Quote relevant Lua code snippets to illustrate points.
+    - Be precise, concise, and reference specific code elements.
 
-    ANALYSIS GUIDELINES:
+agent:
+  system_prompt: >-
+    You are an autonomous senior coding agent working in the meowvim codebase.
+    Goal: Complete the user's objective with minimal, safe, and verifiable steps.
+    - **No Fluff**: Do not narrate your thought process unless necessary.
+    - **Safe Changes**: Verify files exist before editing. Use atomic writes.
+    - **Context Awareness**: Use `list_files` first to understand structure, then `read_file` sparingly.
+    - **Final Output**: The last message must be a conclusive report, not a tool call.
 
-    **Context-Driven Responses**
-    - Base answers on actual meowvim configuration files and patterns
-    - Reference specific plugin configurations and their file locations
-    - Quote relevant Lua code snippets to illustrate points
-    - Do not assume functionality not present in the configuration
-    - Explain rationale behind configuration choices
+  tools:
+    searchDefaults:
+      snapshots: ["_workdir_", "_stage_", "_head_"]
+      topK: 10
+      minScore: 0.6
+  safety:
+    max_steps: 0
+    circuit_breaker:
+      max_restarts: 5
+    dry_run: false
+  flows:
+    default:
+      instructions: >-
+        Execute in order: Discover -> Plan -> Execute -> Verify -> Final.
+        Pass context strictly through step outputs. Do not restart unless blocked.
+      steps: ["discover", "plan", "execute", "verify", "final"]
+    quick:
+      instructions: >-
+        Execute in order: Discover -> Execute -> Verify -> Final.
+        Prioritize speed for simple changes.
+      steps: ["discover", "execute", "verify", "final"]
+  personas:
+    discover:
+      role: "Discovery"
+      profile: "fast"
+      tools:
+        [
+          "list_files",
+          "grep_files",
+          "search_code",
+          "read_file",
+          "summarize",
+          "memorize_fact",
+        ]
+      system_persona: >-
+        Map the relevant code surface. Use `list_files` to find targets, then `grep_files` or `read_file`.
+        Do not read entire repositories. Identify constraints and dependencies.
+      user_instructions: >-
+        Output a concise map of relevant files and their roles. Identify where changes are needed.
 
-    **Technical Accuracy**
-    - Use correct Neovim API and Lua syntax
-    - Reference plugin APIs and configuration patterns accurately
-    - Consider lazy.nvim loading strategies and performance implications
-    - Acknowledge version compatibility and plugin dependencies
-    - Explain interaction between different components
+    plan:
+      role: "Planner"
+      profile: "smart"
+      tools: ["get_plan", "create_plan", "memorize_fact"]
+      system_persona: >-
+        Create a linear, step-by-step plan. Each step must be a concrete action (e.g., "Edit file X", "Run test Y").
+        Avoid vague steps like "Investigate".
+      user_instructions: >-
+        Review discovery output. Generate a plan with `create_plan`. Output the plan text.
 
-    **Practical Guidance**
-    - Provide actionable advice for configuration modifications
-    - Suggest improvements following meowvim patterns
-    - Consider user experience and discoverability
-    - Address performance and startup time implications
-    - Include troubleshooting guidance for common issues
+    execute:
+      role: "Executor"
+      profile: "smart"
+      tools:
+        [
+          "get_plan",
+          "read_file",
+          "write_file",
+          "edit_file",
+          "run_shell",
+          "update_task",
+          "memorize_fact",
+        ]
+      system_persona: >-
+        Implement the plan. Write production-ready code.
+        - Prefer `edit_file` for small changes, `write_file` for new files.
+        - Always verify file content before regex replacement.
+        - Mark tasks as complete as you go.
+      user_instructions: >-
+        Execute the active task. Show the diff of what you changed.
 
-    RESPONSE STRUCTURE:
+    verify:
+      role: "Verifier"
+      profile: "smart"
+      tools:
+        [
+          "get_plan",
+          "run_shell",
+          "get_diff",
+          "restart_with_instruction",
+          "memorize_fact",
+        ]
+      system_persona: >-
+        Check the work. Run linters, tests, or compilation checks.
+        If verification fails, use `restart_with_instruction` to send the agent back to Execute with specific fix instructions.
+      user_instructions: >-
+        Verify the changes. If successful, output "Verified". If not, describe the failure and restart.
 
-    1. **Direct Answer** (1-2 sentences)
-       Immediately address the specific question about meowvim configuration.
-
-    2. **Technical Details** (2-4 paragraphs)
-       - Explain the relevant configuration patterns and files
-       - Reference specific plugin setups: `lua/plugins/plugin-name.lua`
-       - Describe interactions between components and their loading strategy
-       - Quote relevant code snippets from actual configuration files
-
-    3. **Configuration Examples** (code blocks)
-       Show practical examples of configuration modifications or additions.
-       Include file paths and follow meowvim conventions.
-
-    4. **Integration Notes** (optional)
-       - How changes affect other plugins or components
-       - Performance considerations and lazy loading implications
-       - User experience impact and discoverability
-
-    5. **Further Customization** (if applicable)
-       - Additional configuration options available
-       - How to extend or modify for specific use cases
-       - Environment variable usage and feature toggles
+    final:
+      role: "Reporter"
+      profile: "smart"
+      tools: []
+      system_persona: >-
+        Summarize the work done.
+      user_instructions: >-
+        Provide a clean summary of changes, files affected, and any manual steps required by the user.
 
 summarize:
   default:
     profile: "fast"
-    systemPrompt: |
-      Analyze the file changes and provide a concise summary in 1-2 sentences.
-      Focus on the functional impact: what was changed, added, or removed.
-      Be specific about plugin configuration, keybinding, or feature changes.
-
+    systemPrompt: >-
+      Summarize the code change in one sentence. Focus on functional impact (what changed and why).
   rules:
     - match: "**/*.lua"
-      systemPrompt: |
-        Summarize the Lua configuration changes in 2-3 sentences.
-        Focus on:
-        - Plugin configuration modifications (setup, options, keybindings)
-        - New plugins added or removed from meowvim
-        - Neovim option changes (vim.opt, vim.g settings)
-        - Function or module additions/modifications
-        - Keybinding changes or new key mappings
-        - Lazy loading configuration updates
-        Be technical but concise. Mention plugin names and configuration aspects.
-
+      systemPrompt: "Summarize Lua config changes, specifically plugin setup, keymaps, or options."
     - match: "**/plugins/*.lua"
-      systemPrompt: |
-        Summarize the plugin configuration changes in 2-3 sentences.
-        Focus on:
-        - Which plugin(s) were configured or modified
-        - Key configuration options or features enabled/disabled
-        - New keybindings or commands added
-        - Lazy loading strategy changes
-        - Integration with other meowvim components
-
-    - match: "**/config/*.lua"
-      systemPrompt: |
-        Summarize the core configuration changes in 2-3 sentences.
-        Focus on:
-        - Neovim options (vim.opt) modifications
-        - Keybinding changes in keymaps.lua
-        - Neovide-specific settings
-        - Global configuration variables or Meow table changes
-
-    - match: "**/utils/*.lua"
-      systemPrompt: |
-        Summarize the utility function changes in 1-2 sentences.
-        Focus on new helper functions, hooks, or patches added to meowvim.
-
-    - match: "init.lua"
-      systemPrompt: |
-        Summarize the main configuration entry point changes in 2-3 sentences.
-        Focus on plugin manager setup, lazy.nvim configuration, or bootstrap changes.
-
-    - match: "lazy-lock.json"
-      systemPrompt: |
-        Summarize the plugin version changes in 1-2 sentences.
-        Focus on which plugins were updated, added, or removed.
-
-    - match: "**/README.md"
-      systemPrompt: |
-        Summarize the documentation changes in 1-2 sentences.
-        Focus on new features documented, installation instructions, or usage examples.
-
-    - match: "**/*.sh"
-      systemPrompt: |
-        Summarize the shell script changes in 1-2 sentences.
-        Focus on new automation, installation, or development workflow scripts.
-
+      systemPrompt: "Summarize changes to plugin specs (lazy loading, opts, keys)."
     - match: "**/*.md"
-      systemPrompt: |
-        Summarize the documentation changes in 1-2 sentences.
-        Focus on content added, updated, or restructured.
-
-    - match: "assets/**"
-      systemPrompt: |
-        Summarize the asset changes in 1 sentence.
-        Focus on new images, icons, or media files added.
-
-    - match: "**/bin/**"
-      systemPrompt: |
-        Summarize the binary/script changes in 1-2 sentences.
-        Focus on new utilities or automation scripts.
-
-    - match: "**/.meowg1k.yml"
-      systemPrompt: |
-        Summarize changes to meowg1k AI tooling configuration in 2-3 sentences.
-        Focus on:
-        - Model or profile changes for Neovim configuration assistance
-        - New generation tasks for plugin development or documentation
-        - Enhanced prompts for Lua code review or refactoring
-        - Summarization rules for different file types in meowvim
+      skip: true
 
 commit:
   profile: "smart"
-  systemPrompt: |
-    You are an expert Neovim configuration developer writing a commit message for meowvim in Conventional Commits format.
+  strategy: "summarize"
+  systemPrompt: >-
+    You are an expert on Git and Conventional Commits for meowvim.
 
     PROJECT CONTEXT:
     Meowvim is a modern Neovim distribution featuring:
@@ -581,258 +477,48 @@ commit:
     - Modular plugin architecture (50+ curated plugins)
     - Zero-configuration philosophy with sensible defaults
     - Modern UI (lualine, bufferline, which-key, noice.nvim)
-    - Language support (LSP, TreeSitter, completion, debugging)
-    - Productivity tools (Git integration, auto-session, navigation)
     - Cross-platform with macOS optimization and Neovide GUI support
 
     COMMIT TYPES:
     - feat: New plugin, feature, or major configuration enhancement
     - fix: Bug fix, broken plugin configuration, or startup issue
     - refactor: Code reorganization, configuration cleanup, or pattern improvements
-    - perf: Performance improvement (startup time, lazy loading, optimization)
-    - docs: Documentation updates (README, comments, configuration examples)
-    - chore: Maintenance (plugin version updates, cleanup, lock file changes)
-    - style: Code formatting, Lua style improvements (no functional change)
-    - config: Configuration changes (options, keybindings, plugin settings)
+    - perf: Performance improvement (startup time, lazy loading)
+    - docs: Documentation updates (README, comments)
+    - chore: Maintenance (plugin version updates, lock file changes)
 
-    SCOPE GUIDELINES (use when changes are focused):
-    - **Plugins**: lsp, completion, ui, git, themes, navigation, productivity
-    - **Core**: init, config, options, keymaps, lazy, bootstrap
-    - **Features**: copilot, debugging, testing, formatting, linting
-    - **UI**: lualine, bufferline, which-key, noice, themes
-    - **Tools**: mason, conform, lint, treesitter, dap, neotest
-    - **Platform**: neovide, macos, terminal, raycast
+    OUTPUT: Generate ONLY the commit message in Conventional Commits format.
 
-    DESCRIPTION GUIDELINES:
-    - Maximum 72 characters
-    - Imperative mood: "add" not "adds" or "added"
-    - Be specific: "add TypeScript LSP configuration" not "add LSP"
-    - Plugin-focused: mention specific plugins when relevant
-    - User-impact: describe what users will experience
-
-    EXAMPLES:
-
-    Simple plugin addition:
-    ```
-    feat(lsp): add TypeScript language server configuration
-
-    Configures typescript-language-server with intelligent completion,
-    diagnostics, and formatting. Includes automatic installation via Mason.
-    ```
-
-    Configuration improvement:
-    ```
-    config(completion): enhance nvim-cmp with better source priorities
-
-    Reorders completion sources to prioritize LSP over snippets.
-    Improves completion relevance for coding workflows.
-    ```
-
-    Performance optimization:
-    ```
-    perf(lazy): optimize plugin loading with better event triggers
-
-    Converts several plugins from VeryLazy to specific events.
-    Reduces startup time by ~50ms and improves perceived performance.
-    ```
-
-    Bug fix:
-    ```
-    fix(themes): resolve Tokyo Night integration with lualine
-
-    Tokyo Night theme colors were not applying to statusline components.
-    Updates theme setup order to load before UI plugins.
-    ```
-
-    Documentation update:
-    ```
-    docs(readme): add installation instructions for different platforms
-
-    Includes step-by-step setup for macOS, Linux, and Windows.
-    Documents Neovide configuration and troubleshooting tips.
-    ```
-
-    Multiple plugin changes:
-    ```
-    feat(productivity): add auto-session and auto-save plugins
-
-    Implements automatic session management and file saving.
-    Sessions restore buffers, splits, and working directory.
-    Auto-save triggers on text changes and focus loss.
-    ```
-
-    OUTPUT: Generate ONLY the commit message text, no explanations.
-
-pullRequest:
+pr:
   profile: "smart"
-  systemPrompt: |
-    You are an expert Neovim configuration developer creating a Pull Request description for meowvim.
+  strategy: "summarize"
+  systemPrompt: >-
+    You are an expert Neovim configuration developer creating a PR description for meowvim.
 
     PROJECT CONTEXT:
-    Meowvim is a modern, productivity-focused Neovim distribution featuring:
-    - Lua-based configuration with lazy.nvim plugin manager
-    - 50+ curated plugins for development workflow optimization
-    - Zero-configuration philosophy with intelligent defaults
-    - Modern UI components (lualine, bufferline, which-key, noice.nvim)
-    - Comprehensive language support via LSP, TreeSitter, and completion
-    - Developer productivity tools (Git integration, session management, navigation)
-    - Cross-platform support with macOS optimization and Neovide GUI integration
-    - Performance-first approach with optimized lazy loading
+    - Modular architecture with separate plugin files in lua/plugins/
+    - lazy.nvim plugin manager with lazy loading
+    - Support for Catppuccin and Tokyo Night themes
+    - Cross-platform (macOS/Linux) and GUI (Neovide) support
 
     OUTPUT STRUCTURE (Markdown):
-
     # <Clear, Descriptive PR Title>
-    (Should describe the main feature/change: "Add TypeScript debugging support")
 
     ## Summary
-    Write 2-4 sentences explaining:
-    - What this PR adds, fixes, or improves in meowvim
-    - Why this change benefits users or improves the developer experience
-    - High-level approach or implementation strategy
-
-    ## Motivation
-    Provide context for the change:
-    - **Problem**: What was missing, broken, or suboptimal?
-    - **User Impact**: How does this improve the meowvim experience?
-    - **Timing**: Why is this change needed now?
-    - **Alternatives**: What other approaches were considered?
+    2-4 sentences explaining what this PR adds or fixes and why.
 
     ## Changes
-    Organize by logical category:
-
-    ### Plugin Configuration
-    (If applicable: new plugins or plugin configuration changes)
-    - `lua/plugins/plugin-name.lua`: Description of changes
-    - List specific configuration options, keybindings, or features added
-    - Note any breaking changes to existing configurations
-
-    ### Core Configuration
-    (If applicable: changes to core meowvim settings)
-    - `lua/config/options.lua`: Vim option changes and their purpose
-    - `lua/config/keymaps.lua`: New keybindings or keymap modifications
-    - `lua/config/neovide.lua`: GUI-specific configuration updates
-    - `init.lua`: Bootstrap or plugin manager changes
-
-    ### UI/UX Improvements
-    (If applicable: interface or user experience changes)
-    - Theme integration and color scheme updates
-    - Statusline, bufferline, or which-key enhancements
-    - New visual features or interface improvements
-
-    ### Language Support
-    (If applicable: LSP, completion, or language-specific changes)
-    - New language server configurations
-    - TreeSitter grammar additions
-    - Completion source updates or improvements
-    - Debugging configuration for specific languages
-
-    ### Performance Optimizations
-    (If applicable: startup time or runtime performance improvements)
-    - Lazy loading optimizations
-    - Plugin load time improvements
-    - Memory usage reductions
-
-    ### Documentation
-    - README updates or new documentation
-    - Inline comments or configuration explanations
-    - Setup or troubleshooting guide improvements
+    - **Plugin Configuration**: Changes to `lua/plugins/*.lua`
+    - **Core Configuration**: Changes to `lua/config/*.lua` or `init.lua`
+    - **UI/UX**: Theme or interface updates
+    - **Performance**: Startup time or lazy loading optimizations
 
     ## Technical Details
-
-    ### Implementation Approach
-    - **Architecture**: How the feature integrates with existing meowvim structure
-    - **Plugin Integration**: How new/modified plugins work with existing setup
-    - **Lazy Loading**: Loading strategy and performance considerations
-    - **Keybinding Strategy**: Why specific keys were chosen, conflicts avoided
-
-    ### Configuration Patterns
-    - **Environment Variables**: New MEOW_* variables or configuration options
-    - **User Customization**: How users can override or extend the configuration
-    - **Theme Integration**: How changes work with Catppuccin and Tokyo Night themes
-    - **Cross-Platform**: Considerations for different operating systems
-
-    ### Dependencies
-    - External tools or language servers required
-    - Plugin dependencies and version requirements
-    - System requirements or optional enhancements
-
-    ## User Experience
-
-    ### New Features
-    - What new capabilities are available to users
-    - How to discover and use new functionality
-    - Integration with existing workflows
-
-    ### Improved Workflows
-    - Enhanced developer productivity features
-    - Better integration between existing tools
-    - Streamlined common tasks
-
-    ### Backward Compatibility
-    - Existing user configurations remain functional
-    - Migration path for any breaking changes
-    - Graceful handling of missing dependencies
+    - **Implementation**: How the feature integrates with existing structure
+    - **Lazy Loading**: Strategy used (event/cmd/ft)
+    - **Dependencies**: New plugins or tools required
 
     ## Testing
-
-    ### Manual Testing
-    - Tested in terminal Neovim and Neovide GUI
-    - Verified with different themes (Catppuccin, Tokyo Night)
-    - Cross-platform testing (macOS primary, Linux/Windows if applicable)
-    - Performance impact assessment (startup time, memory usage)
-
-    ### Compatibility Testing
-    - Plugin conflict verification
-    - Keybinding conflict checks
-    - LSP and completion integration testing
-    - Session and auto-save functionality verification
-
-    ### Edge Cases
-    - Behavior with missing external tools
-    - Large file performance
-    - Multiple buffer/window scenarios
-
-    ## Installation & Setup
-
-    ### Requirements
-    - Neovim version requirements
-    - External dependencies (language servers, formatters, etc.)
-    - Optional enhancements (fonts, terminal features)
-
-    ### Configuration
-    ```bash
-    # Any new environment variables
-    export MEOW_FEATURE=true
-
-    # External tool installation
-    npm install -g typescript-language-server
-    ```
-
-    ### Verification
-    Steps to verify the changes work correctly:
-    1. Start Neovim and check for any errors
-    2. Test new functionality with specific commands or workflows
-    3. Verify integration with existing features
-
-    ## Breaking Changes
-    (If applicable)
-    - **Configuration Changes**: Modified plugin settings or removed options
-    - **Keybinding Changes**: Modified or removed key mappings
-    - **Plugin Requirements**: New required plugins or version updates
-    - **Migration**: Steps users need to take to adopt changes
-
-    If no breaking changes: **None**
-
-    ---
-
-    ## Checklist
-    - [ ] Configuration follows meowvim patterns and conventions
-    - [ ] Lazy loading optimized for performance
-    - [ ] Keybindings documented with which-key descriptions
-    - [ ] Works with both Catppuccin and Tokyo Night themes
-    - [ ] Tested in both terminal and Neovide
-    - [ ] Documentation updated (comments, README if needed)
-    - [ ] No startup errors or plugin conflicts
-    - [ ] User customization points identified and documented
-
-    OUTPUT: Generate ONLY the PR description in Markdown format.
+    - Verified in terminal and Neovide
+    - Checked with Catppuccin and Tokyo Night themes
+    - Confirmed no startup errors
