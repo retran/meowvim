@@ -16,13 +16,29 @@ local function is_headless()
   return false
 end
 
+-- Get catppuccin flavour based on project config from ~/.meowvim.yaml
+local function get_flavour()
+  local ok, projects = pcall(require, "utils.projects")
+  if not ok then
+    return "macchiato" -- default if projects module fails
+  end
+  local theme = projects.get_theme_for_cwd()
+  -- Valid catppuccin flavours: latte, frappe, macchiato, mocha
+  if theme and vim.tbl_contains({ "latte", "frappe", "macchiato", "mocha" }, theme) then
+    return theme
+  end
+  return "macchiato" -- default
+end
+
 return {
   "catppuccin/nvim",
   name = "catppuccin",
   priority = 1000,
   config = function()
+    local flavour = get_flavour()
+
     require("catppuccin").setup({
-      flavour = "macchiato",
+      flavour = flavour,
       background = {
         light = "latte",
         dark = "mocha",

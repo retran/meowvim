@@ -9,7 +9,9 @@ return {
   init = function()
     require("config.mason").ensure_servers({ "roslyn" })
   end,
-  opts = {},
+  opts = {
+    exe = "roslyn", -- Use Mason's roslyn wrapper script
+  },
   config = function(_, opts)
     require("roslyn").setup(opts)
   end,

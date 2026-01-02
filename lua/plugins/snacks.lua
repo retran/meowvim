@@ -107,9 +107,34 @@ return {
             vim.fn.expand("~/dev"),
             vim.fn.expand("~/projects"),
           },
-          projects = {
-            vim.fn.fnamemodify(vim.fn.expand("~/workspace/meowvim"), ":p"),
+          -- Configured projects from ~/.meowvim.yaml appear first (pinned)
+          projects = (function()
+            local ok, projects_util = pcall(require, "utils.projects")
+            if ok then
+              return projects_util.get_project_paths()
+            end
+            return {}
+          end)(),
+          -- Only scan for git repos in dev dirs, configured projects are always shown first
+          patterns = { ".git" },
+          -- Filter out the current working directory from the list
+          filter = {
+            cwd = false, -- disable cwd filter, we'll handle it in transform
           },
+          config = function(opts)
+            -- Capture cwd before async context
+            local cwd_path = vim.fn.fnamemodify(vim.fn.getcwd(), ":p"):gsub("/$", "")
+            opts.transform = function(item)
+              if item.file then
+                local item_path = vim.fn.fnamemodify(item.file, ":p"):gsub("/$", "")
+                if item_path == cwd_path then
+                  return false -- exclude current project
+                end
+              end
+              return item
+            end
+            return opts
+          end,
           confirm = function(picker, item)
             picker:close()
             if not item or not item.file then
@@ -138,6 +163,15 @@ return {
             session_utils.reset()
 
             vim.fn.chdir(dir)
+
+            -- Apply project-specific theme from ~/.meowvim.yaml
+            local ok, projects_util = pcall(require, "utils.projects")
+            if ok then
+              projects_util.apply_theme_for_path(dir)
+              -- Run project-specific command (e.g., "Roslyn start")
+              projects_util.run_command_for_path(dir)
+            end
+
             local session = require("snacks").dashboard.sections.session()
             if not session then
               return
