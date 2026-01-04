@@ -53,6 +53,7 @@ return {
         spell = " Spell",
         nvim_lua = "NVIM API",
         cmdline = " Command",
+        crates = " Crates",
       }
 
       if source_icons[source_name] then
@@ -77,7 +78,7 @@ return {
       { name = "luasnip" },
       { name = "path" },
       { name = "spell" },
-      { name = "buffer", keyword_length = 3 },
+      { name = "buffer",  keyword_length = 3 },
     }
 
     if Meow.enable_copilot then
@@ -147,7 +148,17 @@ return {
         { name = "nvim_lua" },
         { name = "luasnip" },
         { name = "path" },
-        { name = "buffer", keyword_length = 3 },
+        { name = "buffer",  keyword_length = 3 },
+      }),
+    })
+
+    cmp.setup.filetype("toml", {
+      sources = cmp.config.sources({
+        { name = "crates" },
+        { name = "nvim_lsp" },
+        { name = "luasnip" },
+        { name = "path" },
+        { name = "buffer",  keyword_length = 3 },
       }),
     })
 

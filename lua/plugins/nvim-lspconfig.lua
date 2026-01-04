@@ -172,11 +172,6 @@ return {
           },
         },
       },
-      rust_analyzer = {
-        settings = {
-          ["rust-analyzer"] = { checkOnSave = { command = "clippy" } },
-        },
-      },
       pyright = {
         settings = {
           python = { analysis = { typeCheckingMode = "basic" } },
@@ -274,7 +269,7 @@ return {
       postgres_lsp = {},
     }
 
-    local ensure_servers = {}
+    local ensure_servers = { "rust_analyzer" }
     for server, _ in pairs(server_settings) do
       if not optional_servers[server] or package_supported(server) then
         table.insert(ensure_servers, server)
