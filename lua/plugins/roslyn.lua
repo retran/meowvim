@@ -9,14 +9,15 @@ return {
   init = function()
     require("config.mason").ensure_servers({ "roslyn" })
   end,
+  -- Use Mason's roslyn wrapper script
   opts = {
-    exe = "roslyn", -- Use Mason's roslyn wrapper script (installed via Mason and available on $PATH)
+    exe = "roslyn",
   },
   config = function(_, opts)
     if vim.fn.executable(opts.exe) ~= 1 then
       vim.notify(
         string.format(
-          "[roslyn.nvim] Executable '%s' not found. Ensure Roslyn is installed via Mason and its wrapper script is available in $PATH.",
+          "[roslyn.nvim] Executable '%s' not found. Install Roslyn via Mason with ':MasonInstall roslyn'.",
           opts.exe
         ),
         vim.log.levels.ERROR
