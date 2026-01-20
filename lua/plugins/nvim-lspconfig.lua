@@ -269,7 +269,7 @@ return {
       postgres_lsp = {},
     }
 
-    local ensure_servers = { "rust_analyzer" }
+    local ensure_servers = {}
     for server, _ in pairs(server_settings) do
       if not optional_servers[server] or package_supported(server) then
         table.insert(ensure_servers, server)

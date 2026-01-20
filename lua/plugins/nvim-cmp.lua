@@ -17,6 +17,7 @@ local function get_dependencies()
     "L3MON4D3/LuaSnip",
     "saadparwaiz1/cmp_luasnip",
     "onsails/lspkind.nvim",
+    "saecki/crates.nvim",
   }
   if Meow.enable_copilot then
     table.insert(deps, 1, "zbirenbaum/copilot-cmp")

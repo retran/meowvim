@@ -7,6 +7,10 @@
 
 local M = {}
 
+-- Cache for loaded config
+local config_cache = nil
+local config_mtime = nil
+
 -- Simple YAML parser for our specific format
 -- Supports: projects list with path, theme, and command
 local function parse_yaml(content)
@@ -21,12 +25,22 @@ local function parse_yaml(content)
       if line:match("^projects:") then
         in_projects = true
       elseif in_projects then
-        -- Check for new project entry (starts with -)
-        local path = line:match("^%s*%-%s*path:%s*[\"']?([^\"']+)[\"']?%s*$")
-        if path then
-          current_project = { path = vim.fn.expand(path) }
+        -- Check for new project entry (starts with - alone or with path)
+        if line:match("^%s*%-(%s*$|%s+path:)") then
+          local path = line:match("^%s*%-%s*path:%s*[\"']?([^\"']+)[\"']?%s*$")
+          if path then
+            current_project = { path = vim.fn.expand(path) }
+          else
+            -- New project entry without path on same line
+            current_project = {}
+          end
           table.insert(result.projects, current_project)
         else
+          -- Check for path property
+          local path = line:match("^%s*path:%s*[\"']?([^\"']+)[\"']?%s*$")
+          if path and current_project then
+            current_project.path = vim.fn.expand(path)
+          end
           -- Check for theme property
           local theme = line:match("^%s*theme:%s*[\"']?([^\"']+)[\"']?%s*$")
           if theme and current_project then
@@ -48,10 +62,19 @@ end
 -- Load projects config from ~/.meowvim.yaml
 function M.load_config()
   local config_path = vim.fn.expand("~/.meowvim.yaml")
+
+  -- Check file modification time for cache invalidation
+  local mtime = vim.loop.fs_stat(config_path)
+  if mtime and config_cache and config_mtime and mtime.mtime.sec == config_mtime then
+    return config_cache
+  end
+
   local file = io.open(config_path, "r")
 
   if not file then
-    return { projects = {} }
+    config_cache = { projects = {} }
+    config_mtime = nil
+    return config_cache
   end
 
   local content = file:read("*all")
@@ -60,23 +83,32 @@ function M.load_config()
   local ok, config = pcall(parse_yaml, content)
   if not ok then
     vim.notify("Error parsing ~/.meowvim.yaml: " .. tostring(config), vim.log.levels.WARN)
-    return { projects = {} }
+    config_cache = { projects = {} }
+    config_mtime = nil
+    return config_cache
   end
 
+  config_cache = config
+  config_mtime = mtime and mtime.mtime.sec or nil
   return config
 end
 
 -- Get theme for a given directory path
 function M.get_theme_for_path(path)
   local config = M.load_config()
-  local expanded_path = vim.fn.expand(path)
+  local expanded_path = vim.fn.fnamemodify(vim.fn.expand(path), ":p"):gsub("/$", "")
+  local sep = package.config:sub(1, 1)
 
   for _, project in ipairs(config.projects) do
-    local project_path = vim.fn.expand(project.path)
-    -- Check if path starts with project path
-    if expanded_path:find(project_path, 1, true) == 1 then
+    if not project.path then goto continue end
+    local project_path = vim.fn.fnamemodify(vim.fn.expand(project.path), ":p"):gsub("/$", "")
+    -- Check if path starts with project path with proper boundary
+    if expanded_path == project_path or
+       (expanded_path:find(project_path, 1, true) == 1 and
+        expanded_path:sub(#project_path + 1, #project_path + 1) == sep) then
       return project.theme
     end
+    ::continue::
   end
 
   return nil -- No matching project, use default
@@ -94,8 +126,13 @@ function M.apply_theme_for_path(path)
     local ok, catppuccin = pcall(require, "catppuccin")
     if ok then
       vim.g.catppuccin_flavour = theme
-      catppuccin.setup({ flavour = theme })
-      vim.cmd.colorscheme("catppuccin")
+      -- Only change flavor if catppuccin is already loaded
+      if vim.g.colors_name == "catppuccin" or vim.g.colors_name == "catppuccin-" .. theme then
+        vim.cmd.colorscheme("catppuccin-" .. theme)
+      else
+        catppuccin.setup({ flavour = theme })
+        vim.cmd.colorscheme("catppuccin")
+      end
     end
   end
 end
@@ -119,21 +156,57 @@ end
 function M.get_project_for_path(path)
   local config = M.load_config()
   local expanded_path = vim.fn.fnamemodify(vim.fn.expand(path), ":p"):gsub("/$", "")
+  local sep = package.config:sub(1, 1)
 
   for _, project in ipairs(config.projects) do
+    if not project.path then goto continue end
     local project_path = vim.fn.fnamemodify(vim.fn.expand(project.path), ":p"):gsub("/$", "")
-    if expanded_path == project_path or expanded_path:find(project_path, 1, true) == 1 then
+    -- Check if path starts with project path with proper boundary
+    if expanded_path == project_path or
+       (expanded_path:find(project_path, 1, true) == 1 and
+        expanded_path:sub(#project_path + 1, #project_path + 1) == sep) then
       return project
     end
+    ::continue::
   end
 
   return nil
 end
 
+-- Whitelist of allowed command prefixes for security
+local allowed_commands = {
+  "Roslyn",
+  "lua",
+  "cd",
+  "lcd",
+  "tcd",
+  "edit",
+  "e",
+}
+
 -- Run command for a given project path (e.g., "Roslyn start")
+-- WARNING: Commands from config file should be trusted. Only whitelisted prefixes are allowed.
 function M.run_command_for_path(path)
   local project = M.get_project_for_path(path)
   if project and project.command then
+    -- Validate command against whitelist
+    local cmd_prefix = project.command:match("^(%S+)")
+    local is_allowed = false
+    for _, allowed in ipairs(allowed_commands) do
+      if cmd_prefix == allowed then
+        is_allowed = true
+        break
+      end
+    end
+
+    if not is_allowed then
+      vim.notify(
+        string.format("Command '%s' not in whitelist. Add to projects.lua allowed_commands if trusted.", cmd_prefix),
+        vim.log.levels.WARN
+      )
+      return
+    end
+
     vim.defer_fn(function()
       vim.cmd(project.command)
     end, 200)
