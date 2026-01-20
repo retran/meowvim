@@ -1,9 +1,6 @@
 -- SPDX-License-Identifier: MIT
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
 
--- @file: lua/plugins/themes.lua
--- @brief: Themes configuration.
-
 local function is_headless()
   if not vim.v.argv then
     return false
@@ -16,16 +13,13 @@ local function is_headless()
   return false
 end
 
--- Get catppuccin flavour based on project config from ~/.meowvim.yaml
 local function get_flavour()
   local ok, projects = pcall(require, "utils.projects")
   if not ok then
-    return "macchiato" -- default if projects module fails
+    return "macchiato"
   end
   local theme = projects.get_theme_for_cwd()
 
-  -- Validate the theme before returning it to ensure catppuccin.setup
-  -- only receives a supported flavour.
   local valid_flavours = {
     latte = true,
     frappe = true,

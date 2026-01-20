@@ -1,9 +1,6 @@
 -- SPDX-License-Identifier: MIT
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
 
--- @file: lua/plugins/nvim-cmp.lua
--- @brief: Auto-completion engine and snippet integration configuration.
-
 local Meow = require("config.custom")
 
 local function get_dependencies()
@@ -153,10 +150,9 @@ return {
       }),
     })
 
-    -- Setup crates source only for Cargo.toml files
-    vim.api.nvim_create_autocmd("BufRead", {
+    vim.api.nvim_create_autocmd("BufReadPost", {
       pattern = "Cargo.toml",
-      callback = function(event)
+      callback = function(_event)
         cmp.setup.buffer({
           sources = cmp.config.sources({
             { name = "crates" },

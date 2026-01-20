@@ -1,74 +1,62 @@
 -- SPDX-License-Identifier: MIT
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
 
--- @file: lua/utils/projects.lua
--- @brief: Machine-specific project configuration loader.
--- Reads project settings from ~/.meowvim.yaml
-
 local M = {}
 
--- Cache for loaded config
 local config_cache = nil
 local config_mtime = nil
 
--- Cache for resolved paths to avoid repeated fs_realpath calls
 local path_cache = {}
+local path_cache_order = {}
+local PATH_CACHE_MAX_SIZE = 100
 
--- Simple YAML parser for our specific format
--- Supports: projects list with path, theme, and command
--- Limitations: This parser is simplified and expects properly indented YAML.
--- - List items must start with '- ' at the same indentation level
--- - Properties (path, theme, command) must be indented under their parent item
--- - Does not support: quoted strings with escapes, multi-line strings, anchors/aliases
--- Expected format:
---   projects:
---     - path: ~/project1
---       theme: mocha
---       command: Roslyn start
---     - path: ~/project2
---       theme: latte
-local function parse_yaml(content)
+M.command_execution_delay_ms = 200
+
+local function strip_balanced_quotes(str)
+  if not str or #str < 2 then
+    return str
+  end
+  local first_char = str:sub(1, 1)
+  local last_char = str:sub(-1)
+  if (first_char == last_char) and (first_char == '"' or first_char == "'") then
+    return str:sub(2, -2)
+  end
+  return str
+end
+
+local function parse_meowvim_config(content)
   local result = { projects = {} }
   local current_project = nil
   local in_projects = false
 
   for line in content:gmatch("[^\r\n]+") do
-    -- Skip comments and empty lines
     if not line:match("^%s*#") and not line:match("^%s*$") then
-      -- Check for projects section
       if line:match("^projects:") then
         in_projects = true
       elseif in_projects then
-        -- Check for new project entry (starts with - alone or with path)
         if line:match("^%s*%-%s*$") or line:match("^%s*%-%s*path:") then
-          local path = line:match("^%s*%-%s*path:%s*[\"']?([^\"']+)[\"']?%s*$")
+          local path = line:match("^%s*%-%s*path:%s*(.+)%s*$")
           if path then
+            path = strip_balanced_quotes(path)
             current_project = { path = vim.fn.expand(path) }
           else
-            -- New project entry without path on same line
             current_project = {}
           end
           table.insert(result.projects, current_project)
         else
-          -- Check for path property
-          local path = line:match("^%s*path:%s*[\"']?([^\"']+)[\"']?%s*$")
+          local path = line:match("^%s*path:%s*(.+)%s*$")
           if path and current_project then
+            path = strip_balanced_quotes(path)
             current_project.path = vim.fn.expand(path)
           end
-          -- Check for theme property
-          local theme = line:match("^%s*theme:%s*[\"']?([^\"']+)[\"']?%s*$")
+          local theme = line:match("^%s*theme:%s*(.+)%s*$")
           if theme and current_project then
+            theme = strip_balanced_quotes(theme)
             current_project.theme = theme
           end
-          -- Check for command property
           local command = line:match("^%s*command:%s*(.+)%s*$")
           if command and current_project then
-            -- Strip surrounding quotes only if they are balanced and of the same type
-            local first_char = command:sub(1, 1)
-            local last_char = command:sub(-1)
-            if #command >= 2 and (first_char == last_char) and (first_char == '"' or first_char == "'") then
-              command = command:sub(2, -2)
-            end
+            command = strip_balanced_quotes(command)
             current_project.command = command
           end
         end
@@ -76,7 +64,6 @@ local function parse_yaml(content)
     end
   end
 
-  -- Filter out projects without a path (validation requirement)
   local valid_projects = {}
   for _, project in ipairs(result.projects) do
     if project.path then
@@ -88,11 +75,9 @@ local function parse_yaml(content)
   return result
 end
 
--- Load projects config from ~/.meowvim.yaml
 function M.load_config()
   local config_path = vim.fn.expand("~/.meowvim.yaml")
 
-  -- Check file modification time for cache invalidation
   local mtime = vim.loop.fs_stat(config_path)
   if mtime and config_cache and config_mtime and mtime.mtime.sec == config_mtime then
     return config_cache
@@ -109,7 +94,7 @@ function M.load_config()
   local content = file:read("*all")
   file:close()
 
-  local ok, config = pcall(parse_yaml, content)
+  local ok, config = pcall(parse_meowvim_config, content)
   if not ok then
     vim.notify("Error parsing ~/.meowvim.yaml: " .. tostring(config), vim.log.levels.WARN)
     config_cache = { projects = {} }
@@ -122,23 +107,32 @@ function M.load_config()
   return config
 end
 
--- Helper function to check if a path matches a project path
--- Returns true if the path is within the project directory
--- Resolves symlinks to ensure consistent matching
+local function evict_oldest_cache_entry()
+  if #path_cache_order > 0 then
+    local oldest_key = table.remove(path_cache_order, 1)
+    path_cache[oldest_key] = nil
+  end
+end
+
 local function path_matches_project(expanded_path, project_path)
-  -- Resolve symlinks and normalize paths to their real filesystem locations.
-  -- If fs_realpath fails (e.g., path does not exist), fall back to the original.
-  -- Cache the results to avoid repeated fs_realpath calls
   local real_expanded_path = path_cache[expanded_path]
   if not real_expanded_path then
+    if #path_cache_order >= PATH_CACHE_MAX_SIZE then
+      evict_oldest_cache_entry()
+    end
     real_expanded_path = vim.loop.fs_realpath(expanded_path) or expanded_path
     path_cache[expanded_path] = real_expanded_path
+    table.insert(path_cache_order, expanded_path)
   end
 
   local real_project_path = path_cache[project_path]
   if not real_project_path then
+    if #path_cache_order >= PATH_CACHE_MAX_SIZE then
+      evict_oldest_cache_entry()
+    end
     real_project_path = vim.loop.fs_realpath(project_path) or project_path
     path_cache[project_path] = real_project_path
+    table.insert(path_cache_order, project_path)
   end
 
   local sep = package.config:sub(1, 1)
@@ -147,7 +141,6 @@ local function path_matches_project(expanded_path, project_path)
           real_expanded_path:sub(#real_project_path + 1, #real_project_path + 1) == sep)
 end
 
--- Get theme for a given directory path
 function M.get_theme_for_path(path)
   local config = M.load_config()
   local expanded_path = vim.fn.fnamemodify(vim.fn.expand(path), ":p"):gsub("/$", "")
@@ -161,34 +154,28 @@ function M.get_theme_for_path(path)
     end
   end
 
-  return nil -- No matching project, use default
+  return nil
 end
 
--- Get theme for current working directory
 function M.get_theme_for_cwd()
   return M.get_theme_for_path(vim.fn.getcwd())
 end
 
--- Apply catppuccin theme for a given path
 function M.apply_theme_for_path(path)
   local theme = M.get_theme_for_path(path)
   if theme and vim.tbl_contains({ "latte", "frappe", "macchiato", "mocha" }, theme) then
     local ok, catppuccin = pcall(require, "catppuccin")
     if ok then
       vim.g.catppuccin_flavour = theme
-      -- Switch to the desired catppuccin flavor
       vim.cmd.colorscheme("catppuccin-" .. theme)
     end
   end
 end
 
--- Apply theme for current working directory
 function M.apply_theme_for_cwd()
   M.apply_theme_for_path(vim.fn.getcwd())
 end
 
--- Get project paths for snacks picker integration
--- Returns absolute normalized paths without trailing slashes (consistent with path_matches_project)
 function M.get_project_paths()
   local config = M.load_config()
   local paths = {}
@@ -200,7 +187,6 @@ function M.get_project_paths()
   return paths
 end
 
--- Get project config for a given path
 function M.get_project_for_path(path)
   local config = M.load_config()
   local expanded_path = vim.fn.fnamemodify(vim.fn.expand(path), ":p"):gsub("/$", "")
@@ -217,10 +203,8 @@ function M.get_project_for_path(path)
   return nil
 end
 
--- Whitelist of allowed command prefixes for security
 local allowed_commands = {
   "Roslyn",
-  "lua",
   "cd",
   "lcd",
   "tcd",
@@ -228,19 +212,6 @@ local allowed_commands = {
   "e",
 }
 
--- Validate that a command is allowed and does not chain unsafe extra commands.
--- This checks:
---   1. The first word (command prefix) is in the allowed_commands list.
---   2. The rest of the command does not contain characters like '|' or '!' that
---      can be used to chain additional Vim or shell commands (e.g., "edit | !rm -rf /").
---
--- SECURITY NOTE: This validation approach has limitations. Neovim's Ex command syntax
--- allows piping between commands using '|' as a separator. While this check blocks
--- explicit pipes and shell escapes, it does not perform deep parsing of command arguments.
--- Commands must be from trusted sources (e.g., user's config file), and the allowlist
--- should only include commands that cannot execute arbitrary code through their arguments.
--- Do not rely on this as the sole security mechanism if accepting commands from untrusted
--- or external sources.
 local function is_command_allowed(command)
   if type(command) ~= "string" or command == "" then
     return false, "Empty or non-string command"
@@ -263,9 +234,6 @@ local function is_command_allowed(command)
     return false, cmd_prefix
   end
 
-  -- Disallow chaining additional commands via '|', '!', '&', '`', newlines, or carriage returns.
-  -- This prevents constructs like "edit | !rm -rf /" or multiline command injection,
-  -- while still allowing arguments like "edit somefile" or "cd /some/path".
   rest = rest or ""
   if rest:match("[|!&`\n\r]") then
     return false, "Command contains unsafe separators ('|', '!', '&', '`', or newlines)"
@@ -274,12 +242,9 @@ local function is_command_allowed(command)
   return true, cmd_prefix
 end
 
--- Run command for a given project path (e.g., "Roslyn start")
--- WARNING: Commands from config file should be trusted. Only whitelisted prefixes are allowed.
 function M.run_command_for_path(path)
   local project = M.get_project_for_path(path)
   if project and project.command then
-    -- Validate command against whitelist and ensure it does not chain extra commands
     local ok, info = is_command_allowed(project.command)
     if not ok then
       local msg
@@ -288,9 +253,8 @@ function M.run_command_for_path(path)
         or info == "Command contains unsafe separators ('|', '!', '&', '`', or newlines)" then
         msg = string.format("Project command '%s' rejected: %s.", tostring(project.command), info)
       else
-        -- info is treated as the disallowed command prefix
         msg = string.format(
-          "Command prefix '%s' is not in the whitelist and was blocked for safety. If you need to allow this command, update your personal Neovim configuration to extend the allowed commands according to how you manage this setup (for example, by forking or customizing this configuration).",
+          "Command prefix '%s' is not in the whitelist and was blocked for safety.",
           tostring(info)
         )
       end
@@ -299,25 +263,12 @@ function M.run_command_for_path(path)
       return
     end
 
-    -- Defer command execution to increase the chance it runs after a directory change
-    -- has fully propagated through Neovim and any associated autocmds.
-    --
-    -- The 200ms delay is an empirically chosen compromise: it is long enough on typical
-    -- machines for common DirChanged handlers and related work (e.g. LSP, statusline,
-    -- tree plugins) to complete, while still keeping the UI responsive.
-    --
-    -- NOTE: On very slow systems, or when heavy/long-running autocmd chains are triggered
-    -- by the directory change, 200ms might not be sufficient and the command could still
-    -- run before all side effects of the directory change have finished. If you encounter
-    -- such behavior in your environment, consider increasing this delay in your local
-    -- configuration or adapting this logic to hook into a more specific event.
     vim.defer_fn(function()
       vim.cmd(project.command)
-    end, 200)
+    end, M.command_execution_delay_ms)
   end
 end
 
--- Get all configured projects
 function M.get_projects()
   local config = M.load_config()
   return config.projects
