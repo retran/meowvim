@@ -79,7 +79,7 @@ return {
       { name = "luasnip" },
       { name = "path" },
       { name = "spell" },
-      { name = "buffer",  keyword_length = 3 },
+      { name = "buffer", keyword_length = 3 },
     }
 
     if Meow.enable_copilot then

@@ -26,7 +26,7 @@ local function parse_yaml(content)
         in_projects = true
       elseif in_projects then
         -- Check for new project entry (starts with - alone or with path)
-        if line:match("^%s*%-(%s*$|%s+path:)") then
+        if line:match("^%s*%-%s*$") or line:match("^%s*%-%s*path:") then
           local path = line:match("^%s*%-%s*path:%s*[\"']?([^\"']+)[\"']?%s*$")
           if path then
             current_project = { path = vim.fn.expand(path) }
@@ -147,7 +147,9 @@ function M.get_project_paths()
   local config = M.load_config()
   local paths = {}
   for _, project in ipairs(config.projects) do
-    table.insert(paths, vim.fn.fnamemodify(vim.fn.expand(project.path), ":p"))
+    if project.path then
+      table.insert(paths, vim.fn.fnamemodify(vim.fn.expand(project.path), ":p"))
+    end
   end
   return paths
 end
@@ -184,29 +186,70 @@ local allowed_commands = {
   "e",
 }
 
+-- Validate that a command is allowed and does not chain unsafe extra commands.
+-- This checks:
+--   1. The first word (command prefix) is in the allowed_commands list.
+--   2. The rest of the command does not contain characters like '|' or '!' that
+--      can be used to chain additional Vim or shell commands (e.g., "edit | !rm -rf /").
+local function is_command_allowed(command)
+  if type(command) ~= "string" or command == "" then
+    return false, "Empty or non-string command"
+  end
+
+  local cmd_prefix, rest = command:match("^(%S+)%s*(.*)$")
+  if not cmd_prefix then
+    return false, "Unable to parse command prefix"
+  end
+
+  local prefix_allowed = false
+  for _, allowed in ipairs(allowed_commands) do
+    if cmd_prefix == allowed then
+      prefix_allowed = true
+      break
+    end
+  end
+
+  if not prefix_allowed then
+    return false, cmd_prefix
+  end
+
+  -- Disallow chaining additional commands via '|', '!', ';', '&', or '`' anywhere in the remainder.
+  -- This prevents constructs like "edit | !rm -rf /" while still allowing arguments,
+  -- e.g., "edit somefile" or "cd /some/path".
+  rest = rest or ""
+  if rest:match("[|!;&`]") then
+    return false, "Command contains unsafe separators ('|', '!', ';', '&', or '`')"
+  end
+
+  return true, cmd_prefix
+end
+
 -- Run command for a given project path (e.g., "Roslyn start")
 -- WARNING: Commands from config file should be trusted. Only whitelisted prefixes are allowed.
 function M.run_command_for_path(path)
   local project = M.get_project_for_path(path)
   if project and project.command then
-    -- Validate command against whitelist
-    local cmd_prefix = project.command:match("^(%S+)")
-    local is_allowed = false
-    for _, allowed in ipairs(allowed_commands) do
-      if cmd_prefix == allowed then
-        is_allowed = true
-        break
+    -- Validate command against whitelist and ensure it does not chain extra commands
+    local ok, info = is_command_allowed(project.command)
+    if not ok then
+      local msg
+      if info == "Empty or non-string command"
+        or info == "Unable to parse command prefix"
+        or info == "Command contains unsafe separators ('|', '!', ';', '&', or '`')" then
+        msg = string.format("Project command '%s' rejected: %s.", tostring(project.command), info)
+      else
+        -- info is treated as the disallowed command prefix
+        msg = string.format(
+          "Command prefix '%s' not in whitelist. Add to projects.lua allowed_commands if trusted.",
+          tostring(info)
+        )
       end
-    end
 
-    if not is_allowed then
-      vim.notify(
-        string.format("Command '%s' not in whitelist. Add to projects.lua allowed_commands if trusted.", cmd_prefix),
-        vim.log.levels.WARN
-      )
+      vim.notify(msg, vim.log.levels.WARN)
       return
     end
 
+    -- Defer command execution to ensure it runs after directory change
     vim.defer_fn(function()
       vim.cmd(project.command)
     end, 200)
