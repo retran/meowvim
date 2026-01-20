@@ -26,7 +26,7 @@ local function parse_yaml(content)
         in_projects = true
       elseif in_projects then
         -- Check for new project entry (starts with - alone or with path)
-        if line:match("^%s*%-%s*$") or line:match("^%s*%-%s+path:") then
+        if line:match("^%s*%-%s*$") or line:match("^%s*%-%s*path:") then
           local path = line:match("^%s*%-%s*path:%s*[\"']?([^\"']+)[\"']?%s*$")
           if path then
             current_project = { path = vim.fn.expand(path) }
@@ -213,12 +213,12 @@ local function is_command_allowed(command)
     return false, cmd_prefix
   end
 
-  -- Disallow chaining additional commands via '|' or '!' anywhere in the remainder.
+  -- Disallow chaining additional commands via '|', '!', ';', '&', or '`' anywhere in the remainder.
   -- This prevents constructs like "edit | !rm -rf /" while still allowing arguments,
   -- e.g., "edit somefile" or "cd /some/path".
   rest = rest or ""
-  if rest:match("[|!]") then
-    return false, "Command contains unsafe separators ('|' or '!')"
+  if rest:match("[|!;&`]") then
+    return false, "Command contains unsafe separators ('|', '!', ';', '&', or '`')"
   end
 
   return true, cmd_prefix
@@ -235,7 +235,7 @@ function M.run_command_for_path(path)
       local msg
       if info == "Empty or non-string command"
         or info == "Unable to parse command prefix"
-        or info == "Command contains unsafe separators ('|' or '!')" then
+        or info == "Command contains unsafe separators ('|', '!', ';', '&', or '`')" then
         msg = string.format("Project command '%s' rejected: %s.", tostring(project.command), info)
       else
         -- info is treated as the disallowed command prefix
