@@ -7,10 +7,22 @@ local config_cache = nil
 local config_mtime = nil
 
 local path_cache = {}
-local path_cache_size = 0
+local path_cache_order = {}
 local PATH_CACHE_MAX_SIZE = 100
 
 M.command_execution_delay_ms = 200
+
+local function strip_balanced_quotes(str)
+  if not str or #str < 2 then
+    return str
+  end
+  local first_char = str:sub(1, 1)
+  local last_char = str:sub(-1)
+  if (first_char == last_char) and (first_char == '"' or first_char == "'") then
+    return str:sub(2, -2)
+  end
+  return str
+end
 
 local function parse_meowvim_config(content)
   local result = { projects = {} }
@@ -25,11 +37,7 @@ local function parse_meowvim_config(content)
         if line:match("^%s*%-%s*$") or line:match("^%s*%-%s*path:") then
           local path = line:match("^%s*%-%s*path:%s*(.+)%s*$")
           if path then
-            local first_char = path:sub(1, 1)
-            local last_char = path:sub(-1)
-            if #path >= 2 and (first_char == last_char) and (first_char == '"' or first_char == "'") then
-              path = path:sub(2, -2)
-            end
+            path = strip_balanced_quotes(path)
             current_project = { path = vim.fn.expand(path) }
           else
             current_project = {}
@@ -38,29 +46,17 @@ local function parse_meowvim_config(content)
         else
           local path = line:match("^%s*path:%s*(.+)%s*$")
           if path and current_project then
-            local first_char = path:sub(1, 1)
-            local last_char = path:sub(-1)
-            if #path >= 2 and (first_char == last_char) and (first_char == '"' or first_char == "'") then
-              path = path:sub(2, -2)
-            end
+            path = strip_balanced_quotes(path)
             current_project.path = vim.fn.expand(path)
           end
           local theme = line:match("^%s*theme:%s*(.+)%s*$")
           if theme and current_project then
-            local first_char = theme:sub(1, 1)
-            local last_char = theme:sub(-1)
-            if #theme >= 2 and (first_char == last_char) and (first_char == '"' or first_char == "'") then
-              theme = theme:sub(2, -2)
-            end
+            theme = strip_balanced_quotes(theme)
             current_project.theme = theme
           end
           local command = line:match("^%s*command:%s*(.+)%s*$")
           if command and current_project then
-            local first_char = command:sub(1, 1)
-            local last_char = command:sub(-1)
-            if #command >= 2 and (first_char == last_char) and (first_char == '"' or first_char == "'") then
-              command = command:sub(2, -2)
-            end
+            command = strip_balanced_quotes(command)
             current_project.command = command
           end
         end
@@ -112,32 +108,31 @@ function M.load_config()
 end
 
 local function evict_oldest_cache_entry()
-  local oldest_key = next(path_cache)
-  if oldest_key then
+  if #path_cache_order > 0 then
+    local oldest_key = table.remove(path_cache_order, 1)
     path_cache[oldest_key] = nil
-    path_cache_size = path_cache_size - 1
   end
 end
 
 local function path_matches_project(expanded_path, project_path)
   local real_expanded_path = path_cache[expanded_path]
   if not real_expanded_path then
-    if path_cache_size >= PATH_CACHE_MAX_SIZE then
+    if #path_cache_order >= PATH_CACHE_MAX_SIZE then
       evict_oldest_cache_entry()
     end
     real_expanded_path = vim.loop.fs_realpath(expanded_path) or expanded_path
     path_cache[expanded_path] = real_expanded_path
-    path_cache_size = path_cache_size + 1
+    table.insert(path_cache_order, expanded_path)
   end
 
   local real_project_path = path_cache[project_path]
   if not real_project_path then
-    if path_cache_size >= PATH_CACHE_MAX_SIZE then
+    if #path_cache_order >= PATH_CACHE_MAX_SIZE then
       evict_oldest_cache_entry()
     end
     real_project_path = vim.loop.fs_realpath(project_path) or project_path
     path_cache[project_path] = real_project_path
-    path_cache_size = path_cache_size + 1
+    table.insert(path_cache_order, project_path)
   end
 
   local sep = package.config:sub(1, 1)
