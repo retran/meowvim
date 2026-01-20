@@ -113,12 +113,18 @@ return {
 
     local on_attach = function(client, bufnr)
       vim.bo[bufnr].omnifunc = "v:lua.vim.lsp.omnifunc"
+      
+      -- Enable inlay hints for supported servers (gopls, rust-analyzer, ts_ls, etc.)
+      -- Provides inline type information and parameter names
       if client.server_capabilities.inlayHintProvider then
         vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
       end
 
-      -- Code lens disabled globally due to performance concerns and visual clutter
-      -- in the editor.
+      -- CodeLens deliberately disabled globally for performance reasons:
+      -- - Triggers excessive LSP requests on CursorHold/InsertLeave events
+      -- - Causes UI lag on medium-to-large codebases
+      -- - Visual clutter in the editor
+      -- To re-enable per-buffer: vim.lsp.codelens.refresh()
     end
 
     vim.api.nvim_create_user_command("LspOrganize", function()

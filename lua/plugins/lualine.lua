@@ -39,12 +39,11 @@ return {
 
     if Meow.enable_copilot then
       local palette = (function()
-        local ok, catppuccin = pcall(require, "catppuccin")
-        if ok and catppuccin.flavour then
-          local palettes_ok, palettes = pcall(require, "catppuccin.palettes")
-          if palettes_ok then
-            return palettes.get_palette(catppuccin.flavour.name)
-          end
+        -- Get flavour from global variable set by themes.lua or fallback to mocha
+        local flavour = vim.g.catppuccin_flavour or "mocha"
+        local palettes_ok, palettes = pcall(require, "catppuccin.palettes")
+        if palettes_ok then
+          return palettes.get_palette(flavour)
         end
         return nil
       end)()

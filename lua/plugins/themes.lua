@@ -60,6 +60,8 @@ return {
         snacks = true,
       },
     })
+    -- Set global variable for consistency with other plugins that rely on it
+    vim.g.catppuccin_flavour = flavour
     vim.cmd.colorscheme("catppuccin")
   end,
 }

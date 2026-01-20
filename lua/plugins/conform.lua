@@ -123,8 +123,18 @@ return {
         timeout_ms = 3000,
         async = false,
         quiet = false,
-        lsp_format = "fallback",
+        lsp_format = "fallback", -- Use LSP formatting if no external formatter available
       },
+
+      -- Optional: Support per-project .conform.json configuration
+      -- Allows teams to override formatter settings per-project
+      -- Example .conform.json:
+      -- {
+      --   "formatters_by_ft": { "python": ["black"] },
+      --   "args": { "black": ["--line-length", "100"] }
+      -- }
+      -- Uncomment to enable:
+      -- config_file = vim.fn.findfile('.conform.json', '.;'),
 
       format_on_save = function(bufnr)
         if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
