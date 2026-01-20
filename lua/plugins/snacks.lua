@@ -118,7 +118,7 @@ return {
           end,
           -- Only scan for git repos in dev dirs, configured projects are always shown first
           patterns = { ".git" },
-          -- Filter out the current working directory from the list
+          -- Configure filtering behavior based on the current working directory
           filter = {
             cwd = true,
           },
