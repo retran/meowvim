@@ -153,14 +153,24 @@ return {
       }),
     })
 
-    cmp.setup.filetype("toml", {
-      sources = cmp.config.sources({
-        { name = "crates" },
-        { name = "nvim_lsp" },
-        { name = "luasnip" },
-        { name = "path" },
-        { name = "buffer", keyword_length = 3 },
-      }),
+    -- Setup crates source only for Cargo.toml files
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = "toml",
+      callback = function(event)
+        local bufname = vim.api.nvim_buf_get_name(event.buf)
+        -- Only apply crates source to Cargo.toml files
+        if bufname:match("Cargo%.toml$") then
+          cmp.setup.buffer({
+            sources = cmp.config.sources({
+              { name = "crates" },
+              { name = "nvim_lsp" },
+              { name = "luasnip" },
+              { name = "path" },
+              { name = "buffer", keyword_length = 3 },
+            }),
+          })
+        end
+      end,
     })
 
     cmp.setup.cmdline({ "/", "?" }, {

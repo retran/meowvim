@@ -25,8 +25,8 @@ return {
         local install_path = pkg:get_install_path()
         if install_path and install_path ~= "" then
           local mason_exe = install_path .. "/bin/" .. exe
-          -- Prefer the Mason-managed executable if it exists and is usable.
-          if vim.fn.filereadable(mason_exe) == 1 or vim.fn.executable(mason_exe) == 1 then
+          -- Prefer the Mason-managed executable if it exists and is executable.
+          if vim.fn.executable(mason_exe) == 1 then
             exe = mason_exe
           end
         end

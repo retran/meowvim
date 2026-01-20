@@ -11,8 +11,22 @@ local M = {}
 local config_cache = nil
 local config_mtime = nil
 
+-- Cache for resolved paths to avoid repeated fs_realpath calls
+local path_cache = {}
+
 -- Simple YAML parser for our specific format
 -- Supports: projects list with path, theme, and command
+-- Limitations: This parser is simplified and expects properly indented YAML.
+-- - List items must start with '- ' at the same indentation level
+-- - Properties (path, theme, command) must be indented under their parent item
+-- - Does not support: quoted strings with escapes, multi-line strings, anchors/aliases
+-- Expected format:
+--   projects:
+--     - path: ~/project1
+--       theme: mocha
+--       command: Roslyn start
+--     - path: ~/project2
+--       theme: latte
 local function parse_yaml(content)
   local result = { projects = {} }
   local current_project = nil
@@ -104,11 +118,27 @@ end
 
 -- Helper function to check if a path matches a project path
 -- Returns true if the path is within the project directory
+-- Resolves symlinks to ensure consistent matching
 local function path_matches_project(expanded_path, project_path)
+  -- Resolve symlinks and normalize paths to their real filesystem locations.
+  -- If fs_realpath fails (e.g., path does not exist), fall back to the original.
+  -- Cache the results to avoid repeated fs_realpath calls
+  local real_expanded_path = path_cache[expanded_path]
+  if not real_expanded_path then
+    real_expanded_path = vim.loop.fs_realpath(expanded_path) or expanded_path
+    path_cache[expanded_path] = real_expanded_path
+  end
+
+  local real_project_path = path_cache[project_path]
+  if not real_project_path then
+    real_project_path = vim.loop.fs_realpath(project_path) or project_path
+    path_cache[project_path] = real_project_path
+  end
+
   local sep = package.config:sub(1, 1)
-  return expanded_path == project_path or
-         (expanded_path:find(project_path, 1, true) == 1 and
-          expanded_path:sub(#project_path + 1, #project_path + 1) == sep)
+  return real_expanded_path == real_project_path or
+         (real_expanded_path:find(real_project_path, 1, true) == 1 and
+          real_expanded_path:sub(#real_project_path + 1, #real_project_path + 1) == sep)
 end
 
 -- Get theme for a given directory path
@@ -219,12 +249,12 @@ local function is_command_allowed(command)
     return false, cmd_prefix
   end
 
-  -- Disallow chaining additional commands via '|', '!', ';', '&', '`', newlines, or carriage returns.
+  -- Disallow chaining additional commands via '|', '!', '&', '`', newlines, or carriage returns.
   -- This prevents constructs like "edit | !rm -rf /" or multiline command injection,
   -- while still allowing arguments like "edit somefile" or "cd /some/path".
   rest = rest or ""
-  if rest:match("[|!;&`\n\r]") then
-    return false, "Command contains unsafe separators ('|', '!', ';', '&', '`', or newlines)"
+  if rest:match("[|!&`\n\r]") then
+    return false, "Command contains unsafe separators ('|', '!', '&', '`', or newlines)"
   end
 
   return true, cmd_prefix

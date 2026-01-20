@@ -23,11 +23,9 @@ local function get_flavour()
     return "macchiato" -- default if projects module fails
   end
   local theme = projects.get_theme_for_cwd()
-  -- Valid catppuccin flavours: latte, frappe, macchiato, mocha
-  if theme and vim.tbl_contains({ "latte", "frappe", "macchiato", "mocha" }, theme) then
-    return theme
-  end
-  return "macchiato" -- default
+  -- Return theme if found, otherwise default
+  -- Validation happens in apply_theme_for_path
+  return theme or "macchiato"
 end
 
 return {
