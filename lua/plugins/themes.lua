@@ -23,9 +23,21 @@ local function get_flavour()
     return "macchiato" -- default if projects module fails
   end
   local theme = projects.get_theme_for_cwd()
-  -- Return theme if found, otherwise default
-  -- Validation happens in apply_theme_for_path
-  return theme or "macchiato"
+
+  -- Validate the theme before returning it to ensure catppuccin.setup
+  -- only receives a supported flavour.
+  local valid_flavours = {
+    latte = true,
+    frappe = true,
+    macchiato = true,
+    mocha = true,
+  }
+
+  if type(theme) == "string" and valid_flavours[theme] then
+    return theme
+  end
+
+  return "macchiato"
 end
 
 return {
