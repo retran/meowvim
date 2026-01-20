@@ -61,8 +61,14 @@ local function parse_yaml(content)
             current_project.theme = theme
           end
           -- Check for command property
-          local command = line:match("^%s*command:%s*[\"']?([^\"']+)[\"']?%s*$")
+          local command = line:match("^%s*command:%s*(.+)%s*$")
           if command and current_project then
+            -- Strip surrounding quotes only if they are balanced and of the same type
+            local first_char = command:sub(1, 1)
+            local last_char = command:sub(-1)
+            if #command >= 2 and (first_char == last_char) and (first_char == '"' or first_char == "'") then
+              command = command:sub(2, -2)
+            end
             current_project.command = command
           end
         end
