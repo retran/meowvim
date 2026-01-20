@@ -271,7 +271,7 @@ function M.run_command_for_path(path)
       local msg
       if info == "Empty or non-string command"
         or info == "Unable to parse command prefix"
-        or info == "Command contains unsafe separators ('|', '!', ';', '&', '`', or newlines)" then
+        or info == "Command contains unsafe separators ('|', '!', '&', '`', or newlines)" then
         msg = string.format("Project command '%s' rejected: %s.", tostring(project.command), info)
       else
         -- info is treated as the disallowed command prefix
