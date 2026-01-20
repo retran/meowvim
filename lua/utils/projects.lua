@@ -11,6 +11,9 @@ local M = {}
 local config_cache = nil
 local config_mtime = nil
 
+-- Cache for resolved paths to avoid repeated fs_realpath calls
+local path_cache = {}
+
 -- Simple YAML parser for our specific format
 -- Supports: projects list with path, theme, and command
 -- Limitations: This parser is simplified and expects properly indented YAML.
@@ -119,8 +122,18 @@ end
 local function path_matches_project(expanded_path, project_path)
   -- Resolve symlinks and normalize paths to their real filesystem locations.
   -- If fs_realpath fails (e.g., path does not exist), fall back to the original.
-  local real_expanded_path = vim.loop.fs_realpath(expanded_path) or expanded_path
-  local real_project_path = vim.loop.fs_realpath(project_path) or project_path
+  -- Cache the results to avoid repeated fs_realpath calls
+  local real_expanded_path = path_cache[expanded_path]
+  if not real_expanded_path then
+    real_expanded_path = vim.loop.fs_realpath(expanded_path) or expanded_path
+    path_cache[expanded_path] = real_expanded_path
+  end
+
+  local real_project_path = path_cache[project_path]
+  if not real_project_path then
+    real_project_path = vim.loop.fs_realpath(project_path) or project_path
+    path_cache[project_path] = real_project_path
+  end
 
   local sep = package.config:sub(1, 1)
   return real_expanded_path == real_project_path or

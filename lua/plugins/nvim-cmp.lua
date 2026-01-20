@@ -157,7 +157,9 @@ return {
     vim.api.nvim_create_autocmd("FileType", {
       pattern = "toml",
       callback = function(event)
-        if vim.api.nvim_buf_get_name(event.buf):match("Cargo%.toml$") then
+        local bufname = vim.api.nvim_buf_get_name(event.buf)
+        -- Only apply crates source to Cargo.toml files
+        if bufname:match("Cargo%.toml$") then
           cmp.setup.buffer({
             sources = cmp.config.sources({
               { name = "crates" },
