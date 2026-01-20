@@ -16,9 +16,6 @@ local function get_dependencies()
     "onsails/lspkind.nvim",
     "saecki/crates.nvim",
   }
-  if Meow.enable_copilot then
-    table.insert(deps, 1, "zbirenbaum/copilot-cmp")
-  end
   return deps
 end
 
@@ -47,11 +44,9 @@ return {
         buffer = " Buffer",
         path = " Path",
         lazydev = " LazyDev",
-        copilot = " Copilot",
         spell = " Spell",
         nvim_lua = "NVIM API",
         cmdline = " Command",
-        crates = " Crates",
       }
 
       if source_icons[source_name] then
@@ -79,11 +74,6 @@ return {
       { name = "buffer", keyword_length = 3 },
     }
 
-    if Meow.enable_copilot then
-      table.insert(comparators, 1, require("copilot_cmp.comparators").prioritize)
-      table.insert(global_sources, 1, { name = "copilot" })
-    end
-
     cmp.setup({
       snippet = {
         expand = function(args)
@@ -95,19 +85,29 @@ return {
         format = format_kinds,
       },
       mapping = cmp.mapping.preset.insert({
-        ["<Tab>"] = cmp.mapping(function(fallback)
+        ["<C-n>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
             cmp.select_next_item()
-          elseif luasnip.expand_or_locally_jumpable() then
+          else
+            fallback()
+          end
+        end, { "i", "s" }),
+        ["<C-p>"] = cmp.mapping(function(fallback)
+          if cmp.visible() then
+            cmp.select_prev_item()
+          else
+            fallback()
+          end
+        end, { "i", "s" }),
+        ["<Tab>"] = cmp.mapping(function(fallback)
+          if luasnip.expand_or_locally_jumpable() then
             luasnip.expand_or_jump()
           else
             fallback()
           end
         end, { "i", "s" }),
         ["<S-Tab>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
-            cmp.select_prev_item()
-          elseif luasnip.jumpable(-1) then
+          if luasnip.jumpable(-1) then
             luasnip.jump(-1)
           else
             fallback()
@@ -131,7 +131,7 @@ return {
         comparators = comparators,
       },
       experimental = {
-        ghost_text = true,
+        ghost_text = false,
       },
       window = {
         completion = cmp.config.window.bordered(),
@@ -155,7 +155,6 @@ return {
       callback = function(_event)
         cmp.setup.buffer({
           sources = cmp.config.sources({
-            { name = "crates" },
             { name = "nvim_lsp" },
             { name = "luasnip" },
             { name = "path" },

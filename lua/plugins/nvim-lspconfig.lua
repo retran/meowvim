@@ -278,8 +278,15 @@ return {
 
     mason_registry.ensure_servers(ensure_servers)
 
+    local extra_tools = {}
     if package_supported("roslyn") then
-      mason_registry.ensure_servers({ "roslyn" })
+      table.insert(extra_tools, "roslyn")
+    end
+    if package_supported("rust-analyzer") then
+      table.insert(extra_tools, "rust-analyzer")
+    end
+    if #extra_tools > 0 then
+      mason_registry.ensure_servers(extra_tools)
     end
 
     mason_lspconfig.setup({
@@ -344,7 +351,7 @@ return {
     mason_tool_installer.setup({
       ensure_installed = mason_registry.get_all_tools(),
       auto_update = false,
-      run_on_start = false,
+      run_on_start = true,
       start_delay = 0,
       integrations = {
         ["mason-lspconfig"] = true,

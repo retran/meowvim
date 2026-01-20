@@ -13,7 +13,8 @@ return {
     "windwp/nvim-ts-autotag",
   },
   config = function()
-    require("nvim-treesitter").install({
+    require("nvim-treesitter").setup({
+      ensure_installed = {
       "bash",
       "c",
       "c_sharp",
@@ -51,6 +52,9 @@ return {
       "vim",
       "vimdoc",
       "yaml",
+      },
+      auto_install = true,
+      highlight = { enable = true },
     })
 
     require("nvim-ts-autotag").setup()

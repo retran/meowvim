@@ -47,7 +47,7 @@ return {
         light = "latte",
         dark = "mocha",
       },
-      transparent_background = not vim.g.neovide and not is_headless(),
+      transparent_background = false,
       default_integrations = true,
       auto_integrations = true,
       integrations = {

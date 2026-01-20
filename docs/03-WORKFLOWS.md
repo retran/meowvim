@@ -74,7 +74,7 @@ Sessions remember buffers, splits, folds, and tabs — perfect for juggling mult
 ## 8. AI Companions
 
 - Authenticate GitHub Copilot once via `:Copilot auth`.
-- Completions flow through nvim-cmp after signing in; inline suggestions are disabled by default (tweak `lua/plugins/copilot.lua` if you prefer them).
+- Copilot uses inline suggestions by default; adjust them in `lua/plugins/copilot.lua` if you prefer a quieter flow.
 - Use Copilot Chat (if installed) or pair with external `meowg1k` workflows for scripted AI assistance.
 
 ## 9. Running Tasks & Commands

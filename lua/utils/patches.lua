@@ -5,6 +5,28 @@
 -- @brief: Utility functions for applying Neovim patches and fixes.
 
 local M = {}
+local snacks_picker_patched = false
+
+local function patch_snacks_picker()
+  if snacks_picker_patched then
+    return true
+  end
+
+  local ok_picker, picker = pcall(require, "snacks.picker.core.picker")
+  if not ok_picker or not picker or type(picker.set_layout) ~= "function" then
+    return false
+  end
+
+  local original_set_layout = picker.set_layout
+  picker.set_layout = function(self, layout)
+    if not self or self.closed or not self.layout or not self.layout.opts then
+      return
+    end
+    return original_set_layout(self, layout)
+  end
+  snacks_picker_patched = true
+  return true
+end
 
 function M.setup()
   local snacks = require("snacks")
@@ -20,6 +42,9 @@ function M.setup()
       section = false,
     }, { __index = item })
   end
+  patch_snacks_picker()
 end
+
+M.patch_snacks_picker = patch_snacks_picker
 
 return M

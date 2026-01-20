@@ -81,8 +81,8 @@ Set `vim.opt.updatetime` higher (e.g., 500) if your machine is lower-powered.
 - Check the Copilot status window (`:Copilot panel`) for logs.
 
 ### Copilot suggestions missing
-- Inline suggestions are disabled by default; toggle them by editing `lua/plugins/copilot.lua`.
-- Make sure `copilot.lua` and `copilot-cmp` are enabled (see `lua/plugins/copilot*.lua`).
+- Inline suggestions are enabled by default; toggle them by editing `lua/plugins/copilot.lua`.
+- Make sure `copilot.lua` is enabled (see `lua/plugins/copilot.lua`).
 - Confirm you're in a supported filetype; Copilot is disabled in some contexts.
 
 ## 8. Plugins Misbehaving

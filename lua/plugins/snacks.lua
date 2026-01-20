@@ -7,6 +7,13 @@
 return {
   "folke/snacks.nvim",
   lazy = false,
+  config = function(_, opts)
+    require("snacks").setup(opts)
+    local patches = require("utils.patches")
+    if type(patches.patch_snacks_picker) == "function" then
+      patches.patch_snacks_picker()
+    end
+  end,
   opts = {
     dashboard = {
       width = 44,
