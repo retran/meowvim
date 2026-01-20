@@ -34,7 +34,6 @@ local function parse_yaml(content)
             -- New project entry without path on same line
             current_project = {}
           end
-          -- Only add the project to the list after we verify it has a path
           table.insert(result.projects, current_project)
         else
           -- Check for path property
@@ -56,6 +55,15 @@ local function parse_yaml(content)
       end
     end
   end
+
+  -- Filter out projects without a path (validation requirement)
+  local valid_projects = {}
+  for _, project in ipairs(result.projects) do
+    if project.path then
+      table.insert(valid_projects, project)
+    end
+  end
+  result.projects = valid_projects
 
   return result
 end
