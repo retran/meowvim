@@ -156,14 +156,8 @@ return {
             if ok then
               projects_util.apply_theme_for_path(dir)
               -- Run project-specific command (e.g., "Roslyn start")
-              local cmd_ok, err = pcall(projects_util.run_command_for_path, dir)
-              if not cmd_ok then
-                vim.notify(
-                  string.format("Project command failed for '%s': %s", dir, vim.inspect(err)),
-                  vim.log.levels.WARN,
-                  { title = "Project Setup" }
-                )
-              end
+              -- Error handling is done internally by run_command_for_path
+              projects_util.run_command_for_path(dir)
             end
 
             local session = require("snacks").dashboard.sections.session()
