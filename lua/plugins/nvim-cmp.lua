@@ -1,9 +1,6 @@
 -- SPDX-License-Identifier: MIT
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
 
--- @file: lua/plugins/nvim-cmp.lua
--- @brief: Auto-completion engine and snippet integration configuration.
-
 local Meow = require("config.custom")
 
 local function get_dependencies()
@@ -17,6 +14,7 @@ local function get_dependencies()
     "L3MON4D3/LuaSnip",
     "saadparwaiz1/cmp_luasnip",
     "onsails/lspkind.nvim",
+    "saecki/crates.nvim",
   }
   if Meow.enable_copilot then
     table.insert(deps, 1, "zbirenbaum/copilot-cmp")
@@ -53,6 +51,7 @@ return {
         spell = " Spell",
         nvim_lua = "NVIM API",
         cmdline = " Command",
+        crates = " Crates",
       }
 
       if source_icons[source_name] then
@@ -149,6 +148,21 @@ return {
         { name = "path" },
         { name = "buffer", keyword_length = 3 },
       }),
+    })
+
+    vim.api.nvim_create_autocmd("BufReadPost", {
+      pattern = "Cargo.toml",
+      callback = function(_event)
+        cmp.setup.buffer({
+          sources = cmp.config.sources({
+            { name = "crates" },
+            { name = "nvim_lsp" },
+            { name = "luasnip" },
+            { name = "path" },
+            { name = "buffer", keyword_length = 3 },
+          }),
+        })
+      end,
     })
 
     cmp.setup.cmdline({ "/", "?" }, {

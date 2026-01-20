@@ -65,9 +65,7 @@ return {
     image = { enabled = false },
     scope = { enabled = false },
     scratch = {
-      ft = function()
-        return "markdown"
-      end,
+      ft = "markdown",
       filekey = {
         cwd = true,
         branch = false,
@@ -103,13 +101,23 @@ return {
         projects = {
           hidden = true,
           dev = {
-            vim.fn.expand("~/workspace"),
-            vim.fn.expand("~/dev"),
-            vim.fn.expand("~/projects"),
+            "~/workspace",
+            "~/dev",
+            "~/projects",
           },
-          projects = {
-            vim.fn.fnamemodify(vim.fn.expand("~/workspace/meowvim"), ":p"),
-          },
+          -- Configured projects from ~/.meowvim.yaml loaded at startup
+          -- These projects are shown first by the picker, prioritized over dev directories
+          projects = (function()
+            local ok, projects_util = pcall(require, "utils.projects")
+            if ok then
+              return projects_util.get_project_paths()
+            end
+            return {}
+          end)(),
+          -- Only scan for git repos in dev dirs, configured projects are always shown first
+          patterns = { ".git" },
+          -- Include recent projects from vim history
+          recent = true,
           confirm = function(picker, item)
             picker:close()
             if not item or not item.file then
@@ -138,6 +146,16 @@ return {
             session_utils.reset()
 
             vim.fn.chdir(dir)
+
+            -- Apply project-specific theme from ~/.meowvim.yaml
+            local ok, projects_util = pcall(require, "utils.projects")
+            if ok then
+              projects_util.apply_theme_for_path(dir)
+              -- Run project-specific command (e.g., "Roslyn start")
+              -- Error handling is done internally by run_command_for_path
+              projects_util.run_command_for_path(dir)
+            end
+
             local session = require("snacks").dashboard.sections.session()
             if not session then
               return

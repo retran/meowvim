@@ -1,9 +1,6 @@
 -- SPDX-License-Identifier: MIT
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
 
--- @file: lua/plugins/themes.lua
--- @brief: Themes configuration.
-
 local function is_headless()
   if not vim.v.argv then
     return false
@@ -16,13 +13,36 @@ local function is_headless()
   return false
 end
 
+local function get_flavour()
+  local ok, projects = pcall(require, "utils.projects")
+  if not ok then
+    return "macchiato"
+  end
+  local theme = projects.get_theme_for_cwd()
+
+  local valid_flavours = {
+    latte = true,
+    frappe = true,
+    macchiato = true,
+    mocha = true,
+  }
+
+  if type(theme) == "string" and valid_flavours[theme] then
+    return theme
+  end
+
+  return "macchiato"
+end
+
 return {
   "catppuccin/nvim",
   name = "catppuccin",
   priority = 1000,
   config = function()
+    local flavour = get_flavour()
+
     require("catppuccin").setup({
-      flavour = "macchiato",
+      flavour = flavour,
       background = {
         light = "latte",
         dark = "mocha",

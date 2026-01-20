@@ -4,7 +4,7 @@
 -- @file: lua/plugins/nvim-dap.lua
 -- @brief: Debug Adapter Protocol (DAP) client for debugging integration.
 
-require("config.mason").ensure_debuggers({ "delve", "netcoredbg" })
+require("config.mason").ensure_debuggers({ "delve", "netcoredbg", "codelldb" })
 
 return {
   "mfussenegger/nvim-dap",
