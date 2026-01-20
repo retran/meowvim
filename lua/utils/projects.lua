@@ -246,7 +246,7 @@ function M.run_command_for_path(path)
       else
         -- info is treated as the disallowed command prefix
         msg = string.format(
-          "Command prefix '%s' is not in the whitelist. If you trust this command, add it to the `allowed_commands` list in lua/utils/projects.lua in your Neovim configuration.",
+          "Command prefix '%s' is not in the whitelist and was blocked for safety. If you need to allow this command, update your personal Neovim configuration to extend the allowed commands according to how you manage this setup (for example, by forking or customizing this configuration).",
           tostring(info)
         )
       end
