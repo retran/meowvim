@@ -56,6 +56,15 @@ local function parse_yaml(content)
     end
   end
 
+  -- Filter out projects without a path (validation requirement)
+  local valid_projects = {}
+  for _, project in ipairs(result.projects) do
+    if project.path then
+      table.insert(valid_projects, project)
+    end
+  end
+  result.projects = valid_projects
+
   return result
 end
 
@@ -93,19 +102,24 @@ function M.load_config()
   return config
 end
 
+-- Helper function to check if a path matches a project path
+-- Returns true if the path is within the project directory
+local function path_matches_project(expanded_path, project_path)
+  local sep = package.config:sub(1, 1)
+  return expanded_path == project_path or
+         (expanded_path:find(project_path, 1, true) == 1 and
+          expanded_path:sub(#project_path + 1, #project_path + 1) == sep)
+end
+
 -- Get theme for a given directory path
 function M.get_theme_for_path(path)
   local config = M.load_config()
   local expanded_path = vim.fn.fnamemodify(vim.fn.expand(path), ":p"):gsub("/$", "")
-  local sep = package.config:sub(1, 1)
 
   for _, project in ipairs(config.projects) do
     if not project.path then goto continue end
     local project_path = vim.fn.fnamemodify(vim.fn.expand(project.path), ":p"):gsub("/$", "")
-    -- Check if path starts with project path with proper boundary
-    if expanded_path == project_path or
-       (expanded_path:find(project_path, 1, true) == 1 and
-        expanded_path:sub(#project_path + 1, #project_path + 1) == sep) then
+    if path_matches_project(expanded_path, project_path) then
       return project.theme
     end
     ::continue::
@@ -126,13 +140,8 @@ function M.apply_theme_for_path(path)
     local ok, catppuccin = pcall(require, "catppuccin")
     if ok then
       vim.g.catppuccin_flavour = theme
-      -- Only change flavor if catppuccin is already loaded
-      if vim.g.colors_name == "catppuccin" or vim.g.colors_name == "catppuccin-" .. theme then
-        vim.cmd.colorscheme("catppuccin-" .. theme)
-      else
-        catppuccin.setup({ flavour = theme })
-        vim.cmd.colorscheme("catppuccin")
-      end
+      -- Switch to the desired catppuccin flavor
+      vim.cmd.colorscheme("catppuccin-" .. theme)
     end
   end
 end
@@ -143,6 +152,7 @@ function M.apply_theme_for_cwd()
 end
 
 -- Get project paths for snacks picker integration
+-- Returns absolute normalized paths with trailing slashes for configured projects
 function M.get_project_paths()
   local config = M.load_config()
   local paths = {}
@@ -158,15 +168,11 @@ end
 function M.get_project_for_path(path)
   local config = M.load_config()
   local expanded_path = vim.fn.fnamemodify(vim.fn.expand(path), ":p"):gsub("/$", "")
-  local sep = package.config:sub(1, 1)
 
   for _, project in ipairs(config.projects) do
     if not project.path then goto continue end
     local project_path = vim.fn.fnamemodify(vim.fn.expand(project.path), ":p"):gsub("/$", "")
-    -- Check if path starts with project path with proper boundary
-    if expanded_path == project_path or
-       (expanded_path:find(project_path, 1, true) == 1 and
-        expanded_path:sub(#project_path + 1, #project_path + 1) == sep) then
+    if path_matches_project(expanded_path, project_path) then
       return project
     end
     ::continue::
@@ -213,12 +219,12 @@ local function is_command_allowed(command)
     return false, cmd_prefix
   end
 
-  -- Disallow chaining additional commands via '|', '!', ';', '&', or '`' anywhere in the remainder.
-  -- This prevents constructs like "edit | !rm -rf /" while still allowing arguments,
-  -- e.g., "edit somefile" or "cd /some/path".
+  -- Disallow chaining additional commands via '|', '!', ';', '&', '`', newlines, or carriage returns.
+  -- This prevents constructs like "edit | !rm -rf /" or multiline command injection,
+  -- while still allowing arguments like "edit somefile" or "cd /some/path".
   rest = rest or ""
-  if rest:match("[|!;&`]") then
-    return false, "Command contains unsafe separators ('|', '!', ';', '&', or '`')"
+  if rest:match("[|!;&`\n\r]") then
+    return false, "Command contains unsafe separators ('|', '!', ';', '&', '`', or newlines)"
   end
 
   return true, cmd_prefix
@@ -235,12 +241,12 @@ function M.run_command_for_path(path)
       local msg
       if info == "Empty or non-string command"
         or info == "Unable to parse command prefix"
-        or info == "Command contains unsafe separators ('|', '!', ';', '&', or '`')" then
+        or info == "Command contains unsafe separators ('|', '!', ';', '&', '`', or newlines)" then
         msg = string.format("Project command '%s' rejected: %s.", tostring(project.command), info)
       else
         -- info is treated as the disallowed command prefix
         msg = string.format(
-          "Command prefix '%s' not in whitelist. Add to projects.lua allowed_commands if trusted.",
+          "Command prefix '%s' is not in the whitelist. If you trust this command, add it to the `allowed_commands` list in lua/utils/projects.lua in your Neovim configuration.",
           tostring(info)
         )
       end
@@ -250,6 +256,8 @@ function M.run_command_for_path(path)
     end
 
     -- Defer command execution to ensure it runs after directory change
+    -- The 200ms delay allows time for vim to fully process the directory change
+    -- and for any autocmds triggered by the change to complete
     vim.defer_fn(function()
       vim.cmd(project.command)
     end, 200)

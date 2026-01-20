@@ -107,8 +107,8 @@ return {
             vim.fn.expand("~/dev"),
             vim.fn.expand("~/projects"),
           },
-          -- Configured projects from ~/.meowvim.yaml appear first (pinned)
-          -- Evaluated lazily to reflect config changes without restart
+          -- Configured projects from ~/.meowvim.yaml (evaluated lazily to reflect config changes)
+          -- These projects are passed through the projects field and shown first by the picker
           projects = function()
             local ok, projects_util = pcall(require, "utils.projects")
             if ok then
@@ -156,7 +156,14 @@ return {
             if ok then
               projects_util.apply_theme_for_path(dir)
               -- Run project-specific command (e.g., "Roslyn start")
-              projects_util.run_command_for_path(dir)
+              local cmd_ok, err = pcall(projects_util.run_command_for_path, dir)
+              if not cmd_ok then
+                vim.notify(
+                  string.format("Project command failed for '%s': %s", dir, err),
+                  vim.log.levels.WARN,
+                  { title = "Project Setup" }
+                )
+              end
             end
 
             local session = require("snacks").dashboard.sections.session()

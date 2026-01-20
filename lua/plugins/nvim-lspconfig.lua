@@ -117,7 +117,8 @@ return {
         vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
       end
 
-      -- Code lens disabled globally
+      -- Code lens disabled globally due to performance concerns and visual clutter
+      -- in the editor. Re-enable by uncommenting the code below if desired.
       -- if client.server_capabilities.codeLensProvider then
       --   vim.lsp.codelens.refresh()
       --   vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
