@@ -27,7 +27,8 @@ return {
           local mason_exe = install_path .. "/bin/" .. exe
           -- Check for executable. On Windows, also check common extensions.
           local candidates = { mason_exe }
-          if vim.loop and vim.loop.os_uname and vim.loop.os_uname().sysname == "Windows_NT" then
+          local is_windows = vim.loop and vim.loop.os_uname and vim.loop.os_uname().sysname == "Windows_NT"
+          if is_windows then
             table.insert(candidates, mason_exe .. ".exe")
             table.insert(candidates, mason_exe .. ".cmd")
           end
