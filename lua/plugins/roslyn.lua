@@ -14,7 +14,7 @@ return {
 
     local ok, mason_registry = pcall(require, "mason-registry")
     if ok then
-      local ok_pkg, pkg = pcall(mason_registry.get_package, "roslyn")
+      local ok_pkg, pkg = pcall(mason_registry.get_package, mason_registry, "roslyn")
       if ok_pkg and pkg:is_installed() then
         local install_path = pkg:get_install_path()
         if install_path and install_path ~= "" then

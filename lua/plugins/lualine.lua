@@ -9,6 +9,7 @@ local Meow = require("config.custom")
 local deps = {
   "nvim-tree/nvim-web-devicons",
   "lewis6991/gitsigns.nvim",
+  "catppuccin/nvim",
 }
 if Meow.enable_copilot then
   table.insert(deps, "AndreM222/copilot-lualine")
@@ -38,10 +39,12 @@ return {
 
     if Meow.enable_copilot then
       local palette = (function()
-        local ok, catppuccin = pcall(require, "catppuccin.palettes")
-        if ok then
-          local flavour = vim.g.catppuccin_flavour or "mocha"
-          return catppuccin.get_palette(flavour)
+        local ok, catppuccin = pcall(require, "catppuccin")
+        if ok and catppuccin.flavour then
+          local palettes_ok, palettes = pcall(require, "catppuccin.palettes")
+          if palettes_ok then
+            return palettes.get_palette(catppuccin.flavour.name)
+          end
         end
         return nil
       end)()
@@ -82,17 +85,9 @@ return {
     table.insert(lualine_x, 2, copilot)
   end
 
-    local function get_lualine_theme()
-      local ok, catppuccin = pcall(require, "catppuccin.utils.lualine")
-      if ok then
-        return catppuccin()
-      end
-      return "auto"
-    end
-
     return {
       options = {
-        theme = get_lualine_theme(),
+        theme = "auto",
         icons_enabled = true,
         component_separators = { left = "|", right = "|" },
         section_separators = { left = "", right = "" },
