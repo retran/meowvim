@@ -159,7 +159,7 @@ return {
               local cmd_ok, err = pcall(projects_util.run_command_for_path, dir)
               if not cmd_ok then
                 vim.notify(
-                  string.format("Project command failed for '%s': %s", dir, err),
+                  string.format("Project command failed for '%s': %s", dir, vim.inspect(err)),
                   vim.log.levels.WARN,
                   { title = "Project Setup" }
                 )
