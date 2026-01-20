@@ -182,13 +182,13 @@ function M.apply_theme_for_cwd()
 end
 
 -- Get project paths for snacks picker integration
--- Returns absolute normalized paths with trailing slashes for configured projects
+-- Returns absolute normalized paths without trailing slashes (consistent with path_matches_project)
 function M.get_project_paths()
   local config = M.load_config()
   local paths = {}
   for _, project in ipairs(config.projects) do
     if project.path then
-      table.insert(paths, vim.fn.fnamemodify(vim.fn.expand(project.path), ":p"))
+      table.insert(paths, vim.fn.fnamemodify(vim.fn.expand(project.path), ":p"):gsub("/$", ""))
     end
   end
   return paths
@@ -227,6 +227,14 @@ local allowed_commands = {
 --   1. The first word (command prefix) is in the allowed_commands list.
 --   2. The rest of the command does not contain characters like '|' or '!' that
 --      can be used to chain additional Vim or shell commands (e.g., "edit | !rm -rf /").
+--
+-- SECURITY NOTE: This validation approach has limitations. Neovim's Ex command syntax
+-- allows piping between commands using '|' as a separator. While this check blocks
+-- explicit pipes and shell escapes, it does not perform deep parsing of command arguments.
+-- Commands must be from trusted sources (e.g., user's config file), and the allowlist
+-- should only include commands that cannot execute arbitrary code through their arguments.
+-- Do not rely on this as the sole security mechanism if accepting commands from untrusted
+-- or external sources.
 local function is_command_allowed(command)
   if type(command) ~= "string" or command == "" then
     return false, "Empty or non-string command"
@@ -285,9 +293,18 @@ function M.run_command_for_path(path)
       return
     end
 
-    -- Defer command execution to ensure it runs after directory change
-    -- The 200ms delay allows time for vim to fully process the directory change
-    -- and for any autocmds triggered by the change to complete
+    -- Defer command execution to increase the chance it runs after a directory change
+    -- has fully propagated through Neovim and any associated autocmds.
+    --
+    -- The 200ms delay is an empirically chosen compromise: it is long enough on typical
+    -- machines for common DirChanged handlers and related work (e.g. LSP, statusline,
+    -- tree plugins) to complete, while still keeping the UI responsive.
+    --
+    -- NOTE: On very slow systems, or when heavy/long-running autocmd chains are triggered
+    -- by the directory change, 200ms might not be sufficient and the command could still
+    -- run before all side effects of the directory change have finished. If you encounter
+    -- such behavior in your environment, consider increasing this delay in your local
+    -- configuration or adapting this logic to hook into a more specific event.
     vim.defer_fn(function()
       vim.cmd(project.command)
     end, 200)
