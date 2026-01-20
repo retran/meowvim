@@ -117,12 +117,12 @@ function M.get_theme_for_path(path)
   local expanded_path = vim.fn.fnamemodify(vim.fn.expand(path), ":p"):gsub("/$", "")
 
   for _, project in ipairs(config.projects) do
-    if not project.path then goto continue end
-    local project_path = vim.fn.fnamemodify(vim.fn.expand(project.path), ":p"):gsub("/$", "")
-    if path_matches_project(expanded_path, project_path) then
-      return project.theme
+    if project.path then
+      local project_path = vim.fn.fnamemodify(vim.fn.expand(project.path), ":p"):gsub("/$", "")
+      if path_matches_project(expanded_path, project_path) then
+        return project.theme
+      end
     end
-    ::continue::
   end
 
   return nil -- No matching project, use default
