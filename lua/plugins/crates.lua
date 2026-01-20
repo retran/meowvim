@@ -12,6 +12,7 @@ return {
             lsp = {
                 enabled = true,
                 on_attach = function(client, bufnr)
+                    -- Intentionally left blank as a placeholder for future LSP buffer customizations.
                 end,
                 actions = true,
                 completion = true,

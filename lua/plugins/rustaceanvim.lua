@@ -13,6 +13,7 @@ return {
             tools = {},
             server = {
                 on_attach = function(client, bufnr)
+                    -- Intentionally left empty as a placeholder for future LSP buffer-local configuration.
                 end,
                 default_settings = {
                     ["rust-analyzer"] = {

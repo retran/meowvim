@@ -108,33 +108,20 @@ return {
             vim.fn.expand("~/projects"),
           },
           -- Configured projects from ~/.meowvim.yaml appear first (pinned)
-          projects = (function()
+          -- Evaluated lazily to reflect config changes without restart
+          projects = function()
             local ok, projects_util = pcall(require, "utils.projects")
             if ok then
               return projects_util.get_project_paths()
             end
             return {}
-          end)(),
+          end,
           -- Only scan for git repos in dev dirs, configured projects are always shown first
           patterns = { ".git" },
           -- Filter out the current working directory from the list
           filter = {
-            cwd = false, -- disable cwd filter, we'll handle it in transform
+            cwd = true,
           },
-          config = function(opts)
-            -- Capture cwd before async context
-            local cwd_path = vim.fn.fnamemodify(vim.fn.getcwd(), ":p"):gsub("/$", "")
-            opts.transform = function(item)
-              if item.file then
-                local item_path = vim.fn.fnamemodify(item.file, ":p"):gsub("/$", "")
-                if item_path == cwd_path then
-                  return false -- exclude current project
-                end
-              end
-              return item
-            end
-            return opts
-          end,
           confirm = function(picker, item)
             picker:close()
             if not item or not item.file then
