@@ -181,7 +181,7 @@ function M.get_project_paths()
   local paths = {}
   for _, project in ipairs(config.projects) do
     if project.path then
-      table.insert(paths, vim.fn.fnamemodify(vim.fn.expand(project.path), ":p"):gsub("/$", ""))
+      table.insert(paths, (vim.fn.fnamemodify(vim.fn.expand(project.path), ":p"):gsub("/$", "")))
     end
   end
   return paths
