@@ -65,9 +65,7 @@ return {
     image = { enabled = false },
     scope = { enabled = false },
     scratch = {
-      ft = function()
-        return "markdown"
-      end,
+      ft = "markdown",
       filekey = {
         cwd = true,
         branch = false,
@@ -103,25 +101,23 @@ return {
         projects = {
           hidden = true,
           dev = {
-            vim.fn.expand("~/workspace"),
-            vim.fn.expand("~/dev"),
-            vim.fn.expand("~/projects"),
+            "~/workspace",
+            "~/dev",
+            "~/projects",
           },
-          -- Configured projects from ~/.meowvim.yaml (evaluated lazily to reflect config changes)
-          -- These projects are passed through the projects field and shown first by the picker
-          projects = function()
+          -- Configured projects from ~/.meowvim.yaml loaded at startup
+          -- These projects are shown first by the picker, prioritized over dev directories
+          projects = (function()
             local ok, projects_util = pcall(require, "utils.projects")
             if ok then
               return projects_util.get_project_paths()
             end
             return {}
-          end,
+          end)(),
           -- Only scan for git repos in dev dirs, configured projects are always shown first
           patterns = { ".git" },
-          -- Configure filtering behavior based on the current working directory
-          filter = {
-            cwd = true,
-          },
+          -- Include recent projects from vim history
+          recent = true,
           confirm = function(picker, item)
             picker:close()
             if not item or not item.file then
