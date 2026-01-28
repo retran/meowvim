@@ -6,15 +6,16 @@
 
 return {
   "nvim-treesitter/nvim-treesitter",
+  lazy = false,
   build = ":TSUpdate",
-  event = { "BufReadPre", "BufNewFile" },
   dependencies = {
     "nvim-treesitter/nvim-treesitter-textobjects",
     "windwp/nvim-ts-autotag",
   },
   config = function()
-    require("nvim-treesitter").setup({
-      ensure_installed = {
+    require("nvim-treesitter").setup({})
+
+    require("nvim-treesitter").install({
       "bash",
       "c",
       "c_sharp",
@@ -33,9 +34,6 @@ return {
       "jsdoc",
       "json",
       "json5",
-      "jsonc",
-      "jsx",
-      "latex",
       "lua",
       "luadoc",
       "markdown",
@@ -52,9 +50,6 @@ return {
       "vim",
       "vimdoc",
       "yaml",
-      },
-      auto_install = true,
-      highlight = { enable = true },
     })
 
     require("nvim-ts-autotag").setup()
