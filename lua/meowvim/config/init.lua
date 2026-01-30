@@ -6,12 +6,85 @@
 
 local M = {}
 
--- Internal state
 local _config = nil
 local _projects = nil
 local _current_project = nil
 
--- Helper to expand environment variables
+local function get_config_dir()
+  return vim.env.XDG_CONFIG_HOME and (vim.env.XDG_CONFIG_HOME .. "/meowvim")
+    or vim.fn.expand("~/.config/meowvim")
+end
+
+local function get_config_path()
+  return get_config_dir() .. "/config.lua"
+end
+
+local function get_projects_path()
+  return get_config_dir() .. "/projects.lua"
+end
+
+local function create_default_config()
+  local config_dir = get_config_dir()
+  local config_path = get_config_path()
+  
+  if vim.fn.filereadable(config_path) == 1 then
+    return
+  end
+  
+  vim.fn.mkdir(config_dir, "p")
+  
+  local default_content = [[-- Meowvim Configuration
+-- See :h meowvim-config for full documentation
+
+return {
+  core = {
+    theme = "catppuccin",
+    variant = "mocha",
+    enable_copilot = false,
+    leader_key = " ",
+    update_check = true,
+  },
+
+  editor = {
+    tabstop = 2,
+    indent = 2,
+    expand_tabs = true,
+    line_numbers = true,
+    relative_numbers = true,
+    wrap = false,
+    auto_save = false,
+    format_on_save = true,
+  },
+
+  performance = {
+    buffer_auto_close = true,
+    buffer_threshold = 10,
+    startup_dashboard = true,
+    lazy_load_plugins = true,
+  },
+
+  ui = {
+    transparency = 0,
+    winbar = true,
+    cmdheight = 1,
+    pumheight = 10,
+    icons = true,
+  },
+}
+]]
+  
+  local file = io.open(config_path, "w")
+  if file then
+    file:write(default_content)
+    file:close()
+    vim.notify(
+      "Created default config at " .. config_path,
+      vim.log.levels.INFO,
+      { title = "Meowvim" }
+    )
+  end
+end
+
 local function expand_env(str)
   if type(str) ~= "string" then
     return str
@@ -35,11 +108,11 @@ local function deep_merge(target, source)
   return target
 end
 
--- Load user configuration
 local function load_user_config()
-  local config_path = vim.fn.expand("~/.config/meowvim/config.lua")
+  create_default_config()
+  
+  local config_path = get_config_path()
 
-  -- Check cache first
   local cache = require("meowvim.config.cache")
   if cache.is_valid(config_path) then
     local cached = cache.load()
@@ -48,11 +121,9 @@ local function load_user_config()
     end
   end
 
-  -- Load from file
   if vim.fn.filereadable(config_path) == 1 then
     local ok, user_config = pcall(dofile, config_path)
     if ok and type(user_config) == "table" then
-      -- Save to cache
       cache.save(user_config)
       return user_config
     elseif not ok then
@@ -67,9 +138,8 @@ local function load_user_config()
   return nil
 end
 
--- Load projects configuration
 local function load_projects_config()
-  local projects_path = vim.fn.expand("~/.config/meowvim/projects.lua")
+  local projects_path = get_projects_path()
 
   if vim.fn.filereadable(projects_path) == 1 then
     local ok, projects = pcall(dofile, projects_path)
@@ -87,12 +157,10 @@ local function load_projects_config()
   return {}
 end
 
--- Initialize configuration
 function M.init()
   local defaults = require("meowvim.config.defaults").defaults
   local user_config = load_user_config()
 
-  -- Merge user config with defaults
   _config = vim.deepcopy(defaults)
   if user_config then
     deep_merge(_config, user_config)
