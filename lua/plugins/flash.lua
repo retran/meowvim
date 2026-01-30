@@ -35,7 +35,7 @@ return {
           }
         end,
         search = { wrap = false }, -- Don't wrap around
-        highlight = { backdrop = true }, -- Show backdrop like <leader><leader>
+        highlight = { backdrop = false }, -- Don't dim other lines for single-line f/t
         jump = { register = false }, -- Don't update jump list
         multi_line = false, -- Stay on current line (mimic default)
         jump_labels = true, -- Show labels for char mode (same visuals as <leader><leader>)
