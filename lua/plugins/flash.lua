@@ -12,7 +12,7 @@ return {
       autojump = false, -- Don't autojump if there's only one match
     },
     label = {
-      uppercase = false, -- Use lowercase labels
+      uppercase = true, -- Allow uppercase labels to get more options
       after = { 0, 0 }, -- Show labels after the match
       before = { 0, 0 }, -- Show labels before the match
       style = "overlay", -- Overlay labels on the match
@@ -24,7 +24,7 @@ return {
       },
     },
     -- Use extended labels to support more jump positions
-    -- Includes letters, then numbers, then shifted numbers
+    -- Home row first, then rest of keyboard, then numbers, then uppercase
     labels = "asdfghjklqwertyuiopzxcvbnm1234567890ASDFGHJKLQWERTYUIOPZXCVBNM",
     search = {
       multi_window = false, -- Search only in current window for f/t
