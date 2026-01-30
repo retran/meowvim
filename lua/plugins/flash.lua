@@ -35,9 +35,9 @@ return {
           }
         end,
         search = { wrap = false }, -- Don't wrap around
-        highlight = { backdrop = false }, -- Don't dim other lines for single-line f/t
+        highlight = { backdrop = true }, -- Dim non-searchable areas
         jump = { register = false }, -- Don't update jump list
-        multi_line = false, -- Stay on current line (mimic default)
+        multi_line = true, -- Allow jumping to other visible lines
         jump_labels = true, -- Show labels for char mode (same visuals as <leader><leader>)
       },
       treesitter = {
