@@ -23,8 +23,9 @@ return {
         shade = 5,
       },
     },
-    -- Use more labels to support jumping to more positions
-    labels = "asdfghjklqwertyuiopzxcvbnm",
+    -- Use extended labels to support more jump positions
+    -- Includes letters, then numbers, then shifted numbers
+    labels = "asdfghjklqwertyuiopzxcvbnm1234567890ASDFGHJKLQWERTYUIOPZXCVBNM",
     search = {
       multi_window = false, -- Search only in current window for f/t
       mode = "exact", -- Exact character match
