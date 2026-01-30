@@ -39,6 +39,15 @@ return {
         enabled = true,
         -- Character search settings (f, F, t, T)
         keys = { "f", "F", "t", "T" }, -- Enable default keys
+        -- Override config function to always enable jump_labels
+        config = function(opts)
+          -- Always enable jump labels for f/t
+          opts.jump_labels = true
+        end,
+        autohide = false,
+        jump_labels = true, -- Always show jump labels
+        multi_line = true, -- Allow jumping to other visible lines
+        label = { exclude = "hjkliardc" },
         char_actions = function(motion)
           return {
             [";"] = "next", -- Repeat motion forward
@@ -47,9 +56,10 @@ return {
         end,
         search = { wrap = false }, -- Don't wrap around
         highlight = { backdrop = true }, -- Dim non-searchable areas
-        jump = { register = false }, -- Don't update jump list
-        multi_line = true, -- Allow jumping to other visible lines
-        jump_labels = true, -- Show labels for char mode (same visuals as <leader><leader>)
+        jump = { 
+          register = false, -- Don't update jump list
+          autojump = false,
+        },
       },
       treesitter = {
         labels = "abcdefghijklmnopqrstuvwxyz",
