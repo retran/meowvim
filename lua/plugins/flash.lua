@@ -17,6 +17,7 @@ return {
       before = { 0, 0 }, -- Show labels before the match
       style = "overlay", -- Overlay labels on the match
       reuse = "none", -- Don't reuse labels, show all at once
+      min_pattern_length = 0, -- Show labels immediately
       rainbow = {
         enabled = false, -- Don't use rainbow colors for labels
         shade = 5,
@@ -24,6 +25,10 @@ return {
     },
     -- Use more labels to support jumping to more positions
     labels = "asdfghjklqwertyuiopzxcvbnm",
+    search = {
+      multi_window = false, -- Search only in current window for f/t
+      mode = "exact", -- Exact character match
+    },
     modes = {
       search = {
         enabled = true,
