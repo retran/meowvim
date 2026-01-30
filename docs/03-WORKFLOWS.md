@@ -58,7 +58,7 @@ Set up adapters through Mason (`<leader>omm`) and confirm they appear in Neotest
 
 ## 6. Writing & Documentation
 
-- `<leader>cc` — Toggle comments with Treesitter awareness.
+- `<leader>cc` — Toggle comments with ts-comments.nvim (Treesitter-aware).
 - `zg` — Add current word to your personal dictionary; `zw` marks as incorrect.
 - `<leader>os` — Toggle spell checking when you need focused writing.
 - Use Snacks’ scratch buffers (`<leader>.`) for quick temporary notes.
@@ -75,7 +75,7 @@ Sessions remember buffers, splits, folds, and tabs — perfect for juggling mult
 
 - Authenticate GitHub Copilot once via `:Copilot auth`.
 - Copilot uses inline suggestions by default; adjust them in `lua/plugins/copilot.lua` if you prefer a quieter flow.
-- Use Copilot Chat (if installed) or pair with external `meowg1k` workflows for scripted AI assistance.
+- For scripted AI assistance, pair with external workflows like `meowg1k`.
 
 ## 9. Running Tasks & Commands
 

@@ -59,6 +59,15 @@ Quick reference card for the most commonly used keymaps in meowvim.
 | `<leader>cda` | Show diagnostics |
 | `<leader>cdh` | Line diagnostics |
 
+### 🦀 Rust (Cargo.toml)
+
+| Key | Action |
+|-----|--------|
+| `<leader>cRt` | Toggle crates UI |
+| `<leader>cRu` | Update crate |
+| `<leader>cRU` | Update all crates |
+| `<leader>cRH` | Open homepage |
+
 ## 🌿 Git
 
 | Key | Action |
@@ -118,7 +127,7 @@ Quick reference card for the most commonly used keymaps in meowvim.
 |-----|--------|
 | `jj` | Exit insert mode |
 | `p` / `P` | Paste after/before |
-| `Ctrl+n` / `Ctrl+p` | Cycle yank history |
+| `Alt+n` / `Alt+p` | Cycle yank history |
 | `<leader>uu` | Undo history |
 | `<leader>uy` | Yank history |
 

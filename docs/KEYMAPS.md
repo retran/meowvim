@@ -229,6 +229,21 @@ primary prefix for most commands.
 
 **Note:** `<leader>co` wraps the `:LspOrganize` command and is only available when a TypeScript/JavaScript buffer has an attached `tsserver` client.
 
+### Rust Crates Management
+
+**Prefix:** `<leader>cR`
+
+Available when editing `Cargo.toml` files:
+
+| Key | Description |
+|-----|-------------|
+| `<leader>cRt` | Toggle crates UI |
+| `<leader>cRr` | Reload crates data |
+| `<leader>cRu` | Update crate under cursor |
+| `<leader>cRU` | Update all crates |
+| `<leader>cRH` | Open crate homepage |
+| `<leader>cRD` | Open crate documentation |
+
 ---
 
 ## Git & Version Control
@@ -512,8 +527,8 @@ primary prefix for most commands.
 
 | Key | Description |
 |-----|-------------|
-| `Ctrl+n` | Next entry in yank ring |
-| `Ctrl+p` | Previous entry in yank ring |
+| `Alt+n` | Next entry in yank ring |
+| `Alt+p` | Previous entry in yank ring |
 
 ### Indented Put
 
@@ -650,4 +665,4 @@ To customize keymaps, edit these files or add your own in `lua/config/custom.lua
 
 ## Documentation Info
 
-Documentation last updated: 2025-01-11
+Documentation last updated: 2026-01-30

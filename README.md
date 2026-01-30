@@ -74,7 +74,7 @@
 
 | Type        | Requirements                                                             |
 | ----------- | ------------------------------------------------------------------------ |
-| Required    | Neovim ≥ 0.10, Git, true-color capable terminal                          |
+| Required    | Neovim ≥ 0.11, Git, true-color capable terminal                          |
 | Recommended | Node.js ≥ 18, Python ≥ 3.8, Go ≥ 1.19, `ripgrep`, `fd`, `fzf`, Nerd Font |
 | Optional    | GitHub Copilot subscription, Neovide, Raycast (for launcher scripts)     |
 

@@ -91,7 +91,7 @@ To add bespoke language support:
 ## 6. Themes & Visual Flair
 
 - Default theme uses the Catppuccin-inspired palette defined in `lua/plugins/themes.lua`.
-- Statusline and tabline come from `lualine.lua` and `mini-tabline.lua`.
+- Statusline comes from `lualine.lua`.
 - `noice.lua` enhances message UX, notifications, and command-line popups.
 - Neovide-specific options (cursor animations, transparency, font) are set in `lua/config/neovide.lua`.
 
