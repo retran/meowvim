@@ -13,11 +13,16 @@ return {
     },
     label = {
       uppercase = false, -- Use lowercase labels
+      after = { 0, 0 }, -- Show labels after the match
+      before = { 0, 0 }, -- Show labels before the match
+      style = "overlay", -- Overlay labels on the match
       rainbow = {
         enabled = false, -- Don't use rainbow colors for labels
         shade = 5,
       },
     },
+    -- Use more labels to support jumping to more positions
+    labels = "asdfghjklqwertyuiopzxcvbnm",
     modes = {
       search = {
         enabled = true,
