@@ -6,6 +6,7 @@
 
 return {
   "nvim-treesitter/nvim-treesitter",
+  version = "v0.9.*", -- Pin to stable 0.9.x releases
   event = { "BufReadPost", "BufNewFile" },
   build = ":TSUpdate",
   dependencies = {

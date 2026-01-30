@@ -9,6 +9,7 @@ local mason_registry = require("config.mason")
 
 return {
   "neovim/nvim-lspconfig",
+  version = "v1.*", -- Pin to stable 1.x releases
   lazy = false,
   dependencies = {
     "hrsh7th/nvim-cmp",
@@ -26,6 +27,13 @@ return {
         mode = "symbol_text",
         preset = "codicons",
       })
+    end
+
+    -- Guard: Skip Mason setup in CI/container environments
+    local is_ci = vim.env.CI or vim.env.DOCKER or vim.fn.filereadable("/.dockerenv") == 1
+    if is_ci then
+      vim.notify("Skipping Mason setup in CI/container environment", vim.log.levels.INFO)
+      return
     end
 
     local mason = require("mason")

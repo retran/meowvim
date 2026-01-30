@@ -6,6 +6,7 @@
 
 return {
   "folke/snacks.nvim",
+  version = "v2.*", -- Pin to stable 2.x releases
   lazy = false,
   config = function(_, opts)
     require("snacks").setup(opts)
