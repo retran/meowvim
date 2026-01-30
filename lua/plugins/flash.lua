@@ -6,51 +6,31 @@
 
 return {
   "folke/flash.nvim",
-  opts = function()
-    -- Generate two-character labels for unlimited jump positions
-    local function generate_two_char_labels()
-      local labels = {}
-      local chars = "asdfghjklqwertyuiopzxcvbnm"
-      
-      -- First, add all single characters
-      for i = 1, #chars do
-        table.insert(labels, chars:sub(i, i))
-      end
-      
-      -- Then, add two-character combinations
-      for i = 1, #chars do
-        for j = 1, #chars do
-          table.insert(labels, chars:sub(i, i) .. chars:sub(j, j))
-        end
-      end
-      
-      return table.concat(labels, " ")
-    end
-
-    return {
-      -- Configure flash to mimic default f/t/F/T behavior with enhancements
-      jump = {
-        autojump = false, -- Don't autojump if there's only one match
+  opts = {
+    -- Configure flash to mimic default f/t/F/T behavior with enhancements
+    jump = {
+      autojump = false, -- Don't autojump if there's only one match
+    },
+    label = {
+      uppercase = true, -- Allow uppercase to get more labels
+      after = { 0, 0 }, -- Show labels after the match
+      before = { 0, 0 }, -- Show labels before the match
+      style = "overlay", -- Overlay labels on the match
+      reuse = "none", -- Don't reuse labels, show all at once
+      min_pattern_length = 0, -- Show labels immediately
+      rainbow = {
+        enabled = false, -- Don't use rainbow colors for labels
+        shade = 5,
       },
-      label = {
-        uppercase = false, -- Use lowercase labels only
-        after = { 0, 0 }, -- Show labels after the match
-        before = { 0, 0 }, -- Show labels before the match
-        style = "overlay", -- Overlay labels on the match
-        reuse = "none", -- Don't reuse labels, show all at once
-        min_pattern_length = 0, -- Show labels immediately
-        rainbow = {
-          enabled = false, -- Don't use rainbow colors for labels
-          shade = 5,
-        },
-      },
-      -- Use extended labels: 26 single-char + 676 two-char = 702 total positions
-      labels = generate_two_char_labels(),
-      search = {
-        multi_window = false, -- Search only in current window for f/t
-        mode = "exact", -- Exact character match
-      },
-      modes = {
+    },
+    -- Use all keyboard characters for maximum single-keypress positions
+    -- Home row first, then rest, then numbers: 26 + 26 + 10 = 62 positions
+    labels = "asdfghjklqwertyuiopzxcvbnm1234567890",
+    search = {
+      multi_window = false, -- Search only in current window for f/t
+      mode = "exact", -- Exact character match
+    },
+    modes = {
       search = {
         enabled = true,
         multi_window = true,
@@ -92,12 +72,11 @@ return {
           matches = false,
         },
       },
-      },
-      -- Prompt configuration
-      prompt = {
-        enabled = true,
-        prefix = { { "⚡", "FlashPromptIcon" } },
-      },
-    }
-  end,
+    },
+    -- Prompt configuration
+    prompt = {
+      enabled = true,
+      prefix = { { "⚡", "FlashPromptIcon" } },
+    },
+  },
 }
