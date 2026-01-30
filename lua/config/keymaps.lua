@@ -576,6 +576,7 @@ function M.setup()
         desc = "Format Buffer",
       },
       -- Crates.nvim (Cargo.toml dependency management)
+      { "<leader>cR", group = "Rust Crates", icon = "" },
       {
         "<leader>cRt",
         function()

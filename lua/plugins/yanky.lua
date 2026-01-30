@@ -32,25 +32,25 @@ return {
 
     local map = vim.keymap.set
 
-    map({ "n", "x" }, "p", "<Plug>(YankyPutAfter)")
-    map({ "n", "x" }, "P", "<Plug>(YankyPutBefore)")
-    map({ "n", "x" }, "gp", "<Plug>(YankyGPutAfter)")
-    map({ "n", "x" }, "gP", "<Plug>(YankyGPutBefore)")
+    map({ "n", "x" }, "p", "<Plug>(YankyPutAfter)", { desc = "Put After Cursor" })
+    map({ "n", "x" }, "P", "<Plug>(YankyPutBefore)", { desc = "Put Before Cursor" })
+    map({ "n", "x" }, "gp", "<Plug>(YankyGPutAfter)", { desc = "Put After and Move Cursor" })
+    map({ "n", "x" }, "gP", "<Plug>(YankyGPutBefore)", { desc = "Put Before and Move Cursor" })
 
-    map("n", "<M-n>", "<Plug>(YankyNextEntry)")
-    map("n", "<M-p>", "<Plug>(YankyPreviousEntry)")
+    map("n", "<M-n>", "<Plug>(YankyNextEntry)", { desc = "Cycle to Next Yank" })
+    map("n", "<M-p>", "<Plug>(YankyPreviousEntry)", { desc = "Cycle to Previous Yank" })
 
-    map("n", "]p", "<Plug>(YankyPutIndentAfterLinewise)")
-    map("n", "[p", "<Plug>(YankyPutIndentBeforeLinewise)")
-    map("n", "]P", "<Plug>(YankyPutIndentAfterLinewise)")
-    map("n", "[P", "<Plug>(YankyPutIndentBeforeLinewise)")
+    map("n", "]p", "<Plug>(YankyPutIndentAfterLinewise)", { desc = "Put After with Indent" })
+    map("n", "[p", "<Plug>(YankyPutIndentBeforeLinewise)", { desc = "Put Before with Indent" })
+    map("n", "]P", "<Plug>(YankyPutIndentAfterLinewise)", { desc = "Put After with Indent" })
+    map("n", "[P", "<Plug>(YankyPutIndentBeforeLinewise)", { desc = "Put Before with Indent" })
 
-    map("n", ">p", "<Plug>(YankyPutIndentAfterShiftRight)")
-    map("n", "<p", "<Plug>(YankyPutIndentAfterShiftLeft)")
-    map("n", ">P", "<Plug>(YankyPutIndentBeforeShiftRight)")
-    map("n", "<P", "<Plug>(YankyPutIndentBeforeShiftLeft)")
+    map("n", ">p", "<Plug>(YankyPutIndentAfterShiftRight)", { desc = "Put After and Shift Right" })
+    map("n", "<p", "<Plug>(YankyPutIndentAfterShiftLeft)", { desc = "Put After and Shift Left" })
+    map("n", ">P", "<Plug>(YankyPutIndentBeforeShiftRight)", { desc = "Put Before and Shift Right" })
+    map("n", "<P", "<Plug>(YankyPutIndentBeforeShiftLeft)", { desc = "Put Before and Shift Left" })
 
-    map("n", "=p", "<Plug>(YankyPutAfterFilter)")
-    map("n", "=P", "<Plug>(YankyPutBeforeFilter)")
+    map("n", "=p", "<Plug>(YankyPutAfterFilter)", { desc = "Put After with Filter" })
+    map("n", "=P", "<Plug>(YankyPutBeforeFilter)", { desc = "Put Before with Filter" })
   end,
 }
