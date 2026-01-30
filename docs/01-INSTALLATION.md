@@ -8,7 +8,7 @@ Welcome to the **meowvim** den! This guide helps you install, verify, and mainta
 | ------------ | ----------------------------------------------------------------------- |
 | **Required** | Neovim ≥ 0.11, Git, true-color capable terminal                         |
 | **Recommended** | Node.js ≥ 18, Python ≥ 3.8, Go ≥ 1.19, `ripgrep`, `fd`, `fzf`, Nerd Font |
-| **Optional** | Neovide, GitHub Copilot, Raycast (for launch scripts), tmux integration |
+| **Optional** | GitHub Copilot, Raycast (for launch scripts), tmux integration |
 
 > **Tip:** Install a Nerd Font (e.g. JetBrains Mono Nerd Font) and enable it in your terminal to make icons and glyphs display correctly.
 
@@ -73,7 +73,33 @@ If everything completes without red warnings, you’re ready to code.
 
 ## 7. Updating meowvim
 
-Keep your configuration and plugins fresh:
+### Automated Update (Recommended)
+
+Use the built-in update script with automatic backup and rollback:
+
+```bash
+./bin/update-meowvim.sh
+```
+
+Features:
+- Creates timestamped backups before updating
+- Updates configuration files via git pull
+- Syncs all plugins via lazy.nvim
+- Runs health checks after update
+- **Auto-rollback on failure**
+- Cleans old backups (keeps last 10)
+
+### Manual Rollback
+
+If you need to rollback to a previous state:
+
+```bash
+./bin/update-meowvim.sh --rollback backup_TIMESTAMP
+```
+
+### Manual Update
+
+If you prefer manual control:
 
 ```bash
 # Update configuration files
@@ -83,18 +109,65 @@ git pull
 # Inside Neovim, refresh plugins and tooling
 :Lazy sync
 :MasonToolsUpdate
+
+# Run health check
+:checkhealth meowvim
 ```
+
+### Test Configuration
+
+Verify everything works after updates:
+
+```bash
+./bin/test-config.sh
+```
+
+This runs 9 comprehensive tests covering:
+- Neovim startup
+- Config system loading
+- Health checks
+- User config validation
+- Plugin integrity
+- LSP, Treesitter, keymaps
+- Lua syntax
 
 > **Heads up:** If you maintain personal tweaks, commit them to your own branch or fork so you can merge upstream updates gracefully.
 
-## 8. Migrating from Another Config
+## 8. Initial Configuration
+
+After installation, customize your setup:
+
+1. Edit `~/.config/meowvim/config.lua` (created on first run)
+2. Choose your theme and settings:
+
+```lua
+local config = require("meowvim.config.builder")
+
+config.core({
+  theme = "catppuccin",  -- catppuccin, tokyonight, rose-pine, gruvbox, nord, kanagawa
+  variant = "mocha",      -- theme-specific variant
+  enable_copilot = false, -- true to enable GitHub Copilot
+})
+
+config.ui({
+  transparency = 0,  -- 0-100% (0 = opaque, 100 = fully transparent)
+  statusline_style = "bubbles",
+})
+
+return config.build()
+```
+
+3. Reload config: `:MeowvimConfigReload` or restart Neovim
+4. Use `:ColorschemeSelect` or `<leader>uc` for interactive theme switching
+
+## 9. Migrating from Another Config
 
 1. Backup your previous configuration (`mv ~/.config/nvim ~/.config/nvim.prev`).
 2. Follow the fresh installation steps.
 3. Copy snippets, custom plugins, or spellfiles from your backup into the new structure.
 4. Recreate local overrides in `after/` or dedicated plugin files.
 
-## 9. Uninstalling or Resetting
+## 10. Uninstalling or Resetting
 
 ```bash
 rm -rf ~/.config/nvim

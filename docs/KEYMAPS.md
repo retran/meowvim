@@ -30,7 +30,6 @@ primary prefix for most commands.
 - [Yank/Put Operations](#yankput-operations)
 - [Quit](#quit)
 - [Terminal](#terminal)
-- [Neovide Specific](#neovide-specific)
 
 ---
 
@@ -87,13 +86,33 @@ primary prefix for most commands.
 |-----|-------------|
 | `<leader>bb` | List buffers (picker) |
 | `<leader>bn` | New buffer |
-| `<leader>bp` | Previous buffer |
+| `<leader>bp` | Toggle buffer pin (hbac) |
+| `<leader>bP` | Pin all buffers (hbac) |
+| `<leader>bu` | Unpin all buffers (hbac) |
 | `<leader>bf` | Next buffer (forward) |
 | `<leader>br` | Rename buffer |
 | `<leader>bd` | Delete buffer |
 | `<leader>bD` | Force delete buffer |
 | `<leader>bo` | Delete other buffers |
 | `<leader>ba` | Delete all buffers |
+
+---
+
+## Bookmarks
+
+**Prefix:** `<leader>m`
+
+| Key | Description |
+|-----|-------------|
+| `<leader>mm` | Toggle bookmark |
+| `<leader>mi` | Add bookmark with annotation |
+| `<leader>mc` | Clean bookmarks in buffer |
+| `<leader>mn` | Next bookmark |
+| `<leader>mp` | Previous bookmark |
+| `<leader>ml` | List bookmarks |
+| `<leader>mx` | Clear all bookmarks |
+
+Bookmark keywords: `@t` (task), `@w` (warning), `@f` (fix), `@n` (note)
 
 ---
 
@@ -225,6 +244,7 @@ primary prefix for most commands.
 | `<leader>cl` | n | Run code lens |
 | `<leader>cL` | n | Refresh code lenses |
 | `<leader>cf` | n | Format buffer |
+| `<leader>cs` | v | Create code screenshot |
 | `<leader>co` | n | Organize imports (TypeScript)* |
 
 **Note:** `<leader>co` wraps the `:LspOrganize` command and is only available when a TypeScript/JavaScript buffer has an attached `tsserver` client.
@@ -249,6 +269,13 @@ Available when editing `Cargo.toml` files:
 ## Git & Version Control
 
 **Prefix:** `<leader>g`
+
+### LazyGit Integration
+
+| Key | Description |
+|-----|-------------|
+| `<leader>gg` | LazyGit (full TUI) |
+| `<leader>gf` | LazyGit Current File |
 
 ### Status
 
@@ -436,18 +463,41 @@ Available when editing `Cargo.toml` files:
 | `<leader>oC` | Toggle cursor column |
 | `<leader>oF` | Toggle format on save |
 | `<leader>od` | Toggle dim inactive |
+| `<leader>uc` | Colorscheme switcher (interactive) |
+
+### Developer Tools
+
+| Key | Description |
+|-----|-------------|
+| `<leader>oP` | Start profiling |
+| `<leader>oL` | Show profiler dashboard |
+
+Commands:
+- `:KeymapConflicts` - Show keymap conflicts
+- `:KeymapList [mode]` - List all keymaps for mode
+- `:ProfileStart` / `:ProfileStop` - Control profiling
+- `:MeowvimProfile` - Show plugin load times
+- `:MeasureRender` - Measure buffer render time
+- `:StartupTrends` - Analyze startup time trends
 
 ---
 
 ## Sessions
 
-**Prefix:** `<leader>oS`
+**Prefix:** `<leader>q`
 
 | Key | Description |
 |-----|-------------|
-| `<leader>oSr` | Restore session |
-| `<leader>oSl` | Restore last session |
-| `<leader>oSx` | Stop session saving |
+| `<leader>qs` | Restore current directory session |
+| `<leader>qS` | Restore session (picker) |
+| `<leader>ql` | Restore last session |
+| `<leader>qd` | Don't save current session |
+
+Enhanced session management features:
+- Auto-save on directory change
+- Per-branch sessions (configurable)
+- Pre-save hooks to close plugin windows
+- Session picker for easy restoration
 
 ---
 
@@ -573,18 +623,6 @@ Available when editing `Cargo.toml` files:
 | Key | Modes | Description |
 |-----|-------|-------------|
 | `F2` | n, t | Toggle floating terminal |
-
----
-
-## Neovide Specific
-
-These keymaps are only available when running in Neovide GUI.
-
-| Key | Description |
-|-----|-------------|
-| `<leader>o+` | Scale up font |
-| `<leader>o-` | Scale down font |
-| `<leader>of` | Toggle fullscreen |
 
 ---
 

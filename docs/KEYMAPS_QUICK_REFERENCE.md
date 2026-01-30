@@ -119,7 +119,7 @@ Quick reference card for the most commonly used keymaps in meowvim.
 | `<leader>od` | Toggle dim |
 | `<leader>oF` | Toggle format on save |
 | `F2` | Toggle terminal |
-| `<leader>of`* | Toggle fullscreen (Neovide) |
+| `<leader>uc` | Colorscheme switcher |
 
 ## 📝 Editing
 
@@ -144,8 +144,8 @@ Quick reference card for the most commonly used keymaps in meowvim.
 - Leader key is `<space>`
 - Use `<leader>ohk` to search all keymaps interactively
 - Most keymaps work in visual mode too
-- Flash jump (`<leader><space>`) is your friend for quick navigation
-- `*` marks Neovide-only bindings
+- Flash jump (`<leader><leader>`) is your friend for quick navigation
+- f/t movements also show visual jump labels like Flash
 
 ---
 
