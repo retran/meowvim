@@ -92,6 +92,9 @@ if config_ok then
   require("meowvim.commands").setup()
   config.setup_watcher()
   
-  -- Load colorscheme switcher
+  -- Load meowvim utilities
   require("meowvim.colorscheme_switcher")
+  require("meowvim.keymap_checker")
+  require("meowvim.profiler")
+  require("meowvim.startup_tracker")
 end
