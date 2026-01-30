@@ -78,7 +78,7 @@ end
 function M.load_config()
   local config_path = vim.fn.expand("~/.meowvim.yaml")
 
-  local mtime = vim.loop.fs_stat(config_path)
+  local mtime = vim.uv.fs_stat(config_path)
   if mtime and config_cache and config_mtime and mtime.mtime.sec == config_mtime then
     return config_cache
   end
@@ -120,7 +120,7 @@ local function path_matches_project(expanded_path, project_path)
     if #path_cache_order >= PATH_CACHE_MAX_SIZE then
       evict_oldest_cache_entry()
     end
-    real_expanded_path = vim.loop.fs_realpath(expanded_path) or expanded_path
+    real_expanded_path = vim.uv.fs_realpath(expanded_path) or expanded_path
     path_cache[expanded_path] = real_expanded_path
     table.insert(path_cache_order, expanded_path)
   end
@@ -130,7 +130,7 @@ local function path_matches_project(expanded_path, project_path)
     if #path_cache_order >= PATH_CACHE_MAX_SIZE then
       evict_oldest_cache_entry()
     end
-    real_project_path = vim.loop.fs_realpath(project_path) or project_path
+    real_project_path = vim.uv.fs_realpath(project_path) or project_path
     path_cache[project_path] = real_project_path
     table.insert(path_cache_order, project_path)
   end

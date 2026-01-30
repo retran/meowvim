@@ -9,7 +9,7 @@ vim.loader.enable()
 -- Add Mason bin to PATH
 local mason_bin = vim.fn.stdpath("data") .. "/mason/bin"
 if vim.fn.isdirectory(mason_bin) == 1 and not (vim.env.PATH or ""):find(mason_bin, 1, true) then
-  local separator = vim.loop.os_uname().sysname:find("Windows") and ";" or ":"
+  local separator = vim.uv.os_uname().sysname:find("Windows") and ";" or ":"
   vim.env.PATH = mason_bin .. separator .. (vim.env.PATH or "")
 end
 

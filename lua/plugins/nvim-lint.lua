@@ -65,11 +65,13 @@ return {
   "mfussenegger/nvim-lint",
   event = { "BufReadPre", "BufNewFile" },
   opts = function()
+    local mason_bin = vim.fn.stdpath("data") .. "/mason/bin"
     local linters_by_ft = {}
     for ft, linters in pairs(desired_linters_by_ft) do
       local available_linters = {}
       for _, linter in ipairs(linters) do
-        if vim.fn.executable(linter) == 1 then
+        -- Check if linter is executable in PATH or Mason bin
+        if vim.fn.executable(linter) == 1 or vim.fn.executable(mason_bin .. "/" .. linter) == 1 then
           table.insert(available_linters, linter)
         end
       end

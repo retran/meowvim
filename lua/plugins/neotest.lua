@@ -16,10 +16,10 @@ return {
   config = function()
     require("neotest").setup({
       adapters = {
-        ["neotest-golang"] = {
+        require("neotest-go")({
           go_test_args = { "-v", "-race", "-count=1", "-timeout=60s" },
           dap_go_enabled = true,
-        },
+        }),
       },
 
       status = {

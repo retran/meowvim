@@ -3,6 +3,7 @@
 
 -- @file: lua/plugins/nvim-lspconfig.lua
 -- @brief: Language Server Protocol (LSP) client configuration and setup.
+-- @requires: Neovim >= 0.11 (uses vim.lsp.config() and vim.lsp.enable() APIs)
 
 local mason_registry = require("config.mason")
 

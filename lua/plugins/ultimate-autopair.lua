@@ -12,7 +12,7 @@ return {
     local autopair = require("ultimate-autopair")
     local config = autopair.extend_default()
 
-    config.bs.enable = false
+    config.bs.enable = true
 
     config.tabout = {
       enable = true,

@@ -334,7 +334,7 @@ function M.setup()
               return
             end
 
-            local stat = vim.loop.fs_stat(filepath)
+            local stat = vim.uv.fs_stat(filepath)
             if not stat then
               local dir = vim.fn.fnamemodify(filepath, ":h")
 

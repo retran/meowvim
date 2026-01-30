@@ -37,8 +37,8 @@ return {
     map({ "n", "x" }, "gp", "<Plug>(YankyGPutAfter)")
     map({ "n", "x" }, "gP", "<Plug>(YankyGPutBefore)")
 
-    map("n", "<C-n>", "<Plug>(YankyNextEntry)")
-    map("n", "<C-p>", "<Plug>(YankyPreviousEntry)")
+    map("n", "<M-n>", "<Plug>(YankyNextEntry)")
+    map("n", "<M-p>", "<Plug>(YankyPreviousEntry)")
 
     map("n", "]p", "<Plug>(YankyPutIndentAfterLinewise)")
     map("n", "[p", "<Plug>(YankyPutIndentBeforeLinewise)")
