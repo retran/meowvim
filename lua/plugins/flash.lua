@@ -6,6 +6,39 @@
 
 return {
   "folke/flash.nvim",
+  keys = {
+    -- Use 2-character jump mode for f/t/F/T
+    { "f", mode = { "n", "x", "o" }, function() 
+        require("flash").jump({
+          search = { mode = "search", max_length = 2, forward = true, wrap = true },
+        }) 
+      end, 
+      desc = "Flash forward 2-char" 
+    },
+    { "F", mode = { "n", "x", "o" }, function() 
+        require("flash").jump({
+          search = { mode = "search", max_length = 2, forward = false, wrap = true },
+        }) 
+      end, 
+      desc = "Flash backward 2-char" 
+    },
+    { "t", mode = { "n", "x", "o" }, function() 
+        require("flash").jump({
+          search = { mode = "search", max_length = 2, forward = true, wrap = true },
+          jump = { pos = "end" },
+        }) 
+      end, 
+      desc = "Flash till forward 2-char" 
+    },
+    { "T", mode = { "n", "x", "o" }, function() 
+        require("flash").jump({
+          search = { mode = "search", max_length = 2, forward = false, wrap = true },
+          jump = { pos = "end" },
+        }) 
+      end, 
+      desc = "Flash till backward 2-char" 
+    },
+  },
   opts = {
     -- Use all available characters for labels (with uppercase, this gives 52 + 10 = 62 positions)
     labels = "asdfghjklqwertyuiopzxcvbnm1234567890",
@@ -34,16 +67,23 @@ return {
         enabled = true,
       },
       char = {
-        enabled = true,
-        jump_labels = true, -- Enable labels for f/t/F/T
+        enabled = false, -- Disabled since we use custom 2-char f/t/F/T mappings
+        jump_labels = true,
         keys = { "f", "F", "t", "T", ";", "," },
+        config = function(opts)
+          opts.autohide = opts.autohide or (vim.fn.mode(true):find("no") and vim.v.operator == "y")
+          opts.jump_labels = true
+        end,
         char_actions = function(motion)
           return {
             [";"] = "next",
             [","] = "prev",
           }
         end,
-        search = { wrap = false },
+        search = { 
+          wrap = true,
+          multi_window = false,
+        },
         highlight = { backdrop = true },
         jump = { 
           register = false,

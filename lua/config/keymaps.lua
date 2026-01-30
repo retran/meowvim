@@ -237,7 +237,11 @@ local function flash_action(action_name, multi_window)
     local flash = safe_require("flash")
     if flash then
       if action_name == "jump" then
-        flash.jump({ multi_window = multi_window or false })
+        -- Use 2-character search for better precision (type 2 chars before showing labels)
+        flash.jump({ 
+          search = { max_length = 2 },  -- Require 2 characters before showing labels
+          multi_window = multi_window or false 
+        })
       elseif action_name == "treesitter" then
         flash.treesitter()
       elseif action_name == "remote" then
