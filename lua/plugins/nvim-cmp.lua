@@ -1,8 +1,6 @@
 -- SPDX-License-Identifier: MIT
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
 
-local Meow = require("config.custom")
-
 local function get_dependencies()
   local deps = {
     "hrsh7th/cmp-nvim-lsp",

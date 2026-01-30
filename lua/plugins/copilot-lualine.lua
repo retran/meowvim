@@ -2,11 +2,15 @@
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
 
 -- @file: lua/plugins/copilot-lualine.lua
--- @brief: Copilot status indicator for lualine statusbar.
-
-local Meow = require("config.custom")
+-- @brief: Lualine integration for GitHub Copilot status display.
 
 return {
   "AndreM222/copilot-lualine",
-  enabled = Meow.enable_copilot,
+  enabled = function()
+    local ok, config = pcall(require, "meowvim.config")
+    if ok then
+      return config.get("core.enable_copilot", false)
+    end
+    return vim.env.MEOW_ENABLE_COPILOT == "true"
+  end,
 }
