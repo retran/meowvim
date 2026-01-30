@@ -571,6 +571,49 @@ function M.setup()
         end,
         desc = "Format Buffer",
       },
+      -- Crates.nvim (Cargo.toml dependency management)
+      {
+        "<leader>cRt",
+        function()
+          require("crates").toggle()
+        end,
+        desc = "Toggle Crates",
+      },
+      {
+        "<leader>cRr",
+        function()
+          require("crates").reload()
+        end,
+        desc = "Reload Crates",
+      },
+      {
+        "<leader>cRu",
+        function()
+          require("crates").update_crate()
+        end,
+        desc = "Update Crate",
+      },
+      {
+        "<leader>cRU",
+        function()
+          require("crates").update_all_crates()
+        end,
+        desc = "Update All Crates",
+      },
+      {
+        "<leader>cRH",
+        function()
+          require("crates").open_homepage()
+        end,
+        desc = "Open Crate Homepage",
+      },
+      {
+        "<leader>cRD",
+        function()
+          require("crates").open_documentation()
+        end,
+        desc = "Open Crate Documentation",
+      },
       {
         "<leader>cL",
         vim.lsp.codelens.refresh,
@@ -1138,9 +1181,6 @@ function M.setup()
 
   vim.keymap.set("n", "<Tab>", ":bnext<CR>", { desc = "Go To Next Buffer", silent = true })
   vim.keymap.set("n", "<S-Tab>", ":bprevious<CR>", { desc = "Go To Previous Buffer", silent = true })
-
-  vim.keymap.set("n", "L", ":bnext<CR>", { desc = "Go To Next Buffer", silent = true })
-  vim.keymap.set("n", "H", ":bprevious<CR>", { desc = "Go To Previous Buffer", silent = true })
 end
 
 return M

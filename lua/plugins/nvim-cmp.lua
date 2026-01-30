@@ -155,6 +155,7 @@ return {
       callback = function(_event)
         cmp.setup.buffer({
           sources = cmp.config.sources({
+            { name = "crates" },
             { name = "nvim_lsp" },
             { name = "luasnip" },
             { name = "path" },
