@@ -7,60 +7,51 @@
 return {
   "folke/flash.nvim",
   opts = {
-    -- Configure flash to mimic default f/t/F/T behavior with enhancements
-    jump = {
-      autojump = false, -- Don't autojump if there's only one match
-    },
-    label = {
-      uppercase = true, -- Allow uppercase to get more labels
-      after = { 0, 0 }, -- Show labels after the match
-      before = { 0, 0 }, -- Show labels before the match
-      style = "overlay", -- Overlay labels on the match
-      reuse = "none", -- Don't reuse labels, show all at once
-      min_pattern_length = 0, -- Show labels immediately
-      rainbow = {
-        enabled = false, -- Don't use rainbow colors for labels
-        shade = 5,
-      },
-    },
-    -- Use all keyboard characters for maximum single-keypress positions
-    -- Home row first, then rest, then numbers: 26 + 26 + 10 = 62 positions
+    -- Use all available characters for labels (with uppercase, this gives 52 + 10 = 62 positions)
     labels = "asdfghjklqwertyuiopzxcvbnm1234567890",
     search = {
-      multi_window = false, -- Search only in current window for f/t
-      mode = "exact", -- Exact character match
+      multi_window = true,
+      mode = "exact",
+    },
+    jump = {
+      autojump = false,
+    },
+    label = {
+      uppercase = true, -- This will add A-Z automatically, doubling available labels
+      after = true,
+      before = false,
+      style = "overlay",
+      reuse = "lowercase",
+      distance = true,
+      min_pattern_length = 0,
+    },
+    highlight = {
+      backdrop = true,
+      matches = true,
     },
     modes = {
       search = {
         enabled = true,
-        multi_window = true,
-        highlight = { backdrop = true },
       },
       char = {
         enabled = true,
-        -- Character search settings (f, F, t, T)
-        keys = { "f", "F", "t", "T" }, -- Enable default keys
-        -- Override config function to always enable jump_labels
-        config = function(opts)
-          -- Always enable jump labels for f/t
-          opts.jump_labels = true
-        end,
-        autohide = false,
-        jump_labels = true, -- Always show jump labels
-        multi_line = true, -- Allow jumping to other visible lines
-        label = { exclude = "hjkliardc" },
+        jump_labels = true, -- Enable labels for f/t/F/T
+        keys = { "f", "F", "t", "T", ";", "," },
         char_actions = function(motion)
           return {
-            [";"] = "next", -- Repeat motion forward
-            [","] = "prev", -- Repeat motion backward
+            [";"] = "next",
+            [","] = "prev",
           }
         end,
-        search = { wrap = false }, -- Don't wrap around
-        highlight = { backdrop = true }, -- Dim non-searchable areas
+        search = { wrap = false },
+        highlight = { backdrop = true },
         jump = { 
-          register = false, -- Don't update jump list
+          register = false,
           autojump = false,
         },
+        multi_line = true,
+        label = { exclude = "hjkliardc" },
+        autohide = false,
       },
       treesitter = {
         labels = "abcdefghijklmnopqrstuvwxyz",
