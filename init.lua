@@ -91,4 +91,7 @@ require("config/keymaps").setup()
 if config_ok then
   require("meowvim.commands").setup()
   config.setup_watcher()
+  
+  -- Load colorscheme switcher
+  require("meowvim.colorscheme_switcher")
 end
