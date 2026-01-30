@@ -6,13 +6,6 @@
 
 return {
   "folke/flash.nvim",
-  keys = {
-    { "<leader><space>", mode = { "n", "x", "o" }, desc = "Flash Jump" },
-    { "<leader>jj", mode = { "n", "x", "o" }, desc = "Flash Jump to Match" },
-    { "<leader>jt", mode = { "n", "x", "o" }, desc = "Flash Jump to Treesitter Node" },
-    { "<leader>ja", mode = { "n", "x", "o" }, desc = "Flash Jump in All Windows" },
-    { "<leader>jm", mode = { "n", "x", "o" }, desc = "Flash Jump to Remote Target" },
-  },
   opts = {
     modes = {
       search = {
@@ -25,9 +18,4 @@ return {
       },
     },
   },
-  config = function(_, opts)
-    local flash = require("flash")
-    flash.setup(opts)
-
-  end,
 }
