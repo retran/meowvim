@@ -16,6 +16,7 @@ return {
       after = { 0, 0 }, -- Show labels after the match
       before = { 0, 0 }, -- Show labels before the match
       style = "overlay", -- Overlay labels on the match
+      reuse = "lowercase", -- Reuse labels across multiple jumps
       rainbow = {
         enabled = false, -- Don't use rainbow colors for labels
         shade = 5,
@@ -23,6 +24,8 @@ return {
     },
     -- Use more labels to support jumping to more positions
     labels = "asdfghjklqwertyuiopzxcvbnm",
+    -- Continue labeling after first character (enables two-char labels)
+    continue_after_label = true,
     modes = {
       search = {
         enabled = true,
