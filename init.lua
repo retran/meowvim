@@ -30,7 +30,6 @@ else
 end
 
 require("config/options")
-require("config/neovide")
 require("utils.toggles").setup()
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"

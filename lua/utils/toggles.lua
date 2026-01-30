@@ -7,8 +7,6 @@ local registry = {
   miniindentscope_disable = { store = "MiniIndentscopeDisable", default = true, type = "boolean" },
   snacks_dim = { store = "SnacksDim", default = false, type = "boolean" },
   lint_enabled = { store = "LintEnabled", default = true, type = "boolean" },
-  neovide_scale_factor = { store = "NeovideScaleFactor", default = 1.0, type = "number" },
-  neovide_fullscreen = { store = "NeovideFullscreen", default = false, type = "boolean" },
 }
 
 local M = {}

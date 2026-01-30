@@ -1114,38 +1114,6 @@ function M.setup()
       },
     }
 
-    if vim.g.neovide then
-      toggles.ensure("neovide_scale_factor")
-      toggles.ensure("neovide_fullscreen")
-
-      table.insert(mappings, {
-        "<leader>o+",
-        function()
-          vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + 0.1
-          toggles.update("neovide_scale_factor")
-        end,
-        desc = "Scale Up",
-      })
-
-      table.insert(mappings, {
-        "<leader>o-",
-        function()
-          vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - 0.1
-          toggles.update("neovide_scale_factor")
-        end,
-        desc = "Scale Down",
-      })
-
-      table.insert(mappings, {
-        "<leader>of",
-        function()
-          vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen
-          toggles.update("neovide_fullscreen")
-        end,
-        desc = "Toggle Fullscreen",
-      })
-    end
-
     local top_level_actions, other_mappings = {}, {}
     for _, mapping in ipairs(mappings) do
       local lhs = mapping[1]

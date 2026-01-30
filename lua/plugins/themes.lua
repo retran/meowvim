@@ -7,9 +7,11 @@
 local function get_config_theme()
   local ok, config = pcall(require, "meowvim.config")
   if ok then
-    return config.get("core.theme", "catppuccin"), config.get("core.variant", "mocha")
+    return config.get("core.theme", "catppuccin"), 
+           config.get("core.variant", "mocha"),
+           config.get("ui.transparency", 0)
   end
-  return "catppuccin", "mocha"
+  return "catppuccin", "mocha", 0
 end
 
 -- Catppuccin theme
@@ -19,7 +21,7 @@ local catppuccin = {
   priority = 1000,
   lazy = false,
   config = function()
-    local theme, variant = get_config_theme()
+    local theme, variant, transparency = get_config_theme()
     
     if theme ~= "catppuccin" then
       return
@@ -31,7 +33,7 @@ local catppuccin = {
         light = "latte",
         dark = "mocha",
       },
-      transparent_background = false,
+      transparent_background = transparency > 0,
       default_integrations = true,
       auto_integrations = true,
       integrations = {
@@ -52,6 +54,14 @@ local catppuccin = {
     
     vim.g.catppuccin_flavour = variant
     vim.cmd.colorscheme("catppuccin")
+    
+    -- Apply transparency level if > 0
+    if transparency > 0 then
+      local alpha = 100 - transparency
+      vim.api.nvim_set_hl(0, "Normal", { bg = "NONE" })
+      vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
+      vim.api.nvim_set_hl(0, "NormalNC", { bg = "NONE" })
+    end
   end,
 }
 
@@ -61,7 +71,7 @@ local tokyonight = {
   priority = 1000,
   lazy = false,
   config = function()
-    local theme, variant = get_config_theme()
+    local theme, variant, transparency = get_config_theme()
     
     if theme ~= "tokyonight" then
       return
@@ -69,13 +79,15 @@ local tokyonight = {
 
     require("tokyonight").setup({
       style = variant, -- storm, night, moon, day
-      transparent = false,
+      transparent = transparency > 0,
       terminal_colors = true,
       styles = {
         comments = { italic = true },
         keywords = { italic = true },
         functions = {},
         variables = {},
+        sidebars = transparency > 0 and "transparent" or "dark",
+        floats = transparency > 0 and "transparent" or "dark",
       },
     })
     
@@ -90,7 +102,7 @@ local rose_pine = {
   priority = 1000,
   lazy = false,
   config = function()
-    local theme, variant = get_config_theme()
+    local theme, variant, transparency = get_config_theme()
     
     if theme ~= "rose-pine" then
       return
@@ -105,7 +117,7 @@ local rose_pine = {
       },
       styles = {
         italic = true,
-        transparency = false,
+        transparency = transparency > 0,
       },
     })
     
@@ -119,7 +131,7 @@ local gruvbox = {
   priority = 1000,
   lazy = false,
   config = function()
-    local theme, variant = get_config_theme()
+    local theme, variant, transparency = get_config_theme()
     
     if theme ~= "gruvbox" then
       return
@@ -138,7 +150,7 @@ local gruvbox = {
         folds = true,
       },
       contrast = variant or "medium", -- hard, medium, soft
-      transparent_mode = false,
+      transparent_mode = transparency > 0,
     })
     
     vim.o.background = "dark"
@@ -152,7 +164,7 @@ local nord = {
   priority = 1000,
   lazy = false,
   config = function()
-    local theme = get_config_theme()
+    local theme, _, transparency = get_config_theme()
     
     if theme ~= "nord" then
       return
@@ -160,7 +172,7 @@ local nord = {
 
     vim.g.nord_contrast = true
     vim.g.nord_borders = true
-    vim.g.nord_disable_background = false
+    vim.g.nord_disable_background = transparency > 0
     vim.g.nord_italic = true
     vim.g.nord_bold = true
     
@@ -174,7 +186,7 @@ local kanagawa = {
   priority = 1000,
   lazy = false,
   config = function()
-    local theme, variant = get_config_theme()
+    local theme, variant, transparency = get_config_theme()
     
     if theme ~= "kanagawa" then
       return
@@ -188,7 +200,7 @@ local kanagawa = {
       keywordStyle = { italic = true },
       statementStyle = { bold = true },
       typeStyle = {},
-      transparent = false,
+      transparent = transparency > 0,
       dimInactive = false,
       terminalColors = true,
       theme = variant or "wave", -- wave, dragon, lotus

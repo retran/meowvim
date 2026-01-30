@@ -39,16 +39,6 @@ local function update_title()
 end
 
 function M.setup()
-  local neovide_keymap_group = vim.api.nvim_create_augroup("NeovideKeymapToggle", { clear = true })
-
-  vim.api.nvim_create_autocmd({ "UIEnter", "UILeave" }, {
-    group = neovide_keymap_group,
-    pattern = "*",
-    callback = function(args)
-      require("config/keymaps").setup()
-    end,
-  })
-
   local augroup = vim.api.nvim_create_augroup("WindowTitleUpdater", { clear = true })
   vim.api.nvim_create_autocmd({ "ModeChanged", "BufEnter", "FileChangedRO", "TextChanged" }, {
     group = augroup,
