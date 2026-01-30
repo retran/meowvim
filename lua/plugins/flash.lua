@@ -35,10 +35,10 @@ return {
           }
         end,
         search = { wrap = false }, -- Don't wrap around
-        highlight = { backdrop = false }, -- Don't dim background
+        highlight = { backdrop = true }, -- Show backdrop like <leader><leader>
         jump = { register = false }, -- Don't update jump list
         multi_line = false, -- Stay on current line (mimic default)
-        jump_labels = false, -- Don't show labels for char mode (use ; and , for repeat)
+        jump_labels = true, -- Show labels for char mode (same visuals as <leader><leader>)
       },
       treesitter = {
         labels = "abcdefghijklmnopqrstuvwxyz",
