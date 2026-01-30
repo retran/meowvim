@@ -75,27 +75,38 @@ return {
       postgres_lsp = true,
     }
 
+    -- Cache package_supported lookups to avoid repeated registry checks
+    local package_supported_cache = {}
     local function package_supported(name)
+      if package_supported_cache[name] ~= nil then
+        return package_supported_cache[name]
+      end
+
       if not registry_ok then
+        package_supported_cache[name] = true
         return true
       end
 
       if not registry.has_package(name) then
+        package_supported_cache[name] = false
         return false
       end
 
       local ok_pkg, pkg = pcall(registry.get_package, name)
       if not ok_pkg then
+        package_supported_cache[name] = false
         return false
       end
 
       if pkg.is_supported then
         local ok_supported, supported = pcall(pkg.is_supported, pkg)
         if ok_supported then
+          package_supported_cache[name] = supported
           return supported
         end
       end
 
+      package_supported_cache[name] = true
       return true
     end
 

@@ -7,7 +7,6 @@
 return {
   "dnlhc/glance.nvim",
   cmd = "Glance",
-  module = "glance",
   opts = {
     detached = function(winid)
       return winid > -1

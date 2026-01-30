@@ -6,7 +6,13 @@
 
 return {
   "folke/flash.nvim",
-  event = "VeryLazy",
+  keys = {
+    { "<leader><space>", mode = { "n", "x", "o" }, desc = "Flash Jump" },
+    { "<leader>jj", mode = { "n", "x", "o" }, desc = "Flash Jump to Match" },
+    { "<leader>jt", mode = { "n", "x", "o" }, desc = "Flash Jump to Treesitter Node" },
+    { "<leader>ja", mode = { "n", "x", "o" }, desc = "Flash Jump in All Windows" },
+    { "<leader>jm", mode = { "n", "x", "o" }, desc = "Flash Jump to Remote Target" },
+  },
   opts = {
     modes = {
       search = {
