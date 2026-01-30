@@ -50,7 +50,7 @@ return {
         multi_window = false, -- Search only in current window for f/t
         mode = "exact", -- Exact character match
       },
-    modes = {
+      modes = {
       search = {
         enabled = true,
         multi_window = true,
@@ -92,7 +92,7 @@ return {
           matches = false,
         },
       },
-    },
+      },
       -- Prompt configuration
       prompt = {
         enabled = true,
