@@ -10,21 +10,21 @@ return {
     -- Use 2-character jump mode for f/t/F/T
     { "f", mode = { "n", "x", "o" }, function() 
         require("flash").jump({
-          search = { mode = "search", max_length = 2, forward = true, wrap = true },
+          search = { mode = "search", max_length = 2, forward = true, wrap = false },
         }) 
       end, 
       desc = "Flash forward 2-char" 
     },
     { "F", mode = { "n", "x", "o" }, function() 
         require("flash").jump({
-          search = { mode = "search", max_length = 2, forward = false, wrap = true },
+          search = { mode = "search", max_length = 2, forward = false, wrap = false },
         }) 
       end, 
       desc = "Flash backward 2-char" 
     },
     { "t", mode = { "n", "x", "o" }, function() 
         require("flash").jump({
-          search = { mode = "search", max_length = 2, forward = true, wrap = true },
+          search = { mode = "search", max_length = 2, forward = true, wrap = false },
           jump = { pos = "end" },
         }) 
       end, 
@@ -32,7 +32,7 @@ return {
     },
     { "T", mode = { "n", "x", "o" }, function() 
         require("flash").jump({
-          search = { mode = "search", max_length = 2, forward = false, wrap = true },
+          search = { mode = "search", max_length = 2, forward = false, wrap = false },
           jump = { pos = "end" },
         }) 
       end, 
