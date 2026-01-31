@@ -245,9 +245,8 @@ local function flash_action(action_name, multi_window)
     local flash = safe_require("flash")
     if flash then
       if action_name == "jump" then
-        -- Use 2-character search for better precision (type 2 chars before showing labels)
         flash.jump({ 
-          search = { max_length = 2 },  -- Require 2 characters before showing labels
+          search = { max_length = 2 },
           multi_window = multi_window or false 
         })
       elseif action_name == "treesitter" then
@@ -547,8 +546,7 @@ function M.setup()
         desc = "Show Call Hierarchy (Callees)",
       },
 
-      -- Code Intelligence
-      -- Code Intelligence
+      -- Code
       { "<leader>c", group = "Code", icon = "󰅩" },
       { "<leader>cc", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "v" } },
       { "<leader>cr", vim.lsp.buf.rename, desc = "Rename Symbol" },
@@ -570,7 +568,7 @@ function M.setup()
         end,
         desc = "Organize Imports",
       },
-      -- Diagnostics (flattened from cd* to 2-key)
+      -- Diagnostics
       { "<leader>cd", trouble_action("diagnostics"), desc = "Project Diagnostics" },
       { "<leader>cD", trouble_action("diagnostics", { filter = { buf = 0 } }), desc = "Buffer Diagnostics" },
       { "<leader>ch", vim.diagnostic.open_float, desc = "Line Diagnostics" },
@@ -584,7 +582,7 @@ function M.setup()
       { "[b", "<cmd>bprevious<CR>", desc = "Previous Buffer", mode = "n" },
       { "]t", "<cmd>tabnext<CR>", desc = "Next Tab", mode = "n" },
       { "[t", "<cmd>tabprevious<CR>", desc = "Previous Tab", mode = "n" },
-      -- Less common diagnostic features (keep as submenu)
+      -- CodeLens & Symbols
       { "<leader>cq", trouble_action("quickfix"), desc = "Quickfix List" },
       { "<leader>cs", trouble_action("symbols", { focus = false }), desc = "Browse Symbols" },
       { "<leader>cl", vim.lsp.codelens.run, desc = "Run CodeLens" },
@@ -593,7 +591,7 @@ function M.setup()
         vim.lsp.codelens.refresh,
         desc = "Refresh CodeLens",
       },
-      -- Rust Crates (Cargo.toml dependency management)
+      -- Rust Crates
       { "<leader>cR", group = "Rust Crates", icon = "" },
       {
         "<leader>cRt",
@@ -638,7 +636,7 @@ function M.setup()
         desc = "Open Crate Documentation",
       },
 
-      -- Git & VCS (flattened for better ergonomics)
+      -- Git
       { "<leader>g", group = "Git", icon = "󰊢" },
       { "<leader>gg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
       { "<leader>gf", "<cmd>LazyGitCurrentFile<cr>", desc = "LazyGit Current File" },
@@ -667,14 +665,14 @@ function M.setup()
         end,
         desc = "Browse Branches",
       },
-      -- Hunks (2-key for common operations)
+      -- Hunks
       { "<leader>gs", gitsigns_action("stage_hunk"), desc = "Stage Hunk" },
       { "<leader>gr", gitsigns_action("reset_hunk"), desc = "Reset Hunk" },
       { "<leader>gS", gitsigns_action("stage_buffer"), desc = "Stage Buffer" },
       { "<leader>gR", gitsigns_action("reset_buffer"), desc = "Reset Buffer" },
       { "<leader>gv", gitsigns_action("preview_hunk"), desc = "Preview Hunk" },
       { "<leader>gd", gitsigns_action("diffthis"), desc = "Diff Buffer" },
-      -- Hunk navigation using bracket motions
+      -- Bracket motions
       {
         "]h",
         function()
@@ -689,7 +687,7 @@ function M.setup()
         end,
         desc = "Previous Hunk",
       },
-      -- DiffView submenu (less common)
+      -- DiffView
       { "<leader>gD", group = "Diff View", icon = "󰩫" },
       { "<leader>gDo", ":DiffviewOpen<CR>", desc = "Open Diff View" },
       { "<leader>gDc", ":DiffviewClose<CR>", desc = "Close Diff View" },
@@ -733,7 +731,7 @@ function M.setup()
         desc = "Open Git Link in Browser",
         mode = { "n", "v" },
       },
-      -- Conflicts with bracket motions
+      -- Bracket motions
       {
         "]x",
         ":GitConflictNextConflict<CR>",
@@ -744,14 +742,14 @@ function M.setup()
         ":GitConflictPrevConflict<CR>",
         desc = "Previous Conflict",
       },
-      -- Conflicts (flatten common operations to 2-key)
+      -- Conflicts
       { "<leader>go", ":GitConflictChooseOurs<CR>", desc = "Choose Ours" },
       { "<leader>gt", ":GitConflictChooseTheirs<CR>", desc = "Choose Theirs" },
       { "<leader>gx", group = "Conflicts", icon = "󰦻" },
       { "<leader>gxb", ":GitConflictChooseBoth<CR>", desc = "Choose Both" },
       { "<leader>gxn", ":GitConflictChooseNone<CR>", desc = "Choose None" },
       { "<leader>gxl", ":GitConflictListQf<CR>", desc = "List Conflicts" },
-      -- GitHub operations
+      -- GitHub
       { "<leader>gh", group = "GitHub", icon = "" },
       { "<leader>ghp", "<cmd>GHOpenPR<CR>", desc = "Open Pull Request" },
       { "<leader>ghi", "<cmd>GHOpenIssue<CR>", desc = "Open Issue" },
@@ -1057,7 +1055,7 @@ function M.setup()
         desc = "Show Redo History",
       },
 
-      -- Yank history lives with registers
+
       {
         "<leader>uy",
         function()
@@ -1150,7 +1148,7 @@ function M.setup()
       { "<leader>qq", ":qa<CR>", desc = "Quit All" },
       { "<leader>qQ", ":qa!<CR>", desc = "Force Quit All" },
 
-      -- Exernal Terminal
+      -- External Terminal
       {
         "<F2>",
         function()
