@@ -150,11 +150,19 @@ return {
       },
       {
         "n",
-        "<leader>dbt",
+        "<leader>db",
         function()
           dap.toggle_breakpoint()
         end,
         "Toggle Breakpoint",
+      },
+      {
+        "n",
+        "<leader>dB",
+        function()
+          dap.clear_breakpoints()
+        end,
+        "Clear All Breakpoints",
       },
       {
         "n",
@@ -171,14 +179,6 @@ return {
           dap.set_breakpoint(nil, nil, vim.fn.input("Log Message: "))
         end,
         "Set Log Point",
-      },
-      {
-        "n",
-        "<leader>dba",
-        function()
-          dap.clear_breakpoints()
-        end,
-        "Clear Breakpoints",
       },
       {
         "n",

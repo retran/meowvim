@@ -10,8 +10,8 @@ return {
   lazy = false,
   keys = {
     { "<leader>.",  function() Snacks.scratch() end, desc = "Toggle Scratch Buffer" },
-    { "<leader>S",  function() Snacks.scratch.select() end, desc = "Select Scratch Buffer" },
-    { "<leader>n",  function() Snacks.notifier.show_history() end, desc = "Notification History" },
+    { "<leader>Ns", function() Snacks.scratch.select() end, desc = "Select Scratch Buffer" },
+    { "<leader>hn", function() Snacks.notifier.show_history() end, desc = "Notification History" },
     { "<leader>bd", function() Snacks.bufdelete() end, desc = "Delete Buffer" },
     { "<leader>gg", function() Snacks.lazygit() end, desc = "Lazygit" },
     { "<leader>gb", function() Snacks.git.blame_line() end, desc = "Git Blame Line" },
@@ -21,8 +21,8 @@ return {
     { "<leader>cR", function() Snacks.rename() end, desc = "Rename File" },
     { "<c-/>",      function() Snacks.terminal() end, desc = "Toggle Terminal" },
     { "<c-_>",      function() Snacks.terminal() end, desc = "Toggle Terminal (which-key)" },
-    { "]]",         function() Snacks.words.jump(vim.v.count1) end, desc = "Next Reference" },
-    { "[[",         function() Snacks.words.jump(-vim.v.count1) end, desc = "Prev Reference" },
+    { "]w",         function() Snacks.words.jump(vim.v.count1) end, desc = "Next Reference" },
+    { "[w",         function() Snacks.words.jump(-vim.v.count1) end, desc = "Prev Reference" },
   },
   config = function(_, opts)
     require("snacks").setup(opts)

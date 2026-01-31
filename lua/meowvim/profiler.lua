@@ -142,7 +142,9 @@ vim.api.nvim_create_user_command("MeasureRender", function()
 end, { desc = "Measure buffer render time" })
 
 -- Keymaps
-vim.keymap.set("n", "<leader>oP", M.start, { desc = "Start Profiling" })
-vim.keymap.set("n", "<leader>oL", M.show_plugin_times, { desc = "Plugin Load Times" })
+vim.keymap.set("n", "<leader>oPs", M.start, { desc = "Start Profiling" })
+vim.keymap.set("n", "<leader>oPe", M.stop, { desc = "Stop Profiling" })
+vim.keymap.set("n", "<leader>oPl", M.show_plugin_times, { desc = "Plugin Load Times" })
+vim.keymap.set("n", "<leader>oPr", M.measure_buffer_render, { desc = "Measure Render Time" })
 
 return M

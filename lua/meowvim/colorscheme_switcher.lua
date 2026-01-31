@@ -108,6 +108,6 @@ vim.api.nvim_create_user_command("ColorschemeSelect", function()
 end, { desc = "Select colorscheme with live preview" })
 
 -- Keymap
-vim.keymap.set("n", "<leader>uc", M.select, { desc = "Select Colorscheme" })
+vim.keymap.set("n", "<leader>ok", M.select, { desc = "Select Colorscheme" })
 
 return M

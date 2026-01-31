@@ -4,11 +4,11 @@ Welcome to the **meowvim** den! This guide helps you install, verify, and mainta
 
 ## 1. Requirements
 
-| Level        | Details                                                                 |
-| ------------ | ----------------------------------------------------------------------- |
-| **Required** | Neovim ≥ 0.11, Git, true-color capable terminal                         |
+| Level           | Details                                                                  |
+| --------------- | ------------------------------------------------------------------------ |
+| **Required**    | Neovim ≥ 0.11, Git, true-color capable terminal                          |
 | **Recommended** | Node.js ≥ 18, Python ≥ 3.8, Go ≥ 1.19, `ripgrep`, `fd`, `fzf`, Nerd Font |
-| **Optional** | GitHub Copilot, Raycast (for launch scripts), tmux integration |
+| **Optional**    | GitHub Copilot, Raycast (for launch scripts), tmux integration           |
 
 > **Tip:** Install a Nerd Font (e.g. JetBrains Mono Nerd Font) and enable it in your terminal to make icons and glyphs display correctly.
 
@@ -50,13 +50,13 @@ This links meowvim alongside Raycast launchers, shell aliases, and other feline 
 
 ## 5. Optional Dependencies
 
-| Tool | Purpose | Install Command |
-| ---- | ------- | ----------------|
-| `ripgrep` | fast project search | `brew install ripgrep` · `apt install ripgrep` |
-| `fd` | smart file finder | `brew install fd` · `apt install fd-find` |
-| `fzf` | fuzzy finder backend | `brew install fzf` · `apt install fzf` |
-| `neovide` | GUI client | `brew install neovide` · see [Neovide docs](https://neovide.dev) |
-| `lazygit` | optional git TUI | `brew install lazygit` · `apt install lazygit` |
+| Tool      | Purpose              | Install Command                                                  |
+| --------- | -------------------- | ---------------------------------------------------------------- |
+| `ripgrep` | fast project search  | `brew install ripgrep` · `apt install ripgrep`                   |
+| `fd`      | smart file finder    | `brew install fd` · `apt install fd-find`                        |
+| `fzf`     | fuzzy finder backend | `brew install fzf` · `apt install fzf`                           |
+| `neovide` | GUI client           | `brew install neovide` · see [Neovide docs](https://neovide.dev) |
+| `lazygit` | optional git TUI     | `brew install lazygit` · `apt install lazygit`                   |
 
 Install the tools your workflow needs and meowvim will detect them automatically where possible.
 
@@ -82,6 +82,7 @@ Use the built-in update script with automatic backup and rollback:
 ```
 
 Features:
+
 - Creates timestamped backups before updating
 - Updates configuration files via git pull
 - Syncs all plugins via lazy.nvim
@@ -123,6 +124,7 @@ Verify everything works after updates:
 ```
 
 This runs 9 comprehensive tests covering:
+
 - Neovim startup
 - Config system loading
 - Health checks
