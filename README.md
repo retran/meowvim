@@ -48,7 +48,7 @@
 
 - **6 colorschemes** with 30+ variants: Catppuccin, TokyoNight, Rose Pine, Gruvbox, Nord, and Kanagawa
 - **Transparent backgrounds** configurable from 0-100% opacity
-- **Interactive theme switcher** with live preview (`:ColorschemeSelect` or `<leader>uc`)
+- **Interactive theme switcher** with live preview (`:ColorschemeSelect` or `<leader>ok`)
 - `noice.nvim` powered message center, notifications, and command palette UX
 - Smooth folding, indent guides, and persistent layout with auto-reload
 
@@ -132,8 +132,8 @@ The `meow` automation links meowvim as part of the broader dotfiles ecosystem, i
 
 1. **Launch Neovim** — first run installs plugins and bootstraps default LSP servers.
 2. **Configure your setup** — edit `~/.config/meowvim/config.lua` to personalize theme, transparency, and features.
-3. **Discover keymaps** — press `<leader>ohk` for an interactive keymap palette or peek at the [Quick Reference](docs/KEYMAPS_QUICK_REFERENCE.md).
-4. **Install language tooling** — open Mason (`<leader>omm`) to review and install any missing LSP, formatter, or debugger.
+3. **Discover keymaps** — press `<leader>hk` for an interactive keymap palette or peek at the [Quick Reference](docs/KEYMAPS_QUICK_REFERENCE.md).
+4. **Install language tooling** — open Mason (`<leader>Tm`) to review and install any missing LSP, formatter, or debugger.
 5. **Supercharge navigation** — try `<leader><leader>` for Flash jumps, `<leader>ff` for fuzzy file search, `<leader>gg` for LazyGit, and `F2` for the floating terminal.
 6. **Optional Copilot** — authenticate via `:Copilot auth` to invite your AI cat companion.
 
@@ -156,7 +156,7 @@ meowvim now features a powerful configuration system:
 - **User config**: Edit `~/.config/meowvim/config.lua` using the intuitive Lua DSL
 - **Project-specific settings**: Create `~/.config/meowvim/projects.lua` for per-project overrides
 - **Config commands**: Use `:MeowvimConfig`, `:MeowvimConfigReload`, `:MeowvimConfigShow`, and more
-- **Theme switching**: Try `:ColorschemeSelect` or `<leader>uc` for live theme preview
+- **Theme switching**: Try `:ColorschemeSelect` or `<leader>ok` for live theme preview
 - **Core options**: Tune `lua/config/options.lua` for UI, spell checking, and performance
 - **Keymaps**: Add or adjust in `lua/config/keymaps.lua`; discovery is baked in with which-key
 - **New plugins**: Drop files into `lua/plugins/*.lua` — lazy loading keeps startup snappy

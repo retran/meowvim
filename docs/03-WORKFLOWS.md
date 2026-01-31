@@ -9,27 +9,25 @@ This guide highlights common flows that make **meowvim** a comfortable and produ
    - `f` for recent files
    - `p` to switch projects
    - `n` for scratch notes
-3. Press `<leader>ohk` at any time to search the entire keymap catalog.
+3. Press `<leader>hk` at any time to search the entire keymap catalog.
 
 ## 2. Navigating Like a Cat
 
 - `<leader><leader>` — Flash jump to any on-screen location (f/t movements also show jump labels).
 - `<leader>ff` — Snacks file picker (respecting `.gitignore`).
-- `<leader>bb` — Buffer picker with pin/unpin support.
-- `<leader>mm` — Toggle bookmark at cursor; `<leader>mn`/`<leader>mp` for next/previous.
-- `<leader>ml` — List all bookmarks across files.
+- `<leader>bb` — Buffer picker.
+- `<leader>mm` — Search marks with Snacks picker.
 - `<leader>nw` — Workspace symbol search driven by LSP.
-- `]d` / `[d` — Cycle diagnostics; `<leader>cda` opens project diagnostics in Trouble.
+- `]d` / `[d` — Cycle diagnostics; `<leader>cd` opens project diagnostics in Trouble.
 - `F2` — Toggle the Snacks floating terminal for quick shell commands.
 
-### Bookmarks Workflow
+### Marks Workflow
 
-Use bookmarks to mark important locations:
-- `<leader>mm` — Quick toggle bookmark
-- `<leader>mi` — Add annotated bookmark with keywords: `@t` (task), `@w` (warning), `@f` (fix), `@n` (note)
-- `<leader>mn`/`<leader>mp` — Navigate between bookmarks
-- `<leader>ml` — Browse all bookmarks
-- `<leader>mc` — Clean bookmarks in current buffer
+Use marks to navigate important locations:
+- `m{a-z}` — Set mark at current position  
+- `'{a-z}` — Jump to mark
+- `<leader>mm` — Browse all marks with Snacks picker
+- `:marks` — List all marks
 
 ### Quick Pane Management
 
@@ -42,29 +40,25 @@ Use bookmarks to mark important locations:
 - `<leader>cc` — Trigger code actions via LSP.
 - `<leader>cr` — Rename symbol across the buffer/project.
 - `<leader>cf` — Format with Conform.nvim (auto-selects best tool).
-- `<leader>cs` — Create beautiful code screenshots (visual mode).
 - `<leader>nd` — Peek definitions with Glance; `<leader>nr` finds references, `<leader>ni` implementations.
 - Surround editing via mini-surround (`sa`, `sd`, `sr`) and autopairs by default.
 
-> **Tip:** Use `<leader>ohc` (Snacks command search) to fuzzy-find commands, registers, and keymaps.
+> **Tip:** Use `<leader>hc` (Snacks command search) to fuzzy-find commands, registers, and keymaps.
 
 ### Code Screenshots
 
-Create beautiful syntax-highlighted screenshots:
-1. Select code in visual mode
-2. Press `<leader>cs`
-3. Screenshot saved to `~/Pictures/Screenshots/code_*.png`
-4. Automatically includes file name and line numbers
+Code screenshot feature has been removed. Use external tools for screenshots.
 
 ## 4. Git & Review Workflow
 
 - `<leader>gg` — Launch LazyGit full TUI (auto theme sync).
 - `<leader>gf` — LazyGit for current file history.
-- `<leader>gss` — Launch Neogit status (stage, commit, push from TUI).
-- `<leader>gdo` — Open Diffview to compare branches or commits.
-- `<leader>gh*` — Preview hunks, stage/reset, and toggle blame via Gitsigns.
-- `<leader>gyy` / `<leader>gyo` — Copy or open permalinks with Gitlinker.
-- `<leader>gx*` — Resolve merge conflicts with git-conflict.nvim helpers.
+- `<leader>gb` — Git blame line.
+- `<leader>gDo` — Open Diffview to compare branches or commits.
+- `<leader>gs` / `<leader>gr` / `<leader>gv` — Stage, reset, and preview hunks via Gitsigns.
+- `]h` / `[h` — Navigate between hunks.
+- `<leader>gy` / `<leader>gY` — Copy or open permalinks with Gitlinker.
+- `<leader>go` / `<leader>gt` — Resolve merge conflicts (choose ours/theirs).
 
 ### LazyGit Integration
 
@@ -81,10 +75,10 @@ Use Overseer tasks (`<leader>rr`, `<leader>rl`, `<leader>ro`) to run, rerun, or 
 - `<leader>tS` — Toggle the Neotest summary sidebar.
 - `<leader>tn` — Run nearest test; `<leader>tf` runs the current file; `<leader>ts` runs the suite.
 - `<leader>to` — Open the latest test output; `<leader>td` debugs the nearest test.
-- `<leader>dbt` — Toggle breakpoint via nvim-dap.
+- `<leader>db` — Toggle breakpoint via nvim-dap.
 - `<leader>dc` — Continue execution; `<leader>ds` steps over; `<leader>di` steps in; `<leader>do` steps out; `<leader>du` toggles the DAP UI.
 
-Set up adapters through Mason (`<leader>omm`) and confirm they appear in Neotest/DAP UI.
+Set up adapters through Mason (`<leader>Tm`) and confirm they appear in Neotest/DAP UI.
 
 ## 6. Writing & Documentation
 
@@ -95,18 +89,7 @@ Set up adapters through Mason (`<leader>omm`) and confirm they appear in Neotest
 
 ## 7. Sessions & Multitasking
 
-- `<leader>qs` — Restore current directory session.
-- `<leader>qS` — Session picker (browse and restore).
-- `<leader>ql` — Load the most recent session.
-- `<leader>qd` — Don't save current session (handy before experimenting).
-
-Enhanced session features:
-- **Auto-save on directory change** — Never lose your session state
-- **Per-branch sessions** — Different session for each git branch (configurable)
-- **Pre-save hooks** — Automatically closes plugin windows before saving
-- **Session picker** — Browse and restore previous sessions easily
-
-Sessions remember buffers, splits, folds, and tabs — perfect for juggling multiple projects.
+Sessions are automatically managed by meowvim. Your layout, buffers, and state persist across restarts automatically. No manual session management needed.
 
 ## 8. AI Companions
 
@@ -124,14 +107,14 @@ Create custom tasks by extending `lua/plugins/overseer.lua` or adding per-projec
 
 ## 10. Theming & Customization
 
-- `<leader>uc` — Interactive colorscheme switcher with live preview.
+- `<leader>ok` — Interactive colorscheme switcher with live preview.
 - `:ColorschemeSelect` — Browse all 6 themes with 30+ variants.
 - Themes: Catppuccin, TokyoNight, Rose Pine, Gruvbox, Nord, Kanagawa.
 - Configure transparency (0-100%) in `~/.config/meowvim/config.lua`.
 
 ### Theme Workflow
 
-1. Press `<leader>uc` or run `:ColorschemeSelect`
+1. Press `<leader>ok` or run `:ColorschemeSelect`
 2. Browse themes with arrow keys or search
 3. Preview themes in real-time (cancel with `q` to restore)
 4. Press Enter to apply and save
@@ -142,7 +125,7 @@ All themes support transparency and integrate with LazyGit, lualine, and other p
 
 ### Performance Tools
 
-- `:MeowvimProfile` or `<leader>oL` — View plugin load times dashboard
+- `:MeowvimProfile` or `<leader>oPl` — View plugin load times dashboard
 - `:StartupTrends` — Analyze startup time trends
 - `:MeasureRender` — Benchmark buffer rendering
 - `:ProfileStart` / `:ProfileStop` — Profile Neovim operations
@@ -151,7 +134,7 @@ All themes support transparency and integrate with LazyGit, lualine, and other p
 
 - `:KeymapConflicts` — Detect duplicate or conflicting keymaps
 - `:KeymapList [mode]` — List all keymaps for a specific mode
-- `<leader>ohk` — Interactive keymap search
+- `<leader>hk` — Interactive keymap search
 
 ### Configuration Management
 

@@ -52,12 +52,13 @@ Essential Commands~
   <leader>s/             Search project text
   <leader>bb             List buffers
   <leader>fe             Toggle file explorer
-  <leader>ohk            Search keymaps interactively
+  <leader>hk             Search keymaps interactively
 
 Getting Help~
-  • Press <leader>ohh to search Vim help
-  • Press <leader>ohk to browse all keymaps
-  • Press <leader>ohc to search commands
+  • Press <leader>hh to search Vim help
+  • Press <leader>hk to browse all keymaps
+  • Press <leader>hc to search commands
+  • Press <leader>hm to search man pages
   • Read docs in the docs/ directory
 
 ==============================================================================
@@ -222,7 +223,7 @@ Development Commands~
 Theme Commands~
 
 *:ColorschemeSelect*
-    Open interactive colorscheme picker.
+    Open interactive colorscheme picker (<leader>ok)
 
 ==============================================================================
 5. KEYMAPS                                              *meowvim-keymaps*
@@ -239,10 +240,10 @@ Major Keymap Groups~
 
   <leader>f   Files & Navigation
   <leader>b   Buffers
-  <leader>w   Windows
+  <leader>w   Windows & Tabs
   <leader>s   Search & Find
   <leader>j   Jump (Flash motion)
-  <leader>n   Navigation (LSP: go to definition, references, etc.)
+  <leader>n   Navigate (LSP: go to definition, references, etc.)
   <leader>c   Code (LSP actions, diagnostics, formatting)
   <leader>g   Git & Version Control
   <leader>t   Tests (Neotest)
@@ -250,7 +251,10 @@ Major Keymap Groups~
   <leader>d   Debug (DAP)
   <leader>o   Options & Toggles
   <leader>u   Undo & History
+  <leader>m   Marks
   <leader>N   Notes & Scratch buffers
+  <leader>h   Help & Discovery
+  <leader>T   Tools (Mason)
   <leader>q   Quit
 
 Essential Keymaps~
@@ -281,12 +285,15 @@ Code:
   <leader>ni  Go to implementation
 
 Git:
-  <leader>gss View git status
-  <leader>gcc Commit changes
-  <leader>gcp Pull changes
-  <leader>gcP Push changes
-  <leader>ghs Stage hunk
-  <leader>ghr Reset hunk
+  <leader>gg  LazyGit
+  <leader>gb  Git blame line
+  <leader>gs  Stage hunk
+  <leader>gr  Reset hunk
+  <leader>gv  Preview hunk
+  ]h / [h     Next/Previous hunk
+  <leader>go  Choose ours (conflict)
+  <leader>gt  Choose theirs (conflict)
+  <leader>gy  Copy git link
 
 See |meowvim-toggles| for all option toggles (<leader>o).
 
@@ -300,43 +307,36 @@ Display Options~
 
   <leader>on  Toggle line numbers (cycles: off → normal → relative)
   <leader>oc  Toggle cursorline highlighting
-  <leader>oC  Toggle cursorcolumn highlighting
   <leader>ow  Toggle line wrapping
   <leader>os  Toggle spell checking
   <leader>oe  Toggle signcolumn (git signs, diagnostics)
-  <leader>ol  Toggle whitespace character display (tabs, spaces, EOL)
+  <leader>ol  Toggle whitespace character display
   <leader>od  Toggle dim inactive windows
-
-Search & Navigation~
-
-  <leader>oH  Toggle search result highlighting (hlsearch)
-  <leader>oM  Toggle mouse support
-  <leader>oL  Toggle concealed text (useful for markdown, LaTeX)
+  <leader>oh  Toggle search highlighting
 
 Code Features~
 
-  <leader>oD  Toggle LSP diagnostics globally
-  <leader>oI  Toggle LSP inlay hints (type hints, parameter names)
-  <leader>oF  Toggle format-on-save
+  <leader>ox  Toggle LSP diagnostics globally
+  <leader>oi  Toggle LSP inlay hints (type hints, parameter names)
+  <leader>of  Toggle format-on-save
   <leader>oa  Toggle auto-save
   <leader>og  Toggle indent guides
+  <leader>ok  Colorscheme switcher (interactive)
 
-Folding~
+Profiling & Developer Tools~
 
-  <leader>of  Toggle folding entirely (foldenable)
-  <leader>oz  Close all folds
-  <leader>oZ  Open all folds
-  <leader>op  Peek folded lines under cursor
+  <leader>oP   Profiling submenu
+  <leader>oPs  Start profiling
+  <leader>oPe  Stop profiling
+  <leader>oPl  Show plugin load times
+  <leader>oPr  Measure render time
 
-Workspace & Sessions~
+Workspace~
 
   <leader>oW   Workspace folder management
-  <leader>oS   Session management
-
-Help & Tools~
-
-  <leader>oh   Help & documentation search
-  <leader>om   Tool management (Mason)
+  <leader>oWa  Add workspace folder
+  <leader>oWR  Remove workspace folder
+  <leader>oWL  List workspace folders
 
 ==============================================================================
 7. PROJECTS                                            *meowvim-projects*
