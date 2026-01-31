@@ -389,8 +389,6 @@ function M.setup()
         desc = "List Buffers",
       },
       { "<leader>bn", ":new<CR>", desc = "Create Buffer" },
-      { "<leader>bp", ":bprevious<CR>", desc = "Go To Previous Buffer" },
-      { "<leader>bf", ":bnext<CR>", desc = "Go To Next Buffer" },
       { "<leader>br", ":BufRename<CR>", desc = "Rename Buffer" },
       {
         "<leader>bd",
@@ -440,6 +438,9 @@ function M.setup()
       { "<leader>wL", "<C-w>L", desc = "Move Window Far Right" },
       { "<leader>wK", "<C-w>K", desc = "Move Window to Top" },
       { "<leader>wJ", "<C-w>J", desc = "Move Window to Bottom" },
+      -- Tab operations
+      { "<leader>wt", "<cmd>tabnew<CR>", desc = "New Tab" },
+      { "<leader>wT", "<cmd>tabclose<CR>", desc = "Close Tab" },
 
       -- Search & Navigaton
       { "<leader>s", group = "Search", icon = "" },
@@ -579,6 +580,10 @@ function M.setup()
       { "[q", "<cmd>cprev<CR>", desc = "Previous Quickfix Item", mode = "n" },
       { "]l", "<cmd>lnext<CR>", desc = "Next Location List Item", mode = "n" },
       { "[l", "<cmd>lprev<CR>", desc = "Previous Location List Item", mode = "n" },
+      { "]b", "<cmd>bnext<CR>", desc = "Next Buffer", mode = "n" },
+      { "[b", "<cmd>bprevious<CR>", desc = "Previous Buffer", mode = "n" },
+      { "]t", "<cmd>tabnext<CR>", desc = "Next Tab", mode = "n" },
+      { "[t", "<cmd>tabprevious<CR>", desc = "Previous Tab", mode = "n" },
       -- Less common diagnostic features (keep as submenu)
       { "<leader>cq", trouble_action("quickfix"), desc = "Quickfix List" },
       { "<leader>cs", trouble_action("symbols", { focus = false }), desc = "Browse Symbols" },
