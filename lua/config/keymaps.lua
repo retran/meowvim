@@ -1212,8 +1212,8 @@ function M.setup()
   vim.keymap.set("i", "jj", "<Esc>", { desc = "Exit Insert Mode" })
   vim.keymap.set("i", "оо", "<Esc>", { desc = "Exit Insert Mode" })
 
-  vim.keymap.set("n", "<Tab>", ":bnext<CR>", { desc = "Go To Next Buffer", silent = true })
-  vim.keymap.set("n", "<S-Tab>", ":bprevious<CR>", { desc = "Go To Previous Buffer", silent = true })
+  vim.keymap.set("n", "<Tab>", ":bnext<CR>", { desc = "Next Buffer", silent = true })
+  vim.keymap.set("n", "<S-Tab>", ":bprevious<CR>", { desc = "Previous Buffer", silent = true })
 
   -- Fold operations (vim-like, direct mappings)
   vim.keymap.set("n", "zp", function()
