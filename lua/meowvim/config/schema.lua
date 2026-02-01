@@ -9,14 +9,21 @@ local M = {}
 M.schema = {
   core = {
     theme = { type = "string", default = "catppuccin" },
-    variant = {
-      type = "string",
-      default = "mocha",
-      enum = { "mocha", "latte", "frappe", "macchiato" },
-    },
+    variant = { type = "string", default = "mocha" },
     enable_copilot = { type = "boolean", default = false },
     leader_key = { type = "string", default = " " },
     update_check = { type = "boolean", default = true },
+    -- Day/Night mode settings
+    day_night_mode = {
+      type = "string",
+      default = "manual",
+      enum = { "manual", "auto" },
+    },
+    day_theme = { type = "string", default = "catppuccin" },
+    day_variant = { type = "string", default = "latte" },
+    night_theme = { type = "string", default = "catppuccin" },
+    night_variant = { type = "string", default = "mocha" },
+    last_preset = { type = "string", default = nil },
   },
 
   editor = {
@@ -79,6 +86,32 @@ M.schema = {
     scope_highlighting = { type = "boolean", default = true },
     custom_styles = { type = "boolean", default = true },
     dashboard = { type = "table" },
+  },
+
+  toggles = {
+    autoformat = { type = "boolean", default = true },
+    autosave = { type = "boolean", default = false },
+    copilot = { type = "boolean", default = false },
+    diagnostics = { type = "boolean", default = true },
+    inlay_hints = { type = "boolean", default = false },
+    lint = { type = "boolean", default = true },
+    mini_indentscope = { type = "boolean", default = true },
+    snacks_dim = { type = "boolean", default = false },
+    cursorline = { type = "boolean", default = false },
+    hlsearch = { type = "boolean", default = true },
+    list = { type = "boolean", default = false },
+    number_mode = {
+      type = "string",
+      default = "relative",
+      enum = { "off", "number", "relative" },
+    },
+    signcolumn = {
+      type = "string",
+      default = "yes",
+      enum = { "yes", "no", "auto" },
+    },
+    spell = { type = "boolean", default = false },
+    wrap = { type = "boolean", default = false },
   },
 
   plugins = { type = "table" },

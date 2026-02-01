@@ -26,27 +26,10 @@ local function get_palette()
 end
 
 local function get_dependencies()
-  local deps = {
+  return {
     "nvim-tree/nvim-web-devicons",
-    "lewis6991/gitsigns.nvim",
-    "catppuccin/nvim",
+    "AndreM222/copilot-lualine",
   }
-  
-  local config_ok, config = pcall(require, "meowvim.config")
-  
-  -- Check if Copilot is enabled via toggle or config
-  local enable_copilot = false
-  if vim.g.copilot_enabled ~= nil then
-    enable_copilot = vim.g.copilot_enabled
-  elseif config_ok then
-    enable_copilot = config.get("core.enable_copilot", false)
-  end
-  
-  if enable_copilot then
-    table.insert(deps, "AndreM222/copilot-lualine")
-  end
-  
-  return deps
 end
 
 return {

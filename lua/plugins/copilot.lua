@@ -6,28 +6,16 @@
 
 return {
   "zbirenbaum/copilot.lua",
-  enabled = function()
-    -- Check if Copilot is enabled via toggle
-    if vim.g.copilot_enabled ~= nil then
-      return vim.g.copilot_enabled
-    end
-    
-    -- Check config system
-    local ok, config = pcall(require, "meowvim.config")
-    if ok then
-      return config.get("core.enable_copilot", false)
-    end
-    
-    -- Disabled by default
-    return false
-  end,
   cmd = "Copilot",
   event = "InsertEnter",
   config = function()
+    -- Check if enabled via toggle (default: false)
+    local enabled = vim.g.copilot_enabled or false
+    
     require("copilot").setup({
       suggestion = {
-        enabled = true,
-        auto_trigger = true,
+        enabled = enabled,
+        auto_trigger = enabled,
         keymap = {
           accept = "<M-CR>",
           next = "<M-n>",
@@ -42,5 +30,10 @@ return {
         },
       },
     })
+    
+    -- Disable if toggle is off
+    if not enabled then
+      vim.cmd("Copilot disable")
+    end
   end,
 }

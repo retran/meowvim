@@ -261,6 +261,131 @@ local everforest = {
   end,
 }
 
+-- Nightfox theme
+local nightfox = {
+  "EdenEast/nightfox.nvim",
+  priority = 1000,
+  lazy = false,
+  config = function()
+    local theme, variant, transparency = get_config_theme()
+    
+    if theme ~= "nightfox" then
+      return
+    end
+
+    require("nightfox").setup({
+      options = {
+        transparent = transparency > 0,
+        terminal_colors = true,
+        dim_inactive = false,
+        styles = {
+          comments = "italic",
+          keywords = "bold",
+          types = "italic,bold",
+        },
+      },
+    })
+    
+    -- Variants: nightfox, dayfox, dawnfox, duskfox, nordfox, terafox, carbonfox
+    vim.cmd.colorscheme(variant or "nightfox")
+  end,
+}
+
+-- Zenbones theme
+local zenbones = {
+  "mcchrish/zenbones.nvim",
+  priority = 1000,
+  lazy = false,
+  dependencies = { "rktjmp/lush.nvim" },
+  config = function()
+    local theme, variant, transparency = get_config_theme()
+    
+    if theme ~= "zenbones" then
+      return
+    end
+
+    vim.g.zenbones_compat = 1
+    if transparency > 0 then
+      vim.g.zenbones_transparent_background = true
+    end
+    
+    -- Variants: zenbones, zenwritten, neobones, tokyobones, seoulbones, 
+    --           forestbones, nordbones, kanagawabones, rosebones
+    vim.cmd.colorscheme(variant or "zenbones")
+  end,
+}
+
+-- Solarized Osaka theme
+local solarized_osaka = {
+  "craftzdog/solarized-osaka.nvim",
+  priority = 1000,
+  lazy = false,
+  config = function()
+    local theme, variant, transparency = get_config_theme()
+    
+    if theme ~= "solarized-osaka" then
+      return
+    end
+
+    require("solarized-osaka").setup({
+      transparent = transparency > 0,
+      terminal_colors = true,
+      styles = {
+        comments = { italic = true },
+        keywords = { italic = true },
+        functions = {},
+        variables = {},
+        sidebars = transparency > 0 and "transparent" or "dark",
+        floats = transparency > 0 and "transparent" or "dark",
+      },
+      -- Variants: storm (dark), night (darker), moon (darkest), day (light)
+      style = variant or "night",
+    })
+    
+    vim.cmd.colorscheme("solarized-osaka")
+  end,
+}
+
+-- Ayu theme
+local ayu = {
+  "Shatur/neovim-ayu",
+  priority = 1000,
+  lazy = false,
+  config = function()
+    local theme, variant, transparency = get_config_theme()
+    
+    if theme ~= "ayu" then
+      return
+    end
+
+    require("ayu").setup({
+      mirage = variant == "mirage",
+      terminal = true,
+      overrides = transparency > 0 and {
+        Normal = { bg = "None" },
+        ColorColumn = { bg = "None" },
+        SignColumn = { bg = "None" },
+        Folded = { bg = "None" },
+        FoldColumn = { bg = "None" },
+        CursorLine = { bg = "None" },
+        CursorColumn = { bg = "None" },
+        WhichKeyFloat = { bg = "None" },
+        VertSplit = { bg = "None" },
+      } or {},
+    })
+    
+    -- Set background before applying colorscheme
+    -- Variants: dark, light, mirage
+    if variant == "light" then
+      vim.o.background = "light"
+    else
+      vim.o.background = "dark"
+    end
+    
+    vim.cmd.colorscheme("ayu")
+  end,
+}
+
 -- Return all themes
 return {
   catppuccin,
@@ -270,4 +395,8 @@ return {
   nord,
   kanagawa,
   everforest,
+  nightfox,
+  zenbones,
+  solarized_osaka,
+  ayu,
 }

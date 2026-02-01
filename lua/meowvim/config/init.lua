@@ -169,12 +169,24 @@ function M.init()
   -- Validate configuration
   local schema = require("meowvim.config.schema")
   local ok, errors = schema.validate(_config)
-  if not ok then
-    vim.notify(
-      "Config validation warnings:\n" .. table.concat(errors, "\n"),
-      vim.log.levels.WARN,
-      { title = "Meowvim" }
-    )
+  if not ok and #errors > 0 then
+    -- Only show critical errors (type mismatches), skip enum warnings
+    local critical_errors = {}
+    for _, err in ipairs(errors) do
+      -- Skip variant enum warnings since variants are theme-specific
+      if not err:match("core%..*variant") and not err:match("expected one of") then
+        table.insert(critical_errors, err)
+      end
+    end
+    
+    if #critical_errors > 0 then
+      vim.schedule(function()
+        vim.api.nvim_echo({
+          { "⚠ Config validation errors:\n", "WarningMsg" },
+          { table.concat(critical_errors, "\n"), "Normal" },
+        }, true, {})
+      end)
+    end
   end
 
   -- Load projects

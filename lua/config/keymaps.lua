@@ -1062,7 +1062,7 @@ function M.setup()
             end
           end
         end,
-        desc = "Toggle Copilot",
+        desc = "Toggle Copilot (enable/disable suggestions)",
       },
       {
         "<leader>oP",
@@ -1079,6 +1079,24 @@ function M.setup()
           end
         end,
         desc = "Persist Settings",
+      },
+      
+      -- Theme Settings (simplified)
+      {
+        "<leader>ok",
+        function()
+          local theme_manager = require("meowvim.theme_manager")
+          theme_manager.show_menu()
+        end,
+        desc = "Theme Settings",
+      },
+      {
+        "<leader>oK",
+        function()
+          local theme_manager = require("meowvim.theme_manager")
+          theme_manager.quick_toggle()
+        end,
+        desc = "Quick Toggle Day/Night",
       },
 
       -- Undo & Clipboard
