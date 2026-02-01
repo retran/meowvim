@@ -212,7 +212,7 @@ function M.apply_preset(preset_name)
   -- Set night theme
   day_night.set_night_theme(preset.night.theme, preset.night.variant)
   
-  -- Save last preset for reset functionality
+  -- Save last preset for detection
   if config_ok then
     config.set("core.last_preset", preset_name)
     config.persist()

@@ -14,13 +14,13 @@ M.defaults = {
     leader_key = " ",
     update_check = true,
     -- Day/night mode settings
-    day_night_mode = "manual", -- "manual", "auto"
+    day_night_mode = "auto", -- "manual", "auto"
     -- Catppuccin - popular, modern, huge ecosystem
     day_theme = "catppuccin",
     day_variant = "latte",
     night_theme = "catppuccin",
     night_variant = "mocha",
-    last_preset = "catppuccin", -- Track last applied preset for reset
+    last_preset = "catppuccin",
   },
 
   editor = {
