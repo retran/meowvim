@@ -98,82 +98,29 @@ function M.select()
   local original_theme = config_ok and config.get("core.theme", "catppuccin") or "catppuccin"
   local original_variant = config_ok and config.get("core.variant", "mocha") or "mocha"
   
-  -- Use Snacks picker for live preview
-  local snacks_ok, snacks = pcall(require, "snacks")
-  if snacks_ok and snacks.picker then
-    -- Create a mapping from display text to theme info
-    local theme_map = {}
-    local picker_items = {}
-    
-    for _, opt in ipairs(options) do
-      table.insert(picker_items, opt.display)
-      theme_map[opt.display] = { theme = opt.theme, variant = opt.variant }
+  -- Use vim.ui.select for colorscheme selection
+  local displays = vim.tbl_map(function(opt)
+    return opt.display
+  end, options)
+  
+  vim.ui.select(displays, {
+    prompt = "Select colorscheme:",
+    format_item = function(item)
+      return "  " .. item
+    end,
+  }, function(choice, idx)
+    if choice and idx then
+      local selected = options[idx]
+      apply_theme(selected.theme, selected.variant)
+      
+      -- Notify user
+      local user_config_path = vim.fn.expand("~/.config/meowvim/config.lua")
+      vim.notify(
+        string.format("Colorscheme set to %s. Edit %s to persist.", choice, user_config_path),
+        vim.log.levels.INFO
+      )
     end
-    
-    snacks.picker.pick({
-      prompt = "Select colorscheme:",
-      items = picker_items,
-      preview = function(item, ctx)
-        if item and theme_map[item] then
-          local info = theme_map[item]
-          apply_theme(info.theme, info.variant)
-        end
-      end,
-      confirm = function(item)
-        if item and theme_map[item] then
-          local info = theme_map[item]
-          apply_theme(info.theme, info.variant)
-          
-          -- Notify user
-          local user_config_path = vim.fn.expand("~/.config/meowvim/config.lua")
-          vim.notify(
-            string.format(
-              "Colorscheme set to %s. Edit %s to persist.",
-              item,
-              user_config_path
-            ),
-            vim.log.levels.INFO
-          )
-        else
-          -- Restore original theme if cancelled
-          apply_theme(original_theme, original_variant)
-        end
-      end,
-      cancel = function()
-        -- Restore original theme on cancel
-        apply_theme(original_theme, original_variant)
-      end,
-    })
-  else
-    -- Fallback to vim.ui.select (no preview)
-    local displays = vim.tbl_map(function(opt)
-      return opt.display
-    end, options)
-    
-    vim.ui.select(displays, {
-      prompt = "Select colorscheme:",
-      format_item = function(item)
-        return "  " .. item
-      end,
-    }, function(choice, idx)
-      if choice and idx then
-        local selected = options[idx]
-        apply_theme(selected.theme, selected.variant)
-        
-        -- Notify user
-        if config_ok then
-          local user_config_path = vim.fn.expand("~/.config/meowvim/config.lua")
-          vim.notify(
-            string.format("Colorscheme set to %s. Edit %s to persist.", choice, user_config_path),
-            vim.log.levels.INFO
-          )
-        end
-      else
-        -- Restore original theme if cancelled
-        apply_theme(original_theme, original_variant)
-      end
-    end)
-  end
+  end)
 end
 
 -- Preview on cursor move (for telescope integration)
