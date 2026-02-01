@@ -95,21 +95,29 @@ local function fix_cursor_highlight()
   -- Get Normal highlight colors
   local normal = vim.api.nvim_get_hl(0, { name = "Normal" })
   
-  -- Set cursor highlights with explicit colors
-  -- Cursor bg = cursor block color, Cursor fg = text under cursor color
-  if normal.fg and normal.bg then
-    -- Make cursor block the text color, and text under cursor the background color
-    vim.api.nvim_set_hl(0, "Cursor", { fg = normal.bg, bg = normal.fg, blend = 0 })
-    vim.api.nvim_set_hl(0, "lCursor", { fg = normal.bg, bg = normal.fg, blend = 0 })
-    vim.api.nvim_set_hl(0, "TermCursor", { fg = normal.bg, bg = normal.fg, blend = 0 })
-    vim.api.nvim_set_hl(0, "TermCursorNC", { fg = normal.bg, bg = normal.fg, blend = 0 })
-  else
-    -- Fallback to reverse video if colors not available
-    vim.api.nvim_set_hl(0, "Cursor", { reverse = true, blend = 0 })
-    vim.api.nvim_set_hl(0, "lCursor", { reverse = true, blend = 0 })
-    vim.api.nvim_set_hl(0, "TermCursor", { reverse = true, blend = 0 })
-    vim.api.nvim_set_hl(0, "TermCursorNC", { reverse = true, blend = 0 })
+  -- Get fg and bg, with fallbacks
+  local fg = normal.fg
+  local bg = normal.bg
+  
+  -- If colors are missing, try to get them from other sources
+  if not fg or not bg then
+    -- Try getting from options
+    if vim.o.background == "light" then
+      fg = 0x000000  -- black text
+      bg = 0xFFFFFF  -- white background
+    else
+      fg = 0xFFFFFF  -- white text
+      bg = 0x000000  -- black background
+    end
   end
+  
+  -- Set cursor highlights with swapped colors
+  -- Cursor bg = text color (fg), Cursor fg = background color (bg)
+  -- This creates a visible cursor with readable text
+  vim.api.nvim_set_hl(0, "Cursor", { fg = bg, bg = fg, blend = 0 })
+  vim.api.nvim_set_hl(0, "lCursor", { fg = bg, bg = fg, blend = 0 })
+  vim.api.nvim_set_hl(0, "TermCursor", { fg = bg, bg = fg, blend = 0 })
+  vim.api.nvim_set_hl(0, "TermCursorNC", { fg = bg, bg = fg, blend = 0 })
 end
 
 vim.api.nvim_create_autocmd("ColorScheme", {
