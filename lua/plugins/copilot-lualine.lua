@@ -7,10 +7,18 @@
 return {
   "AndreM222/copilot-lualine",
   enabled = function()
+    -- Check if Copilot is enabled via toggle
+    if vim.g.copilot_enabled ~= nil then
+      return vim.g.copilot_enabled
+    end
+    
+    -- Check config system
     local ok, config = pcall(require, "meowvim.config")
     if ok then
       return config.get("core.enable_copilot", false)
     end
-    return vim.env.MEOW_ENABLE_COPILOT == "true"
+    
+    -- Disabled by default
+    return false
   end,
 }

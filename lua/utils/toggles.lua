@@ -9,6 +9,7 @@ local registry = {
   lint_enabled = { store = "LintEnabled", default = true, type = "boolean" },
   diagnostics_enabled = { store = "DiagnosticsEnabled", default = true, type = "boolean" },
   inlay_hints_enabled = { store = "InlayHintsEnabled", default = false, type = "boolean" },
+  copilot_enabled = { store = "CopilotEnabled", default = false, type = "boolean" },
   -- Vim option toggles
   number_mode = { store = "NumberMode", default = "relative", type = "string" }, -- "off", "number", "relative"
   wrap = { store = "Wrap", default = false, type = "boolean" },

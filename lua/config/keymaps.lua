@@ -1037,6 +1037,33 @@ function M.setup()
         end,
         desc = "Toggle Linting",
       },
+      {
+        "<leader>oC",
+        function()
+          vim.g.copilot_enabled = not vim.g.copilot_enabled
+          toggles.update("copilot_enabled")
+          
+          if vim.g.copilot_enabled then
+            -- Enable Copilot
+            local ok, copilot = pcall(require, "copilot")
+            if ok then
+              vim.cmd("Copilot enable")
+              vim.notify("Copilot: ON (restart may be needed)", vim.log.levels.INFO)
+            else
+              vim.notify("Copilot plugin not loaded. Restart Neovim to enable.", vim.log.levels.WARN)
+            end
+          else
+            -- Disable Copilot
+            local ok = pcall(vim.cmd, "Copilot disable")
+            if ok then
+              vim.notify("Copilot: OFF", vim.log.levels.WARN)
+            else
+              vim.notify("Copilot: OFF (plugin not loaded)", vim.log.levels.WARN)
+            end
+          end
+        end,
+        desc = "Toggle Copilot",
+      },
 
       -- Undo & Clipboard
       { "<leader>u", group = "Undo", icon = "" },
