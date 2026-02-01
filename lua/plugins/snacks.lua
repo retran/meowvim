@@ -199,10 +199,15 @@ return {
 
             vim.fn.chdir(dir)
 
-            -- Detect and apply project-specific settings
+            -- Detect and apply project-specific settings, run on_open command
             local ok, config = pcall(require, "meowvim.config")
             if ok then
-              config.detect_current_project()
+              local current_project = config.detect_current_project()
+              if current_project and current_project.on_open then
+                vim.defer_fn(function()
+                  vim.cmd(current_project.on_open)
+                end, 150)
+              end
             end
 
             local session = require("snacks").dashboard.sections.session()

@@ -10,17 +10,29 @@ local _config = nil
 local _projects = nil
 local _current_project = nil
 
-local function get_config_dir()
+function M.get_config_dir()
   return vim.env.XDG_CONFIG_HOME and (vim.env.XDG_CONFIG_HOME .. "/meowvim")
     or vim.fn.expand("~/.config/meowvim")
 end
 
+function M.get_config_path()
+  return M.get_config_dir() .. "/config.lua"
+end
+
+function M.get_projects_path()
+  return M.get_config_dir() .. "/projects.lua"
+end
+
+local function get_config_dir()
+  return M.get_config_dir()
+end
+
 local function get_config_path()
-  return get_config_dir() .. "/config.lua"
+  return M.get_config_path()
 end
 
 local function get_projects_path()
-  return get_config_dir() .. "/projects.lua"
+  return M.get_projects_path()
 end
 
 local function create_default_config()
@@ -138,13 +150,63 @@ local function load_user_config()
   return nil
 end
 
+local function validate_project(name, project)
+  local issues = {}
+  
+  if not project.path then
+    table.insert(issues, "missing 'path' field")
+  elseif type(project.path) ~= "string" then
+    table.insert(issues, "'path' must be a string")
+  end
+  
+  if project.theme and type(project.theme) ~= "string" then
+    table.insert(issues, "'theme' must be a string")
+  end
+  
+  if project.variant and type(project.variant) ~= "string" then
+    table.insert(issues, "'variant' must be a string")
+  end
+  
+  if project.on_open and type(project.on_open) ~= "string" then
+    table.insert(issues, "'on_open' must be a string")
+  end
+  
+  if project.inherit ~= nil and type(project.inherit) ~= "boolean" then
+    table.insert(issues, "'inherit' must be a boolean")
+  end
+  
+  return #issues == 0, issues
+end
+
 local function load_projects_config()
   local projects_path = get_projects_path()
 
   if vim.fn.filereadable(projects_path) == 1 then
     local ok, projects = pcall(dofile, projects_path)
     if ok and type(projects) == "table" then
-      return projects
+      -- Validate each project
+      local validated_projects = {}
+      for name, project in pairs(projects) do
+        if type(project) == "table" then
+          local valid, issues = validate_project(name, project)
+          if valid then
+            validated_projects[name] = project
+          else
+            vim.notify(
+              string.format("Invalid project '%s': %s", name, table.concat(issues, ", ")),
+              vim.log.levels.WARN,
+              { title = "Meowvim" }
+            )
+          end
+        else
+          vim.notify(
+            string.format("Project '%s' must be a table", name),
+            vim.log.levels.WARN,
+            { title = "Meowvim" }
+          )
+        end
+      end
+      return validated_projects
     elseif not ok then
       vim.notify(
         "Error loading projects: " .. tostring(projects),
@@ -402,10 +464,10 @@ function M.setup_watcher()
   watcher.setup()
 
   -- Watch config file
-  watcher.watch("~/.config/meowvim/config.lua")
+  watcher.watch(M.get_config_path())
 
   -- Watch projects file
-  watcher.watch("~/.config/meowvim/projects.lua")
+  watcher.watch(M.get_projects_path())
 end
 
 -- Persist current configuration to user config file

@@ -42,7 +42,7 @@ local function check_config()
   ok("Config module loaded successfully")
   
   -- Check if user config exists
-  local config_path = vim.fn.expand("~/.config/meowvim/config.lua")
+  local config_path = config.get_config_path()
   if vim.fn.filereadable(config_path) == 1 then
     ok("User config file exists: " .. config_path)
   else
@@ -69,6 +69,32 @@ local function check_config()
   
   local copilot = config.get("core.enable_copilot", false)
   info("Copilot: " .. (copilot and "enabled" or "disabled"))
+  
+  -- Check projects configuration
+  local projects_path = config.get_projects_path()
+  if vim.fn.filereadable(projects_path) == 1 then
+    ok("Projects config exists: " .. projects_path)
+    local projects = config.get_projects()
+    local count = vim.tbl_count(projects)
+    if count > 0 then
+      ok(string.format("Found %d project(s)", count))
+      for name, project in pairs(projects) do
+        if project.path then
+          local expanded = vim.fn.expand(project.path)
+          if vim.fn.isdirectory(expanded) == 1 then
+            info("  ✓ " .. name .. ": " .. expanded)
+          else
+            warn("  ✗ " .. name .. ": path not found - " .. expanded)
+          end
+        end
+      end
+    else
+      info("No projects configured")
+    end
+  else
+    info("Projects config not found (optional)")
+    info("Create at: " .. projects_path)
+  end
 end
 
 -- Check external dependencies

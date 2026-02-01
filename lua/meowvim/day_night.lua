@@ -642,6 +642,17 @@ function M.setup()
     end,
   })
   
+  -- Re-detect project on directory change
+  vim.api.nvim_create_autocmd("DirChanged", {
+    group = vim.api.nvim_create_augroup("meowvim-day-night-dirchange", { clear = true }),
+    callback = function()
+      local config_ok, config = pcall(require, "meowvim.config")
+      if config_ok then
+        config.detect_current_project()
+      end
+    end,
+  })
+  
   -- Register commands
   vim.api.nvim_create_user_command("DayNightMode", function(opts)
     if opts.args == "" then

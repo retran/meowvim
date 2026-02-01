@@ -1073,7 +1073,7 @@ function M.setup()
           -- Persist config to file
           local config = require("meowvim.config")
           if config.persist() then
-            vim.notify("Settings persisted to ~/.config/meowvim/config.lua", vim.log.levels.INFO)
+            vim.notify("Settings persisted to " .. config.get_config_path(), vim.log.levels.INFO)
           else
             vim.notify("Failed to persist settings", vim.log.levels.ERROR)
           end
