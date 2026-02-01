@@ -8,6 +8,7 @@ local M = {}
 
 local timer = nil
 local is_watching = false
+local meow_file_watcher = nil
 
 -- Detect system appearance cross-platform
 local function get_system_appearance()
@@ -126,6 +127,29 @@ local function get_system_appearance()
   return nil
 end
 
+-- Read theme from ~/.meow file
+local function read_meow_file()
+  local meow_path = vim.fn.expand("~/.meow")
+  
+  if vim.fn.filereadable(meow_path) ~= 1 then
+    return nil, nil
+  end
+  
+  local file = io.open(meow_path, "r")
+  if not file then
+    return nil, nil
+  end
+  
+  local content = file:read("*a")
+  file:close()
+  
+  -- Parse shell-style key=value format
+  local theme = content:match("MEOW_THEME=([%w%-_]+)")
+  local variant = content:match("MEOW_VARIANT=([%w%-_]+)")
+  
+  return theme, variant
+end
+
 -- Get theme pair for current mode
 local function get_theme_for_mode(mode)
   local config_ok, config = pcall(require, "meowvim.config")
@@ -185,12 +209,12 @@ function M.apply_current_mode()
   return false
 end
 
--- Set day/night mode (manual, auto)
+-- Set day/night mode (manual, auto, sync)
 function M.set_mode(mode)
-  local valid_modes = { manual = true, auto = true }
+  local valid_modes = { manual = true, auto = true, sync = true }
   if not valid_modes[mode] then
     vim.notify(
-      string.format("Invalid day/night mode: %s. Use: manual, auto", mode),
+      string.format("Invalid day/night mode: %s. Use: manual, auto, sync", mode),
       vim.log.levels.ERROR
     )
     return false
@@ -201,15 +225,22 @@ function M.set_mode(mode)
     config.set("core.day_night_mode", mode)
   end
   
-  -- Stop watching if we're not in auto mode
-  if mode ~= "auto" then
+  -- Stop watching if we're not in auto/sync mode
+  if mode ~= "auto" and mode ~= "sync" then
     M.stop_watching()
+    M.stop_watching_meow_file()
   end
   
   -- Apply theme immediately if in auto mode
   if mode == "auto" then
     M.apply_current_mode()
     M.start_watching()
+  end
+  
+  -- Start watching .meow file if in sync mode
+  if mode == "sync" then
+    M.stop_watching() -- Stop system watching
+    M.start_watching_meow_file()
   end
   
   vim.notify(
@@ -269,12 +300,19 @@ function M.set_day_theme(theme, variant)
     return
   end
   
+  local mode = config.get("core.day_night_mode", "manual")
+  
+  -- Prevent changes in sync mode
+  if mode == "sync" then
+    vim.notify("Cannot change theme in sync mode. Theme is controlled by ~/.meow file.", vim.log.levels.WARN)
+    return
+  end
+  
   -- Get current state BEFORE changing config
   local current_theme = config.get("core.theme", "catppuccin")
   local current_variant = config.get("core.variant", "mocha")
   local old_day_theme = config.get("core.day_theme", "catppuccin")
   local old_day_variant = config.get("core.day_variant", "latte")
-  local mode = config.get("core.day_night_mode", "manual")
   
   -- Update config
   config.set("core.day_theme", theme)
@@ -304,12 +342,19 @@ function M.set_night_theme(theme, variant)
     return
   end
   
+  local mode = config.get("core.day_night_mode", "manual")
+  
+  -- Prevent changes in sync mode
+  if mode == "sync" then
+    vim.notify("Cannot change theme in sync mode. Theme is controlled by ~/.meow file.", vim.log.levels.WARN)
+    return
+  end
+  
   -- Get current state BEFORE changing config
   local current_theme = config.get("core.theme", "catppuccin")
   local current_variant = config.get("core.variant", "mocha")
   local old_night_theme = config.get("core.night_theme", "catppuccin")
   local old_night_variant = config.get("core.night_variant", "mocha")
-  local mode = config.get("core.day_night_mode", "manual")
   
   -- Update config
   config.set("core.night_theme", theme)
@@ -406,6 +451,85 @@ function M.stop_watching()
   is_watching = false
 end
 
+-- Watch ~/.meow file for changes
+function M.start_watching_meow_file()
+  local meow_path = vim.fn.expand("~/.meow")
+  
+  -- Create file if it doesn't exist
+  if vim.fn.filereadable(meow_path) ~= 1 then
+    local file = io.open(meow_path, "w")
+    if file then
+      file:write("# Meowvim theme sync file\n")
+      file:write("# Shell tools should write theme here\n")
+      file:write("MEOW_THEME=catppuccin\n")
+      file:write("MEOW_VARIANT=mocha\n")
+      file:close()
+      vim.notify("Created ~/.meow file for theme sync", vim.log.levels.INFO)
+    end
+  end
+  
+  if meow_file_watcher then
+    return true
+  end
+  
+  -- Apply initial theme from .meow file
+  local theme, variant = read_meow_file()
+  if theme then
+    local switcher_ok, switcher = pcall(require, "meowvim.colorscheme_switcher")
+    if switcher_ok and switcher.apply_theme then
+      switcher.apply_theme(theme, variant)
+    end
+  end
+  
+  -- Watch file for changes using uv.fs_event
+  meow_file_watcher = vim.loop.new_fs_event()
+  if not meow_file_watcher then
+    vim.notify("Failed to create .meow file watcher", vim.log.levels.ERROR)
+    return false
+  end
+  
+  meow_file_watcher:start(meow_path, {}, vim.schedule_wrap(function(err, filename, events)
+    if err then
+      vim.notify("Error watching .meow file: " .. err, vim.log.levels.ERROR)
+      return
+    end
+    
+    -- Check if still in sync mode
+    local config_ok, config = pcall(require, "meowvim.config")
+    local mode = config_ok and config.get("core.day_night_mode", "manual") or "manual"
+    
+    if mode == "sync" then
+      local new_theme, new_variant = read_meow_file()
+      if new_theme then
+        local switcher_ok, switcher = pcall(require, "meowvim.colorscheme_switcher")
+        if switcher_ok and switcher.apply_theme then
+          switcher.apply_theme(new_theme, new_variant)
+          vim.notify(
+            string.format("Theme synced from ~/.meow: %s (%s)", new_theme, new_variant or "default"),
+            vim.log.levels.INFO
+          )
+        end
+      end
+    else
+      -- Mode changed, stop watching
+      M.stop_watching_meow_file()
+    end
+  end))
+  
+  vim.notify("Started watching ~/.meow for theme changes", vim.log.levels.INFO)
+  return true
+end
+
+function M.stop_watching_meow_file()
+  if meow_file_watcher then
+    if not meow_file_watcher:is_closing() then
+      meow_file_watcher:stop()
+      meow_file_watcher:close()
+    end
+    meow_file_watcher = nil
+  end
+end
+
 -- Interactive mode selector
 function M.select_mode()
   local config_ok, config = pcall(require, "meowvim.config")
@@ -413,7 +537,8 @@ function M.select_mode()
   
   local modes = {
     { mode = "manual", desc = "toggle with <leader>oK" },
-    { mode = "auto", desc = "sync with system" },
+    { mode = "auto", desc = "sync with OS" },
+    { mode = "sync", desc = "sync with ~/.meow" },
   }
   
   local displays = vim.tbl_map(function(item)
@@ -543,6 +668,8 @@ function M.setup()
     if mode == "auto" then
       M.apply_current_mode()
       M.start_watching()
+    elseif mode == "sync" then
+      M.start_watching_meow_file()
     end
   end, 100)
   
@@ -551,6 +678,7 @@ function M.setup()
     group = vim.api.nvim_create_augroup("meowvim-day-night-cleanup", { clear = true }),
     callback = function()
       M.stop_watching()
+      M.stop_watching_meow_file()
     end,
   })
   
@@ -564,7 +692,7 @@ function M.setup()
   end, {
     nargs = "?",
     complete = function()
-      return { "manual", "auto" }
+      return { "manual", "auto", "sync" }
     end,
     desc = "Set or select day/night mode",
   })

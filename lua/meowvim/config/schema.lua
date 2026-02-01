@@ -16,8 +16,8 @@ M.schema = {
     -- Day/Night mode settings
     day_night_mode = {
       type = "string",
-      default = "manual",
-      enum = { "manual", "auto" },
+      default = "auto",
+      enum = { "manual", "auto", "sync" },
     },
     day_theme = { type = "string", default = "catppuccin" },
     day_variant = { type = "string", default = "latte" },
