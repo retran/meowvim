@@ -41,21 +41,32 @@ end
 
 -- Debounced reload function
 local function schedule_reload()
-  -- Clear existing timer
+  -- Clear existing timer using uv timer
   if debounce_timer then
-    debounce_timer:stop()
-    debounce_timer:close()
+    if not debounce_timer:is_closing() then
+      debounce_timer:stop()
+      debounce_timer:close()
+    end
     debounce_timer = nil
   end
 
-  -- Schedule reload after 500ms
-  debounce_timer = vim.defer_fn(function()
-    if is_safe_to_reload() then
-      perform_reload()
-    else
-      reload_pending = true
-    end
-  end, 500)
+  -- Create new uv timer for proper control
+  debounce_timer = vim.loop.new_timer()
+  if debounce_timer then
+    debounce_timer:start(500, 0, vim.schedule_wrap(function()
+      if debounce_timer and not debounce_timer:is_closing() then
+        debounce_timer:stop()
+        debounce_timer:close()
+      end
+      debounce_timer = nil
+      
+      if is_safe_to_reload() then
+        perform_reload()
+      else
+        reload_pending = true
+      end
+    end))
+  end
 end
 
 -- Watch a file for changes
@@ -97,17 +108,29 @@ function M.unwatch(filepath)
   local w = watchers[fullpath]
 
   if w then
-    w:stop()
-    w:close()
+    if not w:is_closing() then
+      w:stop()
+      w:close()
+    end
     watchers[fullpath] = nil
   end
 end
 
 -- Stop all watchers
 function M.stop_all()
-  for _, w in pairs(watchers) do
-    w:stop()
-    w:close()
+  -- Stop debounce timer first
+  if debounce_timer and not debounce_timer:is_closing() then
+    debounce_timer:stop()
+    debounce_timer:close()
+  end
+  debounce_timer = nil
+  
+  -- Stop all file watchers
+  for path, w in pairs(watchers) do
+    if w and not w:is_closing() then
+      w:stop()
+      w:close()
+    end
   end
   watchers = {}
 end
@@ -129,6 +152,14 @@ function M.setup()
       if reload_pending and is_safe_to_reload() then
         perform_reload()
       end
+    end,
+  })
+  
+  -- Clean up watchers on exit
+  vim.api.nvim_create_autocmd("VimLeavePre", {
+    group = vim.api.nvim_create_augroup("MeowvimConfigWatcherCleanup", { clear = true }),
+    callback = function()
+      M.stop_all()
     end,
   })
 end

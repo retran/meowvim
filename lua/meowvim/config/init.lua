@@ -390,6 +390,12 @@ function M.persist()
 
   local config_path = get_config_path()
   
+  -- Temporarily disable watcher to prevent reload loop
+  local watcher_ok, watcher = pcall(require, "meowvim.config.watcher")
+  if watcher_ok then
+    watcher.unwatch(config_path)
+  end
+  
   -- Serialize config to Lua table format
   local function serialize_value(val, indent)
     indent = indent or 0
@@ -436,6 +442,13 @@ function M.persist()
     -- Clear cache
     require("meowvim.config.cache").clear()
     
+    -- Re-enable watcher after a short delay
+    if watcher_ok then
+      vim.defer_fn(function()
+        watcher.watch(config_path)
+      end, 1000)
+    end
+    
     vim.notify(
       "Configuration saved to " .. config_path,
       vim.log.levels.INFO,
@@ -443,6 +456,11 @@ function M.persist()
     )
     return true
   else
+    -- Re-enable watcher on error
+    if watcher_ok then
+      watcher.watch(config_path)
+    end
+    
     vim.notify(
       "Failed to write configuration to " .. config_path,
       vim.log.levels.ERROR,
