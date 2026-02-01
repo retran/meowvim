@@ -104,16 +104,6 @@ function M.show_menu()
     },
   }
   
-  -- Add reset option if a preset was used and hasn't been customized
-  if last_preset and effective_preset ~= "manual" then
-    table.insert(options, {
-      id = "reset",
-      label = "Reset to preset",
-      value = last_preset,
-      desc = "Restore original preset configuration"
-    })
-  end
-  
   local displays = vim.tbl_map(function(opt)
     -- Format with consistent width for alignment
     local max_label_width = 12
@@ -141,8 +131,6 @@ function M.show_menu()
       M.configure_night_theme()
     elseif selected.id == "mode" then
       M.select_mode()
-    elseif selected.id == "reset" then
-      M.reset_to_preset()
     end
   end)
 end
@@ -189,24 +177,6 @@ function M.select_mode()
   end
   
   day_night.select_mode()
-end
-
--- Reset to last preset
-function M.reset_to_preset()
-  local _, _, _, _, _, last_preset = get_current_config()
-  
-  if not last_preset then
-    vim.notify("No preset to reset to", vim.log.levels.WARN)
-    return
-  end
-  
-  local presets_ok, presets = pcall(require, "meowvim.day_night_presets")
-  if not presets_ok then
-    vim.notify("Presets not available", vim.log.levels.ERROR)
-    return
-  end
-  
-  presets.apply_preset(last_preset)
 end
 
 -- Quick toggle day/night
