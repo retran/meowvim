@@ -228,6 +228,13 @@ function M.toggle()
     return
   end
   
+  -- Switch to manual mode immediately
+  local current_mode = config.get("core.day_night_mode", "manual")
+  if current_mode ~= "manual" then
+    config.set("core.day_night_mode", "manual")
+    M.stop_watching()
+  end
+  
   -- Get current theme to determine if we're on day or night
   local current_theme = config.get("core.theme", "catppuccin")
   local current_variant = config.get("core.variant", "mocha")
@@ -243,15 +250,15 @@ function M.toggle()
   if is_day then
     -- Switch to night
     apply_mode_theme("night")
-    vim.notify("Switched to night theme", vim.log.levels.INFO)
+    vim.notify("Switched to night theme (manual mode)", vim.log.levels.INFO)
   elseif is_night then
     -- Switch to day
     apply_mode_theme("day")
-    vim.notify("Switched to day theme", vim.log.levels.INFO)
+    vim.notify("Switched to day theme (manual mode)", vim.log.levels.INFO)
   else
     -- Not on either theme, default to day
     apply_mode_theme("day")
-    vim.notify("Switched to day theme", vim.log.levels.INFO)
+    vim.notify("Switched to day theme (manual mode)", vim.log.levels.INFO)
   end
 end
 

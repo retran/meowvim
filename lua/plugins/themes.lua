@@ -386,6 +386,207 @@ local ayu = {
   end,
 }
 
+-- Dracula theme
+local dracula = {
+  "Mofiqul/dracula.nvim",
+  priority = 1000,
+  lazy = false,
+  config = function()
+    local theme, _, transparency = get_config_theme()
+    
+    if theme ~= "dracula" then
+      return
+    end
+
+    require("dracula").setup({
+      transparent_bg = transparency > 0,
+      italic_comment = true,
+    })
+    
+    vim.cmd.colorscheme("dracula")
+  end,
+}
+
+-- Monokai Pro theme
+local monokai_pro = {
+  "loctvl842/monokai-pro.nvim",
+  priority = 1000,
+  lazy = false,
+  config = function()
+    local theme, variant, transparency = get_config_theme()
+    
+    if theme ~= "monokai-pro" then
+      return
+    end
+
+    require("monokai-pro").setup({
+      transparent_background = transparency > 0,
+      terminal_colors = true,
+      devicons = true,
+      styles = {
+        comment = { italic = true },
+        keyword = { italic = true },
+        type = { italic = true },
+        storageclass = { italic = true },
+        structure = { italic = true },
+        parameter = { italic = true },
+        annotation = { italic = true },
+        tag_attribute = { italic = true },
+      },
+      filter = variant or "pro", -- pro, octagon, machine, ristretto, spectrum, classic
+    })
+    
+    vim.cmd.colorscheme("monokai-pro")
+  end,
+}
+
+-- One Dark/Light theme
+local onedark = {
+  "olimorris/onedarkpro.nvim",
+  priority = 1000,
+  lazy = false,
+  config = function()
+    local theme, variant, transparency = get_config_theme()
+    
+    if theme ~= "onedark" then
+      return
+    end
+
+    require("onedarkpro").setup({
+      options = {
+        transparency = transparency > 0,
+        terminal_colors = true,
+        cursorline = true,
+        highlight_inactive_windows = false,
+      },
+      styles = {
+        comments = "italic",
+        keywords = "bold",
+        functions = "NONE",
+        strings = "NONE",
+        variables = "NONE",
+      },
+    })
+    
+    -- Variants: onedark, onelight, onedark_vivid, onedark_dark
+    vim.cmd.colorscheme(variant or "onedark")
+  end,
+}
+
+-- Material theme
+local material = {
+  "marko-cerovac/material.nvim",
+  priority = 1000,
+  lazy = false,
+  config = function()
+    local theme, variant, transparency = get_config_theme()
+    
+    if theme ~= "material" then
+      return
+    end
+
+    require("material").setup({
+      contrast = {
+        terminal = false,
+        sidebars = false,
+        floating_windows = false,
+        cursor_line = false,
+        non_current_windows = false,
+        filetypes = {},
+      },
+      styles = {
+        comments = { italic = true },
+        strings = {},
+        keywords = { italic = true },
+        functions = {},
+        variables = {},
+        operators = {},
+        types = {},
+      },
+      plugins = {
+        "gitsigns",
+        "telescope",
+        "nvim-cmp",
+        "nvim-web-devicons",
+        "which-key",
+        "mini",
+        "snacks",
+      },
+      disable = {
+        colored_cursor = false,
+        borders = false,
+        background = transparency > 0,
+        term_colors = false,
+        eob_lines = false,
+      },
+      lualine_style = "default",
+      async_loading = true,
+    })
+    
+    -- Variants: darker, lighter, oceanic, palenight, deep ocean
+    vim.g.material_style = variant or "darker"
+    vim.cmd.colorscheme("material")
+  end,
+}
+
+-- Melange theme
+local melange = {
+  "savq/melange-nvim",
+  priority = 1000,
+  lazy = false,
+  config = function()
+    local theme, _, transparency = get_config_theme()
+    
+    if theme ~= "melange" then
+      return
+    end
+
+    if transparency > 0 then
+      vim.api.nvim_create_autocmd("ColorScheme", {
+        pattern = "melange",
+        callback = function()
+          vim.api.nvim_set_hl(0, "Normal", { bg = "NONE" })
+          vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
+        end,
+      })
+    end
+    
+    vim.cmd.colorscheme("melange")
+  end,
+}
+
+-- GitHub theme
+local github = {
+  "projekt0n/github-nvim-theme",
+  priority = 1000,
+  lazy = false,
+  config = function()
+    local theme, variant, transparency = get_config_theme()
+    
+    if theme ~= "github" then
+      return
+    end
+
+    require("github-theme").setup({
+      options = {
+        transparent = transparency > 0,
+        terminal_colors = true,
+        dim_inactive = false,
+        styles = {
+          comments = "italic",
+          keywords = "bold",
+          types = "italic,bold",
+        },
+      },
+    })
+    
+    -- Variants: github_dark, github_dark_dimmed, github_dark_high_contrast,
+    --           github_light, github_light_high_contrast, github_dark_colorblind,
+    --           github_light_colorblind, github_dark_tritanopia, github_light_tritanopia
+    vim.cmd.colorscheme(variant or "github_dark")
+  end,
+}
+
 -- Return all themes
 return {
   catppuccin,
@@ -399,4 +600,10 @@ return {
   zenbones,
   solarized_osaka,
   ayu,
+  dracula,
+  monokai_pro,
+  onedark,
+  material,
+  melange,
+  github,
 }

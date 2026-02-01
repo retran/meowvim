@@ -28,8 +28,22 @@ local themes = {
   zenbones = { "zenbones", "zenwritten", "neobones", "tokyobones", "seoulbones", "forestbones", "nordbones", "kanagawabones", "rosebones" },
   ayu = { "dark", "light", "mirage" },
   
-  -- Classic
+  -- Classic Dark
   nord = {},
+  dracula = {},
+  melange = {},
+  
+  -- Professional Studio
+  ["monokai-pro"] = { "pro", "octagon", "machine", "ristretto", "spectrum", "classic" },
+  
+  -- Developer Standard
+  onedark = { "onedark", "onelight", "onedark_vivid", "onedark_dark" },
+  
+  -- Material Design
+  material = { "darker", "lighter", "oceanic", "palenight", "deep ocean" },
+  
+  -- GitHub Official
+  github = { "github_dark", "github_dark_dimmed", "github_dark_high_contrast", "github_light", "github_light_high_contrast" },
 }
 
 -- Get base themes without variants (for main theme picker)
@@ -202,6 +216,103 @@ local function apply_theme(theme, variant)
       vim.o.background = "dark"
     end
     vim.cmd.colorscheme("ayu")
+  elseif theme == "dracula" then
+    require("dracula").setup({
+      transparent_bg = false,
+      italic_comment = true,
+    })
+    vim.cmd.colorscheme("dracula")
+  elseif theme == "monokai-pro" then
+    require("monokai-pro").setup({
+      transparent_background = false,
+      terminal_colors = true,
+      devicons = true,
+      styles = {
+        comment = { italic = true },
+        keyword = { italic = true },
+        type = { italic = true },
+        storageclass = { italic = true },
+        structure = { italic = true },
+        parameter = { italic = true },
+        annotation = { italic = true },
+        tag_attribute = { italic = true },
+      },
+      filter = variant or "pro",
+    })
+    vim.cmd.colorscheme("monokai-pro")
+  elseif theme == "onedark" then
+    require("onedarkpro").setup({
+      options = {
+        transparency = false,
+        terminal_colors = true,
+        cursorline = true,
+        highlight_inactive_windows = false,
+      },
+      styles = {
+        comments = "italic",
+        keywords = "bold",
+        functions = "NONE",
+        strings = "NONE",
+        variables = "NONE",
+      },
+    })
+    vim.cmd.colorscheme(variant or "onedark")
+  elseif theme == "material" then
+    require("material").setup({
+      contrast = {
+        terminal = false,
+        sidebars = false,
+        floating_windows = false,
+        cursor_line = false,
+        non_current_windows = false,
+        filetypes = {},
+      },
+      styles = {
+        comments = { italic = true },
+        strings = {},
+        keywords = { italic = true },
+        functions = {},
+        variables = {},
+        operators = {},
+        types = {},
+      },
+      plugins = {
+        "gitsigns",
+        "telescope",
+        "nvim-cmp",
+        "nvim-web-devicons",
+        "which-key",
+        "mini",
+        "snacks",
+      },
+      disable = {
+        colored_cursor = false,
+        borders = false,
+        background = false,
+        term_colors = false,
+        eob_lines = false,
+      },
+      lualine_style = "default",
+      async_loading = true,
+    })
+    vim.g.material_style = variant or "darker"
+    vim.cmd.colorscheme("material")
+  elseif theme == "melange" then
+    vim.cmd.colorscheme("melange")
+  elseif theme == "github" then
+    require("github-theme").setup({
+      options = {
+        transparent = false,
+        terminal_colors = true,
+        dim_inactive = false,
+        styles = {
+          comments = "italic",
+          keywords = "bold",
+          types = "italic,bold",
+        },
+      },
+    })
+    vim.cmd.colorscheme(variant or "github_dark")
   end
 end
 
@@ -320,6 +431,10 @@ local function is_light_variant(theme, variant)
     dayfox = true,
     dawnfox = true,
     zenwritten = true, -- light variant of zenbones
+    onelight = true,
+    lighter = true,
+    classic = true, -- monokai-pro classic (lighter)
+    github_light = true,
   }
   
   if not variant then

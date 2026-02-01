@@ -19,6 +19,12 @@ M.theme_defaults = {
   ayu = "ayu",
   gruvbox = "gruvbox",
   nord = "gruvbox", -- Nord only has dark, fallback to gruvbox
+  dracula = "dracula",
+  ["monokai-pro"] = "monokai",
+  onedark = "onedark",
+  material = "material",
+  melange = "melange",
+  github = "github",
 }
 
 -- Recommended theme pairs optimized for seamless day/night transitions
@@ -110,6 +116,60 @@ M.presets = {
     mood = "Retro & Cozy",
     day = { theme = "gruvbox", variant = "soft" },
     night = { theme = "gruvbox", variant = "medium" },
+  },
+  
+  -- Classic Dark (dark only, paired with ayu light)
+  dracula = {
+    name = "Dracula",
+    description = "The legendary dark theme, vibrant and professional",
+    mood = "Dark Legend",
+    day = { theme = "ayu", variant = "light" },
+    night = { theme = "dracula", variant = nil },
+  },
+  
+  -- Professional Studio
+  monokai = {
+    name = "Monokai Pro",
+    description = "Professional favorite, high contrast, stylish",
+    mood = "Pro Studio",
+    day = { theme = "monokai-pro", variant = "classic" },
+    night = { theme = "monokai-pro", variant = "pro" },
+  },
+  
+  -- Balanced & Familiar
+  onedark = {
+    name = "One Dark",
+    description = "From Atom/VS Code, balanced and familiar",
+    mood = "Developer Standard",
+    day = { theme = "onedark", variant = "onelight" },
+    night = { theme = "onedark", variant = "onedark" },
+  },
+  
+  -- Material Design
+  material = {
+    name = "Material",
+    description = "Google Material Design, modern and colorful",
+    mood = "Material & Modern",
+    day = { theme = "material", variant = "lighter" },
+    night = { theme = "material", variant = "darker" },
+  },
+  
+  -- Warm Balanced (dark only, paired with everforest)
+  melange = {
+    name = "Melange",
+    description = "Warm balanced colors, unique palette (dark only)",
+    mood = "Warm Harmony",
+    day = { theme = "everforest", variant = "light_soft" },
+    night = { theme = "melange", variant = nil },
+  },
+  
+  -- GitHub Official
+  github = {
+    name = "GitHub",
+    description = "Official GitHub theme, familiar and clean",
+    mood = "GitHub Official",
+    day = { theme = "github", variant = "github_light" },
+    night = { theme = "github", variant = "github_dark" },
   },
 }
 
