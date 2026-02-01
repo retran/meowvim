@@ -21,6 +21,13 @@ opt.laststatus = 3
 opt.cmdheight = 1
 opt.showmode = false
 
+-- Cursor configuration
+opt.guicursor = {
+  "n-v-c:block-Cursor/lCursor",
+  "i-ci-ve:ver25-Cursor/lCursor",
+  "r-cr-o:hor20-Cursor/lCursor",
+}
+
 opt.tabstop = 2
 opt.shiftwidth = 2
 opt.expandtab = true
@@ -80,6 +87,42 @@ vim.fn.mkdir(spell_dir, "p")
 opt.spellfile = spell_dir .. "/en.utf-8.add"
 
 local spell_group = vim.api.nvim_create_augroup("meowvim-spell", { clear = true })
+
+-- Fix cursor highlighting after colorscheme changes
+local cursor_group = vim.api.nvim_create_augroup("meowvim-cursor", { clear = true })
+
+local function fix_cursor_highlight()
+  -- Get Normal highlight colors
+  local normal = vim.api.nvim_get_hl(0, { name = "Normal" })
+  
+  -- Set cursor highlights with explicit colors
+  if normal.fg and normal.bg then
+    -- Swap fg/bg for cursor
+    vim.api.nvim_set_hl(0, "Cursor", { fg = normal.bg, bg = normal.fg })
+    vim.api.nvim_set_hl(0, "lCursor", { fg = normal.bg, bg = normal.fg })
+    vim.api.nvim_set_hl(0, "TermCursor", { fg = normal.bg, bg = normal.fg })
+    vim.api.nvim_set_hl(0, "TermCursorNC", { fg = normal.bg, bg = normal.fg })
+  else
+    -- Fallback to reverse video if colors not available
+    vim.api.nvim_set_hl(0, "Cursor", { reverse = true })
+    vim.api.nvim_set_hl(0, "lCursor", { reverse = true })
+    vim.api.nvim_set_hl(0, "TermCursor", { reverse = true })
+    vim.api.nvim_set_hl(0, "TermCursorNC", { reverse = true })
+  end
+end
+
+vim.api.nvim_create_autocmd("ColorScheme", {
+  group = cursor_group,
+  callback = fix_cursor_highlight,
+})
+
+-- Also fix cursor on startup
+vim.api.nvim_create_autocmd("VimEnter", {
+  group = cursor_group,
+  callback = function()
+    vim.schedule(fix_cursor_highlight)
+  end,
+})
 
 local function enable_spell(bufnr, opts)
   opts = opts or {}
