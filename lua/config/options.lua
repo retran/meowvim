@@ -96,18 +96,19 @@ local function fix_cursor_highlight()
   local normal = vim.api.nvim_get_hl(0, { name = "Normal" })
   
   -- Set cursor highlights with explicit colors
+  -- Cursor bg = cursor block color, Cursor fg = text under cursor color
   if normal.fg and normal.bg then
-    -- Swap fg/bg for cursor
-    vim.api.nvim_set_hl(0, "Cursor", { fg = normal.bg, bg = normal.fg })
-    vim.api.nvim_set_hl(0, "lCursor", { fg = normal.bg, bg = normal.fg })
-    vim.api.nvim_set_hl(0, "TermCursor", { fg = normal.bg, bg = normal.fg })
-    vim.api.nvim_set_hl(0, "TermCursorNC", { fg = normal.bg, bg = normal.fg })
+    -- Make cursor block the text color, and text under cursor the background color
+    vim.api.nvim_set_hl(0, "Cursor", { fg = normal.bg, bg = normal.fg, blend = 0 })
+    vim.api.nvim_set_hl(0, "lCursor", { fg = normal.bg, bg = normal.fg, blend = 0 })
+    vim.api.nvim_set_hl(0, "TermCursor", { fg = normal.bg, bg = normal.fg, blend = 0 })
+    vim.api.nvim_set_hl(0, "TermCursorNC", { fg = normal.bg, bg = normal.fg, blend = 0 })
   else
     -- Fallback to reverse video if colors not available
-    vim.api.nvim_set_hl(0, "Cursor", { reverse = true })
-    vim.api.nvim_set_hl(0, "lCursor", { reverse = true })
-    vim.api.nvim_set_hl(0, "TermCursor", { reverse = true })
-    vim.api.nvim_set_hl(0, "TermCursorNC", { reverse = true })
+    vim.api.nvim_set_hl(0, "Cursor", { reverse = true, blend = 0 })
+    vim.api.nvim_set_hl(0, "lCursor", { reverse = true, blend = 0 })
+    vim.api.nvim_set_hl(0, "TermCursor", { reverse = true, blend = 0 })
+    vim.api.nvim_set_hl(0, "TermCursorNC", { reverse = true, blend = 0 })
   end
 end
 
