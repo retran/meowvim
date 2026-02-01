@@ -9,7 +9,6 @@
 
 ### The purr-fect Neovim configuration for a cozy coding session. May or may not increase your productivity by a feline factor.
 
-<img src="assets/icon_small.png" alt="meowvim logo" width="200">
 
 [Overview](#-overview) • [See It in Action](#-see-it-in-action) • [Key Features](#-key-features) • [Installation](#-installation) • [Quick Start](#-quick-start) • [Documentation](#-documentation) • [Customization](#-customization) • [Troubleshooting](#-troubleshooting--support) • [Contributing](#-contributing)
 
@@ -27,20 +26,6 @@
 - **Terminal purists** who want speed and minimalism without sacrificing UI polish
 - **Project meow cats** aiming for a consistent setup across macOS and Linux
 - **Automation enthusiasts** who value lazy-loading, session persistence, and keymap discoverability
-
-## 🎬 See It in Action
-
-<div align="center">
-
-### Welcome Dashboard
-
-<img src="assets/screenshot_dashboard.png" alt="meowvim dashboard" width="800">
-
-### Focused Editing
-
-<img src="assets/screenshot_editor.png" alt="meowvim editor" width="800">
-
-</div>
 
 ## ✨ Key Features
 
@@ -61,7 +46,7 @@
 ### 🚀 Productivity & Navigation
 
 - **Flash-powered motion** (`<leader><leader>`) and Snacks fuzzy finders for files, buffers, and commands
-- **LazyGit integration** with automatic theme synchronization (`<leader>gg`)
+- **LazyGit integration** (`<leader>gg`)
 - **Bookmark system** for quick navigation across projects (`<leader>mm`, `<leader>mi`)
 - **Code screenshots** via Silicon with syntax highlighting (`<leader>cs`)
 - **Auto buffer management** to keep workspace tidy (configurable thresholds)

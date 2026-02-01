@@ -46,8 +46,7 @@ return {
     
     return {
     dashboard = {
-      width = 44,
-      pane_gap = 4,
+      width = 52,
       preset = {
         keys = {
           { icon = " ", key = "p", desc = "Open Project", action = ":lua Snacks.dashboard.pick('projects')" },
@@ -60,34 +59,10 @@ return {
 -------]],
       },
       sections = {
-        {
-          pane = 1,
-          height = 17,
-          width = 40,
-          padding = 1,
-          section = "terminal",
-          cmd = "~/.config/nvim/scripts/icon.sh",
-        },
-        {
-          pane = 2,
-          {
-            section = "header",
-            padding = 1,
-          },
-          {
-            section = "projects",
-            padding = 1,
-          },
-          {
-            section = "keys",
-            gap = 0,
-            padding = 1,
-          },
-          {
-            section = "startup",
-            padding = 1,
-          },
-        },
+        { section = "header", padding = 1 },
+        { section = "projects", padding = 1 },
+        { section = "keys", gap = 0, padding = 1 },
+        { section = "startup", padding = 1 },
       },
     },
 
