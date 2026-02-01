@@ -60,6 +60,8 @@ opt.clipboard:append("unnamedplus")
 opt.mouse = "a"
 opt.mousefocus = true
 
+-- Folding configuration (overridden by nvim-ufo plugin when loaded)
+-- Defaults to treesitter-based folding as fallback
 opt.foldmethod = "expr"
 opt.foldexpr = "nvim_treesitter#foldexpr()"
 opt.foldcolumn = "1"

@@ -123,16 +123,30 @@ return {
       vim.fn.sign_define("DiagnosticSign" .. type, { text = icon, texthl = "DiagnosticSign" .. type, numhl = "" })
     end
 
-    vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
-    vim.lsp.handlers["textDocument/signatureHelp"] =
-      vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
+    -- Configure global LSP handlers for hover and signature help
+    -- These apply to all LSP clients
+    vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
+      vim.lsp.handlers.hover, 
+      { border = "rounded" }
+    )
+    vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
+      vim.lsp.handlers.signature_help, 
+      { border = "rounded" }
+    )
 
-    local caps = vim.lsp.protocol.make_client_capabilities()
-    caps.textDocument.semanticTokens = { dynamicRegistration = true }
-    caps = require("cmp_nvim_lsp").default_capabilities(caps)
+    -- Build capabilities from nvim-cmp defaults
+    local caps = require("cmp_nvim_lsp").default_capabilities()
+    -- Enable semantic tokens (supported in Neovim 0.11+)
+    -- Semantic tokens provide enhanced syntax highlighting based on LSP semantic information
+    -- See :h lsp-semantic-highlight for more details
+    caps.textDocument.semanticTokens = vim.tbl_deep_extend("force", 
+      caps.textDocument.semanticTokens or {},
+      { dynamicRegistration = true }
+    )
 
     local on_attach = function(client, bufnr)
-      vim.bo[bufnr].omnifunc = "v:lua.vim.lsp.omnifunc"
+      -- Note: Neovim 0.11+ sets omnifunc automatically as a buffer-local default
+      -- Only override if you need custom behavior
       
       -- Enable inlay hints for supported servers (gopls, rust-analyzer, ts_ls, etc.)
       -- Provides inline type information and parameter names
@@ -144,9 +158,11 @@ return {
       -- - Triggers excessive LSP requests on CursorHold/InsertLeave events
       -- - Causes UI lag on medium-to-large codebases
       -- - Visual clutter in the editor
-      -- To re-enable per-buffer: vim.lsp.codelens.refresh()
+      -- To re-enable per-buffer: vim.lsp.codelens.refresh({ bufnr = bufnr })
     end
 
+    -- User command for organizing imports in TypeScript/JavaScript files
+    -- Uses the ts_ls (TypeScript Language Server) custom command
     vim.api.nvim_create_user_command("LspOrganize", function()
       local clients = vim.lsp.get_clients({ bufnr = 0, name = "ts_ls" })
       if #clients == 0 then
@@ -157,10 +173,16 @@ return {
       local params = {
         command = "_typescript.organizeImports",
         arguments = { vim.api.nvim_buf_get_name(0) },
-        title = "",
+        title = "Organize Imports",
       }
-      vim.lsp.buf_request(0, "workspace/executeCommand", params)
-    end, { desc = "Organize Imports", force = true })
+      
+      -- Use the new buf_request API (compatible with Neovim 0.11+)
+      vim.lsp.buf_request(0, "workspace/executeCommand", params, function(err, result, ctx, config)
+        if err then
+          vim.notify("Error organizing imports: " .. vim.inspect(err), vim.log.levels.ERROR)
+        end
+      end)
+    end, { desc = "Organize Imports (TypeScript/JavaScript)", force = true })
 
     local server_settings = {
       lua_ls = {
@@ -176,6 +198,10 @@ return {
         filetypes = { "sh", "bash", "zsh" },
       },
       gopls = {
+        -- Override root_dir to avoid async issues with vim.lsp.config()
+        -- Use root_markers instead for the new API
+        root_markers = { 'go.work', 'go.mod', '.git' },
+        filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
         settings = {
           gopls = {
             gofumpt = true,
@@ -314,6 +340,8 @@ return {
       automatic_installation = false,
     })
 
+    local lspconfig = require("lspconfig")
+
     local function setup_server(server_name)
       if optional_servers[server_name] and not package_supported(server_name) then
         return
@@ -330,7 +358,31 @@ return {
         end
       end
 
-      vim.lsp.config(server_name, server_opts)
+      -- Use the new Neovim 0.11+ API: vim.lsp.config() + vim.lsp.enable()
+      -- This is the recommended approach for LSP configuration
+      local lspconfig = require("lspconfig")
+      local server = lspconfig[server_name]
+      
+      -- Get default config from lspconfig if available
+      local default_config = {}
+      if server and server.document_config and server.document_config.default_config then
+        default_config = vim.tbl_extend("force", {}, server.document_config.default_config)
+        
+        -- Remove problematic async root_dir functions that don't work with vim.lsp.config()
+        -- The new API prefers root_markers instead
+        if default_config.root_dir and type(default_config.root_dir) == "function" then
+          -- Only keep root_dir if server_opts doesn't provide root_markers
+          if server_opts.root_markers then
+            default_config.root_dir = nil
+          end
+        end
+      end
+      
+      -- Merge with our custom config (server_opts takes precedence)
+      local final_config = vim.tbl_deep_extend("force", default_config, server_opts)
+      
+      -- Register with vim.lsp.config and enable
+      vim.lsp.config(server_name, final_config)
       vim.lsp.enable(server_name)
     end
 
@@ -346,14 +398,29 @@ return {
       end
     end
 
-    vim.lsp.config("gdscript", {
-      capabilities = caps,
-      on_attach = on_attach,
-    })
-    vim.lsp.enable("gdscript")
+    -- Setup GDScript LSP (for Godot engine)
+    -- Uses the new vim.lsp.config + vim.lsp.enable API
+    do
+      local lspconfig = require("lspconfig")
+      local gd_default = {}
+      local gd_server = lspconfig.gdscript
+      if gd_server and gd_server.document_config and gd_server.document_config.default_config then
+        gd_default = gd_server.document_config.default_config
+      end
+      
+      local gdscript_config = vim.tbl_deep_extend("force", {}, gd_default, {
+        capabilities = caps,
+        on_attach = on_attach,
+      })
+      
+      vim.lsp.config("gdscript", gdscript_config)
+      vim.lsp.enable("gdscript")
+    end
 
+    -- Setup Roslyn LSP for C# (if supported on this platform)
     if package_supported("roslyn") then
-      vim.lsp.config("roslyn", {
+      local roslyn_config = {
+        capabilities = caps,
         on_attach = on_attach,
         settings = {
           ["csharp|inlay_hints"] = {
@@ -364,7 +431,9 @@ return {
             dotnet_enable_references_code_lens = true,
           },
         },
-      })
+      }
+      
+      vim.lsp.config("roslyn", roslyn_config)
       vim.lsp.enable("roslyn")
     end
 
