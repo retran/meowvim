@@ -210,6 +210,57 @@ local kanagawa = {
   end,
 }
 
+-- Everforest theme
+local everforest = {
+  "neanias/everforest-nvim",
+  priority = 1000,
+  lazy = false,
+  config = function()
+    local theme, variant, transparency = get_config_theme()
+    
+    if theme ~= "everforest" then
+      return
+    end
+
+    -- Parse variant: format is "background_style" (e.g., "dark_hard", "light_soft")
+    -- Variants: hard, medium, soft for both dark and light backgrounds
+    local background = "dark"
+    local style = "medium"
+    
+    if variant then
+      if variant:match("^light") then
+        background = "light"
+        style = variant:gsub("^light_", "")
+      elseif variant:match("^dark") then
+        background = "dark"
+        style = variant:gsub("^dark_", "")
+      else
+        -- If just "hard", "medium", or "soft", use dark background
+        style = variant
+      end
+    end
+
+    require("everforest").setup({
+      background = background, -- "dark" or "light"
+      transparent_background_level = transparency > 0 and 2 or 0,
+      italics = true,
+      disable_italic_comments = false,
+      sign_column_background = "none",
+      ui_contrast = style, -- "hard", "medium", "soft"
+      dim_inactive_windows = false,
+      diagnostic_text_highlight = false,
+      diagnostic_virtual_text = "coloured",
+      diagnostic_line_highlight = false,
+      spell_foreground = false,
+      show_eob = true,
+      float_style = "bright",
+    })
+    
+    vim.o.background = background
+    vim.cmd.colorscheme("everforest")
+  end,
+}
+
 -- Return all themes
 return {
   catppuccin,
@@ -218,4 +269,5 @@ return {
   gruvbox,
   nord,
   kanagawa,
+  everforest,
 }

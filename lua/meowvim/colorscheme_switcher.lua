@@ -14,6 +14,7 @@ local themes = {
   gruvbox = { "medium", "hard", "soft" },
   nord = {},
   kanagawa = { "wave", "dragon", "lotus" },
+  everforest = { "dark_hard", "dark_medium", "dark_soft", "light_hard", "light_medium", "light_soft" },
 }
 
 local function get_all_theme_options()
@@ -87,6 +88,42 @@ local function apply_theme(theme, variant)
       transparent = false,
     })
     vim.cmd.colorscheme("kanagawa")
+  elseif theme == "everforest" then
+    -- Parse variant: format is "background_style" (e.g., "dark_hard", "light_soft")
+    local background = "dark"
+    local style = "medium"
+    
+    if variant then
+      if variant:match("^light") then
+        background = "light"
+        style = variant:gsub("^light_", "")
+      elseif variant:match("^dark") then
+        background = "dark"
+        style = variant:gsub("^dark_", "")
+      else
+        -- If just "hard", "medium", or "soft", use dark background
+        style = variant
+      end
+    end
+    
+    require("everforest").setup({
+      background = background,
+      transparent_background_level = 0,
+      italics = true,
+      disable_italic_comments = false,
+      sign_column_background = "none",
+      ui_contrast = style,
+      dim_inactive_windows = false,
+      diagnostic_text_highlight = false,
+      diagnostic_virtual_text = "coloured",
+      diagnostic_line_highlight = false,
+      spell_foreground = false,
+      show_eob = true,
+      float_style = "bright",
+    })
+    
+    vim.o.background = background
+    vim.cmd.colorscheme("everforest")
   end
 end
 
