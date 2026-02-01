@@ -233,16 +233,23 @@ function M.toggle()
   local current_variant = config.get("core.variant", "mocha")
   local day_theme = config.get("core.day_theme", "catppuccin")
   local day_variant = config.get("core.day_variant", "latte")
+  local night_theme = config.get("core.night_theme", "catppuccin")
+  local night_variant = config.get("core.night_variant", "mocha")
   
-  -- Check if currently on day theme
+  -- Check if currently on day or night theme
   local is_day = (current_theme == day_theme and current_variant == day_variant)
+  local is_night = (current_theme == night_theme and current_variant == night_variant)
   
   if is_day then
     -- Switch to night
     apply_mode_theme("night")
     vim.notify("Switched to night theme", vim.log.levels.INFO)
-  else
+  elseif is_night then
     -- Switch to day
+    apply_mode_theme("day")
+    vim.notify("Switched to day theme", vim.log.levels.INFO)
+  else
+    -- Not on either theme, default to day
     apply_mode_theme("day")
     vim.notify("Switched to day theme", vim.log.levels.INFO)
   end
