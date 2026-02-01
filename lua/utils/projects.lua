@@ -54,6 +54,26 @@ local function parse_meowvim_config(content)
             theme = strip_balanced_quotes(theme)
             current_project.theme = theme
           end
+          local day_theme = line:match("^%s*day_theme:%s*(.+)%s*$")
+          if day_theme and current_project then
+            day_theme = strip_balanced_quotes(day_theme)
+            current_project.day_theme = day_theme
+          end
+          local day_variant = line:match("^%s*day_variant:%s*(.+)%s*$")
+          if day_variant and current_project then
+            day_variant = strip_balanced_quotes(day_variant)
+            current_project.day_variant = day_variant
+          end
+          local night_theme = line:match("^%s*night_theme:%s*(.+)%s*$")
+          if night_theme and current_project then
+            night_theme = strip_balanced_quotes(night_theme)
+            current_project.night_theme = night_theme
+          end
+          local night_variant = line:match("^%s*night_variant:%s*(.+)%s*$")
+          if night_variant and current_project then
+            night_variant = strip_balanced_quotes(night_variant)
+            current_project.night_variant = night_variant
+          end
           local command = line:match("^%s*command:%s*(.+)%s*$")
           if command and current_project then
             command = strip_balanced_quotes(command)
@@ -162,7 +182,40 @@ function M.get_theme_for_cwd()
 end
 
 function M.apply_theme_for_path(path)
-  local theme = M.get_theme_for_path(path)
+  local project = M.get_project_for_path(path)
+  if not project then
+    return
+  end
+  
+  -- Support day/night theme configuration
+  if project.day_theme or project.night_theme then
+    local config_ok, config = pcall(require, "meowvim.config")
+    if config_ok then
+      -- Apply day/night themes if specified
+      if project.day_theme then
+        config.set("core.day_theme", project.day_theme)
+        if project.day_variant then
+          config.set("core.day_variant", project.day_variant)
+        end
+      end
+      if project.night_theme then
+        config.set("core.night_theme", project.night_theme)
+        if project.night_variant then
+          config.set("core.night_variant", project.night_variant)
+        end
+      end
+      
+      -- Apply current mode theme
+      local day_night_ok, day_night = pcall(require, "meowvim.day_night")
+      if day_night_ok then
+        day_night.apply_current_mode()
+      end
+    end
+    return
+  end
+  
+  -- Legacy: support single theme field (catppuccin variants only)
+  local theme = project.theme
   if theme and vim.tbl_contains({ "latte", "frappe", "macchiato", "mocha" }, theme) then
     local ok, catppuccin = pcall(require, "catppuccin")
     if ok then
