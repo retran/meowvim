@@ -31,10 +31,15 @@ local function get_all_theme_options()
       end
     end
   end
+  -- Sort options for consistent ordering
+  table.sort(options, function(a, b)
+    return a.display < b.display
+  end)
   return options
 end
 
 local function apply_theme(theme, variant)
+  -- Update config if available
   local config_ok, config = pcall(require, "meowvim.config")
   if config_ok then
     config.set("core.theme", theme)
@@ -43,58 +48,124 @@ local function apply_theme(theme, variant)
     end
   end
   
-  -- Apply the theme
+  -- Apply theme-specific configuration
   if theme == "catppuccin" then
-    vim.g.catppuccin_flavour = variant or "mocha"
+    require("catppuccin").setup({
+      flavour = variant or "mocha",
+      transparent_background = false,
+    })
     vim.cmd.colorscheme("catppuccin")
   elseif theme == "tokyonight" then
+    require("tokyonight").setup({
+      style = variant or "storm",
+      transparent = false,
+    })
     vim.cmd.colorscheme("tokyonight")
   elseif theme == "rose-pine" then
+    require("rose-pine").setup({
+      variant = variant or "main",
+      styles = {
+        transparency = false,
+      },
+    })
     vim.cmd.colorscheme("rose-pine")
   elseif theme == "gruvbox" then
+    require("gruvbox").setup({
+      contrast = variant or "medium",
+      transparent_mode = false,
+    })
+    vim.o.background = "dark"
     vim.cmd.colorscheme("gruvbox")
   elseif theme == "nord" then
+    vim.g.nord_contrast = true
+    vim.g.nord_borders = true
+    vim.g.nord_disable_background = false
     vim.cmd.colorscheme("nord")
   elseif theme == "kanagawa" then
+    require("kanagawa").setup({
+      theme = variant or "wave",
+      transparent = false,
+    })
     vim.cmd.colorscheme("kanagawa")
   end
 end
 
 function M.select()
   local options = get_all_theme_options()
-  local displays = vim.tbl_map(function(opt)
-    return opt.display
-  end, options)
   
-  -- Save current theme
+  -- Save current theme for cancel/restore
   local config_ok, config = pcall(require, "meowvim.config")
   local original_theme = config_ok and config.get("core.theme", "catppuccin") or "catppuccin"
   local original_variant = config_ok and config.get("core.variant", "mocha") or "mocha"
   
-  -- Use vim.ui.select with live preview
-  vim.ui.select(displays, {
-    prompt = "Select colorscheme:",
-    format_item = function(item)
-      return "  " .. item
-    end,
-  }, function(choice, idx)
-    if choice and idx then
-      local selected = options[idx]
-      apply_theme(selected.theme, selected.variant)
-      
-      -- Persist the choice
-      if config_ok then
-        local user_config_path = vim.fn.expand("~/.config/meowvim/config.lua")
-        vim.notify(
-          string.format("Colorscheme set to %s. Update %s to persist.", choice, user_config_path),
-          vim.log.levels.INFO
-        )
+  -- Use Snacks picker for live preview
+  local snacks_ok, snacks = pcall(require, "snacks")
+  if snacks_ok and snacks.picker then
+    snacks.picker.pick({
+      prompt = "Select colorscheme:",
+      items = options,
+      format = function(item)
+        return item.display
+      end,
+      preview = function(item, ctx)
+        if item then
+          apply_theme(item.theme, item.variant)
+        end
+      end,
+      confirm = function(item)
+        if item then
+          apply_theme(item.theme, item.variant)
+          
+          -- Notify user
+          local user_config_path = vim.fn.expand("~/.config/meowvim/config.lua")
+          vim.notify(
+            string.format(
+              "Colorscheme set to %s. Edit %s to persist.",
+              item.display,
+              user_config_path
+            ),
+            vim.log.levels.INFO
+          )
+        else
+          -- Restore original theme if cancelled
+          apply_theme(original_theme, original_variant)
+        end
+      end,
+      cancel = function()
+        -- Restore original theme on cancel
+        apply_theme(original_theme, original_variant)
+      end,
+    })
+  else
+    -- Fallback to vim.ui.select (no preview)
+    local displays = vim.tbl_map(function(opt)
+      return opt.display
+    end, options)
+    
+    vim.ui.select(displays, {
+      prompt = "Select colorscheme:",
+      format_item = function(item)
+        return "  " .. item
+      end,
+    }, function(choice, idx)
+      if choice and idx then
+        local selected = options[idx]
+        apply_theme(selected.theme, selected.variant)
+        
+        -- Notify user
+        if config_ok then
+          local user_config_path = vim.fn.expand("~/.config/meowvim/config.lua")
+          vim.notify(
+            string.format("Colorscheme set to %s. Edit %s to persist.", choice, user_config_path),
+            vim.log.levels.INFO
+          )
+        end
+      else
+        -- Restore original theme if cancelled
+        apply_theme(original_theme, original_variant)
       end
-    else
-      -- Restore original theme if cancelled
-      apply_theme(original_theme, original_variant)
-    end
-  end)
+    end)
+  end
 end
 
 -- Preview on cursor move (for telescope integration)
