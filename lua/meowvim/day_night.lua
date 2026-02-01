@@ -265,35 +265,71 @@ end
 -- Set theme pair for day/night modes
 function M.set_day_theme(theme, variant)
   local config_ok, config = pcall(require, "meowvim.config")
-  if config_ok then
-    config.set("core.day_theme", theme)
-    if variant then
-      config.set("core.day_variant", variant)
-    end
-    config.persist()
+  if not config_ok then
+    return
   end
   
-  -- If currently in day mode, apply immediately
-  local current_mode = M.get_effective_mode()
-  if current_mode == "day" then
-    M.apply_current_mode()
+  -- Get current state BEFORE changing config
+  local current_theme = config.get("core.theme", "catppuccin")
+  local current_variant = config.get("core.variant", "mocha")
+  local old_day_theme = config.get("core.day_theme", "catppuccin")
+  local old_day_variant = config.get("core.day_variant", "latte")
+  local mode = config.get("core.day_night_mode", "manual")
+  
+  -- Update config
+  config.set("core.day_theme", theme)
+  if variant then
+    config.set("core.day_variant", variant)
+  end
+  config.persist()
+  
+  -- Check if we should apply immediately
+  if mode == "auto" then
+    -- In auto mode, check system appearance
+    local current_mode = M.get_effective_mode()
+    if current_mode == "day" then
+      apply_mode_theme("day")
+    end
+  else
+    -- In manual mode, check if currently on old day theme
+    if current_theme == old_day_theme and current_variant == old_day_variant then
+      apply_mode_theme("day")
+    end
   end
 end
 
 function M.set_night_theme(theme, variant)
   local config_ok, config = pcall(require, "meowvim.config")
-  if config_ok then
-    config.set("core.night_theme", theme)
-    if variant then
-      config.set("core.night_variant", variant)
-    end
-    config.persist()
+  if not config_ok then
+    return
   end
   
-  -- If currently in night mode, apply immediately
-  local current_mode = M.get_effective_mode()
-  if current_mode == "night" then
-    M.apply_current_mode()
+  -- Get current state BEFORE changing config
+  local current_theme = config.get("core.theme", "catppuccin")
+  local current_variant = config.get("core.variant", "mocha")
+  local old_night_theme = config.get("core.night_theme", "catppuccin")
+  local old_night_variant = config.get("core.night_variant", "mocha")
+  local mode = config.get("core.day_night_mode", "manual")
+  
+  -- Update config
+  config.set("core.night_theme", theme)
+  if variant then
+    config.set("core.night_variant", variant)
+  end
+  config.persist()
+  
+  -- Check if we should apply immediately
+  if mode == "auto" then
+    -- In auto mode, check system appearance
+    local current_mode = M.get_effective_mode()
+    if current_mode == "night" then
+      apply_mode_theme("night")
+    end
+  else
+    -- In manual mode, check if currently on old night theme
+    if current_theme == old_night_theme and current_variant == old_night_variant then
+      apply_mode_theme("night")
+    end
   end
 end
 
