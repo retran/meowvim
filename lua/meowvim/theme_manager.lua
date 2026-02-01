@@ -23,39 +23,102 @@ local function get_current_config()
   return mode, day_theme, day_variant, night_theme, night_variant, last_preset
 end
 
+-- Check if current theme config matches a preset
+local function get_effective_preset()
+  local mode, day_theme, day_variant, night_theme, night_variant, last_preset = get_current_config()
+  
+  -- If no preset was ever set, return nil
+  if not last_preset then
+    return nil
+  end
+  
+  -- Check if current config still matches the preset
+  local presets_ok, presets_module = pcall(require, "meowvim.day_night_presets")
+  if not presets_ok then
+    return last_preset
+  end
+  
+  local preset = presets_module.get_preset(last_preset)
+  if not preset then
+    return nil
+  end
+  
+  -- Compare current config with preset
+  if day_theme == preset.day_theme and 
+     day_variant == preset.day_variant and
+     night_theme == preset.night_theme and
+     night_variant == preset.night_variant then
+    return last_preset
+  end
+  
+  -- Config doesn't match preset anymore - user customized it
+  return "manual"
+end
+
 -- Main theme settings menu
 function M.show_menu()
   local mode, day_theme, day_variant, night_theme, night_variant, last_preset = get_current_config()
+  local effective_preset = get_effective_preset()
   
   -- Build menu header with current state
   local mode_display = mode:gsub("^%l", string.upper)
+  local preset_display = effective_preset or "none"
   local header = string.format(
-    "Current: %s mode | Day: %s (%s) | Night: %s (%s)",
+    "Theme Settings | Mode: %s | Preset: %s",
     mode_display,
-    day_theme,
-    day_variant or "default",
-    night_theme,
-    night_variant or "default"
+    preset_display
   )
   
+  -- Format theme/variant display
+  local function format_theme(theme, variant)
+    if variant and variant ~= "" then
+      return string.format("%s (%s)", theme, variant)
+    end
+    return theme
+  end
+  
   local options = {
-    { id = "preset", label = "Use preset (quick setup)", desc = "Choose from 9 ready-made theme pairs" },
-    { id = "day", label = "Configure day theme", desc = "Select light theme from 60+ options" },
-    { id = "night", label = "Configure night theme", desc = "Select dark theme from 60+ options" },
-    { id = "mode", label = "Change mode", desc = "Manual / Auto" },
+    { 
+      id = "preset", 
+      label = "Use preset", 
+      value = preset_display,
+      desc = "Choose from 9 ready-made theme pairs" 
+    },
+    { 
+      id = "day", 
+      label = "Day theme", 
+      value = format_theme(day_theme, day_variant),
+      desc = "Light theme for daytime" 
+    },
+    { 
+      id = "night", 
+      label = "Night theme", 
+      value = format_theme(night_theme, night_variant),
+      desc = "Dark theme for nighttime" 
+    },
+    { 
+      id = "mode", 
+      label = "Mode", 
+      value = mode_display,
+      desc = "Manual toggle or auto-sync with system" 
+    },
   }
   
-  -- Add reset option if a preset was used
-  if last_preset then
+  -- Add reset option if a preset was used and hasn't been customized
+  if last_preset and effective_preset ~= "manual" then
     table.insert(options, {
       id = "reset",
-      label = "Reset to preset default",
-      desc = string.format("Restore '%s' preset", last_preset)
+      label = "Reset to preset",
+      value = last_preset,
+      desc = "Restore original preset configuration"
     })
   end
   
   local displays = vim.tbl_map(function(opt)
-    return opt.label
+    -- Format with consistent width for alignment
+    local max_label_width = 12
+    local padding = string.rep(" ", math.max(0, max_label_width - #opt.label))
+    return string.format("%s%s: %s", opt.label, padding, opt.value)
   end, options)
   
   vim.ui.select(displays, {

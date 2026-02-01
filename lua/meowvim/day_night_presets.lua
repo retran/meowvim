@@ -113,6 +113,25 @@ M.presets = {
   },
 }
 
+-- Get preset details
+function M.get_preset(preset_name)
+  if not preset_name then
+    return nil
+  end
+  
+  local preset = M.presets[preset_name]
+  if not preset then
+    return nil
+  end
+  
+  return {
+    day_theme = preset.day.theme,
+    day_variant = preset.day.variant,
+    night_theme = preset.night.theme,
+    night_variant = preset.night.variant,
+  }
+end
+
 -- Apply a preset
 function M.apply_preset(preset_name)
   local preset = M.presets[preset_name]
@@ -162,6 +181,10 @@ end
 
 -- Interactive preset selector
 function M.select_preset()
+  -- Get current preset
+  local config_ok, config = pcall(require, "meowvim.config")
+  local current_preset = config_ok and config.get("core.last_preset", nil) or nil
+  
   local preset_names = {}
   local presets_list = {}
   
@@ -176,17 +199,18 @@ function M.select_preset()
   
   -- Create display strings
   for _, item in ipairs(presets_list) do
+    local indicator = item.key == current_preset and "● " or "  "
     local display = string.format(
-      "%s - %s (%s)",
+      "%s%s - %s",
+      indicator,
       item.preset.name,
-      item.preset.mood,
-      item.preset.description
+      item.preset.mood
     )
     table.insert(preset_names, { key = item.key, display = display })
   end
   
   vim.ui.select(preset_names, {
-    prompt = "Select day/night preset:",
+    prompt = string.format("Preset (current: %s)", current_preset or "none"),
     format_item = function(item)
       return "  " .. item.display
     end,

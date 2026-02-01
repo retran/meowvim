@@ -358,17 +358,21 @@ end
 
 -- Interactive mode selector
 function M.select_mode()
+  local config_ok, config = pcall(require, "meowvim.config")
+  local current_mode = config_ok and config.get("core.day_night_mode", "manual") or "manual"
+  
   local modes = {
-    { mode = "manual", desc = "Manual - toggle day/night with <leader>oK" },
-    { mode = "auto", desc = "Auto - sync with system appearance" },
+    { mode = "manual", desc = "toggle with <leader>oK" },
+    { mode = "auto", desc = "sync with system" },
   }
   
   local displays = vim.tbl_map(function(item)
-    return string.format("%s - %s", item.mode, item.desc)
+    local indicator = item.mode == current_mode and "● " or "  "
+    return string.format("%s%s - %s", indicator, item.mode:gsub("^%l", string.upper), item.desc)
   end, modes)
   
   vim.ui.select(displays, {
-    prompt = "Select day/night mode:",
+    prompt = string.format("Mode (current: %s)", current_mode),
     format_item = function(item)
       return "  " .. item
     end,
