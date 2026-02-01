@@ -8,19 +8,19 @@ local M = {}
 
 M.defaults = {
   core = {
-    theme = "everforest",
-    variant = "dark_medium",
+    theme = "catppuccin",
+    variant = "mocha",
     enable_copilot = false,
     leader_key = " ",
     update_check = true,
     -- Day/night mode settings
-    day_night_mode = "manual", -- "manual", "auto", "day", "night"
-    -- Everforest - recommended for Amsterdam weather (warm, easy on eyes)
-    day_theme = "everforest",
-    day_variant = "light_soft",
-    night_theme = "everforest",
-    night_variant = "dark_medium",
-    last_preset = "everforest", -- Track last applied preset for reset
+    day_night_mode = "manual", -- "manual", "auto"
+    -- Catppuccin - popular, modern, huge ecosystem
+    day_theme = "catppuccin",
+    day_variant = "latte",
+    night_theme = "catppuccin",
+    night_variant = "mocha",
+    last_preset = "catppuccin", -- Track last applied preset for reset
   },
 
   editor = {
