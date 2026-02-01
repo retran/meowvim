@@ -60,16 +60,9 @@ function M.show_menu()
   local mode, day_theme, day_variant, night_theme, night_variant, last_preset = get_current_config()
   local effective_preset = get_effective_preset()
   
-  -- Build menu header with current state
   local mode_display = mode:gsub("^%l", string.upper)
   local preset_display = effective_preset or "none"
-  local header = string.format(
-    "Theme Settings | Mode: %s | Preset: %s",
-    mode_display,
-    preset_display
-  )
   
-  -- Format theme/variant display
   local function format_theme(theme, variant)
     if variant and variant ~= "" then
       return string.format("%s (%s)", theme, variant)
@@ -105,14 +98,13 @@ function M.show_menu()
   }
   
   local displays = vim.tbl_map(function(opt)
-    -- Format with consistent width for alignment
     local max_label_width = 12
     local padding = string.rep(" ", math.max(0, max_label_width - #opt.label))
     return string.format("%s%s: %s", opt.label, padding, opt.value)
   end, options)
   
   vim.ui.select(displays, {
-    prompt = header,
+    prompt = "Theme Settings",
     format_item = function(item)
       return "  " .. item
     end,
