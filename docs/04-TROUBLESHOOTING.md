@@ -133,10 +133,29 @@ Place overrides in `after/plugin/keymaps.lua` to run after defaults. If which-ke
 - Sign out via `:Copilot signout` and retry authentication.
 - Check the Copilot status window (`:Copilot panel`) for logs.
 
-### Copilot suggestions missing
-- Inline suggestions are enabled by default; toggle them by editing `lua/plugins/copilot.lua`.
-- Make sure `copilot.lua` is enabled (see `lua/plugins/copilot.lua`).
-- Confirm you're in a supported filetype; Copilot is disabled in some contexts.
+### Copilot suggestions missing (no gray text)
+- Inline suggestions are auto-triggered by default (as you type).
+- Check if Copilot is enabled: `:Copilot status`
+- Enable if needed: `:Copilot enable`
+- Confirm you're in a supported filetype (disabled in git commits and help files).
+- Check `auto_trigger` is set to `true` in `lua/plugins/copilot.lua:19`.
+
+### Copilot suggestions not accepting
+- Use `<C-y>` to accept full suggestion (not Tab or Enter).
+- Use `<C-g>` to accept next word only.
+- Use `<C-n>/<C-p>` to cycle through alternative suggestions.
+- See [Copilot keymaps](KEYMAPS.md#completion--copilot) for complete reference.
+
+### Completion popup not showing
+- Trigger manually with `<C-Space>`.
+- Check LSP is attached: `:LspInfo`.
+- Ensure sources are configured in `lua/plugins/nvim-cmp.lua`.
+
+### Completion keymaps not working
+- Completion uses hjkl navigation: `<C-j>` (down), `<C-k>` (up), `<C-l>` (accept).
+- `<C-n>/<C-p>` are reserved for Copilot cycling, not completion navigation.
+- Tab always indents, Enter always creates newline (by design).
+- See [Completion keymaps](KEYMAPS.md#completion--copilot) for details.
 
 ## 9. Plugins Misbehaving
 

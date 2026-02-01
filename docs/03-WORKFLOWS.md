@@ -51,7 +51,7 @@ Code screenshot feature has been removed. Use external tools for screenshots.
 
 ## 4. Git & Review Workflow
 
-- `<leader>gg` — Launch LazyGit full TUI (auto theme sync).
+- `<leader>gg` — Launch LazyGit full TUI.
 - `<leader>gf` — LazyGit for current file history.
 - `<leader>gb` — Git blame line.
 - `<leader>gDo` — Open Diffview to compare branches or commits.
@@ -149,7 +149,7 @@ All themes support transparency and integrate with LazyGit, lualine, and other p
 
 - **Raycast** — Scripts under `bin/` let you open meowvim in terminal splits or project roots from Spotlight-like prompts.
 - **tmux** — Bind a key to `tmux split-window -v 'nvim'` and let sessions persist across terminals.
-- **LazyGit** — Use `<leader>gg` to launch LazyGit with auto theme synchronization.
+- **LazyGit** — Use `<leader>gg` to launch LazyGit.
 
 ---
 

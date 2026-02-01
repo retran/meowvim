@@ -9,7 +9,6 @@
 
 ### The purr-fect Neovim configuration for a cozy coding session. May or may not increase your productivity by a feline factor.
 
-<img src="assets/icon_small.png" alt="meowvim logo" width="200">
 
 [Overview](#-overview) • [See It in Action](#-see-it-in-action) • [Key Features](#-key-features) • [Installation](#-installation) • [Quick Start](#-quick-start) • [Documentation](#-documentation) • [Customization](#-customization) • [Troubleshooting](#-troubleshooting--support) • [Contributing](#-contributing)
 
@@ -28,20 +27,6 @@
 - **Project meow cats** aiming for a consistent setup across macOS and Linux
 - **Automation enthusiasts** who value lazy-loading, session persistence, and keymap discoverability
 
-## 🎬 See It in Action
-
-<div align="center">
-
-### Welcome Dashboard
-
-<img src="assets/screenshot_dashboard.png" alt="meowvim dashboard" width="800">
-
-### Focused Editing
-
-<img src="assets/screenshot_editor.png" alt="meowvim editor" width="800">
-
-</div>
-
 ## ✨ Key Features
 
 ### 🎨 Cozy Interface & UX
@@ -56,12 +41,12 @@
 
 - Auto-configured LSP servers with diagnostics, code actions, and symbol navigation
 - Treesitter-powered syntax highlighting, context display, and structural selection
-- Completion via `nvim-cmp`, snippet support with `LuaSnip`, and optional GitHub Copilot integration
+- Intuitive completion popup with hjkl navigation (`<C-j/k/l>`) and GitHub Copilot inline suggestions (`<C-y/g/n/p>`)
 
 ### 🚀 Productivity & Navigation
 
 - **Flash-powered motion** (`<leader><leader>`) and Snacks fuzzy finders for files, buffers, and commands
-- **LazyGit integration** with automatic theme synchronization (`<leader>gg`)
+- **LazyGit integration** (`<leader>gg`)
 - **Bookmark system** for quick navigation across projects (`<leader>mm`, `<leader>mi`)
 - **Code screenshots** via Silicon with syntax highlighting (`<leader>cs`)
 - **Auto buffer management** to keep workspace tidy (configurable thresholds)
@@ -86,7 +71,7 @@
 | ----------- | ------------------------------------------------------------------------ |
 | Required    | Neovim ≥ 0.11, Git, true-color capable terminal                          |
 | Recommended | Node.js ≥ 18, Python ≥ 3.8, Go ≥ 1.19, `ripgrep`, `fd`, `fzf`, Nerd Font |
-| Optional    | GitHub Copilot subscription, Raycast (for launcher scripts)     |
+| Optional    | GitHub Copilot subscription, Raycast (for launcher scripts)              |
 
 ### ⚡ Quick Install (fresh setup)
 

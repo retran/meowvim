@@ -104,7 +104,6 @@ end
 ~/.config/nvim/
 ├── init.lua                # Main entry point
 ├── after/                  # Optional local overrides (autoloaded)
-├── assets/                 # Icons, screenshots, dashboard art
 ├── bin/                    # Raycast launch scripts
 ├── docs/                   # Documentation den (you are here!)
 ├── lua/

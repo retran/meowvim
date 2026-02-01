@@ -21,6 +21,13 @@ opt.laststatus = 3
 opt.cmdheight = 1
 opt.showmode = false
 
+-- Cursor configuration
+opt.guicursor = {
+  "n-v-c:block-Cursor/lCursor",
+  "i-ci-ve:ver25-Cursor/lCursor",
+  "r-cr-o:hor20-Cursor/lCursor",
+}
+
 opt.tabstop = 2
 opt.shiftwidth = 2
 opt.expandtab = true
@@ -53,6 +60,8 @@ opt.clipboard:append("unnamedplus")
 opt.mouse = "a"
 opt.mousefocus = true
 
+-- Folding configuration (overridden by nvim-ufo plugin when loaded)
+-- Defaults to treesitter-based folding as fallback
 opt.foldmethod = "expr"
 opt.foldexpr = "nvim_treesitter#foldexpr()"
 opt.foldcolumn = "1"
@@ -67,6 +76,7 @@ opt.shortmess:append({ W = true, I = true, c = true, C = true })
 opt.sessionoptions = "buffers,curdir,folds,globals,tabpages,winpos,winsize,localoptions,resize"
 
 opt.title = true
+opt.titlelen = 70
 
 opt.titlestring = "meowvim - Purr-fect Neovim"
 
@@ -79,6 +89,19 @@ vim.fn.mkdir(spell_dir, "p")
 opt.spellfile = spell_dir .. "/en.utf-8.add"
 
 local spell_group = vim.api.nvim_create_augroup("meowvim-spell", { clear = true })
+
+-- Ensure cursor is visible if theme doesn't define it
+vim.api.nvim_create_autocmd("ColorScheme", {
+  group = vim.api.nvim_create_augroup("meowvim-cursor-fallback", { clear = true }),
+  callback = function()
+    -- Only set Cursor if theme hasn't defined it
+    local cursor_hl = vim.api.nvim_get_hl(0, { name = "Cursor" })
+    if not cursor_hl or (not cursor_hl.fg and not cursor_hl.bg and not cursor_hl.reverse) then
+      -- Theme didn't set Cursor, use reverse video as fallback
+      vim.api.nvim_set_hl(0, "Cursor", { reverse = true })
+    end
+  end,
+})
 
 local function enable_spell(bufnr, opts)
   opts = opts or {}

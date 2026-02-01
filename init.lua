@@ -97,4 +97,7 @@ if config_ok then
   require("meowvim.keymap_checker")
   require("meowvim.profiler")
   require("meowvim.startup_tracker")
+  require("meowvim.day_night").setup()
+  require("meowvim.day_night_presets").setup()
+  require("meowvim.theme_manager").setup()
 end

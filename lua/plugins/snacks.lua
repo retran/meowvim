@@ -46,8 +46,7 @@ return {
     
     return {
     dashboard = {
-      width = 44,
-      pane_gap = 4,
+      width = 52,
       preset = {
         keys = {
           { icon = " ", key = "p", desc = "Open Project", action = ":lua Snacks.dashboard.pick('projects')" },
@@ -60,34 +59,10 @@ return {
 -------]],
       },
       sections = {
-        {
-          pane = 1,
-          height = 17,
-          width = 40,
-          padding = 1,
-          section = "terminal",
-          cmd = "~/.config/nvim/scripts/icon.sh",
-        },
-        {
-          pane = 2,
-          {
-            section = "header",
-            padding = 1,
-          },
-          {
-            section = "projects",
-            padding = 1,
-          },
-          {
-            section = "keys",
-            gap = 0,
-            padding = 1,
-          },
-          {
-            section = "startup",
-            padding = 1,
-          },
-        },
+        { section = "header", padding = 1 },
+        { section = "projects", padding = 1 },
+        { section = "keys", gap = 0, padding = 1 },
+        { section = "startup", padding = 1 },
       },
     },
 
@@ -158,12 +133,11 @@ return {
             "~/dev",
             "~/projects",
           },
-          -- Configured projects from ~/.meowvim.yaml loaded at startup
-          -- These projects are shown first by the picker, prioritized over dev directories
+          -- Configured projects from ~/.config/meowvim/projects.lua
           projects = (function()
-            local ok, projects_util = pcall(require, "utils.projects")
+            local ok, config = pcall(require, "meowvim.config")
             if ok then
-              return projects_util.get_project_paths()
+              return config.get_project_paths()
             end
             return {}
           end)(),
@@ -200,13 +174,15 @@ return {
 
             vim.fn.chdir(dir)
 
-            -- Apply project-specific theme from ~/.meowvim.yaml
-            local ok, projects_util = pcall(require, "utils.projects")
+            -- Detect and apply project-specific settings, run on_open command
+            local ok, config = pcall(require, "meowvim.config")
             if ok then
-              projects_util.apply_theme_for_path(dir)
-              -- Run project-specific command (e.g., "Roslyn start")
-              -- Error handling is done internally by run_command_for_path
-              projects_util.run_command_for_path(dir)
+              local current_project = config.detect_current_project()
+              if current_project and current_project.on_open then
+                vim.defer_fn(function()
+                  vim.cmd(current_project.on_open)
+                end, 150)
+              end
             end
 
             local session = require("snacks").dashboard.sections.session()

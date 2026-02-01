@@ -1,38 +1,55 @@
 -- SPDX-License-Identifier: MIT
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
 
--- @file: lua/plugins/copilot.lua
--- @brief: GitHub Copilot AI code completion and assistance plugin configuration.
-
 return {
   "zbirenbaum/copilot.lua",
-  enabled = function()
-    local ok, config = pcall(require, "meowvim.config")
-    if ok then
-      return config.get("core.enable_copilot", false)
-    end
-    return vim.env.MEOW_ENABLE_COPILOT == "true"
-  end,
   cmd = "Copilot",
   event = "InsertEnter",
   config = function()
+    local toggles_ok, toggles = pcall(require, "utils.toggles")
+    if toggles_ok then
+      toggles.ensure("copilot_enabled")
+    end
+    
+    local enabled = vim.g.copilot_enabled or false
+    
     require("copilot").setup({
       suggestion = {
         enabled = true,
         auto_trigger = true,
         keymap = {
-          accept = "<M-CR>",
-          next = "<M-n>",
-          prev = "<M-p>",
-          dismiss = "<M-e>",
+          accept = "<C-y>",
+          accept_word = "<C-g>",
+          accept_line = false,
+          next = "<C-n>",
+          prev = "<C-p>",
+          dismiss = "<Esc>",
         },
       },
       panel = {
-        enabled = false,
+        enabled = true,
+        auto_refresh = false,
         keymap = {
-          open = false,
+          jump_prev = "[[",
+          jump_next = "]]",
+          accept = "<CR>",
+          refresh = "gr",
+          open = "<M-CR>",
         },
       },
+      filetypes = {
+        help = false,
+        gitcommit = false,
+        gitrebase = false,
+        hgcommit = false,
+        svn = false,
+        cvs = false,
+        ["."] = false,
+      },
     })
+    
+    if not enabled then
+      vim.cmd("Copilot disable")
+    end
   end,
 }

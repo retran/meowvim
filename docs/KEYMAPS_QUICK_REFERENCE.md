@@ -59,6 +59,29 @@ Quick reference card for the most commonly used keymaps in meowvim.
 | `<leader>cd` | Show diagnostics |
 | `<leader>ch` | Line diagnostics |
 
+## ✨ Completion & AI
+
+### Completion Popup
+
+| Key | Action |
+|-----|--------|
+| `<C-j>` | Next item (↓) |
+| `<C-k>` | Previous item (↑) |
+| `<C-l>` | Accept completion |
+| `<C-Space>` | Trigger manually |
+| `<Esc>` | Dismiss |
+
+### Copilot (Inline)
+
+| Key | Action |
+|-----|--------|
+| `<C-y>` | Accept suggestion |
+| `<C-g>` | Accept word |
+| `<C-n>` | Next alternative |
+| `<C-p>` | Previous alternative |
+
+**Note:** Tab indents, Enter creates newline (never intercepted)
+
 ### 🦀 Rust (Cargo.toml)
 
 | Key | Action |
@@ -126,6 +149,8 @@ Quick reference card for the most commonly used keymaps in meowvim.
 | Key | Action |
 |-----|--------|
 | `jj` | Exit insert mode |
+| `<Tab>` | Indent / Snippet jump |
+| `<CR>` | New line (always) |
 | `p` / `P` | Paste after/before |
 | `Alt+n` / `Alt+p` | Cycle yank history |
 | `<leader>uu` | Undo history |
@@ -142,8 +167,10 @@ Quick reference card for the most commonly used keymaps in meowvim.
 ## 💡 Tips
 
 - Leader key is `<space>`
-- Use `<leader>ohk` to search all keymaps interactively
-- Most keymaps work in visual mode too
+- Use `<leader>hk` to search all keymaps interactively
+- Completion uses hjkl (`<C-j/k/l>`), Copilot uses `<C-y/g/n/p>`
+- `<C-n>/<C-p>` are reserved for Copilot, not completion
+- Tab always indents, Enter always creates newline
 - Flash jump (`<leader><leader>`) is your friend for quick navigation
 - f/t movements also show visual jump labels like Flash
 

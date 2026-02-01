@@ -1,6 +1,37 @@
 -- SPDX-License-Identifier: MIT
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
 
+-- FINAL CTRL-BASED KEYMAPS (Conflict-checked ✅)
+--
+-- COMPLETION POPUP (hjkl-based navigation):
+--   <C-j>      - Next completion item (↓)
+--   <C-k>      - Previous completion item (↑)
+--   <C-l>      - Accept completion (→)
+--   <C-b>      - Scroll docs up
+--   <C-f>      - Scroll docs down
+--   <C-Space>  - Trigger completion manually
+--
+-- COPILOT (separate - inline gray text, NEVER used by popup):
+--   <C-y>      - Accept full Copilot suggestion
+--   <C-g>      - Accept next word
+--   <C-n>      - Next Copilot suggestion (reserved for Copilot only)
+--   <C-p>      - Previous Copilot suggestion (reserved for Copilot only)
+--
+-- DISMISS (universal):
+--   <Esc>      - Dismiss everything (popup + Copilot)
+--
+-- NORMAL BEHAVIOR PRESERVED:
+--   <Tab>      - Indent / Expand snippet / Jump placeholder
+--   <S-Tab>    - Dedent / Jump back in snippet
+--   <CR>       - New line (always)
+--
+-- Sources (in priority order):
+--   1. LSP (language server)
+--   2. LuaSnip (snippets)
+--   3. Path (file paths)
+--   4. Spell (spelling)
+--   5. Buffer (current buffer words)
+
 local function get_dependencies()
   local deps = {
     "hrsh7th/cmp-nvim-lsp",
@@ -31,7 +62,6 @@ return {
         mode = "symbol_text",
         maxwidth = 50,
         ellipsis_char = "...",
-        symbol_map = { Copilot = "" },
       })(entry, vim_item)
 
       local kind = vim_item.kind
@@ -83,27 +113,59 @@ return {
         format = format_kinds,
       },
       mapping = cmp.mapping.preset.insert({
-        ["<C-n>"] = cmp.mapping(function(fallback)
+        -- hjkl-based navigation for completion
+        ["<C-j>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
             cmp.select_next_item()
           else
             fallback()
           end
         end, { "i", "s" }),
-        ["<C-p>"] = cmp.mapping(function(fallback)
+        
+        ["<C-k>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
             cmp.select_prev_item()
           else
             fallback()
           end
         end, { "i", "s" }),
-        ["<Tab>"] = cmp.mapping(function(fallback)
-          if luasnip.expand_or_locally_jumpable() then
-            luasnip.expand_or_jump()
+        
+        -- Disable C-n/C-p for popup (reserved for Copilot)
+        ["<C-n>"] = cmp.mapping(function(fallback)
+          fallback() -- Always pass through to Copilot
+        end, { "i", "s" }),
+        
+        ["<C-p>"] = cmp.mapping(function(fallback)
+          fallback() -- Always pass through to Copilot
+        end, { "i", "s" }),
+        
+        -- <C-l> accepts completion (move right/forward)
+        ["<C-l>"] = cmp.mapping(function(fallback)
+          if cmp.visible() then
+            cmp.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = true })
           else
             fallback()
           end
         end, { "i", "s" }),
+        
+        -- Esc dismisses everything (popup AND Copilot via fallback)
+        ["<Esc>"] = cmp.mapping(function(fallback)
+          if cmp.visible() then
+            cmp.abort()
+          end
+          -- Always fallback for Copilot dismiss and normal Esc behavior
+          fallback()
+        end, { "i", "s" }),
+        
+        -- Tab/Enter remain normal (snippet handling only)
+        ["<Tab>"] = cmp.mapping(function(fallback)
+          if luasnip.locally_jumpable(1) then
+            luasnip.jump(1)
+          else
+            fallback() -- Normal tab/indent
+          end
+        end, { "i", "s" }),
+        
         ["<S-Tab>"] = cmp.mapping(function(fallback)
           if luasnip.jumpable(-1) then
             luasnip.jump(-1)
@@ -111,15 +173,13 @@ return {
             fallback()
           end
         end, { "i", "s" }),
+        
+        -- Enter always creates newline
         ["<CR>"] = cmp.mapping(function(fallback)
-          if cmp.visible() and cmp.get_selected_entry() then
-            cmp.confirm({ select = true, behavior = cmp.ConfirmBehavior.Replace })
-          else
-            fallback()
-          end
+          fallback()
         end, { "i", "s" }),
-        ["<Esc>"] = cmp.mapping.abort(),
-        ["<C-e>"] = cmp.mapping.abort(),
+        
+        -- Other
         ["<C-b>"] = cmp.mapping.scroll_docs(-4),
         ["<C-f>"] = cmp.mapping.scroll_docs(4),
         ["<C-Space>"] = cmp.mapping.complete(),

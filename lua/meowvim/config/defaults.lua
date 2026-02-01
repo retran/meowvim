@@ -13,6 +13,14 @@ M.defaults = {
     enable_copilot = false,
     leader_key = " ",
     update_check = true,
+    -- Day/night mode settings
+    day_night_mode = "auto", -- "manual", "auto"
+    -- Catppuccin - popular, modern, huge ecosystem
+    day_theme = "catppuccin",
+    day_variant = "latte",
+    night_theme = "catppuccin",
+    night_variant = "mocha",
+    last_preset = "catppuccin",
   },
 
   editor = {
@@ -103,6 +111,25 @@ M.defaults = {
       show_recent = 10,
       show_projects = 8,
     },
+  },
+
+  toggles = {
+    autoformat = true,
+    autosave = false,
+    copilot = false,
+    diagnostics = true,
+    inlay_hints = false,
+    lint = true,
+    mini_indentscope = true,
+    snacks_dim = false,
+    -- Vim options
+    cursorline = false,
+    hlsearch = true,
+    list = false,
+    number_mode = "relative", -- "off", "number", "relative"
+    signcolumn = "yes", -- "yes", "no", "auto"
+    spell = false,
+    wrap = false,
   },
 
   plugins = {},

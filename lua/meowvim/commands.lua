@@ -50,7 +50,8 @@ function M.setup()
 
   -- Edit projects config
   vim.api.nvim_create_user_command("MeowvimProjects", function()
-    vim.cmd("edit ~/.config/meowvim/projects.lua")
+    local config = require("meowvim.config")
+    vim.cmd("edit " .. vim.fn.fnameescape(config.get_projects_path()))
   end, {
     desc = "Edit projects configuration",
   })
