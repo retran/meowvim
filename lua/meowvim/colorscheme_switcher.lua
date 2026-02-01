@@ -113,12 +113,24 @@ function M.select()
       local selected = options[idx]
       apply_theme(selected.theme, selected.variant)
       
-      -- Notify user
-      local user_config_path = vim.fn.expand("~/.config/meowvim/config.lua")
-      vim.notify(
-        string.format("Colorscheme set to %s. Edit %s to persist.", choice, user_config_path),
-        vim.log.levels.INFO
-      )
+      -- Persist to config file
+      if config_ok then
+        config.set("core.theme", selected.theme)
+        if selected.variant then
+          config.set("core.variant", selected.variant)
+        end
+        config.persist()
+        
+        vim.notify(
+          string.format("Colorscheme set to %s and saved to config.", choice),
+          vim.log.levels.INFO
+        )
+      else
+        vim.notify(
+          string.format("Colorscheme set to %s (not persisted).", choice),
+          vim.log.levels.WARN
+        )
+      end
     end
   end)
 end

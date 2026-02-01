@@ -382,4 +382,74 @@ function M.setup_watcher()
   watcher.watch("~/.config/meowvim/projects.lua")
 end
 
+-- Persist current configuration to user config file
+function M.persist()
+  if not _config then
+    M.init()
+  end
+
+  local config_path = get_config_path()
+  
+  -- Serialize config to Lua table format
+  local function serialize_value(val, indent)
+    indent = indent or 0
+    local spaces = string.rep("  ", indent)
+    
+    if type(val) == "string" then
+      return string.format("%q", val)
+    elseif type(val) == "number" or type(val) == "boolean" then
+      return tostring(val)
+    elseif type(val) == "table" then
+      local lines = { "{" }
+      local keys = vim.tbl_keys(val)
+      table.sort(keys, function(a, b)
+        -- Sort keys alphabetically, but keep certain keys at top
+        local priority = { core = 1, editor = 2, ui = 3, toggles = 4 }
+        local pa = priority[a] or 99
+        local pb = priority[b] or 99
+        if pa ~= pb then return pa < pb end
+        return tostring(a) < tostring(b)
+      end)
+      
+      for _, k in ipairs(keys) do
+        local v = val[k]
+        local key_str = type(k) == "string" and k or ("[" .. tostring(k) .. "]")
+        table.insert(lines, spaces .. "  " .. key_str .. " = " .. serialize_value(v, indent + 1) .. ",")
+      end
+      table.insert(lines, spaces .. "}")
+      return table.concat(lines, "\n")
+    else
+      return "nil"
+    end
+  end
+  
+  local content = "-- Meowvim Configuration\n"
+  content = content .. "-- See :h meowvim-config for full documentation\n\n"
+  content = content .. "return " .. serialize_value(_config, 0) .. "\n"
+  
+  -- Write to file
+  local file = io.open(config_path, "w")
+  if file then
+    file:write(content)
+    file:close()
+    
+    -- Clear cache
+    require("meowvim.config.cache").clear()
+    
+    vim.notify(
+      "Configuration saved to " .. config_path,
+      vim.log.levels.INFO,
+      { title = "Meowvim" }
+    )
+    return true
+  else
+    vim.notify(
+      "Failed to write configuration to " .. config_path,
+      vim.log.levels.ERROR,
+      { title = "Meowvim" }
+    )
+    return false
+  end
+end
+
 return M

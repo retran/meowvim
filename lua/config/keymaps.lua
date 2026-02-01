@@ -1064,6 +1064,22 @@ function M.setup()
         end,
         desc = "Toggle Copilot",
       },
+      {
+        "<leader>oP",
+        function()
+          -- Sync current toggles to config
+          toggles.sync_to_config()
+          
+          -- Persist config to file
+          local config = require("meowvim.config")
+          if config.persist() then
+            vim.notify("Settings persisted to ~/.config/meowvim/config.lua", vim.log.levels.INFO)
+          else
+            vim.notify("Failed to persist settings", vim.log.levels.ERROR)
+          end
+        end,
+        desc = "Persist Settings",
+      },
 
       -- Undo & Clipboard
       { "<leader>u", group = "Undo", icon = "" },
