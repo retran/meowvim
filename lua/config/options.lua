@@ -88,48 +88,16 @@ opt.spellfile = spell_dir .. "/en.utf-8.add"
 
 local spell_group = vim.api.nvim_create_augroup("meowvim-spell", { clear = true })
 
--- Fix cursor highlighting after colorscheme changes
-local cursor_group = vim.api.nvim_create_augroup("meowvim-cursor", { clear = true })
-
-local function fix_cursor_highlight()
-  -- Get Normal highlight colors
-  local normal = vim.api.nvim_get_hl(0, { name = "Normal" })
-  
-  -- Get fg and bg, with fallbacks
-  local fg = normal.fg
-  local bg = normal.bg
-  
-  -- If colors are missing, try to get them from other sources
-  if not fg or not bg then
-    -- Try getting from options
-    if vim.o.background == "light" then
-      fg = 0x000000  -- black text
-      bg = 0xFFFFFF  -- white background
-    else
-      fg = 0xFFFFFF  -- white text
-      bg = 0x000000  -- black background
-    end
-  end
-  
-  -- Set cursor highlights with swapped colors
-  -- Cursor bg = text color (fg), Cursor fg = background color (bg)
-  -- This creates a visible cursor with readable text
-  vim.api.nvim_set_hl(0, "Cursor", { fg = bg, bg = fg, blend = 0 })
-  vim.api.nvim_set_hl(0, "lCursor", { fg = bg, bg = fg, blend = 0 })
-  vim.api.nvim_set_hl(0, "TermCursor", { fg = bg, bg = fg, blend = 0 })
-  vim.api.nvim_set_hl(0, "TermCursorNC", { fg = bg, bg = fg, blend = 0 })
-end
-
+-- Ensure cursor is visible if theme doesn't define it
 vim.api.nvim_create_autocmd("ColorScheme", {
-  group = cursor_group,
-  callback = fix_cursor_highlight,
-})
-
--- Also fix cursor on startup
-vim.api.nvim_create_autocmd("VimEnter", {
-  group = cursor_group,
+  group = vim.api.nvim_create_augroup("meowvim-cursor-fallback", { clear = true }),
   callback = function()
-    vim.schedule(fix_cursor_highlight)
+    -- Only set Cursor if theme hasn't defined it
+    local cursor_hl = vim.api.nvim_get_hl(0, { name = "Cursor" })
+    if not cursor_hl or (not cursor_hl.fg and not cursor_hl.bg and not cursor_hl.reverse) then
+      -- Theme didn't set Cursor, use reverse video as fallback
+      vim.api.nvim_set_hl(0, "Cursor", { reverse = true })
+    end
   end,
 })
 
