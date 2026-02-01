@@ -69,9 +69,9 @@ local ICON_EXACT = {
   ["Install Tools"] = "󰚰",
   ["Jump"] = "",
   ["Jump to Match"] = "",
-  ["Jump to Match in All Windows"] = "",
-  ["Jump to Remote Target"] = "󰈣",
-  ["Jump to Treesitter Node"] = "󰉖",
+  ["All Windows"] = "",
+  ["Remote Target"] = "󰈣",
+  ["Treesitter Node"] = "󰉖",
   ["List Buffers"] = "󰕘",
   ["List Conflicts"] = "󰦻",
   ["List TODO Comments"] = "󰄴",
@@ -97,7 +97,7 @@ local ICON_EXACT = {
   ["Quit All"] = "󰅚",
   ["Refresh CodeLens"] = "",
   ["Refresh Conflicts"] = "",
-  ["Remove Word from Dictionary"] = "󰹙",
+  ["Remove from Dictionary"] = "󰹙",
   ["Remove Workspace Folder"] = "",
   ["Rename Buffer"] = "󰑕",
   ["Rename Symbol"] = "󰑕",
@@ -137,7 +137,7 @@ local ICON_EXACT = {
   ["Show Repository History"] = "󰋘",
   ["Show Test Output"] = "󰙨",
   ["Show Type Hierarchy (Subtypes)"] = "󰓼",
-  ["Show Type Hierarchy (Supertypes)"] = "󰓼",
+  ["Type Hierarchy (Super)"] = "󰓼",
   ["Show Undo History"] = "󰦓",
   ["Show Yank History"] = "",
   ["Split Window Horizontally"] = "󰤼",
@@ -478,7 +478,7 @@ function M.setup()
             spectre.open()
           end
         end,
-        desc = "Search and Replace Project",
+        desc = "Search and Replace",
         mode = { "n", "x" },
       },
       { "<leader>st", "<cmd>TodoTrouble<CR>", desc = "List TODO Comments" },
@@ -486,9 +486,9 @@ function M.setup()
       -- Flash Jump
       { "<leader><space>", flash_action("jump", false), desc = "Jump", mode = { "n", "x", "o" } },
       { "<leader>j", group = "Jump To", icon = "󰜈" },
-      { "<leader>jt", flash_action("treesitter"), desc = "Jump to Treesitter Node", mode = { "n", "x", "o" } },
-      { "<leader>ja", flash_action("jump", true), desc = "Jump to Match in All Windows", mode = { "n", "x", "o" } },
-      { "<leader>jm", flash_action("remote"), desc = "Jump to Remote Target", mode = { "n", "x", "o" } },
+      { "<leader>jt", flash_action("treesitter"), desc = "Treesitter Node", mode = { "n", "x", "o" } },
+      { "<leader>ja", flash_action("jump", true), desc = "All Windows", mode = { "n", "x", "o" } },
+      { "<leader>jm", flash_action("remote"), desc = "Remote Target", mode = { "n", "x", "o" } },
 
       -- Navigation
       { "<leader>n", group = "Navigate", icon = "󰹸" },
@@ -498,52 +498,52 @@ function M.setup()
         function()
           snacks.picker.lsp_declarations()
         end,
-        desc = "Navigate to Declaration",
+        desc = "Declaration",
       },
-      { "<leader>nr", glance_action("references"), desc = "Navigate to Reference" },
-      { "<leader>ni", glance_action("implementations"), desc = "Navigate to Implementation" },
-      { "<leader>nt", glance_action("type_definitions"), desc = "Navigate to Type Definition" },
+      { "<leader>nr", glance_action("references"), desc = "Reference" },
+      { "<leader>ni", glance_action("implementations"), desc = "Implementation" },
+      { "<leader>nt", glance_action("type_definitions"), desc = "Type Definition" },
       {
         "<leader>ns",
         function()
           snacks.picker.lsp_symbols()
         end,
-        desc = "Navigate to Document Symbol",
+        desc = "Document Symbol",
       },
       {
         "<leader>nw",
         function()
           snacks.picker.lsp_workspace_symbols()
         end,
-        desc = "Navigate to Workspace Symbol",
+        desc = "Workspace Symbol",
       },
       {
         "<leader>nh",
         function()
           require("meow.yarn").open_tree("type_hierarchy", "subtypes")
         end,
-        desc = "Show Type Hierarchy (Subtypes)",
+        desc = "Type Hierarchy (Subtypes)",
       },
       {
         "<leader>nH",
         function()
           require("meow.yarn").open_tree("type_hierarchy", "supertypes")
         end,
-        desc = "Show Type Hierarchy (Supertypes)",
+        desc = "Type Hierarchy (Super)",
       },
       {
         "<leader>nc",
         function()
           require("meow.yarn").open_tree("call_hierarchy", "callers")
         end,
-        desc = "Show Call Hierarchy (Callers)",
+        desc = "Call Hierarchy (Callers)",
       },
       {
         "<leader>nC",
         function()
           require("meow.yarn").open_tree("call_hierarchy", "callees")
         end,
-        desc = "Show Call Hierarchy (Callees)",
+        desc = "Call Hierarchy (Callees)",
       },
 
       -- Code
@@ -577,7 +577,7 @@ function M.setup()
       { "]q", "<cmd>cnext<CR>", desc = "Next Quickfix Item", mode = "n" },
       { "[q", "<cmd>cprev<CR>", desc = "Previous Quickfix Item", mode = "n" },
       { "]l", "<cmd>lnext<CR>", desc = "Next Location List Item", mode = "n" },
-      { "[l", "<cmd>lprev<CR>", desc = "Previous Location List Item", mode = "n" },
+      { "[l", "<cmd>lprev<CR>", desc = "Previous Location Item", mode = "n" },
       { "]b", "<cmd>bnext<CR>", desc = "Next Buffer", mode = "n" },
       { "[b", "<cmd>bprevious<CR>", desc = "Previous Buffer", mode = "n" },
       { "]t", "<cmd>tabnext<CR>", desc = "Next Tab", mode = "n" },
@@ -1062,10 +1062,10 @@ function M.setup()
             end
           end
         end,
-        desc = "Toggle Copilot (enable/disable suggestions)",
+        desc = "Toggle Copilot",
       },
       {
-        "<leader>oP",
+        "<leader>op",
         function()
           -- Sync current toggles to config
           toggles.sync_to_config()
@@ -1234,7 +1234,7 @@ function M.setup()
           vim.cmd("silent normal! zw")
           vim.notify("Word marked incorrect", vim.log.levels.INFO)
         end,
-        desc = "Remove Word from Dictionary",
+        desc = "Remove from Dictionary",
       },
     }
 
