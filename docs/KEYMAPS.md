@@ -16,6 +16,7 @@ primary prefix for most commands.
 - [Jump (Flash)](#jump-flash)
 - [Code Navigation](#code-navigation)
 - [Code Intelligence](#code-intelligence)
+- [Completion & Copilot](#completion--copilot)
 - [Git & Version Control](#git--version-control)
 - [Testing](#testing)
 - [Tasks & Runners](#tasks--runners)
@@ -257,6 +258,101 @@ Available when editing `Cargo.toml` files:
 | `<leader>cRU` | Update all crates |
 | `<leader>cRH` | Open crate homepage |
 | `<leader>cRD` | Open crate documentation |
+
+---
+
+## Completion & Copilot
+
+meowvim features two separate systems that work together:
+- **Completion popup** (nvim-cmp) - Shows LSP suggestions, snippets, and buffer words
+- **Copilot** - Inline gray text AI suggestions
+
+Both systems are designed to never interfere with each other, with completely separate keymaps.
+
+### Completion Popup (nvim-cmp)
+
+**Navigation (hjkl-based):**
+
+| Key | Description |
+|-----|-------------|
+| `<C-j>` | Navigate down in popup (next item) |
+| `<C-k>` | Navigate up in popup (previous item) |
+| `<C-l>` | Accept selected completion (move right/forward) |
+| `<C-Space>` | Manually trigger completion |
+| `<Esc>` | Dismiss popup (and Copilot) |
+
+**Documentation:**
+
+| Key | Description |
+|-----|-------------|
+| `<C-b>` | Scroll documentation up |
+| `<C-f>` | Scroll documentation down |
+
+**Snippet Navigation:**
+
+| Key | Description |
+|-----|-------------|
+| `<Tab>` | Jump to next snippet placeholder (or indent) |
+| `<S-Tab>` | Jump to previous snippet placeholder (or dedent) |
+
+**Important:** `<C-n>` and `<C-p>` are reserved for Copilot and will NOT navigate the completion popup.
+
+### GitHub Copilot (Inline Suggestions)
+
+Copilot shows gray text suggestions as you type (auto-triggered).
+
+**Suggestion Control:**
+
+| Key | Description |
+|-----|-------------|
+| `<C-y>` | Accept full Copilot suggestion |
+| `<C-g>` | Accept next word only |
+| `<C-n>` | Cycle to next alternative suggestion |
+| `<C-p>` | Cycle to previous alternative suggestion |
+| `<Esc>` | Dismiss Copilot suggestion (and popup) |
+
+**Panel:**
+
+| Key | Description |
+|-----|-------------|
+| `<M-CR>` | Open Copilot panel (alternative suggestions view) |
+
+### Tab & Enter Behavior
+
+These keys preserve their normal Vim behavior:
+
+| Key | Behavior |
+|-----|----------|
+| `<Tab>` | Indent (or jump to next snippet placeholder if in snippet) |
+| `<S-Tab>` | Dedent (or jump to previous snippet placeholder if in snippet) |
+| `<CR>` | Always creates a newline (never intercepts for completion) |
+
+### Enable/Disable Copilot
+
+```vim
+:Copilot enable   " Enable Copilot
+:Copilot disable  " Disable Copilot
+:Copilot auth     " Authenticate with GitHub
+:Copilot status   " Check Copilot status
+```
+
+Or use the toggle system:
+```vim
+:lua vim.g.copilot_enabled = false  " Disable
+:lua vim.g.copilot_enabled = true   " Enable
+```
+
+### Conflict-Free Design
+
+The keymaps are designed to be completely conflict-free:
+
+- **Completion popup** uses `<C-j/k/l>` (hjkl pattern)
+- **Copilot** uses `<C-y/g/n/p>` (separate keys)
+- `<C-n>/<C-p>` always pass through to Copilot (reserved)
+- `<Esc>` dismisses both systems at once
+- `<Tab>` and `<Enter>` never interfere with completion
+
+This design allows both Copilot and the completion popup to be visible simultaneously without conflicts.
 
 ---
 

@@ -56,7 +56,7 @@
 
 - Auto-configured LSP servers with diagnostics, code actions, and symbol navigation
 - Treesitter-powered syntax highlighting, context display, and structural selection
-- Completion via `nvim-cmp`, snippet support with `LuaSnip`, and optional GitHub Copilot integration
+- Intuitive completion popup with hjkl navigation (`<C-j/k/l>`) and GitHub Copilot inline suggestions (`<C-y/g/n/p>`)
 
 ### 🚀 Productivity & Navigation
 
