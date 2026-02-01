@@ -1,8 +1,6 @@
 -- SPDX-License-Identifier: MIT
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
 
-local Meow = require("config.custom")
-
 local function get_dependencies()
   local deps = {
     "hrsh7th/cmp-nvim-lsp",
@@ -155,6 +153,7 @@ return {
       callback = function(_event)
         cmp.setup.buffer({
           sources = cmp.config.sources({
+            { name = "crates" },
             { name = "nvim_lsp" },
             { name = "luasnip" },
             { name = "path" },

@@ -1,1 +1,92 @@
+# Meowvim specific
 .meowg1k
+
+# User configuration files (these should not be in version control)
+# Users create their own at ~/.config/meowvim/
+lua/config/custom.lua
+
+# Lazy.nvim
+lazy-lock.json
+
+# Plugin data and cache
+plugin/
+*.cache
+
+# Mason packages (user-specific installations)
+# Note: Mason registry and metadata should be committed
+mason/
+
+# Session files
+*.vim
+*.session
+session/
+sessions/
+
+# Backup files
+*.bak
+*.backup
+*~
+*.swp
+*.swo
+*.swn
+
+# Undo history
+.undo/
+undodir/
+
+# Log files
+*.log
+debug.log
+lsp.log
+nvim.log
+
+# Operating system files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# IDE and editor files
+.vscode/
+.idea/
+*.sublime-*
+
+# Temporary and test files
+tmp/
+temp/
+*.tmp
+test-*.lua
+
+# Documentation builds
+doc/tags
+doc/*.txt~
+
+# Compiled files
+*.pyc
+*.pyo
+__pycache__/
+*.class
+*.o
+*.so
+
+# Runtime data
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage and test artifacts
+coverage/
+.coverage
+.nyc_output
+*.cover
+htmlcov/
+
+# Performance profiling
+*.prof
+profile.json
+metrics.json
+startup-*.log

@@ -1,0 +1,416 @@
+*meowvim.txt*  A comprehensive Neovim distribution for modern development
+
+                     __  ___                     _           ~
+                    /  |/  /__  ____ _      ____   __(_)___ ___ ~
+                   / /|_/ / _ \/ __ \ | /| / / | / / / __ `__ \~
+                  / /  / /  __/ /_/ / |/ |/ /| |/ / / / / / / /~
+                 /_/  /_/\___/\____/|__/|__/ |___/_/_/ /_/ /_/ ~
+
+Author:  Andrew Vasilyev <me@retran.me>
+License: MIT
+Repo:    https://github.com/retran/meowvim
+
+==============================================================================
+CONTENTS                                                  *meowvim-contents*
+
+    1. Introduction .......................... |meowvim-introduction|
+    2. Quick Start ........................... |meowvim-quickstart|
+    3. Configuration ......................... |meowvim-configuration|
+    4. Commands .............................. |meowvim-commands|
+    5. Keymaps ............................... |meowvim-keymaps|
+    6. Options & Toggles ..................... |meowvim-toggles|
+    7. Projects .............................. |meowvim-projects|
+    8. Troubleshooting ....................... |meowvim-troubleshooting|
+    9. License ............................... |meowvim-license|
+
+==============================================================================
+1. INTRODUCTION                                      *meowvim-introduction*
+
+Meowvim is a comprehensive, batteries-included Neovim distribution designed
+for modern software development. It provides:
+
+  • Sensible defaults for productivity
+  • Pre-configured LSP, DAP, and formatter integrations
+  • Intelligent project-aware configuration
+  • Extensive keymap system with which-key integration
+  • Session management and workspace persistence
+  • Advanced Git workflows with diff views and conflict resolution
+  • Testing framework integration (Neotest)
+  • Task automation with Overseer
+  • Beautiful UI with multiple theme options
+
+==============================================================================
+2. QUICK START                                        *meowvim-quickstart*
+
+Leader Key~
+The leader key is set to SPACE by default.
+
+Essential Commands~
+  |:MeowvimConfig|       Edit configuration file
+  |:MeowvimConfigReload| Reload configuration
+  <leader>ff             Find file (smart picker)
+  <leader>s/             Search project text
+  <leader>bb             List buffers
+  <leader>fe             Toggle file explorer
+  <leader>hk             Search keymaps interactively
+
+Getting Help~
+  • Press <leader>hh to search Vim help
+  • Press <leader>hk to browse all keymaps
+  • Press <leader>hc to search commands
+  • Press <leader>hm to search man pages
+  • Read docs in the docs/ directory
+
+==============================================================================
+3. CONFIGURATION                                  *meowvim-configuration*
+
+Configuration Files~
+
+Meowvim follows the XDG Base Directory specification:
+
+  Config:  $XDG_CONFIG_HOME/meowvim/config.lua
+           (defaults to ~/.config/meowvim/config.lua)
+
+  Cache:   $XDG_STATE_HOME/nvim/meowvim/config_cache.lua
+           (defaults to ~/.local/state/nvim/meowvim/config_cache.lua)
+
+  Projects: $XDG_CONFIG_HOME/meowvim/projects.lua
+
+On first start, a minimal config.lua is auto-created if it doesn't exist.
+
+Configuration Structure~
+
+The config.lua file should return a table with these optional sections:
+>lua
+    return {
+      core = {
+        leader = " ",           -- Leader key (default: space)
+        localleader = "\\",     -- Local leader key
+      },
+
+      editor = {
+        number = true,          -- Show line numbers
+        relativenumber = true,  -- Relative line numbers
+        wrap = false,           -- Line wrapping
+        spell = false,          -- Spell checking
+        -- ... more editor options
+      },
+
+      ui = {
+        theme = "catppuccin",   -- Color theme
+        transparency = false,   -- Transparent background
+        dim_inactive = true,    -- Dim inactive windows
+        -- ... more UI options
+      },
+
+      lsp = {
+        servers = {},           -- LSP servers to install
+        -- ... LSP configuration
+      },
+
+      -- Project-specific overrides
+      projects = {},
+    }
+<
+
+All configuration values are optional and will use sensible defaults if not
+specified. See |meowvim-config-options| for complete list.
+
+Reloading Configuration~
+
+Configuration is automatically reloaded when config.lua is saved (debounced
+to 500ms). Manual reload: |:MeowvimConfigReload|
+
+Configuration Cache~
+
+For fast startup, configuration is cached. The cache is automatically
+invalidated when config.lua changes. To clear cache manually:
+>vim
+    :lua require("meowvim.config.cache").clear()
+<
+
+==============================================================================
+4. COMMANDS                                            *meowvim-commands*
+
+Configuration Commands~
+
+*:MeowvimConfig*
+    Open the configuration file for editing.
+
+*:MeowvimConfigReload*
+    Reload the configuration from disk. Useful for testing config changes
+    without restarting Neovim.
+
+*:MeowvimConfigValidate*
+    Validate the current configuration and report any errors.
+
+*:MeowvimConfigShow*
+    Display the current active configuration (merged defaults + user config).
+
+Project Commands~
+
+*:MeowvimProjects*
+    Open the projects configuration file for editing.
+
+*:MeowvimProject* {name}
+    Switch to a project by name. Applies project-specific configuration and
+    changes to the project directory. Tab-completion available.
+
+*:MeowvimProjectCurrent*
+    Display information about the currently active project (if any).
+
+Formatting Commands~
+
+*:FormatDisable* [!]
+    Disable format-on-save. Add [!] to disable for current buffer only.
+
+*:FormatEnable*
+    Enable format-on-save (globally).
+
+*:FormatToggle* [!]
+    Toggle format-on-save. Add [!] to toggle for current buffer only.
+
+Auto-Save Commands~
+
+*:AutoSaveDisable* [!]
+    Disable auto-save. Add [!] to disable for current buffer only.
+
+*:AutoSaveEnable* [!]
+    Enable auto-save. Add [!] to enable for current buffer only.
+
+*:AutoSaveToggle* [!]
+    Toggle auto-save. Add [!] to toggle for current buffer only.
+
+Linting Commands~
+
+*:LintInfo*
+    Display information about configured linters for the current buffer.
+
+*:LintToggle*
+    Toggle linting on/off globally.
+
+LSP Commands~
+
+*:LspOrganize*
+    Organize imports (TypeScript/JavaScript only). Sorts and removes unused
+    imports using tsserver.
+
+Debugging Commands~
+
+*:ProfileStart*
+    Start profiling Neovim performance.
+
+*:ProfileStop*
+    Stop profiling and generate report.
+
+*:MeowvimProfile*
+    Display interactive profiling results.
+
+*:MeasureRender*
+    Measure rendering performance.
+
+Development Commands~
+
+*:StartupTrends*
+    Show startup time trends over recent sessions.
+
+*:KeymapConflicts*
+    Check for conflicting keymaps across all modes.
+
+*:KeymapList* [mode]
+    List all keymaps, optionally filtered by mode (n, i, v, etc.).
+
+Theme Commands~
+
+*:ColorschemeSelect*
+    Open interactive colorscheme picker (<leader>ok)
+
+==============================================================================
+5. KEYMAPS                                              *meowvim-keymaps*
+
+Meowvim provides extensive keymaps organized by function. All leader-key
+mappings use which-key for visual discovery.
+
+For a complete keymap reference, see:
+  • docs/KEYMAPS.md - Full documentation
+  • docs/KEYMAPS_QUICK_REFERENCE.md - Cheat sheet
+  • Press <leader>ohk in Neovim for interactive search
+
+Major Keymap Groups~
+
+  <leader>f   Files & Navigation
+  <leader>b   Buffers
+  <leader>w   Windows & Tabs
+  <leader>s   Search & Find
+  <leader>j   Jump (Flash motion)
+  <leader>n   Navigate (LSP: go to definition, references, etc.)
+  <leader>c   Code (LSP actions, diagnostics, formatting)
+  <leader>g   Git & Version Control
+  <leader>t   Tests (Neotest)
+  <leader>r   Run Tasks (Overseer)
+  <leader>d   Debug (DAP)
+  <leader>o   Options & Toggles
+  <leader>u   Undo & History
+  <leader>m   Marks
+  <leader>N   Notes & Scratch buffers
+  <leader>h   Help & Discovery
+  <leader>T   Tools (Mason)
+  <leader>q   Quit
+
+Essential Keymaps~
+
+Files & Buffers:
+  <leader>ff  Find file (smart picker)
+  <leader>fr  Recent files
+  <leader>fg  Find git file
+  <leader>fs  Save file
+  <leader>fe  Toggle file explorer
+  <leader>bb  List buffers
+  <leader>bd  Delete buffer
+  <Tab>       Next buffer
+  <S-Tab>     Previous buffer
+
+Search:
+  <leader>s/  Search project text (grep)
+  <leader>sb  Search open buffers
+  <leader>sg  Search git repository
+  <leader>sr  Search and replace (Spectre)
+
+Code:
+  <leader>cc  Code action
+  <leader>cr  Rename symbol
+  <leader>cf  Format buffer
+  <leader>nd  Go to definition
+  <leader>nr  Go to references
+  <leader>ni  Go to implementation
+
+Git:
+  <leader>gg  LazyGit
+  <leader>gb  Git blame line
+  <leader>gs  Stage hunk
+  <leader>gr  Reset hunk
+  <leader>gv  Preview hunk
+  ]h / [h     Next/Previous hunk
+  <leader>go  Choose ours (conflict)
+  <leader>gt  Choose theirs (conflict)
+  <leader>gy  Copy git link
+
+See |meowvim-toggles| for all option toggles (<leader>o).
+
+==============================================================================
+6. OPTIONS & TOGGLES                                  *meowvim-toggles*
+
+The <leader>o prefix provides quick toggles for editor options. All toggles
+persist across sessions and provide visual feedback.
+
+Display Options~
+
+  <leader>on  Toggle line numbers (cycles: off → normal → relative)
+  <leader>oc  Toggle cursorline highlighting
+  <leader>ow  Toggle line wrapping
+  <leader>os  Toggle spell checking
+  <leader>oe  Toggle signcolumn (git signs, diagnostics)
+  <leader>ol  Toggle whitespace character display
+  <leader>od  Toggle dim inactive windows
+  <leader>oh  Toggle search highlighting
+
+Code Features~
+
+  <leader>ox  Toggle LSP diagnostics globally
+  <leader>oi  Toggle LSP inlay hints (type hints, parameter names)
+  <leader>of  Toggle format-on-save
+  <leader>oa  Toggle auto-save
+  <leader>og  Toggle indent guides
+  <leader>ok  Colorscheme switcher (interactive)
+
+Profiling & Developer Tools~
+
+  <leader>oP   Profiling submenu
+  <leader>oPs  Start profiling
+  <leader>oPe  Stop profiling
+  <leader>oPl  Show plugin load times
+  <leader>oPr  Measure render time
+
+Workspace~
+
+  <leader>oW   Workspace folder management
+  <leader>oWa  Add workspace folder
+  <leader>oWR  Remove workspace folder
+  <leader>oWL  List workspace folders
+
+==============================================================================
+7. PROJECTS                                            *meowvim-projects*
+
+Meowvim supports project-aware configuration. Define projects in:
+  $XDG_CONFIG_HOME/meowvim/projects.lua
+
+Project Configuration~
+
+>lua
+    return {
+      {
+        name = "myproject",
+        path = "~/code/myproject",
+        on_open = function()
+          -- Project-specific setup
+          vim.opt.tabstop = 2
+        end,
+        config = {
+          ui = { theme = "tokyonight" },
+          lsp = { servers = { "tsserver", "tailwindcss" } },
+        },
+      },
+    }
+<
+
+Project Detection~
+
+Projects are automatically detected based on:
+  • Current working directory
+  • Git repository root
+  • Presence of project markers (.git, package.json, Cargo.toml, etc.)
+
+Switching Projects~
+
+  • Use |:MeowvimProject| command with tab-completion
+  • Use <leader>fp to interactively select project (Snacks picker)
+
+==============================================================================
+8. TROUBLESHOOTING                              *meowvim-troubleshooting*
+
+Common Issues~
+
+Plugins Not Loading~
+  1. Run :Lazy sync to update plugins
+  2. Check :Lazy for errors
+  3. Restart Neovim
+
+LSP Not Working~
+  1. Run :Mason to verify server installation
+  2. Check :LspInfo for connection status
+  3. View logs: :lua vim.cmd.edit(vim.lsp.get_log_path())
+
+Slow Startup~
+  1. Run :Lazy profile to identify slow plugins
+  2. Use :StartupTrends to track startup times
+  3. Run :MeowvimProfile for detailed profiling
+
+Configuration Errors~
+  1. Run :MeowvimConfigValidate
+  2. Check :messages for errors
+  3. Review cache: :lua print(vim.fn.stdpath("state") .. "/meowvim")
+
+Getting Help~
+
+  • Read docs in docs/ directory
+  • Check :checkhealth
+  • Visit GitHub: https://github.com/retran/meowvim/issues
+
+==============================================================================
+9. LICENSE                                              *meowvim-license*
+
+Meowvim is released under the MIT License.
+Copyright (c) 2025 Andrew Vasilyev
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:

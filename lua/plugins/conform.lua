@@ -92,6 +92,7 @@ return {
   event = { "BufWritePre" },
   cmd = { "ConformInfo" },
   opts = function()
+    local mason_bin = vim.fn.stdpath("data") .. "/mason/bin"
     local formatters_by_ft = {}
 
     for ft, formatters in pairs(desired_formatters_by_ft) do
@@ -103,8 +104,11 @@ return {
       end
 
       for _, formatter in ipairs(formatters) do
-        if type(formatter) == "string" and vim.fn.executable(formatter) == 1 then
-          table.insert(available_formatters, formatter)
+        if type(formatter) == "string" then
+          -- Check if formatter is executable in PATH or Mason bin
+          if vim.fn.executable(formatter) == 1 or vim.fn.executable(mason_bin .. "/" .. formatter) == 1 then
+            table.insert(available_formatters, formatter)
+          end
         end
       end
 

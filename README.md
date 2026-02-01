@@ -25,7 +25,7 @@
 
 - **Polyglot developers** who need LSP, formatting, debugging, and testing across languages
 - **Terminal purists** who want speed and minimalism without sacrificing UI polish
-- **Project meow cats** aiming for a consistent setup across macOS, Linux, and Neovide
+- **Project meow cats** aiming for a consistent setup across macOS and Linux
 - **Automation enthusiasts** who value lazy-loading, session persistence, and keymap discoverability
 
 ## 🎬 See It in Action
@@ -46,9 +46,11 @@
 
 ### 🎨 Cozy Interface & UX
 
-- Catppuccin-inspired theming, custom statusline, and icon-rich buffer overview
+- **6 colorschemes** with 30+ variants: Catppuccin, TokyoNight, Rose Pine, Gruvbox, Nord, and Kanagawa
+- **Transparent backgrounds** configurable from 0-100% opacity
+- **Interactive theme switcher** with live preview (`:ColorschemeSelect` or `<leader>ok`)
 - `noice.nvim` powered message center, notifications, and command palette UX
-- Smooth folding, indent guides, and persistent layout tuned for both terminal and Neovide
+- Smooth folding, indent guides, and persistent layout with auto-reload
 
 ### 🧠 Language Intelligence
 
@@ -58,12 +60,20 @@
 
 ### 🚀 Productivity & Navigation
 
-- Flash-powered motion (`<leader><space>`) and Snacks fuzzy finders for files, buffers, and commands
-- Session persistence, project switching, and scratch buffers for quick note taking
-- Integrated TODO tracking, spectre-powered search & replace, and git workflows via Neogit, Diffview, and Gitsigns
+- **Flash-powered motion** (`<leader><leader>`) and Snacks fuzzy finders for files, buffers, and commands
+- **LazyGit integration** with automatic theme synchronization (`<leader>gg`)
+- **Bookmark system** for quick navigation across projects (`<leader>mm`, `<leader>mi`)
+- **Code screenshots** via Silicon with syntax highlighting (`<leader>cs`)
+- **Auto buffer management** to keep workspace tidy (configurable thresholds)
+- **Session persistence** with per-branch support and project switching
+- Integrated TODO tracking, spectre-powered search & replace, and git workflows via Diffview and Gitsigns
 
 ### 🐾 Project Meow Integrations
 
+- **Advanced config system** with Lua DSL, auto-reload, and project-specific settings
+- **Developer tools**: keymap conflict detection, performance profiling, startup tracking
+- **Automation scripts**: `update-meowvim.sh` with backup/rollback, comprehensive test suite
+- **CI/CD pipeline** with lint checks and multi-platform testing
 - Raycast launcher scripts (`bin/`) for instant GUI access
 - Mason-managed toolchains with automatic PATH injection
 - Overseer task templates, Neotest runners, and DAP presets for Go, TypeScript, Python, and more
@@ -74,9 +84,9 @@
 
 | Type        | Requirements                                                             |
 | ----------- | ------------------------------------------------------------------------ |
-| Required    | Neovim ≥ 0.10, Git, true-color capable terminal                          |
+| Required    | Neovim ≥ 0.11, Git, true-color capable terminal                          |
 | Recommended | Node.js ≥ 18, Python ≥ 3.8, Go ≥ 1.19, `ripgrep`, `fd`, `fzf`, Nerd Font |
-| Optional    | GitHub Copilot subscription, Neovide, Raycast (for launcher scripts)     |
+| Optional    | GitHub Copilot subscription, Raycast (for launcher scripts)     |
 
 ### ⚡ Quick Install (fresh setup)
 
@@ -107,18 +117,25 @@ The `meow` automation links meowvim as part of the broader dotfiles ecosystem, i
 ### 🔧 Staying Updated
 
 ```bash
-# Inside Neovim
+# Automated update with backup/rollback
+./bin/update-meowvim.sh
+
+# Or manually inside Neovim
 :Lazy sync
 :MasonToolsUpdate
+
+# Check health after updates
+:checkhealth meowvim
 ```
 
 ## 🚀 Quick Start
 
 1. **Launch Neovim** — first run installs plugins and bootstraps default LSP servers.
-2. **Discover keymaps** — press `<leader>ohk` for an interactive keymap palette or peek at the [Quick Reference](docs/KEYMAPS_QUICK_REFERENCE.md).
-3. **Install language tooling** — open Mason (`<leader>omm`) to review and install any missing LSP, formatter, or debugger.
-4. **Supercharge navigation** — try `<leader><space>` for Flash jumps, `<leader>ff` for fuzzy file search, tap `F2` for the floating terminal, and `<leader>gss` for Git status workflows.
-5. **Optional Copilot** — authenticate via `:Copilot auth` to invite your AI cat companion.
+2. **Configure your setup** — edit `~/.config/meowvim/config.lua` to personalize theme, transparency, and features.
+3. **Discover keymaps** — press `<leader>hk` for an interactive keymap palette or peek at the [Quick Reference](docs/KEYMAPS_QUICK_REFERENCE.md).
+4. **Install language tooling** — open Mason (`<leader>Tm`) to review and install any missing LSP, formatter, or debugger.
+5. **Supercharge navigation** — try `<leader><leader>` for Flash jumps, `<leader>ff` for fuzzy file search, `<leader>gg` for LazyGit, and `F2` for the floating terminal.
+6. **Optional Copilot** — authenticate via `:Copilot auth` to invite your AI cat companion.
 
 ## 📖 Documentation
 
@@ -134,17 +151,26 @@ Each guide follows the meowg1k documentation structure so you can prowl between 
 
 ## 🧩 Customization
 
-- Tune core options in `lua/config/options.lua` for UI, spell checking, and performance tweaks.
-- Add or adjust keymaps in `lua/config/keymaps.lua`; discovery is baked in with which-key.
-- Drop new plugins into `lua/plugins/*.lua` — lazy loading keeps startup snappy.
-- Tailor Neovide behavior via `lua/config/neovide.lua` and enable per-host overrides under `after/`.
-- Scripts in `bin/` integrate with Raycast, while `scripts/` power dashboard art and helper commands.
+meowvim now features a powerful configuration system:
+
+- **User config**: Edit `~/.config/meowvim/config.lua` using the intuitive Lua DSL
+- **Project-specific settings**: Create `~/.config/meowvim/projects.lua` for per-project overrides
+- **Config commands**: Use `:MeowvimConfig`, `:MeowvimConfigReload`, `:MeowvimConfigShow`, and more
+- **Theme switching**: Try `:ColorschemeSelect` or `<leader>ok` for live theme preview
+- **Core options**: Tune `lua/config/options.lua` for UI, spell checking, and performance
+- **Keymaps**: Add or adjust in `lua/config/keymaps.lua`; discovery is baked in with which-key
+- **New plugins**: Drop files into `lua/plugins/*.lua` — lazy loading keeps startup snappy
+- **Scripts**: `bin/` integrates with Raycast, while automation scripts power updates and testing
+
+See [Configuration Guide](docs/02-CONFIGURATION.md) for complete details.
 
 ## 🛠️ Troubleshooting & Support
 
-- Run `:checkhealth` for environment diagnostics.
-- Visit [Troubleshooting](docs/04-TROUBLESHOOTING.md) for common fixes, performance tuning, and LSP tips.
-- Enable verbose logging with `:messages` and review `~/.local/state/nvim/log` if the cats get grumpy.
+- Run `:checkhealth meowvim` for comprehensive environment diagnostics
+- Use developer tools: `:KeymapConflicts`, `:MeowvimProfile`, `:StartupTrends`
+- Run test suite: `./bin/test-config.sh` to verify configuration integrity
+- Visit [Troubleshooting](docs/04-TROUBLESHOOTING.md) for common fixes, performance tuning, and LSP tips
+- Enable verbose logging with `:messages` and review `~/.local/state/nvim/log` if the cats get grumpy
 
 ## 🤝 Contributing
 

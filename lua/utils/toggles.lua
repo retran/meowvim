@@ -7,8 +7,16 @@ local registry = {
   miniindentscope_disable = { store = "MiniIndentscopeDisable", default = true, type = "boolean" },
   snacks_dim = { store = "SnacksDim", default = false, type = "boolean" },
   lint_enabled = { store = "LintEnabled", default = true, type = "boolean" },
-  neovide_scale_factor = { store = "NeovideScaleFactor", default = 1.0, type = "number" },
-  neovide_fullscreen = { store = "NeovideFullscreen", default = false, type = "boolean" },
+  diagnostics_enabled = { store = "DiagnosticsEnabled", default = true, type = "boolean" },
+  inlay_hints_enabled = { store = "InlayHintsEnabled", default = false, type = "boolean" },
+  -- Vim option toggles
+  number_mode = { store = "NumberMode", default = "relative", type = "string" }, -- "off", "number", "relative"
+  wrap = { store = "Wrap", default = false, type = "boolean" },
+  spell = { store = "Spell", default = false, type = "boolean" },
+  cursorline = { store = "Cursorline", default = false, type = "boolean" },
+  signcolumn = { store = "Signcolumn", default = "yes", type = "string" }, -- "yes", "no", "auto"
+  list = { store = "List", default = false, type = "boolean" },
+  hlsearch = { store = "Hlsearch", default = true, type = "boolean" },
 }
 
 local M = {}

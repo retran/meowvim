@@ -11,7 +11,7 @@ Quick reference card for the most commonly used keymaps in meowvim.
 | `<leader><space>` | Flash jump |
 | `<leader>bb` | List buffers |
 | `<leader>fe` | Toggle file explorer |
-| `<leader>gss` | Git status |
+| `<leader>gg` | LazyGit |
 | `<leader>cc` | Code action |
 | `<leader>cr` | Rename symbol |
 | `<leader>nd` | Go to definition |
@@ -56,19 +56,28 @@ Quick reference card for the most commonly used keymaps in meowvim.
 | `<leader>cc` | Code action |
 | `<leader>cr` | Rename symbol |
 | `<leader>cf` | Format buffer |
-| `<leader>cda` | Show diagnostics |
-| `<leader>cdh` | Line diagnostics |
+| `<leader>cd` | Show diagnostics |
+| `<leader>ch` | Line diagnostics |
+
+### 🦀 Rust (Cargo.toml)
+
+| Key | Action |
+|-----|--------|
+| `<leader>cRt` | Toggle crates UI |
+| `<leader>cRu` | Update crate |
+| `<leader>cRU` | Update all crates |
+| `<leader>cRH` | Open homepage |
 
 ## 🌿 Git
 
 | Key | Action |
 |-----|--------|
-| `<leader>gss` | Git status |
-| `<leader>gcc` | Commit |
-| `<leader>ghn` / `<leader>ghp` | Next/prev hunk |
-| `<leader>ghs` | Stage hunk |
-| `<leader>ghv` | Preview hunk |
-| `<leader>gyy` | Copy git link |
+| `<leader>gg` | LazyGit |
+| `<leader>gb` | Git blame line |
+| `]h` / `[h` | Next/prev hunk |
+| `<leader>gs` | Stage hunk |
+| `<leader>gv` | Preview hunk |
+| `<leader>gy` | Copy git link |
 
 ## 🪟 Windows
 
@@ -93,7 +102,7 @@ Quick reference card for the most commonly used keymaps in meowvim.
 | Key | Action |
 |-----|--------|
 | `<leader>dc` | Continue/Start |
-| `<leader>dbt` | Toggle breakpoint |
+| `<leader>db` | Toggle breakpoint |
 | `<leader>ds` | Step over |
 | `<leader>di` | Step into |
 | `<leader>do` | Step out |
@@ -108,9 +117,9 @@ Quick reference card for the most commonly used keymaps in meowvim.
 | `<leader>os` | Toggle spell |
 | `<leader>og` | Toggle indent guides |
 | `<leader>od` | Toggle dim |
-| `<leader>oF` | Toggle format on save |
+| `<leader>of` | Toggle format on save |
 | `F2` | Toggle terminal |
-| `<leader>of`* | Toggle fullscreen (Neovide) |
+| `<leader>ok` | Colorscheme switcher |
 
 ## 📝 Editing
 
@@ -118,7 +127,7 @@ Quick reference card for the most commonly used keymaps in meowvim.
 |-----|--------|
 | `jj` | Exit insert mode |
 | `p` / `P` | Paste after/before |
-| `Ctrl+n` / `Ctrl+p` | Cycle yank history |
+| `Alt+n` / `Alt+p` | Cycle yank history |
 | `<leader>uu` | Undo history |
 | `<leader>uy` | Yank history |
 
@@ -126,17 +135,17 @@ Quick reference card for the most commonly used keymaps in meowvim.
 
 | Key | Action |
 |-----|--------|
-| `<leader>ohh` | Search help |
-| `<leader>ohk` | Search keymaps |
-| `<leader>ohc` | Search commands |
+| `<leader>hh` | Search help |
+| `<leader>hk` | Search keymaps |
+| `<leader>hc` | Search commands |
 
 ## 💡 Tips
 
 - Leader key is `<space>`
 - Use `<leader>ohk` to search all keymaps interactively
 - Most keymaps work in visual mode too
-- Flash jump (`<leader><space>`) is your friend for quick navigation
-- `*` marks Neovide-only bindings
+- Flash jump (`<leader><leader>`) is your friend for quick navigation
+- f/t movements also show visual jump labels like Flash
 
 ---
 

@@ -3,11 +3,13 @@
 
 -- @file: lua/plugins/nvim-lspconfig.lua
 -- @brief: Language Server Protocol (LSP) client configuration and setup.
+-- @requires: Neovim >= 0.11 (uses vim.lsp.config() and vim.lsp.enable() APIs)
 
 local mason_registry = require("config.mason")
 
 return {
   "neovim/nvim-lspconfig",
+  version = "v1.*", -- Pin to stable 1.x releases
   lazy = false,
   dependencies = {
     "hrsh7th/nvim-cmp",
@@ -25,6 +27,13 @@ return {
         mode = "symbol_text",
         preset = "codicons",
       })
+    end
+
+    -- Guard: Skip Mason setup in CI/container environments
+    local is_ci = vim.env.CI or vim.env.DOCKER or vim.fn.filereadable("/.dockerenv") == 1
+    if is_ci then
+      vim.notify("Skipping Mason setup in CI/container environment", vim.log.levels.INFO)
+      return
     end
 
     local mason = require("mason")
@@ -74,27 +83,38 @@ return {
       postgres_lsp = true,
     }
 
+    -- Cache package_supported lookups to avoid repeated registry checks
+    local package_supported_cache = {}
     local function package_supported(name)
+      if package_supported_cache[name] ~= nil then
+        return package_supported_cache[name]
+      end
+
       if not registry_ok then
+        package_supported_cache[name] = true
         return true
       end
 
       if not registry.has_package(name) then
+        package_supported_cache[name] = false
         return false
       end
 
       local ok_pkg, pkg = pcall(registry.get_package, name)
       if not ok_pkg then
+        package_supported_cache[name] = false
         return false
       end
 
       if pkg.is_supported then
         local ok_supported, supported = pcall(pkg.is_supported, pkg)
         if ok_supported then
+          package_supported_cache[name] = supported
           return supported
         end
       end
 
+      package_supported_cache[name] = true
       return true
     end
 
@@ -181,7 +201,7 @@ return {
         on_attach = function(client, bufnr)
           client.server_capabilities.documentFormattingProvider = false
           client.server_capabilities.documentRangeFormattingProvider = false
-          vim.keymap.set("n", "<leader>co", "<cmd>LspOrganize<CR>", { buffer = bufnr })
+          vim.keymap.set("n", "<leader>co", "<cmd>LspOrganize<CR>", { buffer = bufnr, desc = "Organize Imports" })
         end,
         settings = {
           typescript = {

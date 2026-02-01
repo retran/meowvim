@@ -4,24 +4,50 @@
 -- @file: lua/plugins/lualine.lua
 -- @brief: Customizable statusline with Git, LSP, and mode indicators.
 
-local Meow = require("config.custom")
+-- Cache catppuccin palette to avoid fetching on every opts() call
+local cached_palette = nil
+local function get_palette()
+  if not cached_palette then
+    local flavour = vim.g.catppuccin_flavour or "mocha"
+    local palettes_ok, palettes = pcall(require, "catppuccin.palettes")
+    if palettes_ok then
+      cached_palette = palettes.get_palette(flavour)
+    else
+      cached_palette = {
+        green = "#a6e3a1",
+        blue = "#89b4fa",
+        overlay0 = "#6c7086",
+        peach = "#fab387",
+        red = "#f38ba8",
+      }
+    end
+  end
+  return cached_palette
+end
 
-local deps = {
-  "nvim-tree/nvim-web-devicons",
-  "lewis6991/gitsigns.nvim",
-  "catppuccin/nvim",
-}
-if Meow.enable_copilot then
-  table.insert(deps, "AndreM222/copilot-lualine")
+local function get_dependencies()
+  local deps = {
+    "nvim-tree/nvim-web-devicons",
+    "lewis6991/gitsigns.nvim",
+    "catppuccin/nvim",
+  }
+  
+  local config_ok, config = pcall(require, "meowvim.config")
+  if config_ok and config.get("core.enable_copilot", false) then
+    table.insert(deps, "AndreM222/copilot-lualine")
+  end
+  
+  return deps
 end
 
 return {
   "nvim-lualine/lualine.nvim",
   lazy = false,
   priority = 1000,
-  dependencies = deps,
+  dependencies = get_dependencies(),
   opts = function()
-    local Meow = require("config.custom")
+    local config_ok, config = pcall(require, "meowvim.config")
+    local enable_copilot = config_ok and config.get("core.enable_copilot", false) or false
 
     local lualine_x = {
       "diagnostics",
@@ -37,52 +63,36 @@ return {
       },
     }
 
-    if Meow.enable_copilot then
-      local palette = (function()
-        -- Get flavour from global variable set by themes.lua or fallback to mocha
-        local flavour = vim.g.catppuccin_flavour or "mocha"
-        local palettes_ok, palettes = pcall(require, "catppuccin.palettes")
-        if palettes_ok then
-          return palettes.get_palette(flavour)
-        end
-        return nil
-      end)()
-      local colors = palette
-        or {
-          green = "#a6e3a1",
-          blue = "#89b4fa",
-          overlay0 = "#6c7086",
-          peach = "#fab387",
-          red = "#f38ba8",
-        }
+    if enable_copilot then
+      local colors = get_palette()
       local copilot = {
-    "copilot",
-    symbols = {
-      status = {
-        icons = {
-          enabled = "",
-          sleep = "",
-          disabled = "",
-          warning = "",
-          unknown = "",
+        "copilot",
+        symbols = {
+          status = {
+            icons = {
+              enabled = "",
+              sleep = "",
+              disabled = "",
+              warning = "",
+              unknown = "",
+            },
+            hl = {
+              enabled = colors.green,
+              sleep = colors.blue,
+              disabled = colors.overlay0,
+              warning = colors.peach,
+              unknown = colors.red,
+            },
+          },
+          spinners = "dots",
+          spinner_color = colors.blue,
         },
-        hl = {
-          enabled = colors.green,
-          sleep = colors.blue,
-          disabled = colors.overlay0,
-          warning = colors.peach,
-          unknown = colors.red,
-        },
-      },
-        spinners = "dots",
-        spinner_color = colors.blue,
-      },
-      show_colors = true,
-      show_loading = true,
-    }
+        show_colors = true,
+        show_loading = true,
+      }
 
-    table.insert(lualine_x, 2, copilot)
-  end
+      table.insert(lualine_x, 2, copilot)
+    end
 
     return {
       options = {

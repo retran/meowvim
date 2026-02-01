@@ -7,7 +7,6 @@
 return {
   "folke/trouble.nvim",
   cmd = "Trouble",
-  module = "trouble",
   dependencies = { "nvim-tree/nvim-web-devicons" },
   opts = {
     focus = false,

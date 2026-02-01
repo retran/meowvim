@@ -7,7 +7,6 @@
 return {
   "nvim-pack/nvim-spectre",
   cmd = "Spectre",
-  module = "spectre",
   dependencies = { "nvim-lua/plenary.nvim" },
   opts = {
     highlight = {

@@ -4,11 +4,15 @@
 -- @file: lua/plugins/copilot.lua
 -- @brief: GitHub Copilot AI code completion and assistance plugin configuration.
 
-local Meow = require("config.custom")
-
 return {
   "zbirenbaum/copilot.lua",
-  enabled = Meow.enable_copilot,
+  enabled = function()
+    local ok, config = pcall(require, "meowvim.config")
+    if ok then
+      return config.get("core.enable_copilot", false)
+    end
+    return vim.env.MEOW_ENABLE_COPILOT == "true"
+  end,
   cmd = "Copilot",
   event = "InsertEnter",
   config = function()

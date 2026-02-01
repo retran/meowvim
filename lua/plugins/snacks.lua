@@ -6,7 +6,24 @@
 
 return {
   "folke/snacks.nvim",
+  version = "v2.*", -- Pin to stable 2.x releases
   lazy = false,
+  keys = {
+    { "<leader>.",  function() Snacks.scratch() end, desc = "Toggle Scratch Buffer" },
+    { "<leader>Ns", function() Snacks.scratch.select() end, desc = "Select Scratch Buffer" },
+    { "<leader>hn", function() Snacks.notifier.show_history() end, desc = "Notification History" },
+    { "<leader>bd", function() Snacks.bufdelete() end, desc = "Delete Buffer" },
+    { "<leader>gg", function() Snacks.lazygit() end, desc = "Lazygit" },
+    { "<leader>gb", function() Snacks.git.blame_line() end, desc = "Git Blame Line" },
+    { "<leader>gB", function() Snacks.gitbrowse() end, desc = "Git Browse" },
+    { "<leader>gf", function() Snacks.lazygit.log_file() end, desc = "Lazygit Current File History" },
+    { "<leader>gl", function() Snacks.lazygit.log() end, desc = "Lazygit Log" },
+    { "<leader>cR", function() Snacks.rename() end, desc = "Rename File" },
+    { "<c-/>",      function() Snacks.terminal() end, desc = "Toggle Terminal" },
+    { "<c-_>",      function() Snacks.terminal() end, desc = "Toggle Terminal (which-key)" },
+    { "]w",         function() Snacks.words.jump(vim.v.count1) end, desc = "Next Reference" },
+    { "[w",         function() Snacks.words.jump(-vim.v.count1) end, desc = "Prev Reference" },
+  },
   config = function(_, opts)
     require("snacks").setup(opts)
     local patches = require("utils.patches")
@@ -14,7 +31,20 @@ return {
       patches.patch_snacks_picker()
     end
   end,
-  opts = {
+  opts = function()
+    -- Get config values
+    local config_ok, config = pcall(require, "meowvim.config")
+    local image_preview = true
+    local scope_highlighting = true
+    local custom_styles = true
+    
+    if config_ok then
+      image_preview = config.get("snacks.image_preview", true)
+      scope_highlighting = config.get("snacks.scope_highlighting", true)
+      custom_styles = config.get("snacks.custom_styles", true)
+    end
+    
+    return {
     dashboard = {
       width = 44,
       pane_gap = 4,
@@ -69,8 +99,16 @@ return {
     input = {},
     notifier = {},
     terminal = {},
-    image = { enabled = false },
-    scope = { enabled = false },
+    image = {
+      enabled = image_preview,
+      backend = "kitty",
+    },
+    scope = {
+      enabled = scope_highlighting,
+      treesitter = {
+        enabled = true,
+      },
+    },
     scratch = {
       ft = "markdown",
       filekey = {
@@ -79,7 +117,15 @@ return {
         count = true,
       },
     },
-    styles = { enabled = false },
+    styles = {
+      enabled = custom_styles,
+      notification = {
+        wo = {
+          winblend = 0,
+          wrap = false,
+        },
+      },
+    },
 
     picker = {
       hidden = true,
@@ -188,5 +234,6 @@ return {
         },
       },
     },
-  },
+  }
+  end,
 }

@@ -30,7 +30,6 @@ primary prefix for most commands.
 - [Yank/Put Operations](#yankput-operations)
 - [Quit](#quit)
 - [Terminal](#terminal)
-- [Neovide Specific](#neovide-specific)
 
 ---
 
@@ -87,13 +86,23 @@ primary prefix for most commands.
 |-----|-------------|
 | `<leader>bb` | List buffers (picker) |
 | `<leader>bn` | New buffer |
-| `<leader>bp` | Previous buffer |
-| `<leader>bf` | Next buffer (forward) |
 | `<leader>br` | Rename buffer |
 | `<leader>bd` | Delete buffer |
 | `<leader>bD` | Force delete buffer |
 | `<leader>bo` | Delete other buffers |
 | `<leader>ba` | Delete all buffers |
+
+---
+
+## Bookmarks
+
+**Prefix:** `<leader>m`
+
+| Key | Description |
+|-----|-------------|
+| `<leader>mm` | Search marks (Snacks picker) |
+
+Note: The bookmark system has been replaced with a simpler marks-based system using Snacks picker.
 
 ---
 
@@ -118,6 +127,14 @@ primary prefix for most commands.
 | `<leader>wv` | Split vertical |
 | `<leader>wc` | Close window |
 | `<leader>wo` | Close other windows |
+
+### Tabs
+
+| Key | Description |
+|-----|-------------|
+| `<leader>wt` | New tab |
+| `<leader>wT` | Close tab |
+| `]t` / `[t` | Next/Previous tab |
 
 ### Resize
 
@@ -201,22 +218,7 @@ primary prefix for most commands.
 
 **Prefix:** `<leader>c`
 
-### Diagnostics
-
-**Prefix:** `<leader>cd`
-
-| Key | Description |
-|-----|-------------|
-| `<leader>cda` | All diagnostics (project-wide) |
-| `<leader>cdb` | Buffer diagnostics |
-| `<leader>cdq` | Quickfix list (Trouble) |
-| `<leader>cdl` | Location list (Trouble) |
-| `<leader>cds` | Document symbols (Trouble) |
-| `<leader>cdh` | Line diagnostics (float) |
-| `]d` | Next diagnostic |
-| `[d` | Previous diagnostic |
-
-### Code Actions
+### Actions
 
 | Key | Modes | Description |
 |-----|-------|-------------|
@@ -225,9 +227,36 @@ primary prefix for most commands.
 | `<leader>cl` | n | Run code lens |
 | `<leader>cL` | n | Refresh code lenses |
 | `<leader>cf` | n | Format buffer |
-| `<leader>co` | n | Organize imports (TypeScript)* |
+| `<leader>co` | n | Organize imports (TypeScript/JavaScript) |
 
-**Note:** `<leader>co` wraps the `:LspOrganize` command and is only available when a TypeScript/JavaScript buffer has an attached `tsserver` client.
+### Diagnostics
+
+| Key | Description |
+|-----|-------------|
+| `<leader>cd` | Project diagnostics (Trouble) |
+| `<leader>cD` | Buffer diagnostics (Trouble) |
+| `<leader>ch` | Line diagnostics (float) |
+| `<leader>cq` | Quickfix list |
+| `<leader>cs` | Browse symbols (Trouble) |
+| `]d` / `[d` | Next/Previous diagnostic |
+| `]q` / `[q` | Next/Previous quickfix item |
+| `]l` / `[l` | Next/Previous location list item |
+| `]b` / `[b` | Next/Previous buffer |
+
+### Rust Crates Management
+
+**Prefix:** `<leader>cR`
+
+Available when editing `Cargo.toml` files:
+
+| Key | Description |
+|-----|-------------|
+| `<leader>cRt` | Toggle crates UI |
+| `<leader>cRr` | Reload crates data |
+| `<leader>cRu` | Update crate under cursor |
+| `<leader>cRU` | Update all crates |
+| `<leader>cRH` | Open crate homepage |
+| `<leader>cRD` | Open crate documentation |
 
 ---
 
@@ -235,100 +264,77 @@ primary prefix for most commands.
 
 **Prefix:** `<leader>g`
 
-### Status
-
-**Prefix:** `<leader>gs`
+### LazyGit & Status
 
 | Key | Description |
 |-----|-------------|
-| `<leader>gss` | Neogit status |
-| `<leader>gsp` | Git status picker |
-
-### Changes & Commits
-
-**Prefix:** `<leader>gc`
-
-| Key | Description |
-|-----|-------------|
-| `<leader>gcc` | Commit (Neogit) |
-| `<leader>gcp` | Pull (Neogit) |
-| `<leader>gcP` | Push (Neogit) |
-| `<leader>gcb` | Git branches |
-| `<leader>gcl` | Git log |
-| `<leader>gcL` | Git log (current file) |
-
-### Diff View
-
-**Prefix:** `<leader>gd`
-
-| Key | Description |
-|-----|-------------|
-| `<leader>gdo` | Open diff view |
-| `<leader>gdc` | Close diff view |
-| `<leader>gdf` | File history (current file) |
-| `<leader>gdF` | Repository history (all files) |
+| `<leader>gg` | LazyGit (full TUI) |
+| `<leader>gf` | LazyGit current file |
+| `<leader>gl` | Git log |
+| `<leader>gb` | Git blame line |
+| `<leader>gB` | Git browse (open in browser) |
+| `<leader>gC` | Commit (Neogit) |
+| `<leader>gp` | Pull (Neogit) |
+| `<leader>gP` | Push (Neogit) |
+| `<leader>gw` | Browse branches |
 
 ### Hunks
 
-**Prefix:** `<leader>gh`
+| Key | Description |
+|-----|-------------|
+| `<leader>gs` | Stage hunk |
+| `<leader>gr` | Reset hunk |
+| `<leader>gS` | Stage buffer |
+| `<leader>gR` | Reset buffer |
+| `<leader>gv` | Preview hunk |
+| `<leader>gd` | Diff buffer |
+| `]h` / `[h` | Next/Previous hunk |
+
+### DiffView
+
+**Prefix:** `<leader>gD`
 
 | Key | Description |
 |-----|-------------|
-| `<leader>ghn` | Next hunk |
-| `<leader>ghp` | Previous hunk |
-| `<leader>ghs` | Stage hunk |
-| `<leader>ghr` | Reset hunk |
-| `<leader>ghS` | Stage buffer |
-| `<leader>ghR` | Reset buffer |
-| `<leader>ghv` | Preview hunk |
-| `<leader>ghb` | Blame line (full) |
-| `<leader>ghd` | Diff this |
+| `<leader>gDo` | Open diff view |
+| `<leader>gDc` | Close diff view |
+| `<leader>gDf` | File history (current file) |
+| `<leader>gDh` | Repository history |
 
-#### Hunk Toggles
-
-**Prefix:** `<leader>ght`
-
-| Key | Description |
-|-----|-------------|
-| `<leader>ghtb` | Toggle blame |
-| `<leader>ghtw` | Toggle word diff |
-| `<leader>ghts` | Toggle signs |
-
-### Yank Git Links
-
-**Prefix:** `<leader>gy`
+### Git Links
 
 | Key | Modes | Description |
 |-----|-------|-------------|
-| `<leader>gyy` | n, v | Copy git link to clipboard |
-| `<leader>gyo` | n, v | Open git link in browser |
+| `<leader>gy` | n, v | Copy git link |
+| `<leader>gY` | n, v | Open git link in browser |
 
 ### Conflicts
+
+| Key | Description |
+|-----|-------------|
+| `<leader>go` | Choose ours |
+| `<leader>gt` | Choose theirs |
+| `]x` / `[x` | Next/Previous conflict |
 
 **Prefix:** `<leader>gx`
 
 | Key | Description |
 |-----|-------------|
-| `<leader>gxn` | Next conflict |
-| `<leader>gxp` | Previous conflict |
-| `<leader>gxo` | Choose ours |
-| `<leader>gxt` | Choose theirs |
 | `<leader>gxb` | Choose both |
-| `<leader>gx0` | Choose none |
+| `<leader>gxn` | Choose none |
 | `<leader>gxl` | List conflicts |
-| `<leader>gxr` | Refresh conflicts |
 
-### GitHub Integration
+### GitHub
 
-**Prefix:** `<leader>go`
+**Prefix:** `<leader>gh`
 
 | Key | Description |
 |-----|-------------|
-| `<leader>gop` | Open pull request |
-| `<leader>goi` | Open issue |
-| `<leader>goP` | Search pull requests |
-| `<leader>goI` | Search issues |
-| `<leader>got` | Toggle threads |
+| `<leader>ghp` | Open pull request |
+| `<leader>ghi` | Open issue |
+| `<leader>ghP` | Search pull requests |
+| `<leader>ghI` | Search issues |
+| `<leader>ght` | Toggle threads |
 
 ---
 
@@ -383,10 +389,10 @@ primary prefix for most commands.
 
 | Key | Description |
 |-----|-------------|
-| `<leader>dbt` | Toggle breakpoint |
+| `<leader>db` | Toggle breakpoint |
+| `<leader>dB` | Clear all breakpoints |
 | `<leader>dbc` | Conditional breakpoint |
 | `<leader>dbl` | Log point |
-| `<leader>dba` | Clear all breakpoints |
 | `<leader>dbe` | Exception breakpoints |
 
 ### Debug Views
@@ -411,28 +417,51 @@ primary prefix for most commands.
 | Key | Description |
 |-----|-------------|
 | `<leader>og` | Toggle indent guides |
-| `<leader>oz` | Close all folds |
-| `<leader>oZ` | Open all folds |
-| `<leader>op` | Peek fold |
 | `<leader>on` | Toggle line numbers (cycles: none → normal → relative) |
 | `<leader>ow` | Toggle line wrap |
 | `<leader>os` | Toggle spell check |
 | `<leader>oc` | Toggle cursor line |
-| `<leader>oC` | Toggle cursor column |
-| `<leader>oF` | Toggle format on save |
+| `<leader>of` | Toggle format on save |
+| `<leader>oa` | Toggle auto-save |
 | `<leader>od` | Toggle dim inactive |
+| `<leader>oe` | Toggle signcolumn |
+| `<leader>ol` | Toggle whitespace characters |
+| `<leader>oh` | Toggle search highlighting |
+| `<leader>ox` | Toggle diagnostics |
+| `<leader>oi` | Toggle inlay hints |
+| `<leader>ok` | Colorscheme switcher (interactive) |
+
+### Developer Tools
+
+**Prefix:** `<leader>oP`
+
+| Key | Description |
+|-----|-------------|
+| `<leader>oPs` | Start profiling |
+| `<leader>oPe` | Stop profiling |
+| `<leader>oPl` | Show plugin load times |
+| `<leader>oPr` | Measure render time |
+
+Commands:
+- `:KeymapConflicts` - Show keymap conflicts
+- `:KeymapList [mode]` - List all keymaps for mode
+- `:ProfileStart` / `:ProfileStop` - Control profiling
+- `:MeowvimProfile` - Show plugin load times
+- `:MeasureRender` - Measure buffer render time
+- `:StartupTrends` - Analyze startup time trends
 
 ---
 
 ## Sessions
 
-**Prefix:** `<leader>oS`
+**Prefix:** `<leader>q`
 
 | Key | Description |
 |-----|-------------|
-| `<leader>oSr` | Restore session |
-| `<leader>oSl` | Restore last session |
-| `<leader>oSx` | Stop session saving |
+| `<leader>qq` | Quit all |
+| `<leader>qQ` | Force quit all |
+
+Note: Session management has been simplified. Auto-save and restoration happens automatically.
 
 ---
 
@@ -467,7 +496,6 @@ primary prefix for most commands.
 | Key | Description |
 |-----|-------------|
 | `<leader>.` | Open/toggle scratch buffer |
-| `<leader>No` | Open scratch buffer |
 | `<leader>Nf` | Find scratch buffers |
 | `<leader>Nn` | New named scratch buffer |
 
@@ -475,25 +503,26 @@ primary prefix for most commands.
 
 ## Help & Discovery
 
-**Prefix:** `<leader>oh`
+**Prefix:** `<leader>h`
 
 | Key | Description |
 |-----|-------------|
-| `<leader>ohh` | Search help |
-| `<leader>ohc` | Search commands |
-| `<leader>ohk` | Search keymaps |
-| `<leader>ohm` | Search marks |
+| `<leader>hh` | Search help |
+| `<leader>hc` | Search commands |
+| `<leader>hk` | Search keymaps |
+| `<leader>hm` | Search man pages |
+| `<leader>hn` | Notification history |
 
 ---
 
 ## Mason
 
-**Prefix:** `<leader>om`
+**Prefix:** `<leader>T`
 
 | Key | Description |
 |-----|-------------|
-| `<leader>omm` | Open Mason UI |
-| `<leader>omi` | Install Mason tools |
+| `<leader>Tm` | Open Mason UI |
+| `<leader>Ti` | Install Mason tools |
 
 ---
 
@@ -512,8 +541,8 @@ primary prefix for most commands.
 
 | Key | Description |
 |-----|-------------|
-| `Ctrl+n` | Next entry in yank ring |
-| `Ctrl+p` | Previous entry in yank ring |
+| `Alt+n` | Next entry in yank ring |
+| `Alt+p` | Previous entry in yank ring |
 
 ### Indented Put
 
@@ -558,18 +587,6 @@ primary prefix for most commands.
 | Key | Modes | Description |
 |-----|-------|-------------|
 | `F2` | n, t | Toggle floating terminal |
-
----
-
-## Neovide Specific
-
-These keymaps are only available when running in Neovide GUI.
-
-| Key | Description |
-|-----|-------------|
-| `<leader>o+` | Scale up font |
-| `<leader>o-` | Scale down font |
-| `<leader>of` | Toggle fullscreen |
 
 ---
 
@@ -650,4 +667,4 @@ To customize keymaps, edit these files or add your own in `lua/config/custom.lua
 
 ## Documentation Info
 
-Documentation last updated: 2025-01-11
+Documentation last updated: 2026-01-30
