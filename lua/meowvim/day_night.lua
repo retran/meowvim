@@ -294,7 +294,7 @@ function M.toggle()
 end
 
 -- Set theme pair for day/night modes
-function M.set_day_theme(theme, variant)
+local function set_theme_for_time(time_of_day, theme, variant)
   local config_ok, config = pcall(require, "meowvim.config")
   if not config_ok then
     return
@@ -302,80 +302,40 @@ function M.set_day_theme(theme, variant)
   
   local mode = config.get("core.day_night_mode", "manual")
   
-  -- Prevent changes in sync mode
   if mode == "sync" then
     vim.notify("Cannot change theme in sync mode. Theme is controlled by ~/.meow file.", vim.log.levels.WARN)
     return
   end
   
-  -- Get current state BEFORE changing config
   local current_theme = config.get("core.theme", "catppuccin")
   local current_variant = config.get("core.variant", "mocha")
-  local old_day_theme = config.get("core.day_theme", "catppuccin")
-  local old_day_variant = config.get("core.day_variant", "latte")
+  local old_theme = config.get("core." .. time_of_day .. "_theme", "catppuccin")
+  local old_variant = config.get("core." .. time_of_day .. "_variant", time_of_day == "day" and "latte" or "mocha")
   
-  -- Update config
-  config.set("core.day_theme", theme)
+  config.set("core." .. time_of_day .. "_theme", theme)
   if variant then
-    config.set("core.day_variant", variant)
+    config.set("core." .. time_of_day .. "_variant", variant)
   end
   config.persist()
   
-  -- Check if we should apply immediately
   if mode == "auto" then
-    -- In auto mode, check system appearance
     local current_mode = M.get_effective_mode()
-    if current_mode == "day" then
-      apply_mode_theme("day")
+    if current_mode == time_of_day then
+      apply_mode_theme(time_of_day)
     end
   else
-    -- In manual mode, check if currently on old day theme
-    if current_theme == old_day_theme and current_variant == old_day_variant then
-      apply_mode_theme("day")
+    if current_theme == old_theme and current_variant == old_variant then
+      apply_mode_theme(time_of_day)
     end
   end
 end
 
+function M.set_day_theme(theme, variant)
+  set_theme_for_time("day", theme, variant)
+end
+
 function M.set_night_theme(theme, variant)
-  local config_ok, config = pcall(require, "meowvim.config")
-  if not config_ok then
-    return
-  end
-  
-  local mode = config.get("core.day_night_mode", "manual")
-  
-  -- Prevent changes in sync mode
-  if mode == "sync" then
-    vim.notify("Cannot change theme in sync mode. Theme is controlled by ~/.meow file.", vim.log.levels.WARN)
-    return
-  end
-  
-  -- Get current state BEFORE changing config
-  local current_theme = config.get("core.theme", "catppuccin")
-  local current_variant = config.get("core.variant", "mocha")
-  local old_night_theme = config.get("core.night_theme", "catppuccin")
-  local old_night_variant = config.get("core.night_variant", "mocha")
-  
-  -- Update config
-  config.set("core.night_theme", theme)
-  if variant then
-    config.set("core.night_variant", variant)
-  end
-  config.persist()
-  
-  -- Check if we should apply immediately
-  if mode == "auto" then
-    -- In auto mode, check system appearance
-    local current_mode = M.get_effective_mode()
-    if current_mode == "night" then
-      apply_mode_theme("night")
-    end
-  else
-    -- In manual mode, check if currently on old night theme
-    if current_theme == old_night_theme and current_variant == old_night_variant then
-      apply_mode_theme("night")
-    end
-  end
+  set_theme_for_time("night", theme, variant)
 end
 
 -- Watch system appearance changes (cross-platform)

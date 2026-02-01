@@ -316,6 +316,20 @@ function M.get_project_names()
   return names
 end
 
+-- Get project paths (for snacks picker)
+function M.get_project_paths()
+  local projects = M.get_projects()
+  local paths = {}
+  for _, project in pairs(projects) do
+    if project.path then
+      local project_path = expand_env(project.path)
+      local expanded_path = vim.fn.expand(project_path)
+      table.insert(paths, expanded_path)
+    end
+  end
+  return paths
+end
+
 -- Get current project
 function M.current_project()
   return _current_project

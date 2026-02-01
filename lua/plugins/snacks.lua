@@ -158,12 +158,11 @@ return {
             "~/dev",
             "~/projects",
           },
-          -- Configured projects from ~/.meowvim.yaml loaded at startup
-          -- These projects are shown first by the picker, prioritized over dev directories
+          -- Configured projects from ~/.config/meowvim/projects.lua
           projects = (function()
-            local ok, projects_util = pcall(require, "utils.projects")
+            local ok, config = pcall(require, "meowvim.config")
             if ok then
-              return projects_util.get_project_paths()
+              return config.get_project_paths()
             end
             return {}
           end)(),
@@ -200,13 +199,10 @@ return {
 
             vim.fn.chdir(dir)
 
-            -- Apply project-specific theme from ~/.meowvim.yaml
-            local ok, projects_util = pcall(require, "utils.projects")
+            -- Detect and apply project-specific settings
+            local ok, config = pcall(require, "meowvim.config")
             if ok then
-              projects_util.apply_theme_for_path(dir)
-              -- Run project-specific command (e.g., "Roslyn start")
-              -- Error handling is done internally by run_command_for_path
-              projects_util.run_command_for_path(dir)
+              config.detect_current_project()
             end
 
             local session = require("snacks").dashboard.sections.session()
