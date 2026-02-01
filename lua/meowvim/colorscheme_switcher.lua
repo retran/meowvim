@@ -101,11 +101,21 @@ function M.select()
   -- Use Snacks picker for live preview
   local snacks_ok, snacks = pcall(require, "snacks")
   if snacks_ok and snacks.picker then
+    -- Transform options into picker-compatible format
+    local picker_items = {}
+    for _, opt in ipairs(options) do
+      table.insert(picker_items, {
+        text = opt.display,
+        theme = opt.theme,
+        variant = opt.variant,
+      })
+    end
+    
     snacks.picker.pick({
       prompt = "Select colorscheme:",
-      items = options,
+      items = picker_items,
       format = function(item)
-        return item.display
+        return item.text
       end,
       preview = function(item, ctx)
         if item then
@@ -121,7 +131,7 @@ function M.select()
           vim.notify(
             string.format(
               "Colorscheme set to %s. Edit %s to persist.",
-              item.display,
+              item.text,
               user_config_path
             ),
             vim.log.levels.INFO
