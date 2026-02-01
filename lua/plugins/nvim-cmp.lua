@@ -1,6 +1,35 @@
 -- SPDX-License-Identifier: MIT
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
 
+-- Completion Keymaps:
+--   <C-n>      - Next completion item
+--   <C-p>      - Previous completion item  
+--   <Tab>      - Expand snippet or jump to next placeholder
+--   <S-Tab>    - Jump to previous snippet placeholder
+--   <CR>       - Confirm selected completion
+--   <Esc>      - Abort completion
+--   <C-e>      - Abort completion
+--   <C-b>      - Scroll docs up
+--   <C-f>      - Scroll docs down
+--   <C-Space>  - Trigger completion manually
+--
+-- Copilot Keymaps (when enabled):
+--   <C-y>      - Accept full suggestion
+--   <C-Right>  - Accept next word
+--   <C-Down>   - Accept next line
+--   <C-]>      - Next suggestion
+--   <C-[>      - Previous suggestion
+--   <C-\>      - Dismiss suggestion
+--   <M-CR>     - Open Copilot panel
+--
+-- Sources (in priority order):
+--   1. Copilot (AI suggestions)
+--   2. LSP (language server)
+--   3. LuaSnip (snippets)
+--   4. Path (file paths)
+--   5. Spell (spelling)
+--   6. Buffer (current buffer words)
+
 local function get_dependencies()
   local deps = {
     "hrsh7th/cmp-nvim-lsp",
@@ -65,6 +94,7 @@ return {
     }
 
     local global_sources = {
+      { name = "copilot", group_index = 2 },
       { name = "nvim_lsp" },
       { name = "luasnip" },
       { name = "path" },

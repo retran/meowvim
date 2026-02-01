@@ -1,39 +1,74 @@
 -- SPDX-License-Identifier: MIT
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
 
--- @file: lua/plugins/copilot.lua
--- @brief: GitHub Copilot AI code completion and assistance plugin configuration.
-
 return {
   "zbirenbaum/copilot.lua",
   cmd = "Copilot",
   event = "InsertEnter",
+  dependencies = {
+    "zbirenbaum/copilot-cmp",
+  },
   config = function()
-    -- Check if enabled via toggle (default: false)
-    local enabled = vim.g.copilot_enabled or false
+    local toggles_ok, toggles = pcall(require, "utils.toggles")
+    local enabled = false
+    
+    if toggles_ok then
+      enabled = toggles.get("copilot_enabled") or false
+    else
+      enabled = vim.g.copilot_enabled or false
+    end
+    
+    if not enabled then
+      local config_ok, config = pcall(require, "meowvim.config")
+      if config_ok then
+        enabled = config.get("core.enable_copilot", false)
+      end
+    end
     
     require("copilot").setup({
       suggestion = {
-        enabled = enabled,
-        auto_trigger = enabled,
+        enabled = true,
+        auto_trigger = false,
         keymap = {
-          accept = "<M-CR>",
-          next = "<M-n>",
-          prev = "<M-p>",
-          dismiss = "<M-e>",
+          accept = "<C-y>",
+          accept_word = "<C-Right>",
+          accept_line = "<C-Down>",
+          next = "<C-]>",
+          prev = "<C-[>",
+          dismiss = "<C-\\>",
         },
       },
       panel = {
-        enabled = false,
+        enabled = true,
+        auto_refresh = false,
         keymap = {
-          open = false,
+          jump_prev = "[[",
+          jump_next = "]]",
+          accept = "<CR>",
+          refresh = "gr",
+          open = "<M-CR>",
         },
+      },
+      filetypes = {
+        yaml = false,
+        markdown = false,
+        help = false,
+        gitcommit = false,
+        gitrebase = false,
+        hgcommit = false,
+        svn = false,
+        cvs = false,
+        ["."] = false,
       },
     })
     
-    -- Disable if toggle is off
     if not enabled then
       vim.cmd("Copilot disable")
+    end
+    
+    local cmp_ok, copilot_cmp = pcall(require, "copilot_cmp")
+    if cmp_ok then
+      copilot_cmp.setup()
     end
   end,
 }
