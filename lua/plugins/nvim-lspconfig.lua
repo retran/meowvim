@@ -3,7 +3,7 @@
 
 -- @file: lua/plugins/nvim-lspconfig.lua
 -- @brief: Language Server Protocol (LSP) client configuration and setup.
--- @requires: Neovim >= 0.11 (uses vim.lsp.config() and vim.lsp.enable() APIs)
+-- @requires: Neovim >= 0.10
 
 local mason_registry = require("config.mason")
 
@@ -351,37 +351,49 @@ return {
       local custom_on_attach = server_opts.on_attach
 
       server_opts.capabilities = vim.tbl_deep_extend("force", {}, caps, server_opts.capabilities or {})
+      
+      -- Merge on_attach callbacks
+      local base_on_attach = on_attach
       server_opts.on_attach = function(client, bufnr)
-        on_attach(client, bufnr)
+        base_on_attach(client, bufnr)
         if custom_on_attach then
           custom_on_attach(client, bufnr)
         end
       end
 
-      -- Use the new Neovim 0.11+ API: vim.lsp.config() + vim.lsp.enable()
-      -- This is the recommended approach for LSP configuration
-      local lspconfig = require("lspconfig")
+      -- Get default config from nvim-lspconfig to extract cmd, filetypes, etc.
       local server = lspconfig[server_name]
-      
-      -- Get default config from lspconfig if available
-      local default_config = {}
-      if server and server.document_config and server.document_config.default_config then
-        default_config = vim.tbl_extend("force", {}, server.document_config.default_config)
-        
-        -- Remove problematic async root_dir functions that don't work with vim.lsp.config()
-        -- The new API prefers root_markers instead
-        if default_config.root_dir and type(default_config.root_dir) == "function" then
-          -- Only keep root_dir if server_opts doesn't provide root_markers
-          if server_opts.root_markers then
-            default_config.root_dir = nil
-          end
-        end
+      if not server or not server.document_config then
+        vim.notify(
+          string.format("LSP server '%s' not found in lspconfig", server_name),
+          vim.log.levels.WARN
+        )
+        return
       end
+
+      local default_config = server.document_config.default_config or {}
       
-      -- Merge with our custom config (server_opts takes precedence)
-      local final_config = vim.tbl_deep_extend("force", default_config, server_opts)
+      -- Build the final config by merging defaults with custom settings
+      local final_config = vim.tbl_deep_extend("force", {
+        cmd = default_config.cmd,
+        filetypes = default_config.filetypes,
+        -- Convert root_dir function to root_markers for the new API
+        root_markers = server_opts.root_markers or (function()
+          -- Extract root patterns from lspconfig if available
+          if default_config.root_dir then
+            -- Most lspconfig servers use util.root_pattern, try to extract markers
+            local root_pattern = default_config.root_dir
+            -- For now, fallback to common markers if root_dir is a function
+            return { '.git' }
+          end
+          return nil
+        end)(),
+      }, server_opts)
       
-      -- Register with vim.lsp.config and enable
+      -- Remove root_dir if present (we use root_markers instead)
+      final_config.root_dir = nil
+      
+      -- Use Neovim 0.11+ native LSP API
       vim.lsp.config(server_name, final_config)
       vim.lsp.enable(server_name)
     end
@@ -399,43 +411,22 @@ return {
     end
 
     -- Setup GDScript LSP (for Godot engine)
-    -- Uses the new vim.lsp.config + vim.lsp.enable API
     do
-      local lspconfig = require("lspconfig")
-      local gd_default = {}
-      local gd_server = lspconfig.gdscript
-      if gd_server and gd_server.document_config and gd_server.document_config.default_config then
-        gd_default = gd_server.document_config.default_config
+      if lspconfig.gdscript and lspconfig.gdscript.document_config then
+        local default_config = lspconfig.gdscript.document_config.default_config or {}
+        vim.lsp.config('gdscript', {
+          cmd = default_config.cmd,
+          filetypes = default_config.filetypes,
+          root_markers = { 'project.godot', '.git' },
+          capabilities = caps,
+          on_attach = on_attach,
+        })
+        vim.lsp.enable('gdscript')
       end
-      
-      local gdscript_config = vim.tbl_deep_extend("force", {}, gd_default, {
-        capabilities = caps,
-        on_attach = on_attach,
-      })
-      
-      vim.lsp.config("gdscript", gdscript_config)
-      vim.lsp.enable("gdscript")
     end
 
-    -- Setup Roslyn LSP for C# (if supported on this platform)
-    if package_supported("roslyn") then
-      local roslyn_config = {
-        capabilities = caps,
-        on_attach = on_attach,
-        settings = {
-          ["csharp|inlay_hints"] = {
-            csharp_enable_inlay_hints_for_implicit_object_creation = true,
-            csharp_enable_inlay_hints_for_implicit_variable_types = true,
-          },
-          ["csharp|code_lens"] = {
-            dotnet_enable_references_code_lens = true,
-          },
-        },
-      }
-      
-      vim.lsp.config("roslyn", roslyn_config)
-      vim.lsp.enable("roslyn")
-    end
+    -- Note: Roslyn LSP is handled by the separate roslyn.nvim plugin (lua/plugins/roslyn.lua)
+    -- No need to configure it here
 
     mason_tool_installer.setup({
       ensure_installed = mason_registry.get_all_tools(),
