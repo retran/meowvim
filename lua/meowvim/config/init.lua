@@ -11,8 +11,7 @@ local _projects = nil
 local _current_project = nil
 
 function M.get_config_dir()
-  return vim.env.XDG_CONFIG_HOME and (vim.env.XDG_CONFIG_HOME .. "/meowvim")
-    or vim.fn.expand("~/.config/meowvim")
+  return vim.env.XDG_CONFIG_HOME and (vim.env.XDG_CONFIG_HOME .. "/meowvim") or vim.fn.expand("~/.config/meowvim")
 end
 
 function M.get_config_path()
@@ -38,13 +37,13 @@ end
 local function create_default_config()
   local config_dir = get_config_dir()
   local config_path = get_config_path()
-  
+
   if vim.fn.filereadable(config_path) == 1 then
     return
   end
-  
+
   vim.fn.mkdir(config_dir, "p")
-  
+
   local default_content = [[-- Meowvim Configuration
 -- See :h meowvim-config for full documentation
 
@@ -84,16 +83,12 @@ return {
   },
 }
 ]]
-  
+
   local file = io.open(config_path, "w")
   if file then
     file:write(default_content)
     file:close()
-    vim.notify(
-      "Created default config at " .. config_path,
-      vim.log.levels.INFO,
-      { title = "Meowvim" }
-    )
+    vim.notify("Created default config at " .. config_path, vim.log.levels.INFO, { title = "Meowvim" })
   end
 end
 
@@ -101,11 +96,13 @@ local function expand_env(str)
   if type(str) ~= "string" then
     return str
   end
-  return str:gsub("%$([%w_]+)", function(var)
-    return vim.env[var] or ""
-  end):gsub("%${([%w_]+)}", function(var)
-    return vim.env[var] or ""
-  end)
+  return str
+    :gsub("%$([%w_]+)", function(var)
+      return vim.env[var] or ""
+    end)
+    :gsub("%${([%w_]+)}", function(var)
+      return vim.env[var] or ""
+    end)
 end
 
 -- Deep merge with env expansion
@@ -122,7 +119,7 @@ end
 
 local function load_user_config()
   create_default_config()
-  
+
   local config_path = get_config_path()
 
   local cache = require("meowvim.config.cache")
@@ -139,11 +136,7 @@ local function load_user_config()
       cache.save(user_config)
       return user_config
     elseif not ok then
-      vim.notify(
-        "Error loading config: " .. tostring(user_config),
-        vim.log.levels.ERROR,
-        { title = "Meowvim" }
-      )
+      vim.notify("Error loading config: " .. tostring(user_config), vim.log.levels.ERROR, { title = "Meowvim" })
     end
   end
 
@@ -152,29 +145,29 @@ end
 
 local function validate_project(name, project)
   local issues = {}
-  
+
   if not project.path then
     table.insert(issues, "missing 'path' field")
   elseif type(project.path) ~= "string" then
     table.insert(issues, "'path' must be a string")
   end
-  
+
   if project.theme and type(project.theme) ~= "string" then
     table.insert(issues, "'theme' must be a string")
   end
-  
+
   if project.variant and type(project.variant) ~= "string" then
     table.insert(issues, "'variant' must be a string")
   end
-  
+
   if project.on_open and type(project.on_open) ~= "string" then
     table.insert(issues, "'on_open' must be a string")
   end
-  
+
   if project.inherit ~= nil and type(project.inherit) ~= "boolean" then
     table.insert(issues, "'inherit' must be a boolean")
   end
-  
+
   return #issues == 0, issues
 end
 
@@ -199,20 +192,12 @@ local function load_projects_config()
             )
           end
         else
-          vim.notify(
-            string.format("Project '%s' must be a table", name),
-            vim.log.levels.WARN,
-            { title = "Meowvim" }
-          )
+          vim.notify(string.format("Project '%s' must be a table", name), vim.log.levels.WARN, { title = "Meowvim" })
         end
       end
       return validated_projects
     elseif not ok then
-      vim.notify(
-        "Error loading projects: " .. tostring(projects),
-        vim.log.levels.WARN,
-        { title = "Meowvim" }
-      )
+      vim.notify("Error loading projects: " .. tostring(projects), vim.log.levels.WARN, { title = "Meowvim" })
     end
   end
 
@@ -240,7 +225,7 @@ function M.init()
         table.insert(critical_errors, err)
       end
     end
-    
+
     if #critical_errors > 0 then
       vim.schedule(function()
         vim.api.nvim_echo({
@@ -477,18 +462,18 @@ function M.persist()
   end
 
   local config_path = get_config_path()
-  
+
   -- Temporarily disable watcher to prevent reload loop
   local watcher_ok, watcher = pcall(require, "meowvim.config.watcher")
   if watcher_ok then
     watcher.unwatch(config_path)
   end
-  
+
   -- Serialize config to Lua table format
   local function serialize_value(val, indent)
     indent = indent or 0
     local spaces = string.rep("  ", indent)
-    
+
     if type(val) == "string" then
       return string.format("%q", val)
     elseif type(val) == "number" or type(val) == "boolean" then
@@ -501,10 +486,12 @@ function M.persist()
         local priority = { core = 1, editor = 2, ui = 3, toggles = 4 }
         local pa = priority[a] or 99
         local pb = priority[b] or 99
-        if pa ~= pb then return pa < pb end
+        if pa ~= pb then
+          return pa < pb
+        end
         return tostring(a) < tostring(b)
       end)
-      
+
       for _, k in ipairs(keys) do
         local v = val[k]
         local key_str = type(k) == "string" and k or ("[" .. tostring(k) .. "]")
@@ -516,44 +503,36 @@ function M.persist()
       return "nil"
     end
   end
-  
+
   local content = "-- Meowvim Configuration\n"
   content = content .. "-- See :h meowvim-config for full documentation\n\n"
   content = content .. "return " .. serialize_value(_config, 0) .. "\n"
-  
+
   -- Write to file
   local file = io.open(config_path, "w")
   if file then
     file:write(content)
     file:close()
-    
+
     -- Clear cache
     require("meowvim.config.cache").clear()
-    
+
     -- Re-enable watcher after a short delay
     if watcher_ok then
       vim.defer_fn(function()
         watcher.watch(config_path)
       end, 1000)
     end
-    
-    vim.notify(
-      "Configuration saved to " .. config_path,
-      vim.log.levels.INFO,
-      { title = "Meowvim" }
-    )
+
+    vim.notify("Configuration saved to " .. config_path, vim.log.levels.INFO, { title = "Meowvim" })
     return true
   else
     -- Re-enable watcher on error
     if watcher_ok then
       watcher.watch(config_path)
     end
-    
-    vim.notify(
-      "Failed to write configuration to " .. config_path,
-      vim.log.levels.ERROR,
-      { title = "Meowvim" }
-    )
+
+    vim.notify("Failed to write configuration to " .. config_path, vim.log.levels.ERROR, { title = "Meowvim" })
     return false
   end
 end
