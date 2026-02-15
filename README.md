@@ -18,75 +18,74 @@
 
 ## 🎯 Overview
 
-**meowvim** delivers a cozy yet powerful Neovim configuration that feels right at home in the **project meow** ecosystem. It bundles a curated plugin suite, ergonomic defaults, and playful cat energy so you can drop into a modern editor experience within minutes.
+**meowvim** is a fast, well-configured Neovim setup for the **project meow** ecosystem. It bundles curated plugins, sensible defaults, and playful touches so you can start coding immediately.
 
-### Who Is meowvim For?
+### Who Is This For?
 
-- **Polyglot developers** who need LSP, formatting, debugging, and testing across languages
-- **Terminal purists** who want speed and minimalism without sacrificing UI polish
-- **Project meow cats** aiming for a consistent setup across macOS and Linux
-- **Automation enthusiasts** who value lazy-loading, session persistence, and keymap discoverability
+- **Polyglot developers** who need LSP, formatting, debugging, and testing
+- **Terminal users** who want speed without sacrificing polish
+- **Project meow users** who need consistent setup across macOS and Linux
+- **Automation fans** who value lazy-loading, sessions, and keymap discovery
 
 ## ✨ Key Features
 
-### 🎨 Cozy Interface & UX
+### 🎨 Interface & UX
 
-- **6 colorschemes** with 30+ variants: Catppuccin, TokyoNight, Rose Pine, Gruvbox, Nord, and Kanagawa
-- **Transparent backgrounds** configurable from 0-100% opacity
-- **Interactive theme switcher** with live preview (`:ColorschemeSelect` or `<leader>ok`)
-- `noice.nvim` powered message center, notifications, and command palette UX
-- Smooth folding, indent guides, and persistent layout with auto-reload
+- **6 colorschemes** with 30+ variants: Catppuccin, TokyoNight, Rose Pine, Gruvbox, Nord, Kanagawa
+- **Transparency** from 0-100% opacity
+- **Theme picker** with live preview (`:ColorschemeSelect` or `<leader>ok`)
+- `noice.nvim` message center and command palette
+- Smooth folds, indent guides, persistent layout with auto-reload
 
-### 🧠 Language Intelligence
+### 🧠 Language Support
 
-- Auto-configured LSP servers with diagnostics, code actions, and symbol navigation
-- Treesitter-powered syntax highlighting, context display, and structural selection
-- Intuitive completion popup with hjkl navigation (`<C-j/k/l>`) and GitHub Copilot inline suggestions (`<C-y/g/n/p>`)
+- LSP servers with diagnostics, actions, and symbol navigation
+- Treesitter syntax highlighting and structural selection
+- Completion with hjkl navigation (`<C-j/k/l>`) and GitHub Copilot (`<C-y/g/n/p>`)
 
-### 🚀 Productivity & Navigation
+### 🚀 Navigation & Productivity
 
-- **Flash-powered motion** (`<leader><leader>`) and Snacks fuzzy finders for files, buffers, and commands
-- **LazyGit integration** (`<leader>gg`)
-- **Bookmark system** for quick navigation across projects (`<leader>mm`, `<leader>mi`)
-- **Code screenshots** via Silicon with syntax highlighting (`<leader>cs`)
-- **Auto buffer management** to keep workspace tidy (configurable thresholds)
-- **Session persistence** with per-branch support and project switching
-- Integrated TODO tracking, spectre-powered search & replace, and git workflows via Diffview and Gitsigns
+- **Flash motion** (`<leader><leader>`) and Snacks finders for files, buffers, commands
+- **LazyGit** (`<leader>gg`)
+- **Bookmarks** for quick navigation (`<leader>mm`, `<leader>mi`)
+- **Code screenshots** with syntax highlighting (`<leader>cs`)
+- **Auto buffer cleanup** (configurable threshold)
+- **Sessions** with per-branch support and project switching
+- TODO tracking, search & replace, git workflows via Diffview and Gitsigns
 
-### 🐾 Project Meow Integrations
+### 🐾 Project Meow Features
 
-- **Advanced config system** with Lua DSL, auto-reload, and project-specific settings
-- **Developer tools**: keymap conflict detection, performance profiling, startup tracking
-- **Automation scripts**: `update-meowvim.sh` with backup/rollback, comprehensive test suite
-- **CI/CD pipeline** with lint checks and multi-platform testing
-- Raycast launcher scripts (`bin/`) for instant GUI access
-- Mason-managed toolchains with automatic PATH injection
-- Overseer task templates, Neotest runners, and DAP presets for Go, TypeScript, Python, and more
+- **Config system** with Lua tables, auto-reload, project settings
+- **Developer tools**: conflict detection, profiling, startup tracking
+- **Automation**: `update-meowvim.sh` with backup/rollback, test suite
+- **CI/CD** with lint and multi-platform tests
+- Mason-managed tools with auto PATH setup
+- Overseer tasks, Neotest runners, DAP for Go, TypeScript, Python, more
 
 ## 📦 Installation
 
 ### ⚙️ Prerequisites
 
-| Type        | Requirements                                                             |
-| ----------- | ------------------------------------------------------------------------ |
-| Required    | Neovim ≥ 0.11, Git, true-color capable terminal                          |
-| Recommended | Node.js ≥ 18, Python ≥ 3.8, Go ≥ 1.19, `ripgrep`, `fd`, `fzf`, Nerd Font |
-| Optional    | GitHub Copilot subscription, Raycast (for launcher scripts)              |
+| Type        | Requirements                                                   |
+| ----------- | -------------------------------------------------------------- |
+| Required    | Neovim ≥ 0.11, Git, true-color terminal                        |
+| Recommended | Node.js ≥ 18, Python ≥ 3.8, Go ≥ 1.19, ripgrep, fd, fzf, Nerd Font |
+| Optional    | GitHub Copilot                                                  |
 
-### ⚡ Quick Install (fresh setup)
+### ⚡ Quick Install
 
 ```bash
-# Backup any previous config
+# Backup existing config
 mv ~/.config/nvim ~/.config/nvim.backup
 
 # Clone meowvim
 git clone https://github.com/retran/meowvim.git ~/.config/nvim
 
-# Launch the purr-fect editor
+# Start Neovim
 nvim
 ```
 
-Plugins install on first launch via `lazy.nvim`. Sit back and let the cats arrange the house.
+Plugins install automatically on first launch via `lazy.nvim`.
 
 ### 🐾 Install with project meow
 
@@ -97,7 +96,7 @@ git submodule update --init
 ./bin/meowctl install personal
 ```
 
-The `meow` automation links meowvim as part of the broader dotfiles ecosystem, including Raycast scripts and helper tools.
+The `meow` automation links meowvim with your dotfiles.
 
 ### 🔧 Staying Updated
 
@@ -115,12 +114,12 @@ The `meow` automation links meowvim as part of the broader dotfiles ecosystem, i
 
 ## 🚀 Quick Start
 
-1. **Launch Neovim** — first run installs plugins and bootstraps default LSP servers.
-2. **Configure your setup** — edit `~/.config/meowvim/config.lua` to personalize theme, transparency, and features.
-3. **Discover keymaps** — press `<leader>hk` for an interactive keymap palette or peek at the [Quick Reference](docs/KEYMAPS_QUICK_REFERENCE.md).
-4. **Install language tooling** — open Mason (`<leader>Tm`) to review and install any missing LSP, formatter, or debugger.
-5. **Supercharge navigation** — try `<leader><leader>` for Flash jumps, `<leader>ff` for fuzzy file search, `<leader>gg` for LazyGit, and `F2` for the floating terminal.
-6. **Optional Copilot** — authenticate via `:Copilot auth` to invite your AI cat companion.
+1. **Launch** — first run installs plugins and bootstraps LSP servers
+2. **Configure** — edit `~/.config/meowvim/config.lua` (theme, transparency, features)
+3. **Keymaps** — press `<leader>hk` for interactive search or see [Quick Reference](docs/KEYMAPS_QUICK_REFERENCE.md)
+4. **Language tools** — open Mason (`<leader>Tm`) to install LSP, formatters, debuggers
+5. **Navigate** — `<leader><leader>` Flash jumps, `<leader>ff` file search, `<leader>gg` LazyGit, `F2` terminal
+6. **Copilot** (optional) — authenticate via `:Copilot auth`
 
 ## 📖 Documentation
 
@@ -136,18 +135,17 @@ Each guide follows the meowg1k documentation structure so you can prowl between 
 
 ## 🧩 Customization
 
-meowvim now features a powerful configuration system:
+Customize meowvim through simple Lua tables:
 
-- **User config**: Edit `~/.config/meowvim/config.lua` using the intuitive Lua DSL
-- **Project-specific settings**: Create `~/.config/meowvim/projects.lua` for per-project overrides
-- **Config commands**: Use `:MeowvimConfig`, `:MeowvimConfigReload`, `:MeowvimConfigShow`, and more
-- **Theme switching**: Try `:ColorschemeSelect` or `<leader>ok` for live theme preview
-- **Core options**: Tune `lua/config/options.lua` for UI, spell checking, and performance
-- **Keymaps**: Add or adjust in `lua/config/keymaps.lua`; discovery is baked in with which-key
-- **New plugins**: Drop files into `lua/plugins/*.lua` — lazy loading keeps startup snappy
-- **Scripts**: `bin/` integrates with Raycast, while automation scripts power updates and testing
+- **User config**: Edit `~/.config/meowvim/config.lua` - plain Lua table
+- **Project settings**: Create `~/.config/meowvim/projects.lua` for project overrides
+- **Commands**: `:MeowvimConfig`, `:MeowvimConfigReload`, `:MeowvimConfigShow`
+- **Theme picker**: `:ColorschemeSelect` or `<leader>ok` for live preview
+- **Options**: `lua/config/options.lua` - Neovim settings
+- **Keymaps**: `lua/config/keymaps.lua` - discoverable with which-key
+- **Plugins**: `lua/plugins/*.lua` - one file per plugin
 
-See [Configuration Guide](docs/02-CONFIGURATION.md) for complete details.
+See [Configuration Guide](docs/02-CONFIGURATION.md) for details.
 
 ## 🛠️ Troubleshooting & Support
 

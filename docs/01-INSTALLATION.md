@@ -1,37 +1,35 @@
-# Installation & Upgrade Guide
+# Installation & Upgrade
 
-Welcome to the **meowvim** den! This guide helps you install, verify, and maintain the purr-fect Neovim setup across different environments.
+This guide covers installation, verification, and maintenance of **meowvim**.
 
-## 1. Requirements
+## Requirements
 
-| Level           | Details                                                                  |
-| --------------- | ------------------------------------------------------------------------ |
-| **Required**    | Neovim ≥ 0.11, Git, true-color capable terminal                          |
-| **Recommended** | Node.js ≥ 18, Python ≥ 3.8, Go ≥ 1.19, `ripgrep`, `fd`, `fzf`, Nerd Font |
-| **Optional**    | GitHub Copilot, Raycast (for launch scripts), tmux integration           |
+| Level           | Details                                                     |
+| --------------- | ----------------------------------------------------------- |
+| **Required**    | Neovim ≥ 0.11, Git, true-color terminal                     |
+| **Recommended** | Node.js ≥ 18, Python ≥ 3.8, Go ≥ 1.19, ripgrep, fd, fzf, Nerd Font |
+| **Optional**    | GitHub Copilot, tmux                                         |
 
-> **Tip:** Install a Nerd Font (e.g. JetBrains Mono Nerd Font) and enable it in your terminal to make icons and glyphs display correctly.
+Install a Nerd Font (e.g. JetBrains Mono) and enable it in your terminal for icons.
 
-## 2. Fresh Installation
-
-Use this path if you want meowvim as your primary Neovim configuration.
+## Fresh Install
 
 ```bash
-# Backup any existing config (optional but recommended)
+# Backup existing config
 mv ~/.config/nvim ~/.config/nvim.backup
 
 # Clone meowvim
 git clone https://github.com/retran/meowvim.git ~/.config/nvim
 
-# Launch Neovim to bootstrap plugins
+# Start Neovim
 nvim
 ```
 
-First launch installs the `lazy.nvim` plugin manager, syncs all plugins, and configures LSP servers automatically. Keep the terminal open until installation finishes.
+First launch installs `lazy.nvim` and syncs all plugins automatically.
 
-## 3. Installing via project meow
+## Project Meow Install
 
-If you already live in the **project meow** ecosystem, meowvim plugs in as part of the dotfiles automation.
+If you use the **project meow** ecosystem:
 
 ```bash
 git clone https://github.com/retran/meow.git ~/.meow
@@ -40,59 +38,49 @@ git submodule update --init
 ./bin/meowctl install personal
 ```
 
-This links meowvim alongside Raycast launchers, shell aliases, and other feline utilities managed by `meowctl`.
+This links meowvim with your dotfiles.
 
-## 4. Platform Notes
+## Platform Notes
 
-- **macOS** — iTerm2 or kitty work beautifully; enable “Draw bold text in bright colors” for best contrast.
-- **Linux** — ensure `$XDG_CONFIG_HOME` is respected (defaults to `~/.config`), or adjust clone path accordingly.
-- **Windows (WSL)** — install Neovim on the WSL side and clone into `/home/<user>/.config/nvim`. Use Windows Terminal with a Nerd Font.
+- **macOS** — ghostty, kitty, or iTerm2 recommended
+- **Linux** — ensure `$XDG_CONFIG_HOME` is set (defaults to `~/.config`)
+- **Windows (WSL)** — install Neovim on WSL side, use Windows Terminal with Nerd Font
 
-## 5. Optional Dependencies
+## Optional Tools
 
-| Tool      | Purpose              | Install Command                                                  |
-| --------- | -------------------- | ---------------------------------------------------------------- |
-| `ripgrep` | fast project search  | `brew install ripgrep` · `apt install ripgrep`                   |
-| `fd`      | smart file finder    | `brew install fd` · `apt install fd-find`                        |
-| `fzf`     | fuzzy finder backend | `brew install fzf` · `apt install fzf`                           |
-| `neovide` | GUI client           | `brew install neovide` · see [Neovide docs](https://neovide.dev) |
-| `lazygit` | optional git TUI     | `brew install lazygit` · `apt install lazygit`                   |
+| Tool      | Purpose           | Install                                    |
+| --------- | ----------------- | ------------------------------------------ |
+| `ripgrep` | Fast search       | `brew install ripgrep` · `apt install ripgrep` |
+| `fd`      | File finder       | `brew install fd` · `apt install fd-find`     |
+| `fzf`     | Fuzzy finder      | `brew install fzf` · `apt install fzf`        |
+| `neovide` | GUI client        | `brew install neovide`                        |
+| `lazygit` | Git TUI           | `brew install lazygit` · `apt install lazygit` |
 
-Install the tools your workflow needs and meowvim will detect them automatically where possible.
+## Verify Install
 
-## 6. Verifying Installation
+After first launch:
 
-After the first launch:
+1. Run `:checkhealth meowvim`
+2. Check dashboard appears (start Neovim without arguments)
+3. Open Mason (`<leader>omm`)
+4. Run `:Lazy` to verify plugins
 
-1. Run `:checkhealth` to ensure dependencies are detected.
-2. Trigger the dashboard (start Neovim without arguments) and confirm the cat-themed welcome screen appears.
-3. Open Mason (`<leader>omm`) to see that language servers are available.
-4. Try `:Lazy` to confirm the plugin manager is responsive.
+## Updates
 
-If everything completes without red warnings, you’re ready to code.
-
-## 7. Updating meowvim
-
-### Automated Update (Recommended)
-
-Use the built-in update script with automatic backup and rollback:
+### Automated (Recommended)
 
 ```bash
 ./bin/update-meowvim.sh
 ```
 
 Features:
-
-- Creates timestamped backups before updating
-- Updates configuration files via git pull
-- Syncs all plugins via lazy.nvim
-- Runs health checks after update
-- **Auto-rollback on failure**
-- Cleans old backups (keeps last 10)
+- Timestamped backups
+- Git pull + plugin sync
+- Health checks
+- Auto-rollback on failure
+- Keeps last 10 backups
 
 ### Manual Rollback
-
-If you need to rollback to a previous state:
 
 ```bash
 ./bin/update-meowvim.sh --rollback backup_TIMESTAMP
@@ -100,76 +88,62 @@ If you need to rollback to a previous state:
 
 ### Manual Update
 
-If you prefer manual control:
-
 ```bash
-# Update configuration files
 cd ~/.config/nvim
 git pull
 
-# Inside Neovim, refresh plugins and tooling
+# In Neovim:
 :Lazy sync
 :MasonToolsUpdate
-
-# Run health check
 :checkhealth meowvim
 ```
 
-### Test Configuration
-
-Verify everything works after updates:
+### Test Config
 
 ```bash
 ./bin/test-config.sh
 ```
 
-This runs 9 comprehensive tests covering:
-
-- Neovim startup
-- Config system loading
+Tests:
+- Startup
+- Config loading
 - Health checks
-- User config validation
 - Plugin integrity
-- LSP, Treesitter, keymaps
-- Lua syntax
+- LSP, Treesitter
+- Syntax
 
-> **Heads up:** If you maintain personal tweaks, commit them to your own branch or fork so you can merge upstream updates gracefully.
+## Initial Config
 
-## 8. Initial Configuration
+After install, customize:
 
-After installation, customize your setup:
-
-1. Edit `~/.config/meowvim/config.lua` (created on first run)
-2. Choose your theme and settings:
+1. Edit `~/.config/meowvim/config.lua` (auto-created)
+2. Set theme and options:
 
 ```lua
-local config = require("meowvim.config.builder")
+return {
+  core = {
+    theme = "catppuccin",  -- catppuccin, tokyonight, rose-pine, gruvbox, nord, kanagawa
+    variant = "mocha",
+    enable_copilot = false,
+  },
 
-config.core({
-  theme = "catppuccin",  -- catppuccin, tokyonight, rose-pine, gruvbox, nord, kanagawa
-  variant = "mocha",      -- theme-specific variant
-  enable_copilot = false, -- true to enable GitHub Copilot
-})
-
-config.ui({
-  transparency = 0,  -- 0-100% (0 = opaque, 100 = fully transparent)
-  statusline_style = "bubbles",
-})
-
-return config.build()
+  ui = {
+    transparency = 0,  -- 0-100
+  },
+}
 ```
 
-3. Reload config: `:MeowvimConfigReload` or restart Neovim
-4. Use `:ColorschemeSelect` or `<leader>uc` for interactive theme switching
+3. Reload: `:MeowvimConfigReload` or restart
+4. Theme picker: `:ColorschemeSelect` or `<leader>ok`
 
-## 9. Migrating from Another Config
+## Migrate from Another Config
 
-1. Backup your previous configuration (`mv ~/.config/nvim ~/.config/nvim.prev`).
-2. Follow the fresh installation steps.
-3. Copy snippets, custom plugins, or spellfiles from your backup into the new structure.
-4. Recreate local overrides in `after/` or dedicated plugin files.
+1. Backup old config: `mv ~/.config/nvim ~/.config/nvim.prev`
+2. Follow fresh install
+3. Copy snippets or plugins from backup
+4. Add local changes in `after/`
 
-## 10. Uninstalling or Resetting
+## Uninstall
 
 ```bash
 rm -rf ~/.config/nvim
@@ -177,8 +151,6 @@ rm -rf ~/.local/share/nvim
 rm -rf ~/.local/state/nvim
 ```
 
-Removing these directories resets Neovim to a clean slate. Restore from your backup if you want to roll back.
-
 ---
 
-Need help? Head over to the [Troubleshooting Guide](./04-TROUBLESHOOTING.md) or open an issue with your cat-powered questions.
+Next: [Configuration](./02-CONFIGURATION.md)

@@ -14,7 +14,7 @@ Welcome to the knowledge lounge for **project meow** developers. Grab a warm bev
   Practical routines for navigation, coding, testing, debugging, and automation.
 
 - **[04 – Troubleshooting & Health Checks](04-TROUBLESHOOTING.md)**  
-  Common fixes, diagnostic commands, and tips for keeping the cats purring.
+  Common fixes, diagnostic commands, and tips.
 
 ## 🎹 Keymaps & Shortcuts
 
@@ -27,7 +27,6 @@ Welcome to the knowledge lounge for **project meow** developers. Grab a warm bev
 - Core configuration: `lua/config/`
 - Plugin specs: `lua/plugins/`
 - Personal overrides: `after/`
-- Raycast scripts: `bin/`
 
 ## 🤝 Contributing to the Docs
 
