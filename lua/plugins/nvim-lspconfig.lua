@@ -3,7 +3,7 @@
 
 -- @file: lua/plugins/nvim-lspconfig.lua
 -- @brief: Language Server Protocol (LSP) client configuration and setup.
--- @requires: Neovim >= 0.10
+-- @requires: Neovim >= 0.11 (uses vim.lsp.config() and vim.lsp.enable() APIs)
 
 local mason_registry = require("config.mason")
 
@@ -198,9 +198,8 @@ return {
         filetypes = { "sh", "bash", "zsh" },
       },
       gopls = {
-        -- Override root_dir to avoid async issues with vim.lsp.config()
-        -- Use root_markers instead for the new API
-        root_markers = { 'go.work', 'go.mod', '.git' },
+        -- Override root_dir: in Neovim 0.11+ it accepts an array of file patterns
+        root_dir = { 'go.work', 'go.mod', '.git' },
         filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
         settings = {
           gopls = {
@@ -377,21 +376,30 @@ return {
       local final_config = vim.tbl_deep_extend("force", {
         cmd = default_config.cmd,
         filetypes = default_config.filetypes,
-        -- Convert root_dir function to root_markers for the new API
-        root_markers = server_opts.root_markers or (function()
-          -- Extract root patterns from lspconfig if available
+        -- In Neovim 0.11+, root_dir accepts an array of file patterns
+        root_dir = server_opts.root_dir or (function()
+          -- Most lspconfig servers use util.root_pattern. We don't attempt
+          -- to introspect it here; instead, we fallback to a set of common
+          -- project root markers that work well across multiple languages.
           if default_config.root_dir then
-            -- Most lspconfig servers use util.root_pattern, try to extract markers
-            local root_pattern = default_config.root_dir
-            -- For now, fallback to common markers if root_dir is a function
-            return { '.git' }
+            local common_root_markers = {
+              'package.json',
+              'tsconfig.json',
+              'jsconfig.json',
+              'pyproject.toml',
+              'setup.py',
+              'requirements.txt',
+              'go.mod',
+              'Cargo.toml',
+              'pom.xml',
+              'build.gradle',
+              '.git',
+            }
+            return common_root_markers
           end
           return nil
         end)(),
       }, server_opts)
-      
-      -- Remove root_dir if present (we use root_markers instead)
-      final_config.root_dir = nil
       
       -- Use Neovim 0.11+ native LSP API
       vim.lsp.config(server_name, final_config)
@@ -417,7 +425,7 @@ return {
         vim.lsp.config('gdscript', {
           cmd = default_config.cmd,
           filetypes = default_config.filetypes,
-          root_markers = { 'project.godot', '.git' },
+          root_dir = { 'project.godot', '.git' },
           capabilities = caps,
           on_attach = on_attach,
         })
