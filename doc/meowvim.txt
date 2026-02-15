@@ -84,37 +84,73 @@ The config.lua file should return a table with these optional sections:
 >lua
     return {
       core = {
-        leader = " ",           -- Leader key (default: space)
-        localleader = "\\",     -- Local leader key
+        theme = "catppuccin",   -- Color theme
+        variant = "mocha",      -- Theme variant
+        enable_copilot = false, -- GitHub Copilot
+        leader_key = " ",       -- Leader key (space)
+        update_check = true,    -- Update checking
       },
 
       editor = {
-        number = true,          -- Show line numbers
-        relativenumber = true,  -- Relative line numbers
+        tabstop = 2,            -- Tab width
+        indent = 2,             -- Indent width
+        expand_tabs = true,     -- Spaces not tabs
+        line_numbers = true,    -- Line numbers
+        relative_numbers = true,-- Relative numbers
         wrap = false,           -- Line wrapping
-        spell = false,          -- Spell checking
-        -- ... more editor options
+        auto_save = false,      -- Auto-save
+        format_on_save = true,  -- Format on save
       },
 
       ui = {
-        theme = "catppuccin",   -- Color theme
-        transparency = false,   -- Transparent background
-        dim_inactive = true,    -- Dim inactive windows
-        -- ... more UI options
+        transparency = 0,       -- Transparency (0-100)
+        winbar = true,          -- Show winbar
+        cmdheight = 1,          -- Command height
+        pumheight = 10,         -- Popup height
+        icons = true,           -- Show icons
       },
 
       lsp = {
-        servers = {},           -- LSP servers to install
-        -- ... LSP configuration
+        auto_install = true,    -- Auto-install servers
+        diagnostics = {},       -- Diagnostics config
+        inlay_hints = true,     -- Type hints
       },
 
-      -- Project-specific overrides
-      projects = {},
+      formatting = {
+        timeout_ms = 3000,      -- Format timeout
+        formatters = {},        -- Per-language formatters
+      },
+
+      linting = {
+        auto_lint = true,       -- Auto-lint
+        linters = {},           -- Per-language linters
+      },
+
+      git = {
+        enable_signs = true,    -- Git signs
+        blame_line = false,     -- Inline blame
+        show_deleted = true,    -- Show deleted lines
+      },
+
+      sessions = {
+        auto_save = true,       -- Auto-save sessions
+        auto_restore = true,    -- Auto-restore sessions
+        per_branch = false,     -- Per-branch sessions
+      },
+
+      toggles = {
+        autoformat = true,      -- Format on save
+        diagnostics = true,     -- Show diagnostics
+        -- ... more toggles
+      },
+
+      plugins = {},             -- Custom plugin config
+      custom = {},              -- User settings
     }
 <
 
-All configuration values are optional and will use sensible defaults if not
-specified. See |meowvim-config-options| for complete list.
+All configuration values are optional and use sensible defaults.
+See docs/02-CONFIGURATION.md for the complete list.
 
 Reloading Configuration~
 
@@ -348,27 +384,26 @@ Project Configuration~
 
 >lua
     return {
-      {
-        name = "myproject",
-        path = "~/code/myproject",
-        on_open = function()
-          -- Project-specific setup
-          vim.opt.tabstop = 2
-        end,
-        config = {
-          ui = { theme = "tokyonight" },
-          lsp = { servers = { "tsserver", "tailwindcss" } },
-        },
+      work = {
+        path = "~/work",
+        theme = "tokyonight",
+        variant = "night",
+        on_open = "Neogit",  -- Optional command
+        inherit = true,      -- Inherit base config
+      },
+      
+      personal = {
+        path = "~/personal",
+        theme = "rose-pine",
+        variant = "moon",
       },
     }
 <
 
 Project Detection~
 
-Projects are automatically detected based on:
-  • Current working directory
-  • Git repository root
-  • Presence of project markers (.git, package.json, Cargo.toml, etc.)
+Projects are automatically detected based on current working directory.
+When you cd into a project path, meowvim applies that project's settings.
 
 Switching Projects~
 
