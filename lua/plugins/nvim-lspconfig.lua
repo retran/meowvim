@@ -198,8 +198,11 @@ return {
         filetypes = { "sh", "bash", "zsh" },
       },
       gopls = {
-        -- Override root_dir: in Neovim 0.11+ it accepts an array of file patterns
-        root_dir = { 'go.work', 'go.mod', '.git' },
+        -- Override root_dir with function that falls back to file's directory
+        root_dir = function(fname)
+          local root = vim.fs.root(fname, { 'go.work', 'go.mod', '.git' })
+          return root or vim.fn.fnamemodify(fname, ':h')
+        end,
         filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
         settings = {
           gopls = {
@@ -373,32 +376,35 @@ return {
       local default_config = server.document_config.default_config or {}
       
       -- Build the final config by merging defaults with custom settings
+      local common_root_markers = {
+        'package.json',
+        'tsconfig.json',
+        'jsconfig.json',
+        'pyproject.toml',
+        'setup.py',
+        'requirements.txt',
+        'go.mod',
+        'Cargo.toml',
+        'pom.xml',
+        'build.gradle',
+        '.git',
+      }
+      
+      -- Create root_dir function that falls back to file's directory if no markers found
+      local root_dir_fn = server_opts.root_dir
+      if not root_dir_fn then
+        root_dir_fn = function(fname)
+          local root = vim.fs.root(fname, common_root_markers)
+          -- Fallback to file's directory if no project root found
+          return root or vim.fn.fnamemodify(fname, ':h')
+        end
+      end
+      
       local final_config = vim.tbl_deep_extend("force", {
         cmd = default_config.cmd,
         filetypes = default_config.filetypes,
-        -- In Neovim 0.11+, root_dir accepts an array of file patterns
-        root_dir = server_opts.root_dir or (function()
-          -- Most lspconfig servers use util.root_pattern. We don't attempt
-          -- to introspect it here; instead, we fallback to a set of common
-          -- project root markers that work well across multiple languages.
-          if default_config.root_dir then
-            local common_root_markers = {
-              'package.json',
-              'tsconfig.json',
-              'jsconfig.json',
-              'pyproject.toml',
-              'setup.py',
-              'requirements.txt',
-              'go.mod',
-              'Cargo.toml',
-              'pom.xml',
-              'build.gradle',
-              '.git',
-            }
-            return common_root_markers
-          end
-          return nil
-        end)(),
+        -- In Neovim 0.11+, root_dir can be a function or array of patterns
+        root_dir = root_dir_fn,
       }, server_opts)
       
       -- Use Neovim 0.11+ native LSP API
@@ -425,7 +431,10 @@ return {
         vim.lsp.config('gdscript', {
           cmd = default_config.cmd,
           filetypes = default_config.filetypes,
-          root_dir = { 'project.godot', '.git' },
+          root_dir = function(fname)
+            local root = vim.fs.root(fname, { 'project.godot', '.git' })
+            return root or vim.fn.fnamemodify(fname, ':h')
+          end,
           capabilities = caps,
           on_attach = on_attach,
         })
