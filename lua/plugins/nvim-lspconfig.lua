@@ -198,10 +198,10 @@ return {
         filetypes = { "sh", "bash", "zsh" },
       },
       gopls = {
-        -- Override root_dir with function that falls back to file's directory
-        root_dir = function(fname)
-          local root = vim.fs.root(fname, { 'go.work', 'go.mod', '.git' })
-          return root or vim.fn.fnamemodify(fname, ':h')
+        -- Neovim 0.11+ root_dir signature: function(bufnr, on_dir)
+        root_dir = function(bufnr, on_dir)
+          local root = vim.fs.root(bufnr, { 'go.work', 'go.mod', '.git' })
+          on_dir(root or vim.fs.dirname(vim.api.nvim_buf_get_name(bufnr)))
         end,
         filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
         settings = {
@@ -395,21 +395,17 @@ return {
         '.git',
       }
       
-      -- Create root_dir function that falls back to file's directory if no markers found
-      local root_dir_fn = server_opts.root_dir
-      if not root_dir_fn then
-        root_dir_fn = function(fname)
-          local root = vim.fs.root(fname, common_root_markers)
-          -- Fallback to file's directory if no project root found
-          return root or vim.fn.fnamemodify(fname, ':h')
-        end
-      end
-      
+      -- Build final config: start with defaults, layer common root_markers,
+      -- then overlay any per-server overrides (server_opts may include a
+      -- root_dir function using the Neovim 0.11+ (bufnr, on_dir) signature,
+      -- which will replace root_markers via tbl_deep_extend).
       local final_config = vim.tbl_deep_extend("force", {
         cmd = default_config.cmd,
         filetypes = default_config.filetypes,
-        -- In Neovim 0.11+, root_dir can be a function or array of patterns
-        root_dir = root_dir_fn,
+        -- root_markers is handled natively by Neovim 0.11+ (vim/lsp.lua:722-726)
+        -- via vim.fs.root(bufnr, root_markers). No need for a root_dir function
+        -- unless a server needs custom logic (e.g. gopls -- see server_settings).
+        root_markers = common_root_markers,
       }, server_opts)
       
       -- Use Neovim 0.11+ native LSP API
@@ -429,9 +425,10 @@ return {
         vim.lsp.config('gdscript', {
           cmd = default_config.cmd,
           filetypes = default_config.filetypes,
-          root_dir = function(fname)
-            local root = vim.fs.root(fname, { 'project.godot', '.git' })
-            return root or vim.fn.fnamemodify(fname, ':h')
+          -- Neovim 0.11+ root_dir signature: function(bufnr, on_dir)
+          root_dir = function(bufnr, on_dir)
+            local root = vim.fs.root(bufnr, { 'project.godot', '.git' })
+            on_dir(root or vim.fs.dirname(vim.api.nvim_buf_get_name(bufnr)))
           end,
           capabilities = caps,
           on_attach = on_attach,

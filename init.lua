@@ -19,11 +19,7 @@ if config_ok then
   config.init()
   config.apply_early_settings()
 else
-  vim.notify(
-    "Failed to load meowvim config: " .. tostring(config),
-    vim.log.levels.ERROR,
-    { title = "Meowvim" }
-  )
+  vim.notify("Failed to load meowvim config: " .. tostring(config), vim.log.levels.ERROR, { title = "Meowvim" })
   -- Fallback to default leader
   vim.g.mapleader = " "
   vim.g.maplocalleader = "\\"
@@ -91,7 +87,7 @@ require("config/keymaps").setup()
 if config_ok then
   require("meowvim.commands").setup()
   config.setup_watcher()
-  
+
   -- Load meowvim utilities
   require("meowvim.colorscheme_switcher")
   require("meowvim.keymap_checker")
