@@ -175,13 +175,13 @@ return {
         arguments = { vim.api.nvim_buf_get_name(0) },
         title = "Organize Imports",
       }
-      
-      -- Use the new buf_request API (compatible with Neovim 0.11+)
-      vim.lsp.buf_request(0, "workspace/executeCommand", params, function(err, result, ctx, config)
+
+      -- Use client:request() (Neovim 0.11+ API) instead of deprecated vim.lsp.buf_request()
+      clients[1]:request("workspace/executeCommand", params, function(err, _)
         if err then
           vim.notify("Error organizing imports: " .. vim.inspect(err), vim.log.levels.ERROR)
         end
-      end)
+      end, 0)
     end, { desc = "Organize Imports (TypeScript/JavaScript)", force = true })
 
     local server_settings = {
@@ -198,10 +198,10 @@ return {
         filetypes = { "sh", "bash", "zsh" },
       },
       gopls = {
-        -- Override root_dir with function that falls back to file's directory
-        root_dir = function(fname)
-          local root = vim.fs.root(fname, { 'go.work', 'go.mod', '.git' })
-          return root or vim.fn.fnamemodify(fname, ':h')
+        -- Neovim 0.11+ root_dir signature: function(bufnr, on_dir)
+        root_dir = function(bufnr, on_dir)
+          local root = vim.fs.root(bufnr, { 'go.work', 'go.mod', '.git' })
+          on_dir(root or vim.fs.dirname(vim.api.nvim_buf_get_name(bufnr)))
         end,
         filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
         settings = {
@@ -339,7 +339,12 @@ return {
 
     mason_lspconfig.setup({
       ensure_installed = ensure_servers,
-      automatic_installation = false,
+      -- Disable automatic_enable so that setup_server() below controls all LSP
+      -- configuration (capabilities, on_attach, settings). Without this,
+      -- mason-lspconfig >= 1.x would call vim.lsp.enable() for every installed
+      -- server before our custom config is applied, causing ts_ls (and others)
+      -- to start with no capabilities, no on_attach hooks, and no settings.
+      automatic_enable = false,
     })
 
     local lspconfig = require("lspconfig")
@@ -390,21 +395,17 @@ return {
         '.git',
       }
       
-      -- Create root_dir function that falls back to file's directory if no markers found
-      local root_dir_fn = server_opts.root_dir
-      if not root_dir_fn then
-        root_dir_fn = function(fname)
-          local root = vim.fs.root(fname, common_root_markers)
-          -- Fallback to file's directory if no project root found
-          return root or vim.fn.fnamemodify(fname, ':h')
-        end
-      end
-      
+      -- Build final config: start with defaults, layer common root_markers,
+      -- then overlay any per-server overrides (server_opts may include a
+      -- root_dir function using the Neovim 0.11+ (bufnr, on_dir) signature,
+      -- which will replace root_markers via tbl_deep_extend).
       local final_config = vim.tbl_deep_extend("force", {
         cmd = default_config.cmd,
         filetypes = default_config.filetypes,
-        -- In Neovim 0.11+, root_dir can be a function or array of patterns
-        root_dir = root_dir_fn,
+        -- root_markers is handled natively by Neovim 0.11+ (vim/lsp.lua:722-726)
+        -- via vim.fs.root(bufnr, root_markers). No need for a root_dir function
+        -- unless a server needs custom logic (e.g. gopls -- see server_settings).
+        root_markers = common_root_markers,
       }, server_opts)
       
       -- Use Neovim 0.11+ native LSP API
@@ -412,16 +413,9 @@ return {
       vim.lsp.enable(server_name)
     end
 
-    if mason_lspconfig.setup_handlers then
-      mason_lspconfig.setup_handlers({
-        function(server_name)
-          setup_server(server_name)
-        end,
-      })
-    else
-      for _, server_name in ipairs(ensure_servers) do
-        setup_server(server_name)
-      end
+    -- setup_handlers was removed from mason-lspconfig; iterate directly.
+    for _, server_name in ipairs(ensure_servers) do
+      setup_server(server_name)
     end
 
     -- Setup GDScript LSP (for Godot engine)
@@ -431,9 +425,10 @@ return {
         vim.lsp.config('gdscript', {
           cmd = default_config.cmd,
           filetypes = default_config.filetypes,
-          root_dir = function(fname)
-            local root = vim.fs.root(fname, { 'project.godot', '.git' })
-            return root or vim.fn.fnamemodify(fname, ':h')
+          -- Neovim 0.11+ root_dir signature: function(bufnr, on_dir)
+          root_dir = function(bufnr, on_dir)
+            local root = vim.fs.root(bufnr, { 'project.godot', '.git' })
+            on_dir(root or vim.fs.dirname(vim.api.nvim_buf_get_name(bufnr)))
           end,
           capabilities = caps,
           on_attach = on_attach,
