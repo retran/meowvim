@@ -175,13 +175,13 @@ return {
         arguments = { vim.api.nvim_buf_get_name(0) },
         title = "Organize Imports",
       }
-      
-      -- Use the new buf_request API (compatible with Neovim 0.11+)
-      vim.lsp.buf_request(0, "workspace/executeCommand", params, function(err, result, ctx, config)
+
+      -- Use client:request() (Neovim 0.11+ API) instead of deprecated vim.lsp.buf_request()
+      clients[1]:request("workspace/executeCommand", params, function(err, _)
         if err then
           vim.notify("Error organizing imports: " .. vim.inspect(err), vim.log.levels.ERROR)
         end
-      end)
+      end, 0)
     end, { desc = "Organize Imports (TypeScript/JavaScript)", force = true })
 
     local server_settings = {
@@ -339,7 +339,12 @@ return {
 
     mason_lspconfig.setup({
       ensure_installed = ensure_servers,
-      automatic_installation = false,
+      -- Disable automatic_enable so that setup_server() below controls all LSP
+      -- configuration (capabilities, on_attach, settings). Without this,
+      -- mason-lspconfig >= 1.x would call vim.lsp.enable() for every installed
+      -- server before our custom config is applied, causing ts_ls (and others)
+      -- to start with no capabilities, no on_attach hooks, and no settings.
+      automatic_enable = false,
     })
 
     local lspconfig = require("lspconfig")
@@ -412,16 +417,9 @@ return {
       vim.lsp.enable(server_name)
     end
 
-    if mason_lspconfig.setup_handlers then
-      mason_lspconfig.setup_handlers({
-        function(server_name)
-          setup_server(server_name)
-        end,
-      })
-    else
-      for _, server_name in ipairs(ensure_servers) do
-        setup_server(server_name)
-      end
+    -- setup_handlers was removed from mason-lspconfig; iterate directly.
+    for _, server_name in ipairs(ensure_servers) do
+      setup_server(server_name)
     end
 
     -- Setup GDScript LSP (for Godot engine)
