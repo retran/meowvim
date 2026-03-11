@@ -4,18 +4,18 @@
 -- FINAL CTRL-BASED KEYMAPS (Conflict-checked ✅)
 --
 -- COMPLETION POPUP (hjkl-based navigation):
---   <C-j>      - Next completion item (↓)
---   <C-k>      - Previous completion item (↑)
---   <C-l>      - Accept completion (→)
+--   <C-j>      - Select next item (shows cmp ghost text, dismisses Copilot)
+--   <C-k>      - Select prev item (shows cmp ghost text, dismisses Copilot)
+--   <C-l>      - Smart accept: Copilot if visible, else selected cmp item
 --   <C-b>      - Scroll docs up
 --   <C-f>      - Scroll docs down
 --   <C-Space>  - Trigger completion manually
 --
--- COPILOT (separate - inline gray text, NEVER used by popup):
---   <C-y>      - Accept full Copilot suggestion (never intercepted by cmp)
---   <C-g>      - Accept next word
---   <C-n>      - Next Copilot suggestion (reserved for Copilot only)
---   <C-p>      - Previous Copilot suggestion (reserved for Copilot only)
+-- COPILOT (inline gray text, visible only when nothing is selected in cmp):
+--   <C-l>      - Accept Copilot suggestion if visible
+--   <C-g>      - Accept next word of Copilot suggestion
+--   <C-n>      - Next Copilot suggestion
+--   <C-p>      - Previous Copilot suggestion
 --
 -- DISMISS (universal):
 --   <Esc>      - Dismiss everything (popup + Copilot)
@@ -108,69 +108,77 @@ return {
           luasnip.lsp_expand(args.body)
         end,
       },
+      -- Do not preselect any item; user must explicitly navigate to select
+      preselect = cmp.PreselectMode.None,
       sources = cmp.config.sources(global_sources),
       formatting = {
         format = format_kinds,
       },
       mapping = cmp.mapping.preset.insert({
-        -- hjkl-based navigation for completion
+        -- Navigate items; when an item is selected, show cmp ghost text and
+        -- dismiss Copilot so only one ghost text is visible at a time.
         ["<C-j>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
-            cmp.select_next_item()
+            cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+            local ok, suggestion = pcall(require, "copilot.suggestion")
+            if ok and suggestion.is_visible() then
+              suggestion.dismiss()
+            end
           else
             fallback()
           end
         end, { "i", "s" }),
-        
+
         ["<C-k>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
-            cmp.select_prev_item()
+            cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
+            local ok, suggestion = pcall(require, "copilot.suggestion")
+            if ok and suggestion.is_visible() then
+              suggestion.dismiss()
+            end
           else
             fallback()
           end
         end, { "i", "s" }),
-        
-        -- Disable C-n/C-p for popup (reserved for Copilot)
+
+        -- Reserved for Copilot
         ["<C-n>"] = cmp.mapping(function(fallback)
-          fallback() -- Always pass through to Copilot
+          fallback()
         end, { "i", "s" }),
-        
+
         ["<C-p>"] = cmp.mapping(function(fallback)
-          fallback() -- Always pass through to Copilot
+          fallback()
         end, { "i", "s" }),
-        
-        -- Disable C-y for popup (reserved for Copilot accept)
-        ["<C-y>"] = cmp.mapping(function(fallback)
-          fallback() -- Always pass through to Copilot
-        end, { "i", "s" }),
-        
-        -- <C-l> accepts completion (move right/forward)
+
+        -- <C-l> single smart accept: Copilot if visible, else selected cmp item
         ["<C-l>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
-            cmp.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = true })
+          local ok, suggestion = pcall(require, "copilot.suggestion")
+          if ok and suggestion.is_visible() then
+            suggestion.accept()
+          elseif cmp.visible() and cmp.get_selected_entry() then
+            cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
           else
             fallback()
           end
         end, { "i", "s" }),
-        
+
         -- Esc dismisses everything (popup AND Copilot via fallback)
         ["<Esc>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
             cmp.abort()
           end
-          -- Always fallback for Copilot dismiss and normal Esc behavior
           fallback()
         end, { "i", "s" }),
-        
+
         -- Tab/Enter remain normal (snippet handling only)
         ["<Tab>"] = cmp.mapping(function(fallback)
           if luasnip.locally_jumpable(1) then
             luasnip.jump(1)
           else
-            fallback() -- Normal tab/indent
+            fallback()
           end
         end, { "i", "s" }),
-        
+
         ["<S-Tab>"] = cmp.mapping(function(fallback)
           if luasnip.jumpable(-1) then
             luasnip.jump(-1)
@@ -178,12 +186,12 @@ return {
             fallback()
           end
         end, { "i", "s" }),
-        
+
         -- Enter always creates newline
         ["<CR>"] = cmp.mapping(function(fallback)
           fallback()
         end, { "i", "s" }),
-        
+
         -- Other
         ["<C-b>"] = cmp.mapping.scroll_docs(-4),
         ["<C-f>"] = cmp.mapping.scroll_docs(4),
@@ -194,7 +202,7 @@ return {
         comparators = comparators,
       },
       experimental = {
-        ghost_text = false,
+        ghost_text = true,
       },
       window = {
         completion = cmp.config.window.bordered(),
@@ -227,6 +235,22 @@ return {
         })
       end,
     })
+
+    -- Patch ghost_text_view.show on the cmp view instance to only show ghost
+    -- text when an entry is explicitly selected. By default cmp falls back to
+    -- showing the first entry even when nothing is selected, which conflicts
+    -- with Copilot's ghost text.
+    vim.schedule(function()
+      local cmp_view = require("cmp").core.view
+      local orig_show = cmp_view.ghost_text_view.show
+      cmp_view.ghost_text_view.show = function(self, e)
+        if cmp_view:get_selected_entry() then
+          orig_show(self, e)
+        else
+          self:hide()
+        end
+      end
+    end)
 
     cmp.setup.cmdline({ "/", "?" }, {
       mapping = cmp.mapping.preset.cmdline(),
