@@ -121,7 +121,7 @@ return {
             fallback()
           end
         end, { "i", "s" }),
-        
+
         ["<C-k>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
             cmp.select_prev_item()
@@ -129,21 +129,21 @@ return {
             fallback()
           end
         end, { "i", "s" }),
-        
+
         -- Disable C-n/C-p for popup (reserved for Copilot)
         ["<C-n>"] = cmp.mapping(function(fallback)
           fallback() -- Always pass through to Copilot
         end, { "i", "s" }),
-        
+
         ["<C-p>"] = cmp.mapping(function(fallback)
           fallback() -- Always pass through to Copilot
         end, { "i", "s" }),
-        
+
         -- Disable C-y for popup (reserved for Copilot accept)
         ["<C-y>"] = cmp.mapping(function(fallback)
           fallback() -- Always pass through to Copilot
         end, { "i", "s" }),
-        
+
         -- <C-l> accepts completion (move right/forward)
         ["<C-l>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
@@ -152,7 +152,7 @@ return {
             fallback()
           end
         end, { "i", "s" }),
-        
+
         -- Esc dismisses everything (popup AND Copilot via fallback)
         ["<Esc>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
@@ -161,7 +161,7 @@ return {
           -- Always fallback for Copilot dismiss and normal Esc behavior
           fallback()
         end, { "i", "s" }),
-        
+
         -- Tab/Enter remain normal (snippet handling only)
         ["<Tab>"] = cmp.mapping(function(fallback)
           if luasnip.locally_jumpable(1) then
@@ -170,7 +170,7 @@ return {
             fallback() -- Normal tab/indent
           end
         end, { "i", "s" }),
-        
+
         ["<S-Tab>"] = cmp.mapping(function(fallback)
           if luasnip.jumpable(-1) then
             luasnip.jump(-1)
@@ -178,12 +178,12 @@ return {
             fallback()
           end
         end, { "i", "s" }),
-        
+
         -- Enter always creates newline
         ["<CR>"] = cmp.mapping(function(fallback)
           fallback()
         end, { "i", "s" }),
-        
+
         -- Other
         ["<C-b>"] = cmp.mapping.scroll_docs(-4),
         ["<C-f>"] = cmp.mapping.scroll_docs(4),
