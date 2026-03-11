@@ -12,7 +12,7 @@
 --   <C-Space>  - Trigger completion manually
 --
 -- COPILOT (separate - inline gray text, NEVER used by popup):
---   <C-y>      - Accept full Copilot suggestion
+--   <C-y>      - Accept full Copilot suggestion (never intercepted by cmp)
 --   <C-g>      - Accept next word
 --   <C-n>      - Next Copilot suggestion (reserved for Copilot only)
 --   <C-p>      - Previous Copilot suggestion (reserved for Copilot only)
@@ -136,6 +136,11 @@ return {
         end, { "i", "s" }),
         
         ["<C-p>"] = cmp.mapping(function(fallback)
+          fallback() -- Always pass through to Copilot
+        end, { "i", "s" }),
+        
+        -- Disable C-y for popup (reserved for Copilot accept)
+        ["<C-y>"] = cmp.mapping(function(fallback)
           fallback() -- Always pass through to Copilot
         end, { "i", "s" }),
         
