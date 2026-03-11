@@ -587,6 +587,17 @@ local github = {
   end,
 }
 
+-- Ensure Copilot ghost text uses the theme's Comment color (muted, visually distinct)
+vim.api.nvim_create_autocmd("ColorScheme", {
+  pattern = "*",
+  callback = function()
+    local comment_hl = vim.api.nvim_get_hl(0, { name = "Comment", link = false })
+    local fg = comment_hl.fg
+    vim.api.nvim_set_hl(0, "CopilotSuggestion", { fg = fg, italic = true })
+    vim.api.nvim_set_hl(0, "CopilotAnnotation", { fg = fg, italic = true })
+  end,
+})
+
 -- Return all themes
 return {
   catppuccin,
