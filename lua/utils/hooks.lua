@@ -39,11 +39,13 @@ local function update_title()
     filename = "[No Name]"
   end
 
-  -- Detect if we're in tmux
+  -- Detect multiplexer: tmux uses $TMUX, zellij uses $ZELLIJ
   local in_tmux = vim.env.TMUX ~= nil
+  local in_zellij = vim.env.ZELLIJ ~= nil
+  local in_multiplexer = in_tmux or in_zellij
 
-  if in_tmux then
-    -- Short format for tmux: "filename+RO [N]"
+  if in_multiplexer then
+    -- Short format for multiplexers: "filename+RO [N]"
     local status = table.concat({ modified, readonly }, "")
     if status ~= "" then
       status = status .. " "
