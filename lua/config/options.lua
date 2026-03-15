@@ -8,6 +8,8 @@ local opt = vim.opt
 
 opt.updatetime = 250
 opt.timeoutlen = 300
+opt.ttimeout = true
+opt.ttimeoutlen = 10
 opt.redrawtime = 1500
 opt.synmaxcol = 240
 
@@ -15,7 +17,18 @@ opt.number = true
 opt.relativenumber = true
 opt.signcolumn = "yes"
 opt.cursorline = true
-opt.termguicolors = true
+-- Enable true-color only when the terminal supports it.
+-- Zellij and tmux may report TERM=xterm-256color without COLORTERM=truecolor,
+-- which causes partial-redraw glitches when termguicolors is forced on.
+local colorterm = vim.env.COLORTERM
+local term = vim.env.TERM or ""
+local has_truecolor = colorterm == "truecolor"
+  or colorterm == "24bit"
+  or term:find("kitty") ~= nil
+  or term:find("alacritty") ~= nil
+  or vim.env.TERM_PROGRAM == "iTerm.app"
+  or vim.env.TERM_PROGRAM == "ghostty"
+opt.termguicolors = has_truecolor
 opt.background = "dark"
 opt.laststatus = 3
 opt.cmdheight = 1
