@@ -8,35 +8,47 @@ return {
   "folke/flash.nvim",
   keys = {
     -- Use 2-character jump mode for f/t/F/T
-    { "f", mode = { "n", "x", "o" }, function() 
+    {
+      "f",
+      mode = { "n", "x", "o" },
+      function()
         require("flash").jump({
           search = { mode = "search", max_length = 2, forward = true, wrap = false },
-        }) 
-      end, 
-      desc = "Flash forward 2-char" 
+        })
+      end,
+      desc = "Flash forward 2-char",
     },
-    { "F", mode = { "n", "x", "o" }, function() 
+    {
+      "F",
+      mode = { "n", "x", "o" },
+      function()
         require("flash").jump({
           search = { mode = "search", max_length = 2, forward = false, wrap = false },
-        }) 
-      end, 
-      desc = "Flash backward 2-char" 
+        })
+      end,
+      desc = "Flash backward 2-char",
     },
-    { "t", mode = { "n", "x", "o" }, function() 
+    {
+      "t",
+      mode = { "n", "x", "o" },
+      function()
         require("flash").jump({
           search = { mode = "search", max_length = 2, forward = true, wrap = false },
           jump = { pos = "end" },
-        }) 
-      end, 
-      desc = "Flash till forward 2-char" 
+        })
+      end,
+      desc = "Flash till forward 2-char",
     },
-    { "T", mode = { "n", "x", "o" }, function() 
+    {
+      "T",
+      mode = { "n", "x", "o" },
+      function()
         require("flash").jump({
           search = { mode = "search", max_length = 2, forward = false, wrap = false },
           jump = { pos = "end" },
-        }) 
-      end, 
-      desc = "Flash till backward 2-char" 
+        })
+      end,
+      desc = "Flash till backward 2-char",
     },
   },
   opts = {
@@ -80,12 +92,12 @@ return {
             [","] = "prev",
           }
         end,
-        search = { 
+        search = {
           wrap = true,
           multi_window = false,
         },
         highlight = { backdrop = true },
-        jump = { 
+        jump = {
           register = false,
           autojump = false,
         },

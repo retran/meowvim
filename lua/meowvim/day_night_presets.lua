@@ -38,7 +38,7 @@ M.presets = {
     day = { theme = "everforest", variant = "light_soft" },
     night = { theme = "everforest", variant = "dark_medium" },
   },
-  
+
   -- Modern & Popular
   catppuccin = {
     name = "Catppuccin",
@@ -47,7 +47,7 @@ M.presets = {
     day = { theme = "catppuccin", variant = "latte" },
     night = { theme = "catppuccin", variant = "mocha" },
   },
-  
+
   tokyonight = {
     name = "Tokyo Night",
     description = "Clean, professional, excellent LSP/Treesitter support",
@@ -55,7 +55,7 @@ M.presets = {
     day = { theme = "tokyonight", variant = "day" },
     night = { theme = "tokyonight", variant = "storm" },
   },
-  
+
   -- Artistic & Elegant
   kanagawa = {
     name = "Kanagawa",
@@ -64,7 +64,7 @@ M.presets = {
     day = { theme = "kanagawa", variant = "lotus" },
     night = { theme = "kanagawa", variant = "wave" },
   },
-  
+
   rosepine = {
     name = "Rose Pine",
     description = "Minimal palette, mountain sunset vibes, meditative",
@@ -72,7 +72,7 @@ M.presets = {
     day = { theme = "rose-pine", variant = "dawn" },
     night = { theme = "rose-pine", variant = "main" },
   },
-  
+
   -- High Contrast & Technical
   nightfox = {
     name = "Nightfox",
@@ -81,7 +81,7 @@ M.presets = {
     day = { theme = "nightfox", variant = "dayfox" },
     night = { theme = "nightfox", variant = "nightfox" },
   },
-  
+
   -- Mathematical Precision
   solarized = {
     name = "Solarized Osaka",
@@ -90,7 +90,7 @@ M.presets = {
     day = { theme = "solarized-osaka", variant = "day" },
     night = { theme = "solarized-osaka", variant = "night" },
   },
-  
+
   -- Pure Minimalism
   zenbones = {
     name = "Zenbones",
@@ -99,7 +99,7 @@ M.presets = {
     day = { theme = "zenbones", variant = "zenwritten" },
     night = { theme = "zenbones", variant = "zenbones" },
   },
-  
+
   -- Clean Design Studio
   ayu = {
     name = "Ayu",
@@ -108,7 +108,7 @@ M.presets = {
     day = { theme = "ayu", variant = "light" },
     night = { theme = "ayu", variant = "dark" },
   },
-  
+
   -- Warm Retro (only dark, but listed for completeness)
   gruvbox = {
     name = "Gruvbox",
@@ -117,7 +117,7 @@ M.presets = {
     day = { theme = "gruvbox", variant = "soft" },
     night = { theme = "gruvbox", variant = "medium" },
   },
-  
+
   -- Classic Dark (dark only, paired with ayu light)
   dracula = {
     name = "Dracula",
@@ -126,7 +126,7 @@ M.presets = {
     day = { theme = "ayu", variant = "light" },
     night = { theme = "dracula", variant = nil },
   },
-  
+
   -- Professional Studio
   monokai = {
     name = "Monokai Pro",
@@ -135,7 +135,7 @@ M.presets = {
     day = { theme = "monokai-pro", variant = "classic" },
     night = { theme = "monokai-pro", variant = "pro" },
   },
-  
+
   -- Balanced & Familiar
   onedark = {
     name = "One Dark",
@@ -144,7 +144,7 @@ M.presets = {
     day = { theme = "onedark", variant = "onelight" },
     night = { theme = "onedark", variant = "onedark" },
   },
-  
+
   -- Material Design
   material = {
     name = "Material",
@@ -153,7 +153,7 @@ M.presets = {
     day = { theme = "material", variant = "lighter" },
     night = { theme = "material", variant = "darker" },
   },
-  
+
   -- Warm Balanced (dark only, paired with everforest)
   melange = {
     name = "Melange",
@@ -162,7 +162,7 @@ M.presets = {
     day = { theme = "everforest", variant = "light_soft" },
     night = { theme = "melange", variant = nil },
   },
-  
+
   -- GitHub Official
   github = {
     name = "GitHub",
@@ -178,12 +178,12 @@ function M.get_preset(preset_name)
   if not preset_name then
     return nil
   end
-  
+
   local preset = M.presets[preset_name]
   if not preset then
     return nil
   end
-  
+
   return {
     day_theme = preset.day.theme,
     day_variant = preset.day.variant,
@@ -196,34 +196,31 @@ end
 function M.apply_preset(preset_name)
   local preset = M.presets[preset_name]
   if not preset then
-    vim.notify(
-      string.format("Unknown preset: %s", preset_name),
-      vim.log.levels.ERROR
-    )
+    vim.notify(string.format("Unknown preset: %s", preset_name), vim.log.levels.ERROR)
     return false
   end
-  
+
   local day_night = require("meowvim.day_night")
   local config_ok, config = pcall(require, "meowvim.config")
-  
+
   -- Set day theme
   day_night.set_day_theme(preset.day.theme, preset.day.variant)
-  
+
   -- Set night theme
   day_night.set_night_theme(preset.night.theme, preset.night.variant)
-  
+
   -- Save last preset for detection
   if config_ok then
     config.set("core.last_preset", preset_name)
     config.persist()
   end
-  
+
   -- Apply current mode's theme immediately
   local current_mode = day_night.get_effective_mode()
   if current_mode then
     day_night.apply_current_mode()
   end
-  
+
   vim.notify(
     string.format(
       "Applied preset: %s\nDay: %s (%s)\nNight: %s (%s)",
@@ -235,7 +232,7 @@ function M.apply_preset(preset_name)
     ),
     vim.log.levels.INFO
   )
-  
+
   return true
 end
 
@@ -244,31 +241,26 @@ function M.select_preset()
   -- Get current preset
   local config_ok, config = pcall(require, "meowvim.config")
   local current_preset = config_ok and config.get("core.last_preset", nil) or nil
-  
+
   local preset_names = {}
   local presets_list = {}
-  
+
   for key, preset in pairs(M.presets) do
     table.insert(presets_list, { key = key, preset = preset })
   end
-  
+
   -- Sort by name
   table.sort(presets_list, function(a, b)
     return a.preset.name < b.preset.name
   end)
-  
+
   -- Create display strings
   for _, item in ipairs(presets_list) do
     local indicator = item.key == current_preset and "● " or "  "
-    local display = string.format(
-      "%s%s - %s",
-      indicator,
-      item.preset.name,
-      item.preset.mood
-    )
+    local display = string.format("%s%s - %s", indicator, item.preset.name, item.preset.mood)
     table.insert(preset_names, { key = item.key, display = display })
   end
-  
+
   vim.ui.select(preset_names, {
     prompt = string.format("Preset (current: %s)", current_preset or "none"),
     format_item = function(item)

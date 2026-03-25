@@ -10,9 +10,9 @@ return {
     if toggles_ok then
       toggles.ensure("copilot_enabled")
     end
-    
+
     local enabled = vim.g.copilot_enabled or false
-    
+
     require("copilot").setup({
       suggestion = {
         enabled = true,
@@ -48,7 +48,7 @@ return {
         ["."] = false,
       },
     })
-    
+
     if not enabled then
       vim.cmd("Copilot disable")
     end

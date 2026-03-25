@@ -10,7 +10,7 @@ local M = {}
 local function get_keymaps(mode)
   local keymaps = vim.api.nvim_get_keymap(mode)
   local buf_keymaps = vim.api.nvim_buf_get_keymap(0, mode)
-  
+
   -- Merge global and buffer-local keymaps
   local all_keymaps = {}
   for _, km in ipairs(keymaps) do
@@ -19,7 +19,7 @@ local function get_keymaps(mode)
   for _, km in ipairs(buf_keymaps) do
     table.insert(all_keymaps, vim.tbl_extend("force", km, { scope = "buffer" }))
   end
-  
+
   return all_keymaps
 end
 
@@ -27,11 +27,11 @@ end
 local function find_conflicts()
   local modes = { "n", "i", "v", "x", "s", "o", "t", "c" }
   local conflicts = {}
-  
+
   for _, mode in ipairs(modes) do
     local keymaps = get_keymaps(mode)
     local seen = {}
-    
+
     for _, km in ipairs(keymaps) do
       local lhs = km.lhs or ""
       if seen[lhs] then
@@ -45,51 +45,56 @@ local function find_conflicts()
       end
     end
   end
-  
+
   return conflicts
 end
 
 -- Format keymap info
 local function format_keymap(km)
   local parts = {}
-  
+
   if km.desc and km.desc ~= "" then
     table.insert(parts, string.format('"%s"', km.desc))
   end
-  
+
   if km.callback then
     table.insert(parts, "<Lua function>")
   elseif km.rhs then
-    table.insert(parts, string.format('-> %s', km.rhs))
+    table.insert(parts, string.format("-> %s", km.rhs))
   end
-  
+
   if km.buffer and km.buffer ~= 0 then
-    table.insert(parts, string.format('[buf:%d]', km.buffer))
+    table.insert(parts, string.format("[buf:%d]", km.buffer))
   end
-  
+
   if km.scope then
-    table.insert(parts, string.format('[%s]', km.scope))
+    table.insert(parts, string.format("[%s]", km.scope))
   end
-  
+
   return #parts > 0 and table.concat(parts, " ") or "<no info>"
+end
+
+-- Return conflicts as a plain list (headless-safe)
+function M.get_conflicts()
+  return find_conflicts()
 end
 
 -- Display conflicts in a buffer
 function M.show_conflicts()
   local conflicts = find_conflicts()
-  
+
   if #conflicts == 0 then
     vim.notify("No keymap conflicts detected!", vim.log.levels.INFO)
     return
   end
-  
+
   -- Create new buffer
   local buf = vim.api.nvim_create_buf(false, true)
   vim.bo[buf].buftype = "nofile"
   vim.bo[buf].bufhidden = "wipe"
   vim.bo[buf].swapfile = false
   vim.api.nvim_buf_set_name(buf, "Keymap Conflicts")
-  
+
   -- Build content
   local lines = {
     "# Keymap Conflicts Detected",
@@ -97,7 +102,7 @@ function M.show_conflicts()
     string.format("Found %d potential conflicts:", #conflicts),
     "",
   }
-  
+
   for i, conflict in ipairs(conflicts) do
     table.insert(lines, string.format("## Conflict %d: [%s] %s", i, conflict.mode, conflict.lhs))
     for j, km in ipairs(conflict.maps) do
@@ -105,12 +110,12 @@ function M.show_conflicts()
     end
     table.insert(lines, "")
   end
-  
+
   -- Set content
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
   vim.bo[buf].modifiable = false
   vim.bo[buf].filetype = "markdown"
-  
+
   -- Open in split
   vim.cmd("vsplit")
   vim.api.nvim_win_set_buf(0, buf)
@@ -121,24 +126,24 @@ end
 function M.list_keymaps(mode)
   mode = mode or "n"
   local keymaps = get_keymaps(mode)
-  
+
   if #keymaps == 0 then
     vim.notify(string.format("No keymaps found for mode '%s'", mode), vim.log.levels.INFO)
     return
   end
-  
+
   -- Sort by lhs
   table.sort(keymaps, function(a, b)
     return (a.lhs or "") < (b.lhs or "")
   end)
-  
+
   -- Create buffer
   local buf = vim.api.nvim_create_buf(false, true)
   vim.bo[buf].buftype = "nofile"
   vim.bo[buf].bufhidden = "wipe"
   vim.bo[buf].swapfile = false
   vim.api.nvim_buf_set_name(buf, string.format("Keymaps [%s]", mode))
-  
+
   -- Build content
   local lines = {
     string.format("# Keymaps for mode: %s", mode),
@@ -146,18 +151,18 @@ function M.list_keymaps(mode)
     string.format("Total: %d keymaps", #keymaps),
     "",
   }
-  
+
   for _, km in ipairs(keymaps) do
     local lhs = km.lhs or "<unknown>"
     local info = format_keymap(km)
     table.insert(lines, string.format("%-20s %s", lhs, info))
   end
-  
+
   -- Set content
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
   vim.bo[buf].modifiable = false
   vim.bo[buf].filetype = "markdown"
-  
+
   -- Open in split
   vim.cmd("vsplit")
   vim.api.nvim_win_set_buf(0, buf)

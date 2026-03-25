@@ -125,29 +125,22 @@ return {
 
     -- Configure global LSP handlers for hover and signature help
     -- These apply to all LSP clients
-    vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
-      vim.lsp.handlers.hover, 
-      { border = "rounded" }
-    )
-    vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
-      vim.lsp.handlers.signature_help, 
-      { border = "rounded" }
-    )
+    vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
+    vim.lsp.handlers["textDocument/signatureHelp"] =
+      vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
 
     -- Build capabilities from nvim-cmp defaults
     local caps = require("cmp_nvim_lsp").default_capabilities()
     -- Enable semantic tokens (supported in Neovim 0.11+)
     -- Semantic tokens provide enhanced syntax highlighting based on LSP semantic information
     -- See :h lsp-semantic-highlight for more details
-    caps.textDocument.semanticTokens = vim.tbl_deep_extend("force", 
-      caps.textDocument.semanticTokens or {},
-      { dynamicRegistration = true }
-    )
+    caps.textDocument.semanticTokens =
+      vim.tbl_deep_extend("force", caps.textDocument.semanticTokens or {}, { dynamicRegistration = true })
 
     local on_attach = function(client, bufnr)
       -- Note: Neovim 0.11+ sets omnifunc automatically as a buffer-local default
       -- Only override if you need custom behavior
-      
+
       -- Enable inlay hints for supported servers (gopls, rust-analyzer, ts_ls, etc.)
       -- Provides inline type information and parameter names
       if client.server_capabilities.inlayHintProvider then
@@ -200,10 +193,10 @@ return {
       gopls = {
         -- Neovim 0.11+ root_dir signature: function(bufnr, on_dir)
         root_dir = function(bufnr, on_dir)
-          local root = vim.fs.root(bufnr, { 'go.work', 'go.mod', '.git' })
+          local root = vim.fs.root(bufnr, { "go.work", "go.mod", ".git" })
           on_dir(root or vim.fs.dirname(vim.api.nvim_buf_get_name(bufnr)))
         end,
-        filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
+        filetypes = { "go", "gomod", "gowork", "gotmpl" },
         settings = {
           gopls = {
             gofumpt = true,
@@ -358,7 +351,7 @@ return {
       local custom_on_attach = server_opts.on_attach
 
       server_opts.capabilities = vim.tbl_deep_extend("force", {}, caps, server_opts.capabilities or {})
-      
+
       -- Merge on_attach callbacks
       local base_on_attach = on_attach
       server_opts.on_attach = function(client, bufnr)
@@ -371,30 +364,27 @@ return {
       -- Get default config from nvim-lspconfig to extract cmd, filetypes, etc.
       local server = lspconfig[server_name]
       if not server or not server.document_config then
-        vim.notify(
-          string.format("LSP server '%s' not found in lspconfig", server_name),
-          vim.log.levels.WARN
-        )
+        vim.notify(string.format("LSP server '%s' not found in lspconfig", server_name), vim.log.levels.WARN)
         return
       end
 
       local default_config = server.document_config.default_config or {}
-      
+
       -- Build the final config by merging defaults with custom settings
       local common_root_markers = {
-        'package.json',
-        'tsconfig.json',
-        'jsconfig.json',
-        'pyproject.toml',
-        'setup.py',
-        'requirements.txt',
-        'go.mod',
-        'Cargo.toml',
-        'pom.xml',
-        'build.gradle',
-        '.git',
+        "package.json",
+        "tsconfig.json",
+        "jsconfig.json",
+        "pyproject.toml",
+        "setup.py",
+        "requirements.txt",
+        "go.mod",
+        "Cargo.toml",
+        "pom.xml",
+        "build.gradle",
+        ".git",
       }
-      
+
       -- Build final config: start with defaults, layer common root_markers,
       -- then overlay any per-server overrides (server_opts may include a
       -- root_dir function using the Neovim 0.11+ (bufnr, on_dir) signature,
@@ -407,7 +397,7 @@ return {
         -- unless a server needs custom logic (e.g. gopls -- see server_settings).
         root_markers = common_root_markers,
       }, server_opts)
-      
+
       -- Use Neovim 0.11+ native LSP API
       vim.lsp.config(server_name, final_config)
       vim.lsp.enable(server_name)
@@ -422,18 +412,18 @@ return {
     do
       if lspconfig.gdscript and lspconfig.gdscript.document_config then
         local default_config = lspconfig.gdscript.document_config.default_config or {}
-        vim.lsp.config('gdscript', {
+        vim.lsp.config("gdscript", {
           cmd = default_config.cmd,
           filetypes = default_config.filetypes,
           -- Neovim 0.11+ root_dir signature: function(bufnr, on_dir)
           root_dir = function(bufnr, on_dir)
-            local root = vim.fs.root(bufnr, { 'project.godot', '.git' })
+            local root = vim.fs.root(bufnr, { "project.godot", ".git" })
             on_dir(root or vim.fs.dirname(vim.api.nvim_buf_get_name(bufnr)))
           end,
           capabilities = caps,
           on_attach = on_attach,
         })
-        vim.lsp.enable('gdscript')
+        vim.lsp.enable("gdscript")
       end
     end
 

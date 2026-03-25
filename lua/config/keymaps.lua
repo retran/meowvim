@@ -245,9 +245,9 @@ local function flash_action(action_name, multi_window)
     local flash = safe_require("flash")
     if flash then
       if action_name == "jump" then
-        flash.jump({ 
+        flash.jump({
           search = { max_length = 2 },
-          multi_window = multi_window or false 
+          multi_window = multi_window or false,
         })
       elseif action_name == "treesitter" then
         flash.treesitter()
@@ -550,12 +550,16 @@ function M.setup()
       { "<leader>c", group = "Code", icon = "󰅩" },
       { "<leader>cc", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "v" } },
       { "<leader>cr", vim.lsp.buf.rename, desc = "Rename Symbol" },
-      { "<leader>cf", function()
+      {
+        "<leader>cf",
+        function()
           require("conform").format({ async = true, lsp_fallback = true })
         end,
         desc = "Format Buffer",
       },
-      { "<leader>co", function()
+      {
+        "<leader>co",
+        function()
           local ft = vim.bo.filetype
           if ft ~= "typescript" and ft ~= "typescriptreact" and ft ~= "javascript" and ft ~= "javascriptreact" then
             vim.notify("Organize Imports is available in TypeScript and JavaScript buffers", vim.log.levels.WARN)
@@ -1042,10 +1046,10 @@ function M.setup()
         function()
           vim.g.copilot_enabled = not vim.g.copilot_enabled
           toggles.update("copilot_enabled")
-          
+
           if vim.g.copilot_enabled then
             -- Enable Copilot
-            local ok, copilot = pcall(require, "copilot")
+            local ok, _ = pcall(require, "copilot")
             if ok then
               vim.cmd("Copilot enable")
               vim.notify("Copilot: ON (restart may be needed)", vim.log.levels.INFO)
@@ -1069,7 +1073,7 @@ function M.setup()
         function()
           -- Sync current toggles to config
           toggles.sync_to_config()
-          
+
           -- Persist config to file
           local config = require("meowvim.config")
           if config.persist() then
@@ -1080,7 +1084,7 @@ function M.setup()
         end,
         desc = "Persist Settings",
       },
-      
+
       -- Theme Settings (simplified)
       {
         "<leader>ok",
@@ -1115,7 +1119,6 @@ function M.setup()
         end,
         desc = "Show Redo History",
       },
-
 
       {
         "<leader>uy",
