@@ -37,7 +37,9 @@ local function collect_linters()
 
   for _, linters in pairs(desired_linters_by_ft) do
     for _, linter in ipairs(linters) do
-      if seen[linter] then goto continue end
+      if seen[linter] then
+        goto continue
+      end
 
       local package = alias_map[linter]
       if package == false then

@@ -53,19 +53,23 @@ local function schedule_reload()
   -- Create new uv timer for proper control
   debounce_timer = vim.loop.new_timer()
   if debounce_timer then
-    debounce_timer:start(500, 0, vim.schedule_wrap(function()
-      if debounce_timer and not debounce_timer:is_closing() then
-        debounce_timer:stop()
-        debounce_timer:close()
-      end
-      debounce_timer = nil
-      
-      if is_safe_to_reload() then
-        perform_reload()
-      else
-        reload_pending = true
-      end
-    end))
+    debounce_timer:start(
+      500,
+      0,
+      vim.schedule_wrap(function()
+        if debounce_timer and not debounce_timer:is_closing() then
+          debounce_timer:stop()
+          debounce_timer:close()
+        end
+        debounce_timer = nil
+
+        if is_safe_to_reload() then
+          perform_reload()
+        else
+          reload_pending = true
+        end
+      end)
+    )
   end
 end
 
@@ -124,7 +128,7 @@ function M.stop_all()
     debounce_timer:close()
   end
   debounce_timer = nil
-  
+
   -- Stop all file watchers
   for path, w in pairs(watchers) do
     if w and not w:is_closing() then
@@ -154,7 +158,7 @@ function M.setup()
       end
     end,
   })
-  
+
   -- Clean up watchers on exit
   vim.api.nvim_create_autocmd("VimLeavePre", {
     group = vim.api.nvim_create_augroup("MeowvimConfigWatcherCleanup", { clear = true }),

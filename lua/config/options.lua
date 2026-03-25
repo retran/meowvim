@@ -57,7 +57,7 @@ opt.incsearch = true
 
 opt.completeopt = { "menu", "menuone", "noselect" }
 opt.pumheight = 10
-opt.pumblend = 10
+opt.pumblend = 0
 
 opt.backup = false
 opt.writebackup = false
@@ -71,7 +71,7 @@ opt.splitbelow = true
 opt.clipboard:append("unnamedplus")
 
 opt.mouse = "a"
-opt.mousefocus = true
+opt.mousefocus = false
 
 -- Folding configuration (overridden by nvim-ufo plugin when loaded)
 -- Defaults to treesitter-based folding as fallback
@@ -86,7 +86,7 @@ opt.iskeyword:append("-")
 opt.formatoptions:remove({ "c", "r", "o" })
 opt.shortmess:append({ W = true, I = true, c = true, C = true })
 
-opt.sessionoptions = "buffers,curdir,folds,globals,tabpages,winpos,winsize,localoptions,resize"
+opt.sessionoptions = "buffers,curdir,folds,globals,tabpages,localoptions"
 
 opt.title = true
 opt.titlelen = 70
@@ -100,6 +100,16 @@ opt.spelloptions:append("camel")
 local spell_dir = vim.fn.stdpath("config") .. "/spell"
 vim.fn.mkdir(spell_dir, "p")
 opt.spellfile = spell_dir .. "/en.utf-8.add"
+
+-- Force a full redraw after terminal resize to prevent partial-redraw glitches
+-- under Zellij, tmux, and other multiplexers.
+vim.api.nvim_create_autocmd("VimResized", {
+  group = vim.api.nvim_create_augroup("meowvim-resize-redraw", { clear = true }),
+  callback = function()
+    vim.cmd("wincmd =")
+    vim.cmd("redraw!")
+  end,
+})
 
 local spell_group = vim.api.nvim_create_augroup("meowvim-spell", { clear = true })
 

@@ -30,7 +30,7 @@ return {
 
       local theme = config.get("core.theme", "catppuccin")
       local variant = config.get("core.variant", "mocha")
-      
+
       -- Map Neovim themes to LazyGit themes
       local theme_map = {
         catppuccin = {
@@ -45,18 +45,18 @@ return {
         nord = "nord",
         kanagawa = "kanagawa",
       }
-      
+
       local lazygit_theme = theme_map[theme]
       if type(lazygit_theme) == "table" then
         lazygit_theme = lazygit_theme[variant] or lazygit_theme[1]
       end
-      
+
       -- Check if lazygit config exists
       local config_paths = {
         vim.fn.expand("~/.config/lazygit/config.yml"),
         vim.fn.expand("~/.config/jesseduffield/lazygit/config.yml"),
       }
-      
+
       local config_path = nil
       for _, path in ipairs(config_paths) do
         if vim.fn.filereadable(path) == 1 then
@@ -64,20 +64,20 @@ return {
           break
         end
       end
-      
+
       if not config_path then
         -- Create default config if it doesn't exist
         config_path = config_paths[1]
         local config_dir = vim.fn.fnamemodify(config_path, ":h")
         vim.fn.mkdir(config_dir, "p")
       end
-      
+
       -- Read existing config or create new one
       local lines = {}
       if vim.fn.filereadable(config_path) == 1 then
         lines = vim.fn.readfile(config_path)
       end
-      
+
       -- Update or add theme setting
       local theme_found = false
       for i, line in ipairs(lines) do
@@ -87,7 +87,7 @@ return {
           break
         end
       end
-      
+
       if not theme_found then
         -- Add theme to gui section
         local gui_found = false
@@ -98,23 +98,23 @@ return {
             break
           end
         end
-        
+
         if not gui_found then
           table.insert(lines, "gui:")
           table.insert(lines, string.format("  theme: %s", lazygit_theme or "default"))
         end
       end
-      
+
       -- Write config back
       vim.fn.writefile(lines, config_path)
     end
-    
+
     -- Sync theme on LazyGit startup
     vim.api.nvim_create_autocmd("User", {
       pattern = "LazyGitOpen",
       callback = sync_lazygit_theme,
     })
-    
+
     -- Also sync when colorscheme changes
     vim.api.nvim_create_autocmd("ColorScheme", {
       callback = sync_lazygit_theme,

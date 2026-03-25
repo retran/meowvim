@@ -182,7 +182,11 @@ return {
         },
         codespell = {
           condition = function(ctx)
-            return vim.api.nvim_buf_line_count(ctx.bufnr) <= 1000
+            local bufnr = ctx and ctx.bufnr
+            if not bufnr or bufnr == 0 then
+              return false
+            end
+            return vim.api.nvim_buf_line_count(bufnr) <= 1000
           end,
         },
       },

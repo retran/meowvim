@@ -10,21 +10,21 @@ local M = {}
 function M.profile_function(fn, iterations)
   iterations = iterations or 100
   local times = {}
-  
+
   for i = 1, iterations do
     local start = vim.loop.hrtime()
     fn()
     local elapsed = (vim.loop.hrtime() - start) / 1000000 -- Convert to ms
     table.insert(times, elapsed)
   end
-  
+
   -- Calculate statistics
   table.sort(times)
   local total = 0
   for _, t in ipairs(times) do
     total = total + t
   end
-  
+
   local stats = {
     min = times[1],
     max = times[#times],
@@ -33,7 +33,7 @@ function M.profile_function(fn, iterations)
     p95 = times[math.floor(#times * 0.95)],
     p99 = times[math.floor(#times * 0.99)],
   }
-  
+
   return stats
 end
 
@@ -58,10 +58,10 @@ function M.show_plugin_times()
     vim.notify("lazy.nvim not loaded", vim.log.levels.ERROR)
     return
   end
-  
+
   local stats = lazy.stats()
   local plugins = lazy.plugins()
-  
+
   -- Collect load times
   local plugin_times = {}
   for _, plugin in ipairs(plugins) do
@@ -73,19 +73,19 @@ function M.show_plugin_times()
       })
     end
   end
-  
+
   -- Sort by time
   table.sort(plugin_times, function(a, b)
     return a.time > b.time
   end)
-  
+
   -- Create buffer
   local buf = vim.api.nvim_create_buf(false, true)
   vim.bo[buf].buftype = "nofile"
   vim.bo[buf].bufhidden = "wipe"
   vim.bo[buf].swapfile = false
   vim.api.nvim_buf_set_name(buf, "Plugin Load Times")
-  
+
   -- Build content
   local lines = {
     "# Plugin Load Times",
@@ -97,17 +97,17 @@ function M.show_plugin_times()
     "## Top 20 Slowest Plugins",
     "",
   }
-  
+
   for i = 1, math.min(20, #plugin_times) do
     local p = plugin_times[i]
     table.insert(lines, string.format("%2d. %-40s %6.2fms", i, p.name, p.time))
   end
-  
+
   -- Set content
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
   vim.bo[buf].modifiable = false
   vim.bo[buf].filetype = "markdown"
-  
+
   -- Open in split
   vim.cmd("vsplit")
   vim.api.nvim_win_set_buf(0, buf)
@@ -119,7 +119,7 @@ function M.measure_buffer_render()
   local start = vim.loop.hrtime()
   vim.cmd("redraw!")
   local elapsed = (vim.loop.hrtime() - start) / 1000000
-  
+
   vim.notify(string.format("Buffer render time: %.2fms", elapsed), vim.log.levels.INFO)
   return elapsed
 end
