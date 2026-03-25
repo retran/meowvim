@@ -10,7 +10,7 @@ return {
   init = function()
     -- Let EditorConfig set these values
     vim.g.EditorConfig_exclude_patterns = { "fugitive://.*", "scp://.*" }
-    
+
     -- Don't let EditorConfig override these Neovim-specific settings
     vim.g.EditorConfig_disable_rules = { "trim_trailing_whitespace" }
   end,

@@ -6,6 +6,12 @@
 
 vim.loader.enable()
 
+-- Disable all providers — no plugins in this config require them
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_node_provider = 0
+
 -- Add Mason bin to PATH
 local mason_bin = vim.fn.stdpath("data") .. "/mason/bin"
 if vim.fn.isdirectory(mason_bin) == 1 and not (vim.env.PATH or ""):find(mason_bin, 1, true) then

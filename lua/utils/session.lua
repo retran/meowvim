@@ -12,7 +12,7 @@ local function close_floating_windows()
       end
     end
   end)
-  
+
   if not ok then
     vim.notify("Error closing floating windows: " .. tostring(err), vim.log.levels.WARN)
   end
@@ -26,7 +26,7 @@ local function wipe_listed_buffers()
       end
     end
   end)
-  
+
   if not ok then
     vim.notify("Error wiping buffers: " .. tostring(err), vim.log.levels.WARN)
   end
@@ -81,7 +81,7 @@ function M.reset()
       vim.cmd("enew")
     end
   end)
-  
+
   if not ok then
     vim.notify("Error resetting session: " .. tostring(err), vim.log.levels.ERROR)
     return false

@@ -16,23 +16,37 @@ local info = health.info or health.report_info
 -- Check Neovim version
 local function check_nvim_version()
   start("Neovim Version")
-  
+
   local required_version = "0.10.0"
   local current_version = vim.version()
-  
+
   if current_version.major == 0 and current_version.minor >= 10 then
-    ok(string.format("Neovim %d.%d.%d (>= %s)", 
-      current_version.major, current_version.minor, current_version.patch, required_version))
+    ok(
+      string.format(
+        "Neovim %d.%d.%d (>= %s)",
+        current_version.major,
+        current_version.minor,
+        current_version.patch,
+        required_version
+      )
+    )
   else
-    error(string.format("Neovim %d.%d.%d is too old. Please upgrade to >= %s",
-      current_version.major, current_version.minor, current_version.patch, required_version))
+    error(
+      string.format(
+        "Neovim %d.%d.%d is too old. Please upgrade to >= %s",
+        current_version.major,
+        current_version.minor,
+        current_version.patch,
+        required_version
+      )
+    )
   end
 end
 
 -- Check configuration system
 local function check_config()
   start("Configuration System")
-  
+
   -- Check if config module loads
   local config_ok, config = pcall(require, "meowvim.config")
   if not config_ok then
@@ -40,7 +54,7 @@ local function check_config()
     return
   end
   ok("Config module loaded successfully")
-  
+
   -- Check if user config exists
   local config_path = config.get_config_path()
   if vim.fn.filereadable(config_path) == 1 then
@@ -49,7 +63,7 @@ local function check_config()
     warn("User config file not found: " .. config_path)
     info("Create one by running :MeowvimConfig or copying from defaults")
   end
-  
+
   -- Validate config
   local valid, errors = config.validate()
   if valid then
@@ -60,16 +74,16 @@ local function check_config()
       info("  " .. field .. ": " .. err)
     end
   end
-  
+
   -- Check critical config values
   local theme = config.get("core.theme")
   if theme then
     info("Theme: " .. theme)
   end
-  
+
   local copilot = config.get("core.enable_copilot", false)
   info("Copilot: " .. (copilot and "enabled" or "disabled"))
-  
+
   -- Check projects configuration
   local projects_path = config.get_projects_path()
   if vim.fn.filereadable(projects_path) == 1 then
@@ -100,7 +114,7 @@ end
 -- Check external dependencies
 local function check_external_deps()
   start("External Dependencies")
-  
+
   -- Check git
   if vim.fn.executable("git") == 1 then
     local git_version = vim.fn.system("git --version"):gsub("\n", "")
@@ -108,7 +122,7 @@ local function check_external_deps()
   else
     error("git is not installed or not in PATH")
   end
-  
+
   -- Check ripgrep (for telescope)
   if vim.fn.executable("rg") == 1 then
     local rg_version = vim.fn.system("rg --version"):match("ripgrep ([^\n]+)")
@@ -117,7 +131,7 @@ local function check_external_deps()
     warn("ripgrep not found - Telescope search will be slower")
     info("Install with: brew install ripgrep (macOS) or apt install ripgrep (Linux)")
   end
-  
+
   -- Check fd (for telescope)
   if vim.fn.executable("fd") == 1 then
     local fd_version = vim.fn.system("fd --version"):match("fd ([^\n]+)")
@@ -126,7 +140,7 @@ local function check_external_deps()
     warn("fd not found - Telescope file finding will be slower")
     info("Install with: brew install fd (macOS) or apt install fd-find (Linux)")
   end
-  
+
   -- Check lazygit
   if vim.fn.executable("lazygit") == 1 then
     local lg_version = vim.fn.system("lazygit --version"):match("version=([^,]+)")
@@ -135,7 +149,7 @@ local function check_external_deps()
     info("lazygit not found - :LazyGit command will not work")
     info("Install from: https://github.com/jesseduffield/lazygit")
   end
-  
+
   -- Check node (for Copilot)
   if vim.fn.executable("node") == 1 then
     local node_version = vim.fn.system("node --version"):gsub("\n", "")
@@ -154,19 +168,19 @@ end
 -- Check LSP servers
 local function check_lsp()
   start("LSP Configuration")
-  
+
   local lspconfig_ok, _ = pcall(require, "lspconfig")
   if not lspconfig_ok then
     error("nvim-lspconfig not loaded")
     return
   end
   ok("nvim-lspconfig loaded")
-  
+
   -- Check Mason
-  local mason_ok, mason = pcall(require, "mason")
+  local mason_ok, _ = pcall(require, "mason")
   if mason_ok then
     ok("Mason package manager loaded")
-    
+
     local registry_ok, registry = pcall(require, "mason-registry")
     if registry_ok then
       local installed = registry.get_installed_packages()
@@ -188,17 +202,17 @@ end
 -- Check plugin manager
 local function check_plugins()
   start("Plugin Manager")
-  
+
   local lazy_ok, lazy = pcall(require, "lazy")
   if not lazy_ok then
     error("lazy.nvim not loaded")
     return
   end
   ok("lazy.nvim loaded")
-  
+
   local stats = lazy.stats()
   ok(string.format("%d plugins loaded in %.2fms", stats.loaded, stats.startuptime))
-  
+
   if stats.count > stats.loaded then
     info(string.format("%d plugins not yet loaded (lazy-loaded)", stats.count - stats.loaded))
   end
@@ -207,14 +221,14 @@ end
 -- Check treesitter
 local function check_treesitter()
   start("Tree-sitter")
-  
-  local ts_ok, ts_configs = pcall(require, "nvim-treesitter.configs")
+
+  local ts_ok, _ = pcall(require, "nvim-treesitter.configs")
   if not ts_ok then
     error("nvim-treesitter not loaded")
     return
   end
   ok("nvim-treesitter loaded")
-  
+
   local parser_ok, parser = pcall(require, "nvim-treesitter.parsers")
   if parser_ok then
     local installed = parser.get_parser_configs()
@@ -234,7 +248,7 @@ end
 -- Check critical files and directories
 local function check_filesystem()
   start("Filesystem")
-  
+
   -- Check data directory
   local data_dir = vim.fn.stdpath("data")
   if vim.fn.isdirectory(data_dir) == 1 then
@@ -242,7 +256,7 @@ local function check_filesystem()
   else
     error("Data directory missing: " .. data_dir)
   end
-  
+
   -- Check config directory
   local config_dir = vim.fn.stdpath("config")
   if vim.fn.isdirectory(config_dir) == 1 then
@@ -250,7 +264,7 @@ local function check_filesystem()
   else
     error("Config directory missing: " .. config_dir)
   end
-  
+
   -- Check cache directory
   local cache_dir = vim.fn.stdpath("cache")
   if vim.fn.isdirectory(cache_dir) == 1 then
@@ -258,7 +272,7 @@ local function check_filesystem()
   else
     warn("Cache directory missing: " .. cache_dir)
   end
-  
+
   -- Check if running in container
   if vim.env.CI or vim.env.DOCKER or vim.fn.filereadable("/.dockerenv") == 1 then
     info("Running in CI/container environment")

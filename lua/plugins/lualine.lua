@@ -102,8 +102,8 @@ return {
         section_separators = { left = "", right = "" },
         ignore_focus = {},
         refresh = {
-          statusline = 50,
-          winbar = 50,
+          statusline = 1000,
+          winbar = 1000,
         },
         always_divide_middle = true,
         globalstatus = true,

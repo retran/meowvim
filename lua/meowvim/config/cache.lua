@@ -47,7 +47,7 @@ end
 function M.save(config)
   local cache_dir = get_cache_dir()
   local cache_file = get_cache_file()
-  
+
   vim.fn.mkdir(cache_dir, "p")
 
   local serialized = "return " .. vim.inspect(config)

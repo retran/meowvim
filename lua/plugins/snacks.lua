@@ -4,25 +4,112 @@
 -- @file: lua/plugins/snacks.lua
 -- @brief: Collection of useful utilities and UI components.
 
+-- luacheck: globals Snacks
+
 return {
   "folke/snacks.nvim",
   version = "v2.*", -- Pin to stable 2.x releases
+  priority = 1000,
   lazy = false,
   keys = {
-    { "<leader>.",  function() Snacks.scratch() end, desc = "Toggle Scratch Buffer" },
-    { "<leader>Ns", function() Snacks.scratch.select() end, desc = "Select Scratch Buffer" },
-    { "<leader>hn", function() Snacks.notifier.show_history() end, desc = "Notification History" },
-    { "<leader>bd", function() Snacks.bufdelete() end, desc = "Delete Buffer" },
-    { "<leader>gg", function() Snacks.lazygit() end, desc = "Lazygit" },
-    { "<leader>gb", function() Snacks.git.blame_line() end, desc = "Git Blame Line" },
-    { "<leader>gB", function() Snacks.gitbrowse() end, desc = "Git Browse" },
-    { "<leader>gf", function() Snacks.lazygit.log_file() end, desc = "Lazygit Current File History" },
-    { "<leader>gl", function() Snacks.lazygit.log() end, desc = "Lazygit Log" },
-    { "<leader>cR", function() Snacks.rename() end, desc = "Rename File" },
-    { "<c-/>",      function() Snacks.terminal() end, desc = "Toggle Terminal" },
-    { "<c-_>",      function() Snacks.terminal() end, desc = "Toggle Terminal (which-key)" },
-    { "]w",         function() Snacks.words.jump(vim.v.count1) end, desc = "Next Reference" },
-    { "[w",         function() Snacks.words.jump(-vim.v.count1) end, desc = "Prev Reference" },
+    {
+      "<leader>.",
+      function()
+        Snacks.scratch()
+      end,
+      desc = "Toggle Scratch Buffer",
+    },
+    {
+      "<leader>Ns",
+      function()
+        Snacks.scratch.select()
+      end,
+      desc = "Select Scratch Buffer",
+    },
+    {
+      "<leader>hn",
+      function()
+        Snacks.notifier.show_history()
+      end,
+      desc = "Notification History",
+    },
+    {
+      "<leader>bd",
+      function()
+        Snacks.bufdelete()
+      end,
+      desc = "Delete Buffer",
+    },
+    {
+      "<leader>gg",
+      function()
+        Snacks.lazygit()
+      end,
+      desc = "Lazygit",
+    },
+    {
+      "<leader>gb",
+      function()
+        Snacks.git.blame_line()
+      end,
+      desc = "Git Blame Line",
+    },
+    {
+      "<leader>gB",
+      function()
+        Snacks.gitbrowse()
+      end,
+      desc = "Git Browse",
+    },
+    {
+      "<leader>gf",
+      function()
+        Snacks.lazygit.log_file()
+      end,
+      desc = "Lazygit Current File History",
+    },
+    {
+      "<leader>gl",
+      function()
+        Snacks.lazygit.log()
+      end,
+      desc = "Lazygit Log",
+    },
+    {
+      "<leader>cR",
+      function()
+        Snacks.rename()
+      end,
+      desc = "Rename File",
+    },
+    {
+      "<c-/>",
+      function()
+        Snacks.terminal()
+      end,
+      desc = "Toggle Terminal",
+    },
+    {
+      "<c-_>",
+      function()
+        Snacks.terminal()
+      end,
+      desc = "Toggle Terminal (which-key)",
+    },
+    {
+      "]w",
+      function()
+        Snacks.words.jump(vim.v.count1)
+      end,
+      desc = "Next Reference",
+    },
+    {
+      "[w",
+      function()
+        Snacks.words.jump(-vim.v.count1)
+      end,
+      desc = "Prev Reference",
+    },
   },
   config = function(_, opts)
     require("snacks").setup(opts)
@@ -37,179 +124,178 @@ return {
     local image_preview = true
     local scope_highlighting = true
     local custom_styles = true
-    
+
     if config_ok then
       image_preview = config.get("snacks.image_preview", true)
       scope_highlighting = config.get("snacks.scope_highlighting", true)
       custom_styles = config.get("snacks.custom_styles", true)
     end
-    
+
     return {
-    dashboard = {
-      width = 52,
-      preset = {
-        keys = {
-          { icon = " ", key = "p", desc = "Open Project", action = ":lua Snacks.dashboard.pick('projects')" },
-          { icon = " ", key = "n", desc = "Create File", action = ":ene | startinsert" },
-          { icon = " ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
-          { icon = " ", key = "r", desc = "Show Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
-          { icon = " ", key = "q", desc = "Quit Neovim", action = ":qa" },
-        },
-        header = [[meowvim
+      dashboard = {
+        width = 52,
+        preset = {
+          keys = {
+            { icon = " ", key = "p", desc = "Open Project", action = ":lua Snacks.dashboard.pick('projects')" },
+            { icon = " ", key = "n", desc = "Create File", action = ":ene | startinsert" },
+            { icon = " ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
+            { icon = " ", key = "r", desc = "Show Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
+            { icon = " ", key = "q", desc = "Quit Neovim", action = ":qa" },
+          },
+          header = [[meowvim
 -------]],
+        },
+        sections = {
+          { section = "header", padding = 1 },
+          { section = "projects", padding = 1 },
+          { section = "keys", gap = 0, padding = 1 },
+          { section = "startup", padding = 1 },
+        },
       },
-      sections = {
-        { section = "header", padding = 1 },
-        { section = "projects", padding = 1 },
-        { section = "keys", gap = 0, padding = 1 },
-        { section = "startup", padding = 1 },
-      },
-    },
 
-    bigfile = {},
-    dim = {},
-    explorer = {
-      replace_netrw = true,
-    },
-    input = {},
-    notifier = {},
-    terminal = {},
-    image = {
-      enabled = image_preview,
-      backend = "kitty",
-    },
-    scope = {
-      enabled = scope_highlighting,
-      treesitter = {
-        enabled = true,
+      bigfile = {},
+      dim = {},
+      explorer = {
+        replace_netrw = true,
       },
-    },
-    scratch = {
-      ft = "markdown",
-      filekey = {
-        cwd = true,
-        branch = false,
-        count = true,
+      input = {},
+      notifier = {},
+      terminal = {},
+      image = {
+        enabled = image_preview and not vim.env.ZELLIJ,
       },
-    },
-    styles = {
-      enabled = custom_styles,
-      notification = {
-        wo = {
-          winblend = 0,
-          wrap = false,
+      scope = {
+        enabled = scope_highlighting,
+        treesitter = {
+          enabled = true,
         },
       },
-    },
-
-    picker = {
-      hidden = true,
-      layout = { preset = "ivy" },
-      sources = {
-        files = {
-          hidden = true,
+      scratch = {
+        ft = "markdown",
+        filekey = {
+          cwd = true,
+          branch = false,
+          count = true,
         },
-        git_files = {
-          hidden = true,
-        },
-        recent = {
-          hidden = true,
-        },
-        explorer = {
-          layout = {
-            position = "right",
-          },
-          hidden = true,
-          follow_file = true,
-          auto_close = true,
-          jump = {
-            close = true,
+      },
+      styles = {
+        enabled = custom_styles,
+        notification = {
+          wo = {
+            winblend = 0,
+            wrap = false,
           },
         },
-        projects = {
-          hidden = true,
-          dev = {
-            "~/workspace",
-            "~/dev",
-            "~/projects",
+      },
+
+      picker = {
+        hidden = true,
+        layout = { preset = "ivy" },
+        sources = {
+          files = {
+            hidden = true,
           },
-          -- Configured projects from ~/.config/meowvim/projects.lua
-          projects = (function()
-            local ok, config = pcall(require, "meowvim.config")
-            if ok then
-              return config.get_project_paths()
-            end
-            return {}
-          end)(),
-          -- Only scan for git repos in dev dirs, configured projects are always shown first
-          patterns = { ".git" },
-          -- Include recent projects from vim history
-          recent = true,
-          confirm = function(picker, item)
-            picker:close()
-            if not item or not item.file then
-              return
-            end
-
-            local dir = item.file
-            local session_utils = require("utils.session")
-
-            session_utils.save()
-
-            local session_loaded = false
-            vim.api.nvim_create_autocmd("SessionLoadPost", {
-              once = true,
-              callback = function()
-                session_loaded = true
-              end,
-            })
-
-            vim.defer_fn(function()
-              if not session_loaded then
-                require("snacks").picker.files()
+          git_files = {
+            hidden = true,
+          },
+          recent = {
+            hidden = true,
+          },
+          explorer = {
+            layout = {
+              position = "right",
+            },
+            hidden = true,
+            follow_file = true,
+            auto_close = true,
+            jump = {
+              close = true,
+            },
+          },
+          projects = {
+            hidden = true,
+            dev = {
+              "~/workspace",
+              "~/dev",
+              "~/projects",
+            },
+            -- Configured projects from ~/.config/meowvim/projects.lua
+            projects = (function()
+              local ok, cfg = pcall(require, "meowvim.config")
+              if ok then
+                return cfg.get_project_paths()
               end
-            end, 100)
-
-            session_utils.reset()
-
-            vim.fn.chdir(dir)
-
-            -- Detect and apply project-specific settings, run on_open command
-            local ok, config = pcall(require, "meowvim.config")
-            if ok then
-              local current_project = config.detect_current_project()
-              if current_project and current_project.on_open then
-                vim.defer_fn(function()
-                  vim.cmd(current_project.on_open)
-                end, 150)
+              return {}
+            end)(),
+            -- Only scan for git repos in dev dirs, configured projects are always shown first
+            patterns = { ".git" },
+            -- Include recent projects from vim history
+            recent = true,
+            confirm = function(picker, item)
+              picker:close()
+              if not item or not item.file then
+                return
               end
-            end
 
-            local session = require("snacks").dashboard.sections.session()
-            if not session then
-              return
-            end
+              local dir = item.file
+              local session_utils = require("utils.session")
 
-            local action = session.action
-            if type(action) == "function" then
-              action()
-              return
-            end
+              session_utils.save()
 
-            if type(action) == "string" then
-              if action:sub(1, 1) == ":" then
-                vim.cmd(action:sub(2))
-              else
-                vim.cmd(action)
+              local session_loaded = false
+              vim.api.nvim_create_autocmd("SessionLoadPost", {
+                once = true,
+                callback = function()
+                  session_loaded = true
+                end,
+              })
+
+              vim.defer_fn(function()
+                if not session_loaded then
+                  require("snacks").picker.files()
+                end
+              end, 100)
+
+              session_utils.reset()
+
+              vim.fn.chdir(dir)
+
+              -- Detect and apply project-specific settings, run on_open command
+              local ok, cfg = pcall(require, "meowvim.config")
+              if ok then
+                local current_project = cfg.detect_current_project()
+                if current_project and current_project.on_open then
+                  vim.defer_fn(function()
+                    vim.cmd(current_project.on_open)
+                  end, 150)
+                end
               end
-            end
-          end,
-        },
-        lsp_workspace_symbols = {
-          tree = true,
+
+              local session = require("snacks").dashboard.sections.session()
+              if not session then
+                return
+              end
+
+              local action = session.action
+              if type(action) == "function" then
+                action()
+                return
+              end
+
+              if type(action) == "string" then
+                if action:sub(1, 1) == ":" then
+                  vim.cmd(action:sub(2))
+                else
+                  vim.cmd(action)
+                end
+              end
+            end,
+          },
+          lsp_workspace_symbols = {
+            tree = true,
+          },
         },
       },
-    },
-  }
+    }
   end,
 }

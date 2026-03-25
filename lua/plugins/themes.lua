@@ -7,9 +7,7 @@
 local function get_config_theme()
   local ok, config = pcall(require, "meowvim.config")
   if ok then
-    return config.get("core.theme", "catppuccin"), 
-           config.get("core.variant", "mocha"),
-           config.get("ui.transparency", 0)
+    return config.get("core.theme", "catppuccin"), config.get("core.variant", "mocha"), config.get("ui.transparency", 0)
   end
   return "catppuccin", "mocha", 0
 end
@@ -22,7 +20,7 @@ local catppuccin = {
   lazy = false,
   config = function()
     local theme, variant, transparency = get_config_theme()
-    
+
     if theme ~= "catppuccin" then
       return
     end
@@ -51,13 +49,12 @@ local catppuccin = {
         gitsigns = true,
       },
     })
-    
+
     vim.g.catppuccin_flavour = variant
     vim.cmd.colorscheme("catppuccin")
-    
+
     -- Apply transparency level if > 0
     if transparency > 0 then
-      local alpha = 100 - transparency
       vim.api.nvim_set_hl(0, "Normal", { bg = "NONE" })
       vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
       vim.api.nvim_set_hl(0, "NormalNC", { bg = "NONE" })
@@ -72,7 +69,7 @@ local tokyonight = {
   lazy = false,
   config = function()
     local theme, variant, transparency = get_config_theme()
-    
+
     if theme ~= "tokyonight" then
       return
     end
@@ -90,7 +87,7 @@ local tokyonight = {
         floats = transparency > 0 and "transparent" or "dark",
       },
     })
-    
+
     vim.cmd.colorscheme("tokyonight")
   end,
 }
@@ -103,7 +100,7 @@ local rose_pine = {
   lazy = false,
   config = function()
     local theme, variant, transparency = get_config_theme()
-    
+
     if theme ~= "rose-pine" then
       return
     end
@@ -120,7 +117,7 @@ local rose_pine = {
         transparency = transparency > 0,
       },
     })
-    
+
     vim.cmd.colorscheme("rose-pine")
   end,
 }
@@ -132,7 +129,7 @@ local gruvbox = {
   lazy = false,
   config = function()
     local theme, variant, transparency = get_config_theme()
-    
+
     if theme ~= "gruvbox" then
       return
     end
@@ -152,7 +149,7 @@ local gruvbox = {
       contrast = variant or "medium", -- hard, medium, soft
       transparent_mode = transparency > 0,
     })
-    
+
     vim.o.background = "dark"
     vim.cmd.colorscheme("gruvbox")
   end,
@@ -165,7 +162,7 @@ local nord = {
   lazy = false,
   config = function()
     local theme, _, transparency = get_config_theme()
-    
+
     if theme ~= "nord" then
       return
     end
@@ -175,7 +172,7 @@ local nord = {
     vim.g.nord_disable_background = transparency > 0
     vim.g.nord_italic = true
     vim.g.nord_bold = true
-    
+
     vim.cmd.colorscheme("nord")
   end,
 }
@@ -187,7 +184,7 @@ local kanagawa = {
   lazy = false,
   config = function()
     local theme, variant, transparency = get_config_theme()
-    
+
     if theme ~= "kanagawa" then
       return
     end
@@ -205,7 +202,7 @@ local kanagawa = {
       terminalColors = true,
       theme = variant or "wave", -- wave, dragon, lotus
     })
-    
+
     vim.cmd.colorscheme("kanagawa")
   end,
 }
@@ -217,7 +214,7 @@ local everforest = {
   lazy = false,
   config = function()
     local theme, variant, transparency = get_config_theme()
-    
+
     if theme ~= "everforest" then
       return
     end
@@ -226,7 +223,7 @@ local everforest = {
     -- Variants: hard, medium, soft for both dark and light backgrounds
     local background = "dark"
     local style = "medium"
-    
+
     if variant then
       if variant:match("^light") then
         background = "light"
@@ -255,7 +252,7 @@ local everforest = {
       show_eob = true,
       float_style = "bright",
     })
-    
+
     vim.o.background = background
     vim.cmd.colorscheme("everforest")
   end,
@@ -268,7 +265,7 @@ local nightfox = {
   lazy = false,
   config = function()
     local theme, variant, transparency = get_config_theme()
-    
+
     if theme ~= "nightfox" then
       return
     end
@@ -285,7 +282,7 @@ local nightfox = {
         },
       },
     })
-    
+
     -- Variants: nightfox, dayfox, dawnfox, duskfox, nordfox, terafox, carbonfox
     vim.cmd.colorscheme(variant or "nightfox")
   end,
@@ -299,7 +296,7 @@ local zenbones = {
   dependencies = { "rktjmp/lush.nvim" },
   config = function()
     local theme, variant, transparency = get_config_theme()
-    
+
     if theme ~= "zenbones" then
       return
     end
@@ -308,8 +305,8 @@ local zenbones = {
     if transparency > 0 then
       vim.g.zenbones_transparent_background = true
     end
-    
-    -- Variants: zenbones, zenwritten, neobones, tokyobones, seoulbones, 
+
+    -- Variants: zenbones, zenwritten, neobones, tokyobones, seoulbones,
     --           forestbones, nordbones, kanagawabones, rosebones
     vim.cmd.colorscheme(variant or "zenbones")
   end,
@@ -322,7 +319,7 @@ local solarized_osaka = {
   lazy = false,
   config = function()
     local theme, variant, transparency = get_config_theme()
-    
+
     if theme ~= "solarized-osaka" then
       return
     end
@@ -341,7 +338,7 @@ local solarized_osaka = {
       -- Variants: storm (dark), night (darker), moon (darkest), day (light)
       style = variant or "night",
     })
-    
+
     vim.cmd.colorscheme("solarized-osaka")
   end,
 }
@@ -353,7 +350,7 @@ local ayu = {
   lazy = false,
   config = function()
     local theme, variant, transparency = get_config_theme()
-    
+
     if theme ~= "ayu" then
       return
     end
@@ -373,7 +370,7 @@ local ayu = {
         VertSplit = { bg = "None" },
       } or {},
     })
-    
+
     -- Set background before applying colorscheme
     -- Variants: dark, light, mirage
     if variant == "light" then
@@ -381,7 +378,7 @@ local ayu = {
     else
       vim.o.background = "dark"
     end
-    
+
     vim.cmd.colorscheme("ayu")
   end,
 }
@@ -393,7 +390,7 @@ local dracula = {
   lazy = false,
   config = function()
     local theme, _, transparency = get_config_theme()
-    
+
     if theme ~= "dracula" then
       return
     end
@@ -402,7 +399,7 @@ local dracula = {
       transparent_bg = transparency > 0,
       italic_comment = true,
     })
-    
+
     vim.cmd.colorscheme("dracula")
   end,
 }
@@ -414,7 +411,7 @@ local monokai_pro = {
   lazy = false,
   config = function()
     local theme, variant, transparency = get_config_theme()
-    
+
     if theme ~= "monokai-pro" then
       return
     end
@@ -435,7 +432,7 @@ local monokai_pro = {
       },
       filter = variant or "pro", -- pro, octagon, machine, ristretto, spectrum, classic
     })
-    
+
     vim.cmd.colorscheme("monokai-pro")
   end,
 }
@@ -447,7 +444,7 @@ local onedark = {
   lazy = false,
   config = function()
     local theme, variant, transparency = get_config_theme()
-    
+
     if theme ~= "onedark" then
       return
     end
@@ -467,7 +464,7 @@ local onedark = {
         variables = "NONE",
       },
     })
-    
+
     -- Variants: onedark, onelight, onedark_vivid, onedark_dark
     vim.cmd.colorscheme(variant or "onedark")
   end,
@@ -480,7 +477,7 @@ local material = {
   lazy = false,
   config = function()
     local theme, variant, transparency = get_config_theme()
-    
+
     if theme ~= "material" then
       return
     end
@@ -522,7 +519,7 @@ local material = {
       lualine_style = "default",
       async_loading = true,
     })
-    
+
     -- Variants: darker, lighter, oceanic, palenight, deep ocean
     vim.g.material_style = variant or "darker"
     vim.cmd.colorscheme("material")
@@ -536,7 +533,7 @@ local melange = {
   lazy = false,
   config = function()
     local theme, _, transparency = get_config_theme()
-    
+
     if theme ~= "melange" then
       return
     end
@@ -550,7 +547,7 @@ local melange = {
         end,
       })
     end
-    
+
     vim.cmd.colorscheme("melange")
   end,
 }
@@ -562,7 +559,7 @@ local github = {
   lazy = false,
   config = function()
     local theme, variant, transparency = get_config_theme()
-    
+
     if theme ~= "github" then
       return
     end
@@ -579,7 +576,7 @@ local github = {
         },
       },
     })
-    
+
     -- Variants: github_dark, github_dark_dimmed, github_dark_high_contrast,
     --           github_light, github_light_high_contrast, github_dark_colorblind,
     --           github_light_colorblind, github_dark_tritanopia, github_light_tritanopia

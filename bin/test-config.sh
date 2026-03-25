@@ -162,15 +162,33 @@ test_treesitter() {
 # Test: Keymap conflicts
 test_keymap_conflicts() {
     log_test "Checking for keymap conflicts..."
-    
-    nvim --headless "+lua require('meowvim.keymap_checker').show_conflicts()" "+write $TEST_OUTPUT/conflicts.txt" +qa 2>&1
-    
-    if [ -f "$TEST_OUTPUT/conflicts.txt" ] && grep -q "No keymap conflicts" "$TEST_OUTPUT/conflicts.txt"; then
+
+    local lua_script='
+local conflicts = require("meowvim.keymap_checker").get_conflicts()
+if #conflicts == 0 then
+  io.write("No keymap conflicts\n")
+else
+  io.write(string.format("Found %d conflicts:\n", #conflicts))
+  for _, c in ipairs(conflicts) do
+    io.write(string.format("  [%s] %s\n", c.mode, c.lhs))
+  end
+end
+'
+    local output
+    output=$(nvim --headless "+lua $lua_script" +qa 2>&1)
+
+    if echo "$output" | grep -q "^No keymap conflicts"; then
         log_success "No keymap conflicts detected"
         return 0
+    elif echo "$output" | grep -q "^Found"; then
+        local count
+        count=$(echo "$output" | grep -o 'Found [0-9]* conflicts' | grep -o '[0-9]*')
+        log_error "Found $count keymap conflicts:"
+        echo "$output" | grep -v "^Found" | head -20
+        return 1
     else
-        log_info "Keymap conflicts may exist (check output)"
-        return 0  # Not a failure, just informational
+        log_info "Keymap conflict check inconclusive (headless output not captured)"
+        return 0
     fi
 }
 

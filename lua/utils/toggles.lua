@@ -2,13 +2,41 @@
 -- Utility helpers for keeping toggle state in sync with session data and config.
 
 local registry = {
-  disable_autoformat = { store = "DisableAutoFormat", default = true, type = "boolean", config_key = "toggles.autoformat", invert = true },
-  disable_autosave = { store = "DisableAutoSave", default = false, type = "boolean", config_key = "toggles.autosave", invert = true },
-  miniindentscope_disable = { store = "MiniIndentscopeDisable", default = true, type = "boolean", config_key = "toggles.mini_indentscope", invert = true },
+  disable_autoformat = {
+    store = "DisableAutoFormat",
+    default = true,
+    type = "boolean",
+    config_key = "toggles.autoformat",
+    invert = true,
+  },
+  disable_autosave = {
+    store = "DisableAutoSave",
+    default = false,
+    type = "boolean",
+    config_key = "toggles.autosave",
+    invert = true,
+  },
+  miniindentscope_disable = {
+    store = "MiniIndentscopeDisable",
+    default = true,
+    type = "boolean",
+    config_key = "toggles.mini_indentscope",
+    invert = true,
+  },
   snacks_dim = { store = "SnacksDim", default = false, type = "boolean", config_key = "toggles.snacks_dim" },
   lint_enabled = { store = "LintEnabled", default = true, type = "boolean", config_key = "toggles.lint" },
-  diagnostics_enabled = { store = "DiagnosticsEnabled", default = true, type = "boolean", config_key = "toggles.diagnostics" },
-  inlay_hints_enabled = { store = "InlayHintsEnabled", default = false, type = "boolean", config_key = "toggles.inlay_hints" },
+  diagnostics_enabled = {
+    store = "DiagnosticsEnabled",
+    default = true,
+    type = "boolean",
+    config_key = "toggles.diagnostics",
+  },
+  inlay_hints_enabled = {
+    store = "InlayHintsEnabled",
+    default = false,
+    type = "boolean",
+    config_key = "toggles.inlay_hints",
+  },
   copilot_enabled = { store = "CopilotEnabled", default = false, type = "boolean", config_key = "toggles.copilot" },
   -- Vim option toggles
   number_mode = { store = "NumberMode", default = "relative", type = "string", config_key = "toggles.number_mode" }, -- "off", "number", "relative"
@@ -77,7 +105,7 @@ local function get_default_value(name)
   if not meta then
     return nil
   end
-  
+
   -- Try to get from config first
   if meta.config_key then
     local ok, config = pcall(require, "meowvim.config")
@@ -92,7 +120,7 @@ local function get_default_value(name)
       end
     end
   end
-  
+
   return meta.default
 end
 
@@ -141,7 +169,7 @@ function M.sync_to_config()
   if not ok then
     return false
   end
-  
+
   for name, meta in pairs(registry) do
     if meta.config_key and vim.g[name] ~= nil then
       local value = vim.g[name]
@@ -152,7 +180,7 @@ function M.sync_to_config()
       config.set(meta.config_key, value)
     end
   end
-  
+
   return true
 end
 
