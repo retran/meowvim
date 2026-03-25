@@ -162,8 +162,7 @@ return {
       notifier = {},
       terminal = {},
       image = {
-        enabled = image_preview,
-        backend = "kitty",
+        enabled = image_preview and not vim.env.ZELLIJ,
       },
       scope = {
         enabled = scope_highlighting,
