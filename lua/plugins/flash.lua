@@ -7,7 +7,6 @@
 return {
   "folke/flash.nvim",
   keys = {
-    -- Use 2-character jump mode for f/t/F/T
     {
       "f",
       mode = { "n", "x", "o" },
@@ -116,7 +115,6 @@ return {
         },
       },
     },
-    -- Prompt configuration
     prompt = {
       enabled = true,
       prefix = { { "⚡", "FlashPromptIcon" } },

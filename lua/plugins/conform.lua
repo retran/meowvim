@@ -105,7 +105,6 @@ return {
 
       for _, formatter in ipairs(formatters) do
         if type(formatter) == "string" then
-          -- Check if formatter is executable in PATH or Mason bin
           if vim.fn.executable(formatter) == 1 or vim.fn.executable(mason_bin .. "/" .. formatter) == 1 then
             table.insert(available_formatters, formatter)
           end

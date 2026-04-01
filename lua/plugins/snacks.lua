@@ -119,7 +119,6 @@ return {
     end
   end,
   opts = function()
-    -- Get config values
     local config_ok, config = pcall(require, "meowvim.config")
     local image_preview = true
     local scope_highlighting = true
@@ -229,7 +228,6 @@ return {
             end)(),
             -- Only scan for git repos in dev dirs, configured projects are always shown first
             patterns = { ".git" },
-            -- Include recent projects from vim history
             recent = true,
             confirm = function(picker, item)
               picker:close()
@@ -260,7 +258,6 @@ return {
 
               vim.fn.chdir(dir)
 
-              -- Detect and apply project-specific settings, run on_open command
               local ok, cfg = pcall(require, "meowvim.config")
               if ok then
                 local current_project = cfg.detect_current_project()

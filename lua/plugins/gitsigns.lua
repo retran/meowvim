@@ -2,7 +2,6 @@
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
 
 -- @file: lua/plugins/gitsigns.lua
--- @brief: Neovim plugin configuration for gitsigns.
 
 return {
   "lewis6991/gitsigns.nvim",

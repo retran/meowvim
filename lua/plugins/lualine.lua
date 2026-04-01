@@ -38,7 +38,6 @@ return {
   priority = 1000,
   dependencies = get_dependencies(),
   opts = function()
-    -- Check if Copilot is enabled via toggle or config
     local enable_copilot = false
     if vim.g.copilot_enabled ~= nil then
       enable_copilot = vim.g.copilot_enabled
