@@ -54,7 +54,7 @@ nvim
   ```lua
   core = { theme = "catppuccin", variant = "mocha" }
   ```
-- Available: catppuccin, tokyonight, rose-pine, gruvbox, nord, kanagawa
+- Available: catppuccin, tokyonight, rose-pine, gruvbox, nord, kanagawa, everforest, nightfox, zenbones, solarized-osaka, ayu, dracula, monokai-pro, onedark, material, melange, github
 
 ### Changes not taking effect
 - Auto-reload has 500ms debounce
@@ -64,7 +64,7 @@ nvim
 ## LSP Issues
 
 ### `LSP: No client with id ...`
-- Open Mason: `<leader>omm` or `:Mason`
+- Open Mason: `<leader>Tm` or `:Mason`
 - Install the server
 - Check `lua/plugins/nvim-lspconfig.lua`
 - Restart Neovim
@@ -98,7 +98,7 @@ nvim
 | ----- | --- |
 | Slow startup | `:MeowvimProfile` or `<leader>oL`, `:StartupTrends` |
 | Lag while typing | Disable virtual text: `:lua vim.diagnostic.config({ virtual_text = false })` |
-| High memory | Use hbac: `<leader>bp` to pin buffers; close Diffview/Neotest |
+| High memory | Use hbac: `<leader>bp` to pin buffers; close CodeDiff/Neotest |
 
 ### Performance Tools
 
@@ -113,7 +113,7 @@ Increase `vim.opt.updatetime` (e.g. 500) for lower-powered machines.
 
 - `:KeymapConflicts` - Show conflicts
 - `:KeymapList [mode]` - List keymaps
-- `<leader>ohk` - Interactive search
+- `<leader>hk` - Interactive search
 
 Add overrides in `after/plugin/keymaps.lua`. Adjust which-key in `lua/plugins/which-key.lua`.
 
@@ -129,7 +129,7 @@ Add overrides in `after/plugin/keymaps.lua`. Adjust which-key in `lua/plugins/wh
 - Install: `brew install diff-so-fancy`
 - Or disable in `lua/plugins/neogit.lua`
 
-### Diffview not opening
+### CodeDiff not opening
 - Run `:Lazy sync`
 - Check Git ≥ 2.30 installed
 
@@ -148,9 +148,9 @@ Add overrides in `after/plugin/keymaps.lua`. Adjust which-key in `lua/plugins/wh
 - Verify `auto_trigger = true` in `lua/plugins/copilot.lua:19`
 
 ### Suggestions not accepting
-- Accept: `<C-y>` (not Tab/Enter)
-- Next word: `<C-g>`
-- Cycle: `<C-n>/<C-p>`
+- Accept inline suggestion: `<C-l>`
+- Dismiss inline suggestion: `<Esc>` (stays in insert mode)
+- NES (Next Edit Suggestions): `<M-l>` accept+goto, `<M-j>` accept, `<M-h>` dismiss
 - See [Keymaps](KEYMAPS.md#completion--copilot)
 
 ### Completion popup missing
@@ -159,8 +159,7 @@ Add overrides in `after/plugin/keymaps.lua`. Adjust which-key in `lua/plugins/wh
 - Check `lua/plugins/nvim-cmp.lua`
 
 ### Completion keymaps not working
-- Navigation: `<C-j>` (down), `<C-k>` (up), `<C-l>` (accept)
-- `<C-n>/<C-p>` for Copilot cycling
+- Navigation: `<C-j>` (down), `<C-k>` (up), `<C-l>` (smart accept: Copilot first, then cmp)
 - Tab indents, Enter creates newline (by design)
 - See [Keymaps](KEYMAPS.md#completion--copilot)
 
