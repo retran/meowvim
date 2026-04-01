@@ -72,8 +72,7 @@ return {
     for ft, linters in pairs(desired_linters_by_ft) do
       local available_linters = {}
       for _, linter in ipairs(linters) do
-        -- Check if linter is executable in PATH or Mason bin
-        if vim.fn.executable(linter) == 1 or vim.fn.executable(mason_bin .. "/" .. linter) == 1 then
+          if vim.fn.executable(linter) == 1 or vim.fn.executable(mason_bin .. "/" .. linter) == 1 then
           table.insert(available_linters, linter)
         end
       end

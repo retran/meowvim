@@ -43,7 +43,6 @@ return {
     local dap = require("dap")
     local dapui = require("dapui")
 
-    -- netcoredbg adapter
     dap.adapters.coreclr = {
       type = "executable",
       command = vim.fn.stdpath("data") .. "/mason/bin/netcoredbg",

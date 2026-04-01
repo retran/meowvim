@@ -12,7 +12,6 @@ local function get_config_theme()
   return "catppuccin", "mocha", 0
 end
 
--- Catppuccin theme
 local catppuccin = {
   "catppuccin/nvim",
   name = "catppuccin",
@@ -62,7 +61,6 @@ local catppuccin = {
   end,
 }
 
--- TokyoNight theme
 local tokyonight = {
   "folke/tokyonight.nvim",
   priority = 1000,
@@ -92,7 +90,6 @@ local tokyonight = {
   end,
 }
 
--- Rose Pine theme
 local rose_pine = {
   "rose-pine/neovim",
   name = "rose-pine",
@@ -122,7 +119,6 @@ local rose_pine = {
   end,
 }
 
--- Gruvbox theme
 local gruvbox = {
   "ellisonleao/gruvbox.nvim",
   priority = 1000,
@@ -155,7 +151,6 @@ local gruvbox = {
   end,
 }
 
--- Nord theme
 local nord = {
   "shaunsingh/nord.nvim",
   priority = 1000,
@@ -177,7 +172,6 @@ local nord = {
   end,
 }
 
--- Kanagawa theme
 local kanagawa = {
   "rebelot/kanagawa.nvim",
   priority = 1000,
@@ -207,7 +201,6 @@ local kanagawa = {
   end,
 }
 
--- Everforest theme
 local everforest = {
   "neanias/everforest-nvim",
   priority = 1000,
@@ -258,7 +251,6 @@ local everforest = {
   end,
 }
 
--- Nightfox theme
 local nightfox = {
   "EdenEast/nightfox.nvim",
   priority = 1000,
@@ -288,7 +280,6 @@ local nightfox = {
   end,
 }
 
--- Zenbones theme
 local zenbones = {
   "mcchrish/zenbones.nvim",
   priority = 1000,
@@ -312,7 +303,6 @@ local zenbones = {
   end,
 }
 
--- Solarized Osaka theme
 local solarized_osaka = {
   "craftzdog/solarized-osaka.nvim",
   priority = 1000,
@@ -343,7 +333,6 @@ local solarized_osaka = {
   end,
 }
 
--- Ayu theme
 local ayu = {
   "Shatur/neovim-ayu",
   priority = 1000,
@@ -383,7 +372,6 @@ local ayu = {
   end,
 }
 
--- Dracula theme
 local dracula = {
   "Mofiqul/dracula.nvim",
   priority = 1000,
@@ -404,7 +392,6 @@ local dracula = {
   end,
 }
 
--- Monokai Pro theme
 local monokai_pro = {
   "loctvl842/monokai-pro.nvim",
   priority = 1000,
@@ -437,7 +424,6 @@ local monokai_pro = {
   end,
 }
 
--- One Dark/Light theme
 local onedark = {
   "olimorris/onedarkpro.nvim",
   priority = 1000,
@@ -470,7 +456,6 @@ local onedark = {
   end,
 }
 
--- Material theme
 local material = {
   "marko-cerovac/material.nvim",
   priority = 1000,
@@ -526,7 +511,6 @@ local material = {
   end,
 }
 
--- Melange theme
 local melange = {
   "savq/melange-nvim",
   priority = 1000,
@@ -552,7 +536,6 @@ local melange = {
   end,
 }
 
--- GitHub theme
 local github = {
   "projekt0n/github-nvim-theme",
   priority = 1000,
@@ -595,7 +578,6 @@ vim.api.nvim_create_autocmd("ColorScheme", {
   end,
 })
 
--- Return all themes
 return {
   catppuccin,
   tokyonight,

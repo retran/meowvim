@@ -46,9 +46,9 @@ return {
     nes = {
       enabled = true,
       keymap = {
-        accept_and_goto = "<M-l>",  -- accept + jump to end of edit
-        accept          = "<M-j>",  -- accept, stay at cursor
-        dismiss         = "<M-h>",  -- dismiss suggestion
+        accept_and_goto = "<M-l>",
+        accept          = "<M-j>",
+        dismiss         = "<M-h>",
       },
     },
     server = {

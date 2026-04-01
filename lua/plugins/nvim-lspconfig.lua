@@ -29,7 +29,6 @@ return {
       })
     end
 
-    -- Guard: Skip Mason setup in CI/container environments
     local is_ci = vim.env.CI or vim.env.DOCKER or vim.fn.filereadable("/.dockerenv") == 1
     if is_ci then
       vim.notify("Skipping Mason setup in CI/container environment", vim.log.levels.INFO)
@@ -123,13 +122,10 @@ return {
       vim.fn.sign_define("DiagnosticSign" .. type, { text = icon, texthl = "DiagnosticSign" .. type, numhl = "" })
     end
 
-    -- Configure global LSP handlers for hover and signature help
-    -- These apply to all LSP clients
     vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
     vim.lsp.handlers["textDocument/signatureHelp"] =
       vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
 
-    -- Build capabilities from nvim-cmp defaults
     local caps = require("cmp_nvim_lsp").default_capabilities()
     -- Enable semantic tokens (supported in Neovim 0.11+)
     -- Semantic tokens provide enhanced syntax highlighting based on LSP semantic information
@@ -141,8 +137,6 @@ return {
       -- Note: Neovim 0.11+ sets omnifunc automatically as a buffer-local default
       -- Only override if you need custom behavior
 
-      -- Enable inlay hints for supported servers (gopls, rust-analyzer, ts_ls, etc.)
-      -- Provides inline type information and parameter names
       if client.server_capabilities.inlayHintProvider then
         vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
       end
@@ -154,8 +148,6 @@ return {
       -- To re-enable per-buffer: vim.lsp.codelens.refresh({ bufnr = bufnr })
     end
 
-    -- User command for organizing imports in TypeScript/JavaScript files
-    -- Uses the ts_ls (TypeScript Language Server) custom command
     vim.api.nvim_create_user_command("LspOrganize", function()
       local clients = vim.lsp.get_clients({ bufnr = 0, name = "ts_ls" })
       if #clients == 0 then
@@ -358,7 +350,6 @@ return {
 
       server_opts.capabilities = vim.tbl_deep_extend("force", {}, caps, server_opts.capabilities or {})
 
-      -- Merge on_attach callbacks
       local base_on_attach = on_attach
       server_opts.on_attach = function(client, bufnr)
         base_on_attach(client, bufnr)
@@ -367,7 +358,6 @@ return {
         end
       end
 
-      -- Get default config from nvim-lspconfig to extract cmd, filetypes, etc.
       local server = lspconfig[server_name]
       if not server or not server.document_config then
         vim.notify(string.format("LSP server '%s' not found in lspconfig", server_name), vim.log.levels.WARN)
@@ -376,7 +366,6 @@ return {
 
       local default_config = server.document_config.default_config or {}
 
-      -- Build the final config by merging defaults with custom settings
       local common_root_markers = {
         "package.json",
         "tsconfig.json",
@@ -404,7 +393,6 @@ return {
         root_markers = common_root_markers,
       }, server_opts)
 
-      -- Use Neovim 0.11+ native LSP API
       vim.lsp.config(server_name, final_config)
       vim.lsp.enable(server_name)
     end
@@ -418,7 +406,6 @@ return {
       end
     end
 
-    -- Setup GDScript LSP (for Godot engine)
     do
       if lspconfig.gdscript and lspconfig.gdscript.document_config then
         local default_config = lspconfig.gdscript.document_config.default_config or {}

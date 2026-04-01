@@ -150,7 +150,6 @@ return {
           fallback()
         end, { "i", "s" }),
 
-        -- <C-l> single smart accept: Copilot if visible, else selected cmp item
         ["<C-l>"] = cmp.mapping(function(fallback)
           local ok, suggestion = pcall(require, "copilot.suggestion")
           if ok and suggestion.is_visible() then
@@ -177,7 +176,6 @@ return {
           fallback()
         end, { "i", "s" }),
 
-        -- Tab/Enter remain normal (snippet handling only)
         ["<Tab>"] = cmp.mapping(function(fallback)
           if luasnip.locally_jumpable(1) then
             luasnip.jump(1)
@@ -194,12 +192,10 @@ return {
           end
         end, { "i", "s" }),
 
-        -- Enter always creates newline
         ["<CR>"] = cmp.mapping(function(fallback)
           fallback()
         end, { "i", "s" }),
 
-        -- Other
         ["<C-b>"] = cmp.mapping.scroll_docs(-4),
         ["<C-f>"] = cmp.mapping.scroll_docs(4),
         ["<C-Space>"] = cmp.mapping.complete(),

@@ -48,10 +48,8 @@ return {
         "localoptions",
       },
       pre_save = function()
-        -- Close certain plugin windows before saving
         vim.api.nvim_exec_autocmds("User", { pattern = "SessionSavePre" })
 
-        -- Close NvimTree, aerial, and other plugin windows
         local close_filetypes = { "NvimTree", "neo-tree", "aerial", "Outline", "trouble" }
         for _, win in ipairs(vim.api.nvim_list_wins()) do
           local buf = vim.api.nvim_win_get_buf(win)
@@ -67,13 +65,11 @@ return {
     local persistence = require("persistence")
     persistence.setup(opts)
 
-    -- Get configuration
     local config_ok, config = pcall(require, "meowvim.config")
     local per_branch = config_ok and config.get("sessions.per_branch", false) or false
     local auto_save = config_ok and config.get("sessions.auto_save", true) or true
     local auto_restore = config_ok and config.get("sessions.auto_restore", true) or true
 
-    -- Auto-save session on directory change
     if auto_save then
       vim.api.nvim_create_autocmd("DirChanged", {
         pattern = "*",
@@ -86,7 +82,6 @@ return {
       })
     end
 
-    -- Per-branch session support
     if per_branch then
       local function get_git_branch()
         local handle = io.popen("git rev-parse --abbrev-ref HEAD 2>/dev/null")
@@ -98,7 +93,6 @@ return {
         return branch and branch:gsub("\n", "") or nil
       end
 
-      -- Override session file name to include branch
       local original_save = persistence.save
       persistence.save = function()
         local branch = get_git_branch()
@@ -110,7 +104,6 @@ return {
       end
     end
 
-    -- Auto-restore session on VimEnter
     if auto_restore then
       vim.api.nvim_create_autocmd("VimEnter", {
         group = vim.api.nvim_create_augroup("PersistenceAutoRestore", { clear = true }),
