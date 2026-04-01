@@ -365,7 +365,7 @@ Tips:
 
 Mason manages LSP servers, formatters, linters, and debuggers:
 
-- Open Mason: `<leader>omm` or `:Mason`
+- Open Mason: `<leader>Tm` or `:Mason`
 - LSP config: `lua/plugins/nvim-lspconfig.lua`
 - Formatters: `lua/plugins/conform.lua`
 - Linters: `lua/plugins/nvim-lint.lua`
@@ -378,14 +378,25 @@ Add language support:
 
 ## Themes
 
-Six colorschemes with 30+ variants:
+17 colorschemes with 70+ variants:
 
 1. **Catppuccin**: mocha, latte, frappe, macchiato
 2. **TokyoNight**: storm, night, moon, day
 3. **Rose Pine**: main, moon, dawn
-4. **Gruvbox**: hard, medium, soft (dark/light)
+4. **Gruvbox**: hard, medium, soft
 5. **Nord**: single variant
 6. **Kanagawa**: wave, dragon, lotus
+7. **Everforest**: dark_hard, dark_medium, dark_soft, light_hard, light_medium, light_soft
+8. **Nightfox**: nightfox, dayfox, dawnfox, duskfox, nordfox, terafox, carbonfox
+9. **Zenbones**: zenbones, zenwritten, neobones, tokyobones, seoulbones, forestbones, nordbones, kanagawabones, rosebones
+10. **Solarized Osaka**: storm, night, moon, day
+11. **Ayu**: dark, light, mirage
+12. **Dracula**: single variant
+13. **Monokai Pro**: pro, octagon, machine, ristretto, spectrum, classic
+14. **One Dark**: onedark, onelight, onedark_vivid, onedark_dark
+15. **Material**: darker, lighter, oceanic, palenight, deep ocean
+16. **Melange**: single variant
+17. **GitHub**: github_dark, github_dark_dimmed, github_dark_high_contrast, github_light, github_light_high_contrast, and more
 
 ### Transparency
 
@@ -411,11 +422,7 @@ Session management via `persistence.nvim`:
 - Per-branch sessions (optional)
 - Session picker
 
-Keymaps:
-- `<leader>qs` - Restore session
-- `<leader>qS` - Pick session
-- `<leader>ql` - Last session
-- `<leader>qd` - Don't save
+Sessions save and restore automatically. No manual keymaps required.
 
 ## Toggles
 

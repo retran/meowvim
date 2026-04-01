@@ -31,7 +31,7 @@
 
 ### 🎨 Interface & UX
 
-- **6 colorschemes** with 30+ variants: Catppuccin, TokyoNight, Rose Pine, Gruvbox, Nord, Kanagawa
+- **17 colorschemes** with 70+ variants: Catppuccin, TokyoNight, Rose Pine, Gruvbox, Nord, Kanagawa, Everforest, Nightfox, Zenbones, Solarized Osaka, Ayu, Dracula, Monokai Pro, One Dark, Material, Melange, GitHub
 - **Transparency** from 0-100% opacity
 - **Theme picker** with live preview (`:ColorschemeSelect` or `<leader>ok`)
 - `noice.nvim` message center and command palette
@@ -41,17 +41,17 @@
 
 - LSP servers with diagnostics, actions, and symbol navigation
 - Treesitter syntax highlighting and structural selection
-- Completion with hjkl navigation (`<C-j/k/l>`) and GitHub Copilot (`<C-y/g/n/p>`)
+- Completion with `<C-j/k>` navigate, `<C-l>` smart accept (Copilot inline first, then cmp); GitHub Copilot NES via `<M-l/j/h>`
 
 ### 🚀 Navigation & Productivity
 
 - **Flash motion** (`<leader><leader>`) and Snacks finders for files, buffers, commands
 - **LazyGit** (`<leader>gg`)
-- **Bookmarks** for quick navigation (`<leader>mm`, `<leader>mi`)
-- **Code screenshots** with syntax highlighting (`<leader>cs`)
+- **Bookmarks** for quick navigation (`<leader>mm`)
+- **Code screenshots** with syntax highlighting (`<leader>cs` in visual mode)
 - **Auto buffer cleanup** (configurable threshold)
 - **Sessions** with per-branch support and project switching
-- TODO tracking, search & replace, git workflows via Diffview and Gitsigns
+- TODO tracking, search & replace, git workflows via CodeDiff and Gitsigns
 
 ### 🐾 Project Meow Features
 
@@ -61,6 +61,7 @@
 - **CI/CD** with lint and multi-platform tests
 - Mason-managed tools with auto PATH setup
 - Overseer tasks, Neotest runners, DAP for Go, TypeScript, Python, more
+- **Quickfix code review** with inline annotations (`<leader>r` group) and `<leader>yf/yl` file/line references
 
 ## 📦 Installation
 

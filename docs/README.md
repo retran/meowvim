@@ -20,7 +20,7 @@ Welcome to the knowledge lounge for **project meow** developers. Grab a warm bev
 
 - **[Complete Keymap Reference](KEYMAPS.md)** — Exhaustive list organized by category.
 - **[Quick Reference Card](KEYMAPS_QUICK_REFERENCE.md)** — One-page cheat sheet.
-- Within Neovim, press `<leader>ohk` to search every keymap interactively.
+- Within Neovim, press `<leader>hk` to search every keymap interactively.
 
 ## ✨ Useful Paths
 

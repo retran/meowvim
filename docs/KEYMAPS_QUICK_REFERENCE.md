@@ -75,10 +75,16 @@ Quick reference card for the most commonly used keymaps in meowvim.
 
 | Key | Action |
 |-----|--------|
-| `<C-y>` | Accept suggestion |
-| `<C-g>` | Accept word |
-| `<C-n>` | Next alternative |
-| `<C-p>` | Previous alternative |
+| `<C-l>` | Accept suggestion (smart: Copilot first, then cmp) |
+| `<Esc>` | Dismiss suggestion (stay in insert mode) |
+
+### Copilot NES (Normal Mode)
+
+| Key | Action |
+|-----|--------|
+| `<M-l>` | Accept NES + jump to end of edit |
+| `<M-j>` | Accept NES, stay at cursor |
+| `<M-h>` | Dismiss NES |
 
 **Note:** Tab indents, Enter creates newline (never intercepted)
 
@@ -156,6 +162,21 @@ Quick reference card for the most commonly used keymaps in meowvim.
 | `<leader>uu` | Undo history |
 | `<leader>uy` | Yank history |
 
+## 🏃 Tasks & Review
+
+| Key | Action |
+|-----|--------|
+| `<leader>Rr` | Run task (Overseer) |
+| `<leader>Rl` | Rerun last task |
+| `<leader>Ro` | Toggle task list |
+| `<leader>ri` | Review: add issue |
+| `<leader>rs` | Review: add suggestion |
+| `<leader>rn` | Review: add note |
+| `<leader>re` | Review: export |
+| `]r` / `[r` | Next/prev review comment |
+| `<leader>yf` | Copy file reference |
+| `<leader>yl` | Copy line reference |
+
 ## 🆘 Help
 
 | Key | Action |
@@ -168,8 +189,8 @@ Quick reference card for the most commonly used keymaps in meowvim.
 
 - Leader key is `<space>`
 - Use `<leader>hk` to search all keymaps interactively
-- Completion uses hjkl (`<C-j/k/l>`), Copilot uses `<C-y/g/n/p>`
-- `<C-n>/<C-p>` are reserved for Copilot, not completion
+- Completion uses `<C-j/k>` to navigate, `<C-l>` to smart accept (Copilot inline first, then cmp)
+- Copilot NES uses `<M-l/j/h>` in normal mode
 - Tab always indents, Enter always creates newline
 - Flash jump (`<leader><leader>`) is your friend for quick navigation
 - f/t movements also show visual jump labels like Flash

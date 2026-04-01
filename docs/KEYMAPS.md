@@ -20,6 +20,7 @@ primary prefix for most commands.
 - [Git & Version Control](#git--version-control)
 - [Testing](#testing)
 - [Tasks & Runners](#tasks--runners)
+- [Code Review](#code-review)
 - [Debug (DAP)](#debug-dap)
 - [Options & UI](#options--ui)
 - [Sessions](#sessions)
@@ -29,6 +30,7 @@ primary prefix for most commands.
 - [Help & Discovery](#help--discovery)
 - [Mason](#mason)
 - [Yank/Put Operations](#yankput-operations)
+- [Yank References](#yank-references)
 - [Quit](#quit)
 - [Terminal](#terminal)
 
@@ -295,27 +297,32 @@ Both systems are designed to never interfere with each other, with completely se
 | `<Tab>` | Jump to next snippet placeholder (or indent) |
 | `<S-Tab>` | Jump to previous snippet placeholder (or dedent) |
 
-**Important:** `<C-n>` and `<C-p>` are reserved for Copilot and will NOT navigate the completion popup.
+**Note:** `<C-l>` is a smart accept: if a Copilot inline suggestion is visible it accepts that; otherwise it confirms the selected cmp item.
 
 ### GitHub Copilot (Inline Suggestions)
 
 Copilot shows gray text suggestions as you type (auto-triggered).
 
-**Suggestion Control:**
+**Inline suggestion control (insert mode):**
 
 | Key | Description |
 |-----|-------------|
-| `<C-y>` | Accept full Copilot suggestion |
-| `<C-g>` | Accept next word only |
-| `<C-n>` | Cycle to next alternative suggestion |
-| `<C-p>` | Cycle to previous alternative suggestion |
-| `<Esc>` | Dismiss Copilot suggestion (and popup) |
+| `<C-l>` | Accept inline suggestion (smart: Copilot first, then selected cmp item) |
+| `<Esc>` | Dismiss inline suggestion and stay in insert mode; if no suggestion, exit insert |
 
-**Panel:**
+**NES – Next Edit Suggestions (normal mode):**
 
 | Key | Description |
 |-----|-------------|
-| `<M-CR>` | Open Copilot panel (alternative suggestions view) |
+| `<M-l>` | Accept NES suggestion and jump to end of edit |
+| `<M-j>` | Accept NES suggestion, stay at cursor |
+| `<M-h>` | Dismiss NES suggestion |
+
+**Toggle:**
+
+| Key | Description |
+|-----|-------------|
+| `<leader>oC` | Toggle Copilot on/off globally |
 
 ### Tab & Enter Behavior
 
@@ -336,23 +343,19 @@ These keys preserve their normal Vim behavior:
 :Copilot status   " Check Copilot status
 ```
 
-Or use the toggle system:
-```vim
-:lua vim.g.copilot_enabled = false  " Disable
-:lua vim.g.copilot_enabled = true   " Enable
-```
+Or use the toggle keymap: `<leader>oC`
 
 ### Conflict-Free Design
 
 The keymaps are designed to be completely conflict-free:
 
 - **Completion popup** uses `<C-j/k/l>` (hjkl pattern)
-- **Copilot** uses `<C-y/g/n/p>` (separate keys)
-- `<C-n>/<C-p>` always pass through to Copilot (reserved)
-- `<Esc>` dismisses both systems at once
+- **Copilot inline** accept uses `<C-l>` (shared smart accept — Copilot takes priority)
+- **Copilot NES** uses `<M-l/j/h>` (normal mode, entirely separate)
+- `<Esc>` dismisses Copilot inline suggestion first (staying in insert); falls through to exit insert if no suggestion is visible
 - `<Tab>` and `<Enter>` never interfere with completion
 
-This design allows both Copilot and the completion popup to be visible simultaneously without conflicts.
+This design allows both Copilot and the completion popup to coexist without conflicts.
 
 ---
 
@@ -386,16 +389,15 @@ This design allows both Copilot and the completion popup to be visible simultane
 | `<leader>gd` | Diff buffer |
 | `]h` / `[h` | Next/Previous hunk |
 
-### DiffView
+### CodeDiff
 
 **Prefix:** `<leader>gD`
 
 | Key | Description |
 |-----|-------------|
-| `<leader>gDo` | Open diff view |
-| `<leader>gDc` | Close diff view |
-| `<leader>gDf` | File history (current file) |
-| `<leader>gDh` | Repository history |
+| `<leader>gDo` | Open diff explorer |
+| `<leader>gDf` | Diff current file vs HEAD |
+| `<leader>gDh` | Show file history |
 
 ### Git Links
 
@@ -452,13 +454,56 @@ This design allows both Copilot and the completion popup to be visible simultane
 
 ## Tasks & Runners
 
-**Prefix:** `<leader>r`
+**Prefix:** `<leader>R`
 
 | Key | Description |
 |-----|-------------|
-| `<leader>rr` | Run task template (Overseer) |
-| `<leader>rl` | Restart last task |
-| `<leader>ro` | Toggle task list |
+| `<leader>Rr` | Run task template (Overseer) |
+| `<leader>Rl` | Restart last task |
+| `<leader>Ro` | Toggle task list |
+
+---
+
+## Code Review
+
+Quickfix-based inline code review via `quickfix-review.nvim`.
+
+**Prefix:** `<leader>r`
+
+### Adding Comments
+
+| Key | Modes | Description |
+|-----|-------|-------------|
+| `<leader>ri` | n, v | Add Issue comment |
+| `<leader>rs` | n, v | Add Suggestion |
+| `<leader>rn` | n, v | Add Note |
+| `<leader>rp` | n, v | Add Praise |
+| `<leader>rq` | n, v | Add Question |
+| `<leader>rk` | n, v | Add Insight |
+| `<leader>ra` | n | Cycle through add comment types |
+| `<leader>rd` | n, v | Delete comment |
+
+### Review Actions
+
+| Key | Description |
+|-----|-------------|
+| `<leader>rv` | View comment under cursor |
+| `<leader>re` | Export review to file |
+| `<leader>rc` | Clear all review comments |
+| `<leader>rS` | Review summary |
+| `<leader>rw` | Save review |
+| `<leader>rl` | Load review |
+| `<leader>ro` | Open review list (quickfix window) |
+| `<leader>rg` | Goto real file from review |
+| `<leader>rj` | Cycle to next comment type |
+| `<leader>rh` | Cycle to previous comment type |
+
+### Navigation
+
+| Key | Description |
+|-----|-------------|
+| `]r` | Next review comment |
+| `[r` | Previous review comment |
 
 ---
 
@@ -557,7 +602,7 @@ Commands:
 | `<leader>qq` | Quit all |
 | `<leader>qQ` | Force quit all |
 
-Note: Session management has been simplified. Auto-save and restoration happens automatically.
+Note: Sessions save and restore automatically via `persistence.nvim`. No manual session keymaps are needed.
 
 ---
 
@@ -667,6 +712,19 @@ Note: Session management has been simplified. Auto-save and restoration happens 
 
 ---
 
+## Yank References
+
+Copy file/line references in OpenCode/Claude-compatible format (e.g. `@lua/plugins/copilot.lua:42`).
+
+**Prefix:** `<leader>y`
+
+| Key | Modes | Description |
+|-----|-------|-------------|
+| `<leader>yf` | n | Copy file reference (e.g. `@lua/plugins/copilot.lua`) |
+| `<leader>yl` | n, v | Copy line reference (e.g. `@lua/plugins/copilot.lua:42`) |
+
+---
+
 ## Quit
 
 **Prefix:** `<leader>q`
@@ -763,4 +821,4 @@ To customize keymaps, edit these files or add your own in `lua/config/custom.lua
 
 ## Documentation Info
 
-Documentation last updated: 2026-01-30
+Documentation last updated: 2026-04-01

@@ -62,7 +62,7 @@ After first launch:
 
 1. Run `:checkhealth meowvim`
 2. Check dashboard appears (start Neovim without arguments)
-3. Open Mason (`<leader>omm`)
+3. Open Mason (`<leader>Tm`)
 4. Run `:Lazy` to verify plugins
 
 ## Updates
@@ -122,7 +122,9 @@ After install, customize:
 ```lua
 return {
   core = {
-    theme = "catppuccin",  -- catppuccin, tokyonight, rose-pine, gruvbox, nord, kanagawa
+    theme = "catppuccin",  -- catppuccin, tokyonight, rose-pine, gruvbox, nord, kanagawa,
+                           -- everforest, nightfox, zenbones, solarized-osaka, ayu, dracula,
+                           -- monokai-pro, onedark, material, melange, github
     variant = "mocha",
     enable_copilot = false,
   },

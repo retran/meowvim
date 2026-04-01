@@ -53,7 +53,7 @@ Use `<leader>hc` to fuzzy-find commands.
 - `<leader>gg` - LazyGit
 - `<leader>gf` - LazyGit for file
 - `<leader>gb` - Blame line
-- `<leader>gDo` - Open Diffview
+- `<leader>gDo` - Open CodeDiff explorer
 - `<leader>gs` / `<leader>gr` / `<leader>gv` - Stage/reset/preview hunk
 - `]h` / `[h` - Next/previous hunk
 - `<leader>gy` / `<leader>gY` - Copy/open permalink
@@ -62,11 +62,11 @@ Use `<leader>hc` to fuzzy-find commands.
 ### LazyGit
 
 - Auto-syncs with Neovim theme
-- Supports all 6 colorschemes
+- Supports all colorschemes
 - Full git workflow: stage, commit, push, rebase
 - Interactive rebase and conflicts
 
-Use Overseer tasks (`<leader>rr`, `<leader>rl`, `<leader>ro`) for custom tasks.
+Use Overseer tasks (`<leader>Rr`, `<leader>Rl`, `<leader>Ro`) for custom tasks.
 
 ## Testing & Debug
 
@@ -100,22 +100,52 @@ Sessions save automatically. Your layout, buffers, and state persist across rest
 ## AI
 
 - Authenticate: `:Copilot auth`
-- Inline suggestions auto-trigger
+- Inline suggestions auto-trigger in insert mode
+- `<C-l>` - Accept inline suggestion (or selected completion item)
+- `<Esc>` - Dismiss inline suggestion (stay in insert mode)
+- NES (Next Edit Suggestions): `<M-l>` accept+goto, `<M-j>` accept, `<M-h>` dismiss
+- Toggle: `<leader>oC`
 - Configure in `lua/plugins/copilot.lua`
 
 ## Tasks
 
-- `<leader>rr` - Task picker (Overseer)
-- `<leader>rl` - Rerun last task
-- `<leader>ro` - Toggle task list
+- `<leader>Rr` - Task picker (Overseer)
+- `<leader>Rl` - Rerun last task
+- `<leader>Ro` - Toggle task list
 
 Create custom tasks in `lua/plugins/overseer.lua` or `.overseer.json`.
+
+## Code Review
+
+Quickfix-based code review via `quickfix-review.nvim`:
+
+- `<leader>ri` - Add Issue comment
+- `<leader>rs` - Add Suggestion
+- `<leader>rn` - Add Note
+- `<leader>rp` - Add Praise
+- `<leader>rq` - Add Question
+- `<leader>rk` - Add Insight
+- `<leader>ra` - Cycle through add comment types
+- `<leader>rd` - Delete comment
+- `<leader>rv` - View comment
+- `<leader>re` - Export review
+- `<leader>rc` - Clear review
+- `<leader>rS` - Review summary
+- `<leader>rw` - Save review
+- `<leader>rl` - Load review
+- `<leader>ro` - Open review list (quickfix)
+- `<leader>rg` - Goto real file
+- `]r` / `[r` - Next/previous review comment
+
+Copy references for review notes:
+- `<leader>yf` - Copy file reference (e.g. `@lua/plugins/copilot.lua`)
+- `<leader>yl` - Copy line reference (e.g. `@lua/plugins/copilot.lua:42`)
 
 ## Themes
 
 - `<leader>ok` - Theme switcher
 - `:ColorschemeSelect` - Browse themes
-- 6 themes with 30+ variants
+- 17 colorschemes with 70+ variants
 - Configure transparency in `~/.config/meowvim/config.lua`
 
 ### Theme Workflow
