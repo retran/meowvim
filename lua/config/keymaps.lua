@@ -176,6 +176,27 @@ local ICON_EXACT = {
   ["View File Git Log"] = "󰋘",
   ["View Git Log"] = "󰋘",
   ["View Git Status"] = "󰊢",
+  ["Copy File Reference"] = "󰆒",
+  ["Copy Line Reference"] = "󰆒",
+  -- Review
+  ["Add Issue"] = "󰅙",
+  ["Add Suggestion"] = "󰌹",
+  ["Add Note"] = "󰏫",
+  ["Add Praise"] = "󰙵",
+  ["Add Question"] = "󰋖",
+  ["Add Insight"] = "",
+  ["Add Comment"] = "󰆈",
+  ["Delete Comment"] = "󰆴",
+  ["View Comment"] = "󰋼",
+  ["Export Review"] = "󰈈",
+  ["Clear Review"] = "󰜺",
+  ["Review Summary"] = "󰒡",
+  ["Load Review"] = "󰁯",
+  ["Goto Real File"] = "󰜢",
+  ["Next Review Comment"] = "",
+  ["Previous Review Comment"] = "",
+  ["Cycle Next Type"] = "",
+  ["Cycle Prev Type"] = "",
 }
 
 local ICON_PATTERNS = {
@@ -280,6 +301,79 @@ local function gitsigns_action(action_name)
   return function()
     require("gitsigns")[action_name]()
   end
+end
+
+local function qr_action(fn_name)
+  return function()
+    local qr = safe_require("quickfix-review")
+    if qr then
+      qr[fn_name]()
+    end
+  end
+end
+
+local function qr_add(comment_type)
+  return function()
+    local qr = safe_require("quickfix-review")
+    if not qr then
+      return
+    end
+    local mode = vim.fn.mode()
+    if mode == "v" or mode == "V" or mode == "\22" then
+      qr.add_comment_visual(comment_type)
+    else
+      qr.add_comment(comment_type)
+    end
+  end
+end
+
+local function qr_delete()
+  local qr = safe_require("quickfix-review")
+  if not qr then
+    return
+  end
+  local mode = vim.fn.mode()
+  if mode == "v" or mode == "V" or mode == "\22" then
+    qr.delete_comment_visual()
+  else
+    qr.delete_comment()
+  end
+end
+
+-- Copy a file path or file:line reference to the system clipboard in the
+-- format used by OpenCode / Claude (e.g. "@lua/plugins/copilot.lua:42").
+-- Paths are relative to cwd so they stay short and portable.
+local function copy_file_ref()
+  local path = vim.fn.expand("%:.")
+  if path == "" then
+    vim.notify("No file in buffer", vim.log.levels.WARN)
+    return
+  end
+  local ref = "@" .. path
+  vim.fn.setreg("+", ref)
+  vim.notify("Copied: " .. ref, vim.log.levels.INFO)
+end
+
+local function copy_line_ref()
+  local path = vim.fn.expand("%:.")
+  if path == "" then
+    vim.notify("No file in buffer", vim.log.levels.WARN)
+    return
+  end
+  local mode = vim.fn.mode()
+  local ref
+  if mode == "v" or mode == "V" or mode == "\22" then
+    local s = vim.fn.line("v")
+    local e = vim.fn.line(".")
+    if s > e then
+      s, e = e, s
+    end
+    ref = s == e and ("@" .. path .. ":" .. s) or ("@" .. path .. ":" .. s .. "-" .. e)
+  else
+    ref = "@" .. path .. ":" .. vim.fn.line(".")
+  end
+  vim.fn.setreg("+", ref)
+  vim.notify("Copied: " .. ref, vim.log.levels.INFO)
 end
 
 local function is_single_leader(lhs)
@@ -691,12 +785,11 @@ function M.setup()
         end,
         desc = "Previous Hunk",
       },
-      -- DiffView
+      -- CodeDiff
       { "<leader>gD", group = "Diff View", icon = "󰩫" },
-      { "<leader>gDo", ":DiffviewOpen<CR>", desc = "Open Diff View" },
-      { "<leader>gDc", ":DiffviewClose<CR>", desc = "Close Diff View" },
-      { "<leader>gDf", ":DiffviewFileHistory %<CR>", desc = "File History" },
-      { "<leader>gDh", ":DiffviewFileHistory<CR>", desc = "Repository History" },
+      { "<leader>gDo", ":CodeDiff<CR>", desc = "Open Diff Explorer" },
+      { "<leader>gDf", ":CodeDiff file HEAD<CR>", desc = "Diff File vs HEAD" },
+      { "<leader>gDh", ":CodeDiff history<CR>", desc = "Show File History" },
       -- Git links
       {
         "<leader>gy",
@@ -813,10 +906,33 @@ function M.setup()
         desc = "Stop Tests",
       },
 
+      -- Review
+      { "<leader>r", group = "Review", icon = "" },
+      { "<leader>ra", qr_action("add_comment_cycle"), desc = "Add Comment" },
+      { "<leader>ri", qr_add("ISSUE"), desc = "Add Issue", mode = { "n", "v" } },
+      { "<leader>rs", qr_add("SUGGESTION"), desc = "Add Suggestion", mode = { "n", "v" } },
+      { "<leader>rn", qr_add("NOTE"), desc = "Add Note", mode = { "n", "v" } },
+      { "<leader>rp", qr_add("PRAISE"), desc = "Add Praise", mode = { "n", "v" } },
+      { "<leader>rq", qr_add("QUESTION"), desc = "Add Question", mode = { "n", "v" } },
+      { "<leader>rk", qr_add("INSIGHT"), desc = "Add Insight", mode = { "n", "v" } },
+      { "<leader>rd", qr_delete, desc = "Delete Comment", mode = { "n", "v" } },
+      { "<leader>rv", qr_action("view_comment"), desc = "View Comment" },
+      { "<leader>re", qr_action("export_review"), desc = "Export Review" },
+      { "<leader>rc", qr_action("clear_review"), desc = "Clear Review" },
+      { "<leader>rS", qr_action("summary"), desc = "Review Summary" },
+      { "<leader>rw", qr_action("save_review"), desc = "Save Review" },
+      { "<leader>rl", qr_action("load_review"), desc = "Load Review" },
+      { "<leader>ro", "<cmd>copen<CR>", desc = "Open Review List" },
+      { "<leader>rg", qr_action("goto_real_file"), desc = "Goto Real File" },
+      { "<leader>rj", qr_action("cycle_next_comment_type"), desc = "Cycle Next Type" },
+      { "<leader>rh", qr_action("cycle_previous_comment_type"), desc = "Cycle Prev Type" },
+      { "]r", "<cmd>cnext<CR>", desc = "Next Review Comment", mode = "n" },
+      { "[r", "<cmd>cprev<CR>", desc = "Previous Review Comment", mode = "n" },
+
       -- Run & Tasks
-      { "<leader>r", group = "Run", icon = "" },
+      { "<leader>R", group = "Run", icon = "" },
       {
-        "<leader>rr",
+        "<leader>Rr",
         function()
           local ok, overseer = pcall(require, "overseer")
           if ok then
@@ -826,7 +942,7 @@ function M.setup()
         desc = "Run Task Template",
       },
       {
-        "<leader>rl",
+        "<leader>Rl",
         function()
           local ok, overseer = pcall(require, "overseer")
           if not ok then
@@ -843,7 +959,7 @@ function M.setup()
         desc = "Restart Last Task",
       },
       {
-        "<leader>ro",
+        "<leader>Ro",
         function()
           local ok, overseer = pcall(require, "overseer")
           if ok then
@@ -1046,24 +1162,12 @@ function M.setup()
         function()
           vim.g.copilot_enabled = not vim.g.copilot_enabled
           toggles.update("copilot_enabled")
-
           if vim.g.copilot_enabled then
-            -- Enable Copilot
-            local ok, _ = pcall(require, "copilot")
-            if ok then
-              vim.cmd("Copilot enable")
-              vim.notify("Copilot: ON (restart may be needed)", vim.log.levels.INFO)
-            else
-              vim.notify("Copilot plugin not loaded. Restart Neovim to enable.", vim.log.levels.WARN)
-            end
+            vim.cmd("Copilot enable")
+            vim.notify("Copilot: ON", vim.log.levels.INFO)
           else
-            -- Disable Copilot
-            local ok = pcall(vim.cmd, "Copilot disable")
-            if ok then
-              vim.notify("Copilot: OFF", vim.log.levels.WARN)
-            else
-              vim.notify("Copilot: OFF (plugin not loaded)", vim.log.levels.WARN)
-            end
+            vim.cmd("Copilot disable")
+            vim.notify("Copilot: OFF", vim.log.levels.WARN)
           end
         end,
         desc = "Toggle Copilot",
@@ -1141,6 +1245,20 @@ function M.setup()
           snacks.picker.marks()
         end,
         desc = "Search Marks",
+      },
+
+      -- Yank / Copy references (OpenCode / Claude compatible)
+      { "<leader>y", group = "Yank", icon = "󰆒" },
+      {
+        "<leader>yf",
+        copy_file_ref,
+        desc = "Copy File Reference",
+      },
+      {
+        "<leader>yl",
+        copy_line_ref,
+        desc = "Copy Line Reference",
+        mode = { "n", "v" },
       },
 
       -- Notes & Scratch
@@ -1274,6 +1392,9 @@ function M.setup()
   vim.keymap.set("i", "jj", "<Esc>", { desc = "Exit Insert Mode" })
   vim.keymap.set("i", "оо", "<Esc>", { desc = "Exit Insert Mode" })
 
+  -- Normal-mode Tab: cycle buffers.
+  -- copilot.lua wraps this with NES accept+goto on InsertEnter load,
+  -- passing through to bnext when no NES is active.
   vim.keymap.set("n", "<Tab>", ":bnext<CR>", { desc = "Next Buffer", silent = true })
   vim.keymap.set("n", "<S-Tab>", ":bprevious<CR>", { desc = "Previous Buffer", silent = true })
 

@@ -317,7 +317,13 @@ return {
       end
     end
 
-    mason_registry.ensure_servers(ensure_servers)
+    -- copilot-language-server is installed by Mason; the binary is managed by
+    -- copilot.lua (lua/plugins/copilot.lua) which calls vim.lsp.start() directly.
+    -- Insert into mason_registry (binary install) but NOT into mason_lspconfig
+    -- (which doesn't know "copilot" as a valid server name in its registry).
+    local mason_registry_servers = vim.list_extend(vim.deepcopy(ensure_servers), { "copilot" })
+
+    mason_registry.ensure_servers(mason_registry_servers)
 
     local extra_tools = {}
     if package_supported("roslyn") then
@@ -404,8 +410,12 @@ return {
     end
 
     -- setup_handlers was removed from mason-lspconfig; iterate directly.
+    -- copilot is not in ensure_servers (mason_registry only), so no skip needed,
+    -- but guard is kept defensively in case it's re-added by accident.
     for _, server_name in ipairs(ensure_servers) do
-      setup_server(server_name)
+      if server_name ~= "copilot" then
+        setup_server(server_name)
+      end
     end
 
     -- Setup GDScript LSP (for Godot engine)
