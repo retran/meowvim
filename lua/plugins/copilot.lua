@@ -1,56 +1,60 @@
 -- SPDX-License-Identifier: MIT
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
 
+-- @file: lua/plugins/copilot.lua
+-- @brief: GitHub Copilot – inline suggestions + NES (Next Edit Suggestions).
+--
+-- Inline ghost text via copilot.suggestion API.
+-- NES via copilotlsp-nvim/copilot-lsp (optional dependency).
+-- Copilot LSP binary (copilot-language-server) installed by Mason.
+--
+-- Keymaps:
+--   <C-l>  (insert)  – accept inline suggestion (nvim-cmp.lua handles fallback to cmp)
+--   <Esc>  (insert)  – dismiss inline suggestion (nvim-cmp.lua checks suggestion.is_visible())
+--   <M-l>  (normal)  – NES: accept suggestion and go to end of edit
+--   <M-j>  (normal)  – NES: accept suggestion, stay at cursor
+--   <M-h>  (normal)  – NES: dismiss suggestion
+--   <leader>oC       – toggle Copilot on/off globally (keymaps.lua)
+
 return {
   "zbirenbaum/copilot.lua",
   cmd = "Copilot",
   event = "InsertEnter",
-  config = function()
-    local toggles_ok, toggles = pcall(require, "utils.toggles")
-    if toggles_ok then
-      toggles.ensure("copilot_enabled")
-    end
-
-    local enabled = vim.g.copilot_enabled or false
-
-    require("copilot").setup({
-      suggestion = {
-        enabled = true,
-        auto_trigger = true,
-
-        keymap = {
-          accept = false,
-          accept_word = "<C-g>",
-          accept_line = false,
-          next = "<C-n>",
-          prev = "<C-p>",
-          dismiss = "<Esc>",
-        },
+  dependencies = {
+    {
+      "copilotlsp-nvim/copilot-lsp",
+      init = function()
+        vim.g.copilot_nes_debounce = 500
+      end,
+    },
+  },
+  opts = {
+    suggestion = {
+      enabled = true,
+      auto_trigger = true,
+      hide_during_completion = true,
+      keymap = {
+        accept = false,        -- handled in nvim-cmp.lua (<C-l> smart accept)
+        accept_word = false,
+        accept_line = false,
+        next = false,
+        prev = false,
+        dismiss = false,          -- handled in nvim-cmp.lua (<Esc> checks suggestion.is_visible())
+        toggle_auto_trigger = false,
       },
-      panel = {
-        enabled = true,
-        auto_refresh = false,
-        keymap = {
-          jump_prev = "[[",
-          jump_next = "]]",
-          accept = "<CR>",
-          refresh = "gr",
-          open = "<M-CR>",
-        },
+    },
+    nes = {
+      enabled = true,
+      keymap = {
+        accept_and_goto = "<M-l>",  -- accept + jump to end of edit
+        accept          = "<M-j>",  -- accept, stay at cursor
+        dismiss         = "<M-h>",  -- dismiss suggestion
       },
-      filetypes = {
-        help = false,
-        gitcommit = false,
-        gitrebase = false,
-        hgcommit = false,
-        svn = false,
-        cvs = false,
-        ["."] = false,
-      },
-    })
-
-    if not enabled then
-      vim.cmd("Copilot disable")
-    end
-  end,
+    },
+    server = {
+      type = "binary",
+      -- Mason installs the binary; init.lua prepends mason/bin to PATH.
+      custom_server_filepath = "copilot-language-server",
+    },
+  },
 }
