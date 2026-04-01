@@ -18,7 +18,7 @@
 --   <C-p>      - Previous Copilot suggestion
 --
 -- DISMISS (universal):
---   <Esc>      - Dismiss everything (popup + Copilot)
+--   <Esc>      - Dismiss Copilot suggestion (stay in insert); else dismiss popup + exit insert
 --
 -- NORMAL BEHAVIOR PRESERVED:
 --   <Tab>      - Indent / Expand snippet / Jump placeholder
@@ -162,8 +162,15 @@ return {
           end
         end, { "i", "s" }),
 
-        -- Esc dismisses everything (popup AND Copilot via fallback)
+        -- Esc: if Copilot suggestion visible, dismiss it and stay in insert mode.
+        -- Otherwise abort cmp (if open) and fall through to normal <Esc>.
         ["<Esc>"] = cmp.mapping(function(fallback)
+          local ok, suggestion = pcall(require, "copilot.suggestion")
+          if ok and suggestion.is_visible() then
+            suggestion.dismiss()
+            -- do NOT call fallback — stay in insert mode
+            return
+          end
           if cmp.visible() then
             cmp.abort()
           end
