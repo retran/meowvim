@@ -184,10 +184,12 @@ local ICON_EXACT = {
   ["Add Insight"] = "",
   ["Add Comment"] = "󰆈",
   ["Delete Comment"] = "󰆴",
+  ["Edit Comment"] = "󰏫",
   ["View Comment"] = "󰋼",
   ["Export Review"] = "󰈈",
   ["Clear Review"] = "󰜺",
   ["Review Summary"] = "󰒡",
+  ["Go to Comment"] = "󰒡",
   ["Load Review"] = "󰁯",
   ["Goto Real File"] = "󰜢",
   ["Next Review Comment"] = "",
@@ -300,40 +302,10 @@ local function gitsigns_action(action_name)
   end
 end
 
-local function qr_action(fn_name)
+local function mr_action(fn_name)
   return function()
-    local qr = safe_require("quickfix-review")
-    if qr then
-      qr[fn_name]()
-    end
-  end
-end
-
-local function qr_add(comment_type)
-  return function()
-    local qr = safe_require("quickfix-review")
-    if not qr then
-      return
-    end
-    local mode = vim.fn.mode()
-    if mode == "v" or mode == "V" or mode == "\22" then
-      qr.add_comment_visual(comment_type)
-    else
-      qr.add_comment(comment_type)
-    end
-  end
-end
-
-local function qr_delete()
-  local qr = safe_require("quickfix-review")
-  if not qr then
-    return
-  end
-  local mode = vim.fn.mode()
-  if mode == "v" or mode == "V" or mode == "\22" then
-    qr.delete_comment_visual()
-  else
-    qr.delete_comment()
+    local mr = safe_require("meow.review")
+    if mr then mr[fn_name]() end
   end
 end
 
@@ -904,27 +876,22 @@ function M.setup()
       },
 
       -- Review
-      { "<leader>r", group = "Review", icon = "" },
-      { "<leader>ra", qr_action("add_comment_cycle"), desc = "Add Comment" },
-      { "<leader>ri", qr_add("ISSUE"), desc = "Add Issue", mode = { "n", "v" } },
-      { "<leader>rs", qr_add("SUGGESTION"), desc = "Add Suggestion", mode = { "n", "v" } },
-      { "<leader>rn", qr_add("NOTE"), desc = "Add Note", mode = { "n", "v" } },
-      { "<leader>rp", qr_add("PRAISE"), desc = "Add Praise", mode = { "n", "v" } },
-      { "<leader>rq", qr_add("QUESTION"), desc = "Add Question", mode = { "n", "v" } },
-      { "<leader>rk", qr_add("INSIGHT"), desc = "Add Insight", mode = { "n", "v" } },
-      { "<leader>rd", qr_delete, desc = "Delete Comment", mode = { "n", "v" } },
-      { "<leader>rv", qr_action("view_comment"), desc = "View Comment" },
-      { "<leader>re", qr_action("export_review"), desc = "Export Review" },
-      { "<leader>rc", qr_action("clear_review"), desc = "Clear Review" },
-      { "<leader>rS", qr_action("summary"), desc = "Review Summary" },
-      { "<leader>rw", qr_action("save_review"), desc = "Save Review" },
-      { "<leader>rl", qr_action("load_review"), desc = "Load Review" },
-      { "<leader>ro", "<cmd>copen<CR>", desc = "Open Review List" },
-      { "<leader>rg", qr_action("goto_real_file"), desc = "Goto Real File" },
-      { "<leader>rj", qr_action("cycle_next_comment_type"), desc = "Cycle Next Type" },
-      { "<leader>rh", qr_action("cycle_previous_comment_type"), desc = "Cycle Prev Type" },
-      { "]r", "<cmd>cnext<CR>", desc = "Next Review Comment", mode = "n" },
-      { "[r", "<cmd>cprev<CR>", desc = "Previous Review Comment", mode = "n" },
+      { "<leader>r",  group = "Review",                             icon = "" },
+      { "<leader>ra", mr_action("add_comment"),    desc = "Add Comment",    mode = { "n", "v" } },
+      { "<leader>rd", mr_action("delete_comment"), desc = "Delete Comment", mode = { "n", "v" } },
+      { "<leader>rE", mr_action("edit_comment"),   desc = "Edit Comment" },
+      { "<leader>rv", mr_action("view_comment"),   desc = "View Comment" },
+      { "<leader>re", mr_action("export_review"),  desc = "Export Review" },
+      { "<leader>rf", function()
+          local mr = safe_require("meow.review")
+          if mr then mr.export_review("file_prompt") end
+        end, desc = "Export Review to File" },
+      { "<leader>rc", mr_action("clear_all"),      desc = "Clear All" },
+      { "<leader>rg", mr_action("goto_comment"),  desc = "Go to Comment" },
+      { "<leader>rr", mr_action("reload"),         desc = "Reload Review" },
+      { "]r", mr_action("next_comment"), desc = "Next Review Comment",     mode = "n" },
+      { "[r", mr_action("prev_comment"), desc = "Previous Review Comment", mode = "n" },
+
 
       -- Run & Tasks
       { "<leader>R", group = "Run", icon = "" },
