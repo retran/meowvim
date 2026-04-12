@@ -5,6 +5,7 @@
 -- @brief: Visualizer of LSP hierarchies.
 
 return {
+  -- dir = "/Users/retran/workspace/meow.yarn.nvim", -- local dev override
   "retran/meow.yarn.nvim",
   dependencies = { "MunifTanjim/nui.nvim" },
   config = function()
