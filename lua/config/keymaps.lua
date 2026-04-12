@@ -879,9 +879,9 @@ function M.setup()
       { "<leader>r",  group = "Review",                             icon = "" },
       { "<leader>ra", mr_action("add_comment"),    desc = "Add Comment",    mode = { "n", "v" } },
       { "<leader>rd", mr_action("delete_comment"), desc = "Delete Comment", mode = { "n", "v" } },
-      { "<leader>rE", mr_action("edit_comment"),   desc = "Edit Comment" },
+      { "<leader>re", mr_action("edit_comment"),   desc = "Edit Comment" },
       { "<leader>rv", mr_action("view_comment"),   desc = "View Comment" },
-      { "<leader>re", mr_action("export_review"),  desc = "Export Review" },
+      { "<leader>rE", mr_action("export_review"),  desc = "Export Review" },
       { "<leader>rf", function()
           local mr = safe_require("meow.review")
           if mr then mr.export_review("file_prompt") end

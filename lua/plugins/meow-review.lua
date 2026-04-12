@@ -7,9 +7,9 @@
 -- Keymaps (all managed in keymaps.lua under <leader>r):
 --   <leader>ra  Add Comment         [n, v] — modal: Tab cycles type, <C-s> confirms
 --   <leader>rd  Delete Comment      [n, v]
---   <leader>rE  Edit Comment        [n]    — pre-filled modal
+--   <leader>re  Edit Comment        [n]    — pre-filled modal
 --   <leader>rv  View Comment        [n]
---   <leader>re  Export Review       [n]    — exports to clipboard (default)
+--   <leader>rE  Export Review       [n]    — exports to clipboard (default)
 --   <leader>rf  Export to File      [n]    — prompts for filename
 --   <leader>rc  Clear All           [n]
 --   <leader>rg  Go to Comment       [n]    — picker; jump to any annotation
@@ -18,8 +18,8 @@
 --   [r          Previous Review Comment [n]
 
 return {
-    -- dir = "/Users/retran/workspace/meow.review.nvim", -- local dev override
-    "retran/meow.review.nvim",
+    dir = "/Users/retran/workspace/meow.review.nvim", -- local dev override
+    -- "retran/meow.review.nvim",
     dependencies = { "MunifTanjim/nui.nvim" },
     event = "VeryLazy",
     config = function()
