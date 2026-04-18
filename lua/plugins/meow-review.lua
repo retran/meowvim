@@ -25,8 +25,8 @@
 --   [r          Previous Review Comment  [n]
 
 return {
-    dir = "/Users/retran/workspace/meow.review.nvim", -- local dev override
-    -- "retran/meow.review.nvim",
+    "retran/meow.review.nvim",
+    -- dir = "/Users/retran/workspace/meow.review.nvim", -- local dev override
     dependencies = { "MunifTanjim/nui.nvim" },
     event = "VeryLazy",
     config = function()
