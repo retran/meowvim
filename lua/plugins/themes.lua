@@ -43,7 +43,6 @@ local catppuccin = {
         snacks = true,
         treesitter = true,
         telescope = true,
-        mason = true,
         cmp = true,
         gitsigns = true,
       },

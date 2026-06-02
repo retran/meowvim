@@ -176,26 +176,33 @@ local function check_lsp()
   end
   ok("nvim-lspconfig loaded")
 
-  -- Check Mason
-  local mason_ok, _ = pcall(require, "mason")
-  if mason_ok then
-    ok("Mason package manager loaded")
-
-    local registry_ok, registry = pcall(require, "mason-registry")
-    if registry_ok then
-      local installed = registry.get_installed_packages()
-      if #installed > 0 then
-        ok(string.format("%d Mason packages installed", #installed))
-        for _, pkg in ipairs(installed) do
-          info("  - " .. pkg.name)
-        end
-      else
-        warn("No Mason packages installed")
-        info("Run :Mason to install LSP servers, formatters, and linters")
-      end
+  -- Check mise (project-local tool manager)
+  local mise_shims = vim.fn.expand("~/.local/share/mise/shims")
+  if vim.fn.isdirectory(mise_shims) == 1 then
+    ok("mise shims directory found: " .. mise_shims)
+    local in_path = (vim.env.PATH or ""):find(mise_shims, 1, true) ~= nil
+    if in_path then
+      ok("mise shims in PATH")
+    else
+      warn("mise shims not in PATH — tools may not resolve per-project")
     end
   else
-    warn("Mason not loaded - LSP servers may need manual installation")
+    warn("mise shims directory not found — tools must be installed manually")
+    info("Install from: https://mise.jdx.dev")
+  end
+
+  -- Check commonly used LSP servers
+  local common_servers = {
+    lua_ls = "lua-language-server",
+    gopls = "gopls",
+    pyright = "pyright",
+    ts_ls = "typescript-language-server",
+    rust_analyzer = "rust-analyzer",
+  }
+  for name, binary in pairs(common_servers) do
+    if vim.fn.executable(binary) == 1 then
+      info("  - " .. name .. " (" .. binary .. ")")
+    end
   end
 end
 

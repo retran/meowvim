@@ -4,12 +4,9 @@
 -- @file: lua/plugins/nvim-dap.lua
 -- @brief: Debug Adapter Protocol (DAP) client for debugging integration.
 
-require("config.mason").ensure_debuggers({ "delve", "netcoredbg", "codelldb" })
-
 return {
   "mfussenegger/nvim-dap",
   dependencies = {
-    "mason-org/mason.nvim",
     {
       "rcarriga/nvim-dap-ui",
       dependencies = { "nvim-neotest/nvim-nio" },
@@ -45,7 +42,7 @@ return {
 
     dap.adapters.coreclr = {
       type = "executable",
-      command = vim.fn.stdpath("data") .. "/mason/bin/netcoredbg",
+      command = "netcoredbg",
       args = { "--interpreter=vscode" },
     }
 

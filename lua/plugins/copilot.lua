@@ -6,7 +6,7 @@
 --
 -- Inline ghost text via copilot.suggestion API.
 -- NES via copilotlsp-nvim/copilot-lsp (optional dependency).
--- Copilot LSP binary (copilot-language-server) installed by Mason.
+-- Copilot LSP binary (copilot-language-server) installed via mise.
 --
 -- Keymaps:
 --   <C-l>  (insert)  – accept inline suggestion (nvim-cmp.lua handles fallback to cmp)
@@ -53,7 +53,7 @@ return {
     },
     server = {
       type = "binary",
-      -- Mason installs the binary; init.lua prepends mason/bin to PATH.
+      -- mise installs the binary; init.lua prepends mise/shims to PATH.
       custom_server_filepath = "copilot-language-server",
     },
   },

@@ -312,7 +312,9 @@ end
 local function mr_action(fn_name)
   return function()
     local mr = safe_require("meow.review")
-    if mr then mr[fn_name]() end
+    if mr then
+      mr[fn_name]()
+    end
   end
 end
 
@@ -883,29 +885,34 @@ function M.setup()
       },
 
       -- Review
-      { "<leader>r",  group = "Review",                                   icon = "" },
-      { "<leader>ra", mr_action("add_comment"),         desc = "Add Comment",            mode = { "n", "v" } },
-      { "<leader>rd", mr_action("delete_comment"),      desc = "Delete Comment",         mode = { "n", "v" } },
-      { "<leader>rE", mr_action("edit_comment"),        desc = "Edit Comment" },
-      { "<leader>rv", mr_action("view_comment"),        desc = "View Comment" },
-      { "<leader>re", mr_action("export_review"),       desc = "Export Review" },
-      { "<leader>rf", function()
+      { "<leader>r", group = "Review", icon = "" },
+      { "<leader>ra", mr_action("add_comment"), desc = "Add Comment", mode = { "n", "v" } },
+      { "<leader>rd", mr_action("delete_comment"), desc = "Delete Comment", mode = { "n", "v" } },
+      { "<leader>rE", mr_action("edit_comment"), desc = "Edit Comment" },
+      { "<leader>rv", mr_action("view_comment"), desc = "View Comment" },
+      { "<leader>re", mr_action("export_review"), desc = "Export Review" },
+      {
+        "<leader>rf",
+        function()
           local mr = safe_require("meow.review")
-          if mr then mr.export_review("file_prompt") end
-        end, desc = "Export Review to File" },
+          if mr then
+            mr.export_review("file_prompt")
+          end
+        end,
+        desc = "Export Review to File",
+      },
       { "<leader>rF", mr_action("export_current_file"), desc = "Export Current File" },
-      { "<leader>rC", mr_action("export_and_clear"),    desc = "Export and Clear" },
-      { "<leader>rc", mr_action("clear_all"),           desc = "Clear All" },
-      { "<leader>rg", mr_action("goto_comment"),        desc = "Go to Comment" },
-      { "<leader>rG", mr_action("goto_comment_in_file"),desc = "Go to Comment in File" },
-      { "<leader>rt", mr_action("goto_comment_by_type"),desc = "Go to Comment by Type" },
-      { "<leader>rx", mr_action("resolve_comment"),     desc = "Resolve Comment" },
-      { "<leader>rX", mr_action("resolve_all_comments"),desc = "Resolve All" },
-      { "<leader>rV", mr_action("validate"),            desc = "Validate Annotations" },
-      { "<leader>rr", mr_action("reload"),              desc = "Reload Review" },
-      { "]r", mr_action("next_comment"), desc = "Next Review Comment",     mode = "n" },
+      { "<leader>rC", mr_action("export_and_clear"), desc = "Export and Clear" },
+      { "<leader>rc", mr_action("clear_all"), desc = "Clear All" },
+      { "<leader>rg", mr_action("goto_comment"), desc = "Go to Comment" },
+      { "<leader>rG", mr_action("goto_comment_in_file"), desc = "Go to Comment in File" },
+      { "<leader>rt", mr_action("goto_comment_by_type"), desc = "Go to Comment by Type" },
+      { "<leader>rx", mr_action("resolve_comment"), desc = "Resolve Comment" },
+      { "<leader>rX", mr_action("resolve_all_comments"), desc = "Resolve All" },
+      { "<leader>rV", mr_action("validate"), desc = "Validate Annotations" },
+      { "<leader>rr", mr_action("reload"), desc = "Reload Review" },
+      { "]r", mr_action("next_comment"), desc = "Next Review Comment", mode = "n" },
       { "[r", mr_action("prev_comment"), desc = "Previous Review Comment", mode = "n" },
-
 
       -- Run & Tasks
       { "<leader>R", group = "Run", icon = "" },
@@ -1297,11 +1304,6 @@ function M.setup()
         end,
         desc = "Search Man Pages",
       },
-
-      -- Tools (Mason)
-      { "<leader>T", group = "Tools", icon = "" },
-      { "<leader>Tm", "<cmd>Mason<CR>", desc = "Open Tool Manager" },
-      { "<leader>Ti", "<cmd>MasonToolsInstall<CR>", desc = "Install Tools" },
 
       -- Quit
       { "<leader>q", group = "Quit", icon = "󰅚" },

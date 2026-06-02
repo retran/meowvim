@@ -4,7 +4,6 @@
 -- @file: lua/plugins/nvim-lint.lua
 -- @brief: Asynchronous linting engine with multiple linter support.
 
-local mason_registry = require("config.mason")
 local toggles = require("utils.toggles")
 
 local desired_linters_by_ft = {
@@ -25,54 +24,15 @@ local desired_linters_by_ft = {
   gdscript = { "gdlint" },
 }
 
-local function collect_linters()
-  local alias_map = {
-    clippy = false,
-    gdlint = "gdtoolkit",
-    golangcilint = "golangci-lint",
-  }
-
-  local seen = {}
-  local result = {}
-
-  for _, linters in pairs(desired_linters_by_ft) do
-    for _, linter in ipairs(linters) do
-      if seen[linter] then
-        goto continue
-      end
-
-      local package = alias_map[linter]
-      if package == false then
-        seen[linter] = true
-        goto continue
-      end
-
-      package = package or linter
-      if not seen[package] then
-        table.insert(result, package)
-        seen[package] = true
-      end
-      seen[linter] = true
-
-      ::continue::
-    end
-  end
-
-  return result
-end
-
-mason_registry.ensure_linters(collect_linters())
-
 return {
   "mfussenegger/nvim-lint",
   event = { "BufReadPre", "BufNewFile" },
   opts = function()
-    local mason_bin = vim.fn.stdpath("data") .. "/mason/bin"
     local linters_by_ft = {}
     for ft, linters in pairs(desired_linters_by_ft) do
       local available_linters = {}
       for _, linter in ipairs(linters) do
-          if vim.fn.executable(linter) == 1 or vim.fn.executable(mason_bin .. "/" .. linter) == 1 then
+          if vim.fn.executable(linter) == 1 then
           table.insert(available_linters, linter)
         end
       end

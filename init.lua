@@ -12,11 +12,11 @@ vim.g.loaded_ruby_provider = 0
 vim.g.loaded_perl_provider = 0
 vim.g.loaded_node_provider = 0
 
--- Add Mason bin to PATH
-local mason_bin = vim.fn.stdpath("data") .. "/mason/bin"
-if vim.fn.isdirectory(mason_bin) == 1 and not (vim.env.PATH or ""):find(mason_bin, 1, true) then
+-- Add mise shims to PATH (replaces Mason for project-local tool versions)
+local mise_shims = vim.fn.expand("~/.local/share/mise/shims")
+if vim.fn.isdirectory(mise_shims) == 1 and not (vim.env.PATH or ""):find(mise_shims, 1, true) then
   local separator = vim.uv.os_uname().sysname:find("Windows") and ";" or ":"
-  vim.env.PATH = mason_bin .. separator .. (vim.env.PATH or "")
+  vim.env.PATH = mise_shims .. separator .. (vim.env.PATH or "")
 end
 
 -- Load meowvim configuration system

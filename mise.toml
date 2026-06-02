@@ -1,0 +1,13 @@
+[tools]
+# Lua runtime (Lua 5.1 API = LuaJIT compat, provides luac for syntax checks)
+lua = "5.1"
+# LSP server for editing .lua files
+lua-language-server = "latest"
+# Formatter (config: .stylua.toml)
+stylua = "latest"
+# Linter (config: .luacheckrc)
+"github:lunarmodules/luacheck" = "latest"
+# Tree-sitter CLI (grammar development)
+tree-sitter = "latest"
+# AI coding assistant
+opencode = "latest"

@@ -3,7 +3,6 @@
 
 -- @file: lua/plugins/conform.lua
 
-local mason_registry = require("config.mason")
 local toggles = require("utils.toggles")
 
 local desired_formatters_by_ft = {
@@ -38,61 +37,11 @@ local desired_formatters_by_ft = {
   ["_"] = { "codespell" },
 }
 
-local function collect_formatters()
-  local alias_map = {
-    clang_format = "clang-format",
-    dotnet_format = false,
-    gdformat = "gdtoolkit",
-    gofmt = false,
-    pg_format = "pgformatter",
-    ruff_format = "ruff",
-    ruff_organize_imports = "ruff",
-    rustfmt = false,
-  }
-
-  local seen = {}
-  local result = {}
-
-  local function add(item)
-    if type(item) ~= "string" or seen[item] then
-      return
-    end
-
-    local package = alias_map[item]
-    if package == false then
-      seen[item] = true
-      return
-    end
-
-    package = package or item
-    if not seen[package] then
-      table.insert(result, package)
-      seen[package] = true
-    end
-    seen[item] = true
-  end
-
-  for _, formatters in pairs(desired_formatters_by_ft) do
-    for _, formatter in ipairs(formatters) do
-      add(formatter)
-    end
-  end
-
-  for _, formatter in ipairs({ "shfmt", "stylua", "black", "gdformat" }) do
-    add(formatter)
-  end
-
-  return result
-end
-
-mason_registry.ensure_formatters(collect_formatters())
-
 return {
   "stevearc/conform.nvim",
   event = { "BufWritePre" },
   cmd = { "ConformInfo" },
   opts = function()
-    local mason_bin = vim.fn.stdpath("data") .. "/mason/bin"
     local formatters_by_ft = {}
 
     for ft, formatters in pairs(desired_formatters_by_ft) do
@@ -105,7 +54,7 @@ return {
 
       for _, formatter in ipairs(formatters) do
         if type(formatter) == "string" then
-          if vim.fn.executable(formatter) == 1 or vim.fn.executable(mason_bin .. "/" .. formatter) == 1 then
+          if vim.fn.executable(formatter) == 1 then
             table.insert(available_formatters, formatter)
           end
         end
