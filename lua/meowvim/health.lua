@@ -111,6 +111,111 @@ local function check_config()
   end
 end
 
+-- Walk up from dir looking for mise.toml or .mise.toml
+local function find_nearest_mise_toml(dir)
+  local candidates = { "mise.toml", ".mise.toml" }
+  local seen = {}
+  local current = vim.fn.resolve(dir)
+  while current and not seen[current] do
+    seen[current] = true
+    for _, name in ipairs(candidates) do
+      local path = current .. "/" .. name
+      if vim.fn.filereadable(path) == 1 then
+        return path
+      end
+    end
+    local parent = vim.fn.fnamemodify(current, ":h")
+    if parent == current then
+      break
+    end
+    current = parent
+  end
+  return nil
+end
+
+local function check_one_mise_toml(mise_toml, label)
+  if vim.fn.filereadable(mise_toml) == 0 then
+    return
+  end
+
+  ok(label .. ": " .. mise_toml)
+
+  local expected = {}
+  for line in io.lines(mise_toml) do
+    local full = line:match('^%s*"([^"]+)"%s*=') or line:match("^(%S+)%s*=")
+    if full and full ~= "[tools]" then
+      local short = full:match("([^/]+)$")
+      expected[short or full] = full
+    end
+  end
+
+  if vim.tbl_isempty(expected) then
+    info("  No tools configured")
+    return
+  end
+
+  local handle = io.popen("mise ls --current 2>/dev/null")
+  if not handle then
+    warn("  Could not run mise ls")
+    return
+  end
+
+  local installed = {}
+  for line in handle:lines() do
+    local name = line:match("^(%S+)")
+    if name then
+      local short = name:match("([^/]+)$") or name
+      installed[short] = true
+    end
+  end
+  handle:close()
+
+  local has_missing = false
+  for short, full in pairs(expected) do
+    if installed[short] then
+      ok("  " .. short)
+    else
+      warn("  " .. short .. " — not installed")
+      info("    run: mise install " .. full)
+      has_missing = true
+    end
+  end
+
+  if not has_missing then
+    ok("  All tools installed for this config")
+  end
+end
+
+-- Check mise tools from mise.toml
+local function check_mise_tools()
+  start("Mise Tools (mise.toml)")
+
+  if vim.fn.executable("mise") == 0 then
+    warn("mise not found — tools must be installed manually")
+    info("Install from: https://mise.jdx.dev")
+    return
+  end
+  ok("mise installed")
+
+  local mise_shims = vim.fn.expand("~/.local/share/mise/shims")
+  if vim.fn.isdirectory(mise_shims) == 1 then
+    local in_path = (vim.env.PATH or ""):find(mise_shims, 1, true) ~= nil
+    if in_path then
+      ok("mise shims in PATH")
+    else
+      warn("mise shims not in PATH — tools may not resolve")
+    end
+  end
+
+  -- Project-level mise.toml (from cwd, walk up)
+  local project_toml = find_nearest_mise_toml(vim.fn.getcwd())
+  if project_toml then
+    check_one_mise_toml(project_toml, "Project")
+  else
+    info("No mise.toml found in current project tree — global mise config applies")
+  end
+end
+
 -- Check external dependencies
 local function check_external_deps()
   start("External Dependencies")
@@ -175,21 +280,6 @@ local function check_lsp()
     return
   end
   ok("nvim-lspconfig loaded")
-
-  -- Check mise (project-local tool manager)
-  local mise_shims = vim.fn.expand("~/.local/share/mise/shims")
-  if vim.fn.isdirectory(mise_shims) == 1 then
-    ok("mise shims directory found: " .. mise_shims)
-    local in_path = (vim.env.PATH or ""):find(mise_shims, 1, true) ~= nil
-    if in_path then
-      ok("mise shims in PATH")
-    else
-      warn("mise shims not in PATH — tools may not resolve per-project")
-    end
-  else
-    warn("mise shims directory not found — tools must be installed manually")
-    info("Install from: https://mise.jdx.dev")
-  end
 
   -- Check commonly used LSP servers
   local common_servers = {
@@ -292,6 +382,7 @@ function M.check()
   check_config()
   check_filesystem()
   check_external_deps()
+  check_mise_tools()
   check_plugins()
   check_treesitter()
   check_lsp()

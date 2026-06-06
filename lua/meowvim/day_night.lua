@@ -13,21 +13,32 @@ local is_watching = false
 local function get_system_appearance()
   -- macOS
   if vim.fn.has("mac") == 1 then
-    local handle = io.popen("defaults read -g AppleInterfaceStyle 2>/dev/null")
-    if not handle then
-      return nil
+    -- osascript: works reliably on macOS 14+ and Sequoia
+    local handle =
+      io.popen("osascript -e 'tell app \"System Events\" to tell appearance preferences to get dark mode' 2>/dev/null")
+    if handle then
+      local result = handle:read("*a")
+      handle:close()
+      if result and result:match("true") then
+        return "night"
+      elseif result and result:match("false") then
+        return "day"
+      end
     end
 
-    local result = handle:read("*a")
-    handle:close()
-
-    -- If "Dark" is returned, system is in dark mode
-    -- If empty/error, system is in light mode
-    if result and result:match("Dark") then
-      return "night"
-    else
-      return "day"
+    -- Fallback: defaults read (older macOS)
+    handle = io.popen("defaults read -g AppleInterfaceStyle 2>/dev/null")
+    if handle then
+      local result = handle:read("*a")
+      handle:close()
+      if result and result:match("Dark") then
+        return "night"
+      else
+        return "day"
+      end
     end
+
+    return nil
   end
 
   -- Windows
