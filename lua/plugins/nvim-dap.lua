@@ -40,11 +40,13 @@ return {
     local dap = require("dap")
     local dapui = require("dapui")
 
-    dap.adapters.coreclr = {
-      type = "executable",
-      command = "netcoredbg",
-      args = { "--interpreter=vscode" },
-    }
+    if vim.fn.executable("netcoredbg") == 1 then
+      dap.adapters.coreclr = {
+        type = "executable",
+        command = "netcoredbg",
+        args = { "--interpreter=vscode" },
+      }
+    end
 
     dap.adapters.godot = {
       type = "server",
@@ -62,22 +64,24 @@ return {
       },
     }
 
-    dap.configurations.cs = {
-      {
-        type = "coreclr",
-        name = "Launch .NET",
-        request = "launch",
-        program = function()
-          return vim.fn.input("Path to DLL: ", vim.fn.getcwd() .. "/bin/Debug/", "file")
-        end,
-      },
-      {
-        type = "coreclr",
-        name = "Attach to process",
-        request = "attach",
-        processId = require("dap.utils").pick_process,
-      },
-    }
+    if vim.fn.executable("netcoredbg") == 1 then
+      dap.configurations.cs = {
+        {
+          type = "coreclr",
+          name = "Launch .NET",
+          request = "launch",
+          program = function()
+            return vim.fn.input("Path to DLL: ", vim.fn.getcwd() .. "/bin/Debug/", "file")
+          end,
+        },
+        {
+          type = "coreclr",
+          name = "Attach to process",
+          request = "attach",
+          processId = require("dap.utils").pick_process,
+        },
+      }
+    end
 
     local dap_context_maps = {
       {
