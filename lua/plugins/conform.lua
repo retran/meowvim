@@ -101,15 +101,36 @@ return {
           return
         end
 
-        local opts = {
-          timeout_ms = line_count > 2000 and 2000 or 750,
-        }
-
+        -- format_on_save does not support async; use format_after_save for large files
         if line_count > 800 then
-          opts.async = true
+          return
         end
 
-        return opts
+        return {
+          timeout_ms = line_count > 2000 and 2000 or 750,
+        }
+      end,
+      format_after_save = function(bufnr)
+        if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
+          return
+        end
+        local bufname = vim.api.nvim_buf_get_name(bufnr)
+        if bufname:match("/node_modules/") then
+          return
+        end
+        local line_count = vim.api.nvim_buf_line_count(bufnr)
+        if line_count > 5000 then
+          return
+        end
+
+        -- Only format async for files > 800 lines; smaller files handled by format_on_save
+        if line_count <= 800 then
+          return
+        end
+
+        return {
+          timeout_ms = line_count > 2000 and 2000 or 750,
+        }
       end,
 
       formatters = {

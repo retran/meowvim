@@ -30,6 +30,17 @@ return {
       return
     end
 
+    local function lsp_handler_with(handler, default_opts)
+      return function(err, result, ctx, config)
+        config = vim.tbl_deep_extend("force", default_opts, config or {})
+        handler(err, result, ctx, config)
+      end
+    end
+
+    vim.lsp.handlers["textDocument/hover"] = lsp_handler_with(vim.lsp.handlers.hover, { border = "rounded" })
+    vim.lsp.handlers["textDocument/signatureHelp"] =
+      lsp_handler_with(vim.lsp.handlers.signature_help, { border = "rounded" })
+
     vim.diagnostic.config({
       virtual_text = { prefix = "", spacing = 2 },
       signs = true,
@@ -58,9 +69,7 @@ return {
       vim.fn.sign_define("DiagnosticSign" .. type, { text = icon, texthl = "DiagnosticSign" .. type, numhl = "" })
     end
 
-    vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
-    vim.lsp.handlers["textDocument/signatureHelp"] =
-      vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
+
 
     local caps = require("cmp_nvim_lsp").default_capabilities()
     caps.textDocument.semanticTokens =
@@ -235,6 +244,10 @@ return {
 
       local default_config = server.document_config.default_config or {}
       local server_opts = vim.tbl_deep_extend("force", {}, server_settings[server_name] or {})
+      local cmd = server_opts.cmd or default_config.cmd
+      if cmd and type(cmd) == "table" and cmd[1] and vim.fn.executable(cmd[1]) == 0 then
+        return
+      end
       local custom_on_attach = server_opts.on_attach
 
       server_opts.capabilities = vim.tbl_deep_extend("force", {}, caps, server_opts.capabilities or {})

@@ -74,9 +74,9 @@ opt.mouse = "a"
 opt.mousefocus = false
 
 -- Folding configuration (overridden by nvim-ufo plugin when loaded)
--- Defaults to treesitter-based folding as fallback
+-- Defaults to built-in treesitter folding as fallback
 opt.foldmethod = "expr"
-opt.foldexpr = "nvim_treesitter#foldexpr()"
+opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 opt.foldcolumn = "1"
 opt.foldenable = true
 opt.foldlevel = 99
