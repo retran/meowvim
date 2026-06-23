@@ -35,6 +35,15 @@ return {
         require("dap-go").setup()
       end,
     },
+    {
+      "mfussenegger/nvim-dap-python",
+      config = function()
+        -- Use system python3 for the debugpy adapter binary; per-project
+        -- pythonPath (what runs the program) is resolved lazily by dap-python
+        -- via VIRTUAL_ENV, .venv, pyenv, etc. at session start.
+        require("dap-python").setup("python3")
+      end,
+    },
   },
   config = function()
     local dap = require("dap")

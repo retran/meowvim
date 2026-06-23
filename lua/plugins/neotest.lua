@@ -3,6 +3,9 @@
 
 -- @file: lua/plugins/neotest.lua
 -- @brief: Framework for running and displaying test results interactively.
+--
+-- Rust tests: neotest-rust was archived August 2025. Use rustaceanvim's
+-- built-in :RustLsp testables / :RustLsp runnables instead.
 
 return {
   "nvim-neotest/neotest",
@@ -10,7 +13,14 @@ return {
   dependencies = {
     "nvim-lua/plenary.nvim",
     "antoinemadec/FixCursorHold.nvim",
+    -- Go
     "nvim-neotest/neotest-go",
+    -- Python (pytest, unittest, doctest)
+    "nvim-neotest/neotest-python",
+    -- JavaScript / TypeScript (vitest)
+    "marilari88/neotest-vitest",
+    -- JavaScript / TypeScript (jest)
+    "nvim-neotest/neotest-jest",
     "mfussenegger/nvim-dap",
     "leoluz/nvim-dap-go",
   },
@@ -20,6 +30,31 @@ return {
         require("neotest-go")({
           go_test_args = { "-v", "-race", "-count=1", "-timeout=60s" },
           dap_go_enabled = true,
+        }),
+        require("neotest-python")({
+          dap = { justMyCode = false },
+          runner = "pytest",
+          python = function()
+            -- prefer virtualenv python if present
+            local venv = vim.fn.getcwd() .. "/.venv/bin/python"
+            return vim.fn.filereadable(venv) == 1 and venv or "python3"
+          end,
+        }),
+        require("neotest-vitest"),
+        require("neotest-jest")({
+          jestCommand = "npx jest --",
+          jestConfigFile = function()
+            local cwd = vim.fn.getcwd()
+            for _, name in ipairs({ "jest.config.ts", "jest.config.js", "jest.config.cjs" }) do
+              if vim.fn.filereadable(cwd .. "/" .. name) == 1 then
+                return cwd .. "/" .. name
+              end
+            end
+          end,
+          env = { CI = "true" },
+          cwd = function()
+            return vim.fn.getcwd()
+          end,
         }),
       },
 

@@ -17,10 +17,10 @@ local info = health.info or health.report_info
 local function check_nvim_version()
   start("Neovim Version")
 
-  local required_version = "0.10.0"
+  local required_version = "0.12.0"
   local current_version = vim.version()
 
-  if current_version.major == 0 and current_version.minor >= 10 then
+  if current_version.major == 0 and current_version.minor >= 12 then
     ok(
       string.format(
         "Neovim %d.%d.%d (>= %s)",
@@ -319,7 +319,7 @@ end
 local function check_treesitter()
   start("Tree-sitter")
 
-  local ts_ok, _ = pcall(require, "nvim-treesitter.configs")
+  local ts_ok, _ = pcall(require, "nvim-treesitter")
   if not ts_ok then
     error("nvim-treesitter not loaded")
     return

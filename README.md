@@ -41,17 +41,17 @@
 
 - LSP servers with diagnostics, actions, and symbol navigation
 - Treesitter syntax highlighting and structural selection
-- Completion with `<C-j/k>` navigate, `<C-l>` smart accept (Copilot inline first, then cmp); GitHub Copilot NES via `<M-l/j/h>`
+- Completion with `<C-j/k>` navigate, `<C-l>` smart accept (Copilot inline first, then blink.cmp); GitHub Copilot NES via `<M-l/j/h>`
 
 ### 🚀 Navigation & Productivity
 
-- **Flash motion** (`<leader><leader>`) and Snacks finders for files, buffers, commands
+- **Flash motion** (`<leader><space>`) and Snacks finders for files, buffers, commands
 - **LazyGit** (`<leader>gg`)
-- **Bookmarks** for quick navigation (`<leader>mm`)
+- **Marks** for quick navigation (`<leader>sm`)
 - **Code screenshots** with syntax highlighting (`<leader>cs` in visual mode)
 - **Auto buffer cleanup** (configurable threshold)
 - **Sessions** with per-branch support and project switching
-- TODO tracking, search & replace, git workflows via CodeDiff and Gitsigns
+- TODO tracking, search & replace, git workflows via Diffview and Gitsigns
 
 ### 🐾 Project Meow Features
 
@@ -59,9 +59,9 @@
 - **Developer tools**: conflict detection, profiling, startup tracking
 - **Automation**: `update-meowvim.sh` with backup/rollback, test suite
 - **CI/CD** with lint and multi-platform tests
-- Mason-managed tools with auto PATH setup
+- mise-managed tools with auto PATH setup
 - Overseer tasks, Neotest runners, DAP for Go, TypeScript, Python, more
-- **Quickfix code review** with inline annotations (`<leader>r` group) and `<leader>yf/yl` file/line references
+- **AI code review** with inline annotations via meow.review.nvim (`<leader>r` group) and `<leader>yf/yl` file/line references
 
 ## 📦 Installation
 
@@ -69,7 +69,7 @@
 
 | Type        | Requirements                                                   |
 | ----------- | -------------------------------------------------------------- |
-| Required    | Neovim ≥ 0.11, Git, true-color terminal                        |
+| Required    | Neovim ≥ 0.12, Git, true-color terminal                        |
 | Recommended | Node.js ≥ 18, Python ≥ 3.8, Go ≥ 1.19, ripgrep, fd, fzf, Nerd Font |
 | Optional    | GitHub Copilot                                                  |
 
@@ -107,7 +107,6 @@ The `meow` automation links meowvim with your dotfiles.
 
 # Or manually inside Neovim
 :Lazy sync
-:MasonToolsUpdate
 
 # Check health after updates
 :checkhealth meowvim
@@ -118,8 +117,8 @@ The `meow` automation links meowvim with your dotfiles.
 1. **Launch** — first run installs plugins and bootstraps LSP servers
 2. **Configure** — edit `~/.config/meowvim/config.lua` (theme, transparency, features)
 3. **Keymaps** — press `<leader>hk` for interactive search or see [Quick Reference](docs/KEYMAPS_QUICK_REFERENCE.md)
-4. **Language tools** — open Mason (`<leader>Tm`) to install LSP, formatters, debuggers
-5. **Navigate** — `<leader><leader>` Flash jumps, `<leader>ff` file search, `<leader>gg` LazyGit, `F2` terminal
+4. **Language tools** — install LSP servers, formatters, and debuggers via mise
+5. **Navigate** — `<leader><space>` Flash jumps, `<leader>ff` file search, `<leader>gg` LazyGit, `F2` terminal
 6. **Copilot** (optional) — authenticate via `:Copilot auth`
 
 ## 📖 Documentation

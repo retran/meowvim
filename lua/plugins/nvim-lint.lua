@@ -4,8 +4,6 @@
 -- @file: lua/plugins/nvim-lint.lua
 -- @brief: Asynchronous linting engine with multiple linter support.
 
-local toggles = require("utils.toggles")
-
 local desired_linters_by_ft = {
   python = { "pylint", "mypy" },
   javascript = { "eslint_d" },
@@ -32,7 +30,7 @@ return {
     for ft, linters in pairs(desired_linters_by_ft) do
       local available_linters = {}
       for _, linter in ipairs(linters) do
-          if vim.fn.executable(linter) == 1 then
+        if vim.fn.executable(linter) == 1 then
           table.insert(available_linters, linter)
         end
       end
@@ -81,6 +79,7 @@ return {
   end,
 
   config = function(_, opts)
+    local toggles = require("utils.toggles")
     local lint = require("lint")
 
     lint.linters_by_ft = opts.linters_by_ft or {}

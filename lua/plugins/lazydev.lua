@@ -13,7 +13,7 @@ return {
     },
     integrations = {
       lspconfig = true,
-      cmp = true,
+      cmp = false,  -- blink.cmp uses its own lazydev source (see nvim-cmp.lua which configures blink.cmp)
     },
   },
 }

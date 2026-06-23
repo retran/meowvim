@@ -3,15 +3,14 @@
 
 -- @file: lua/plugins/nvim-lspconfig.lua
 -- @brief: Language Server Protocol (LSP) client configuration and setup.
--- @requires: Neovim >= 0.11 (uses vim.lsp.config() and vim.lsp.enable() APIs)
+-- @requires: Neovim >= 0.12 (uses vim.lsp.config() and vim.lsp.enable() APIs)
 
 return {
   "neovim/nvim-lspconfig",
-  version = "v1.*", -- Pin to stable 1.x releases
+  version = "v2.*", -- v2 deprecates .setup(); we use vim.lsp.config() + vim.lsp.enable() directly
   lazy = false,
   dependencies = {
-    "hrsh7th/nvim-cmp",
-    "hrsh7th/cmp-nvim-lsp",
+    "saghen/blink.cmp",
     "onsails/lspkind.nvim",
     "b0o/SchemaStore.nvim",
   },
@@ -64,14 +63,18 @@ return {
       end
     end
 
-    local icons = { Error = "󰅚", Warn = "󰀪", Hint = "󰌶", Info = "󰋼" }
-    for type, icon in pairs(icons) do
-      vim.fn.sign_define("DiagnosticSign" .. type, { text = icon, texthl = "DiagnosticSign" .. type, numhl = "" })
-    end
+    vim.diagnostic.config(vim.tbl_deep_extend("force", vim.diagnostic.config() or {}, {
+      signs = {
+        text = {
+          [vim.diagnostic.severity.ERROR] = "󰅚",
+          [vim.diagnostic.severity.WARN]  = "󰀪",
+          [vim.diagnostic.severity.HINT]  = "󰌶",
+          [vim.diagnostic.severity.INFO]  = "󰋼",
+        },
+      },
+    }))
 
-
-
-    local caps = require("cmp_nvim_lsp").default_capabilities()
+    local caps = require("blink.cmp").get_lsp_capabilities()
     caps.textDocument.semanticTokens =
       vim.tbl_deep_extend("force", caps.textDocument.semanticTokens or {}, { dynamicRegistration = true })
 
@@ -233,16 +236,24 @@ return {
       postgres_lsp = {},
     }
 
-    local lspconfig = require("lspconfig")
+    local common_root_markers = {
+      "package.json",
+      "tsconfig.json",
+      "jsconfig.json",
+      "pyproject.toml",
+      "setup.py",
+      "requirements.txt",
+      "go.mod",
+      "Cargo.toml",
+      "pom.xml",
+      "build.gradle",
+      ".git",
+    }
 
+    -- lspconfig v2 ships server definitions in its own lsp/ directory which
+    -- Neovim 0.12 auto-discovers. We only supply overrides; cmd/filetypes come
+    -- from lspconfig's bundled defaults automatically.
     local function setup_server(server_name)
-      local server = lspconfig[server_name]
-      if not server or not server.document_config then
-        vim.notify(string.format("LSP server '%s' not found in lspconfig", server_name), vim.log.levels.WARN)
-        return
-      end
-
-      local default_config = server.document_config.default_config or {}
       local server_opts = vim.tbl_deep_extend("force", {}, server_settings[server_name] or {})
       local cmd = server_opts.cmd or default_config.cmd
       if cmd and type(cmd) == "table" and cmd[1] and vim.fn.executable(cmd[1]) == 0 then
@@ -251,35 +262,15 @@ return {
       local custom_on_attach = server_opts.on_attach
 
       server_opts.capabilities = vim.tbl_deep_extend("force", {}, caps, server_opts.capabilities or {})
-
       server_opts.on_attach = function(client, bufnr)
         on_attach(client, bufnr)
         if custom_on_attach then
           custom_on_attach(client, bufnr)
         end
       end
+      server_opts.root_markers = server_opts.root_markers or common_root_markers
 
-      local common_root_markers = {
-        "package.json",
-        "tsconfig.json",
-        "jsconfig.json",
-        "pyproject.toml",
-        "setup.py",
-        "requirements.txt",
-        "go.mod",
-        "Cargo.toml",
-        "pom.xml",
-        "build.gradle",
-        ".git",
-      }
-
-      local final_config = vim.tbl_deep_extend("force", {
-        cmd = default_config.cmd,
-        filetypes = default_config.filetypes,
-        root_markers = common_root_markers,
-      }, server_opts)
-
-      vim.lsp.config(server_name, final_config)
+      vim.lsp.config(server_name, server_opts)
       vim.lsp.enable(server_name)
     end
 
@@ -287,21 +278,12 @@ return {
       setup_server(server_name)
     end
 
-    do
-      if lspconfig.gdscript and lspconfig.gdscript.document_config then
-        local default_config = lspconfig.gdscript.document_config.default_config or {}
-        vim.lsp.config("gdscript", {
-          cmd = default_config.cmd,
-          filetypes = default_config.filetypes,
-          root_dir = function(bufnr, on_dir)
-            local root = vim.fs.root(bufnr, { "project.godot", ".git" })
-            on_dir(root or vim.fs.dirname(vim.api.nvim_buf_get_name(bufnr)))
-          end,
-          capabilities = caps,
-          on_attach = on_attach,
-        })
-        vim.lsp.enable("gdscript")
-      end
-    end
+    -- GDScript uses a TCP server started by Godot rather than a spawned process
+    vim.lsp.config("gdscript", {
+      root_markers = { "project.godot", ".git" },
+      capabilities = caps,
+      on_attach = on_attach,
+    })
+    vim.lsp.enable("gdscript")
   end,
 }

@@ -175,6 +175,10 @@ local ICON_EXACT = {
   ["View Git Status"] = "󰊢",
   ["Copy File Reference"] = "󰆒",
   ["Copy Line Reference"] = "󰆒",
+  ["Toggle Pin"] = "󰐃",
+  ["Pin All Buffers"] = "󰐄",
+  ["Unpin All Buffers"] = "󰐅",
+  ["Workspace Symbols"] = "󰙅",
   -- Review
   ["Add Issue"] = "󰅙",
   ["Add Suggestion"] = "󰌹",
@@ -294,14 +298,6 @@ local function glance_action(action_type)
   end
 end
 
-local function trouble_action(mode, filter)
-  return function()
-    local trouble = safe_require("trouble")
-    if trouble then
-      trouble.toggle(mode, filter)
-    end
-  end
-end
 
 local function gitsigns_action(action_name)
   return function()
@@ -489,6 +485,36 @@ function M.setup()
         end,
         desc = "Delete All Buffers",
       },
+      {
+        "<leader>bp",
+        function()
+          local ok, hbac = pcall(require, "hbac")
+          if ok then
+            hbac.toggle_pin()
+          end
+        end,
+        desc = "Toggle Pin",
+      },
+      {
+        "<leader>bP",
+        function()
+          local ok, hbac = pcall(require, "hbac")
+          if ok then
+            hbac.pin_all()
+          end
+        end,
+        desc = "Pin All Buffers",
+      },
+      {
+        "<leader>bu",
+        function()
+          local ok, hbac = pcall(require, "hbac")
+          if ok then
+            hbac.unpin_all()
+          end
+        end,
+        desc = "Unpin All Buffers",
+      },
 
       -- Windows
       { "<leader>w", group = "Windows", icon = "" },
@@ -553,7 +579,27 @@ function M.setup()
         desc = "Search and Replace",
         mode = { "n", "x" },
       },
-      { "<leader>st", "<cmd>TodoTrouble<CR>", desc = "List TODO Comments" },
+      {
+        "<leader>st",
+        function()
+          snacks.picker.todo_comments()
+        end,
+        desc = "List TODO Comments",
+      },
+      {
+        "<leader>sw",
+        function()
+          snacks.picker.lsp_workspace_symbols()
+        end,
+        desc = "Workspace Symbols",
+      },
+      {
+        "<leader>sm",
+        function()
+          snacks.picker.marks()
+        end,
+        desc = "Search Marks",
+      },
 
       -- Flash Jump
       { "<leader><space>", flash_action("jump", false), desc = "Jump", mode = { "n", "x", "o" } },
@@ -575,20 +621,6 @@ function M.setup()
       { "<leader>nr", glance_action("references"), desc = "Reference" },
       { "<leader>ni", glance_action("implementations"), desc = "Implementation" },
       { "<leader>nt", glance_action("type_definitions"), desc = "Type Definition" },
-      {
-        "<leader>ns",
-        function()
-          snacks.picker.lsp_symbols()
-        end,
-        desc = "Document Symbol",
-      },
-      {
-        "<leader>nw",
-        function()
-          snacks.picker.lsp_workspace_symbols()
-        end,
-        desc = "Workspace Symbol",
-      },
       {
         "<leader>nh",
         function()
@@ -617,11 +649,15 @@ function M.setup()
         end,
         desc = "Call Hierarchy (Callees)",
       },
+      { "<leader>nW", group = "Workspace", icon = "󰙅" },
+      { "<leader>nWa", vim.lsp.buf.add_workspace_folder, desc = "Add Workspace Folder" },
+      { "<leader>nWR", vim.lsp.buf.remove_workspace_folder, desc = "Remove Workspace Folder" },
+      { "<leader>nWL", vim.lsp.buf.list_workspace_folders, desc = "List Workspace Folders" },
 
       -- Code
       { "<leader>c", group = "Code", icon = "󰅩" },
       { "<leader>cc", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "v" } },
-      { "<leader>cr", vim.lsp.buf.rename, desc = "Rename Symbol" },
+      -- <leader>cr is bound in inc-rename.lua (live preview rename via noice)
       {
         "<leader>cf",
         function()
@@ -645,11 +681,25 @@ function M.setup()
         desc = "Organize Imports",
       },
       -- Diagnostics
-      { "<leader>cd", trouble_action("diagnostics"), desc = "Project Diagnostics" },
-      { "<leader>cD", trouble_action("diagnostics", { filter = { buf = 0 } }), desc = "Buffer Diagnostics" },
+      {
+        "<leader>cd",
+        function()
+          snacks.picker.diagnostics()
+        end,
+        desc = "Project Diagnostics",
+      },
+      {
+        "<leader>cD",
+        function()
+          snacks.picker.diagnostics({ buf = 0 })
+        end,
+        desc = "Buffer Diagnostics",
+      },
       { "<leader>ch", vim.diagnostic.open_float, desc = "Line Diagnostics" },
-      { "]d", vim.diagnostic.goto_next, desc = "Next Diagnostic", mode = "n" },
-      { "[d", vim.diagnostic.goto_prev, desc = "Previous Diagnostic", mode = "n" },
+      -- ]d/[d are Neovim 0.11+ built-in defaults; override here to ensure
+      -- they stay in which-key's group display under <leader>c
+      { "]d", function() vim.diagnostic.jump({ count = 1, float = true }) end, desc = "Next Diagnostic", mode = "n" },
+      { "[d", function() vim.diagnostic.jump({ count = -1, float = true }) end, desc = "Previous Diagnostic", mode = "n" },
       { "]q", "<cmd>cnext<CR>", desc = "Next Quickfix Item", mode = "n" },
       { "[q", "<cmd>cprev<CR>", desc = "Previous Quickfix Item", mode = "n" },
       { "]l", "<cmd>lnext<CR>", desc = "Next Location List Item", mode = "n" },
@@ -659,53 +709,59 @@ function M.setup()
       { "]t", "<cmd>tabnext<CR>", desc = "Next Tab", mode = "n" },
       { "[t", "<cmd>tabprevious<CR>", desc = "Previous Tab", mode = "n" },
       -- CodeLens & Symbols
-      { "<leader>cq", trouble_action("quickfix"), desc = "Quickfix List" },
-      { "<leader>cs", trouble_action("symbols", { focus = false }), desc = "Browse Symbols" },
+      { "<leader>cq", "<cmd>copen<CR>", desc = "Quickfix List" },
+      {
+        "<leader>cs",
+        function()
+          snacks.picker.lsp_symbols()
+        end,
+        desc = "Browse Symbols",
+      },
       { "<leader>cl", vim.lsp.codelens.run, desc = "Run CodeLens" },
       {
         "<leader>cL",
         vim.lsp.codelens.refresh,
         desc = "Refresh CodeLens",
       },
-      -- Rust Crates
-      { "<leader>cR", group = "Rust Crates", icon = "" },
+      -- Rust Crates (moved from <leader>cR to avoid conflict with snacks rename)
+      { "<leader>cC", group = "Rust Crates", icon = "" },
       {
-        "<leader>cRt",
+        "<leader>cCt",
         function()
           require("crates").toggle()
         end,
         desc = "Toggle Crates",
       },
       {
-        "<leader>cRr",
+        "<leader>cCr",
         function()
           require("crates").reload()
         end,
         desc = "Reload Crates",
       },
       {
-        "<leader>cRu",
+        "<leader>cCu",
         function()
           require("crates").update_crate()
         end,
         desc = "Update Crate",
       },
       {
-        "<leader>cRU",
+        "<leader>cCU",
         function()
           require("crates").update_all_crates()
         end,
         desc = "Update All Crates",
       },
       {
-        "<leader>cRH",
+        "<leader>cCH",
         function()
           require("crates").open_homepage()
         end,
         desc = "Open Crate Homepage",
       },
       {
-        "<leader>cRD",
+        "<leader>cCD",
         function()
           require("crates").open_documentation()
         end,
@@ -716,39 +772,39 @@ function M.setup()
       { "<leader>g", group = "Git", icon = "󰊢" },
       { "<leader>gg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
       { "<leader>gf", "<cmd>LazyGitCurrentFile<cr>", desc = "LazyGit Current File" },
-      { "<leader>gl", "<cmd>LazyGit log<cr>", desc = "Git Log" },
+      { "<leader>gn", "<cmd>Neogit<CR>", desc = "Neogit Status" },
+      { "<leader>gC", "<cmd>Neogit commit<CR>", desc = "Commit" },
+      { "<leader>gp", "<cmd>Neogit pull<CR>", desc = "Pull" },
+      { "<leader>gP", "<cmd>Neogit push<CR>", desc = "Push" },
       {
         "<leader>gb",
         function()
           snacks.git.blame_line()
         end,
-        desc = "Git Blame Line",
+        desc = "Blame Line",
       },
       {
         "<leader>gB",
         function()
           snacks.gitbrowse()
         end,
-        desc = "Git Browse",
+        desc = "Browse Remote",
       },
-      { "<leader>gC", "<cmd>Neogit commit<CR>", desc = "Commit" },
-      { "<leader>gp", "<cmd>Neogit pull<CR>", desc = "Pull" },
-      { "<leader>gP", "<cmd>Neogit push<CR>", desc = "Push" },
       {
         "<leader>gw",
         function()
           snacks.picker.git_branches()
         end,
-        desc = "Browse Branches",
+        desc = "Branches",
       },
       -- Hunks
-      { "<leader>gs", gitsigns_action("stage_hunk"), desc = "Stage Hunk" },
-      { "<leader>gr", gitsigns_action("reset_hunk"), desc = "Reset Hunk" },
-      { "<leader>gS", gitsigns_action("stage_buffer"), desc = "Stage Buffer" },
-      { "<leader>gR", gitsigns_action("reset_buffer"), desc = "Reset Buffer" },
-      { "<leader>gv", gitsigns_action("preview_hunk"), desc = "Preview Hunk" },
-      { "<leader>gd", gitsigns_action("diffthis"), desc = "Diff Buffer" },
-      -- Bracket motions
+      { "<leader>gH", group = "Hunks", icon = "󰊢" },
+      { "<leader>gHs", gitsigns_action("stage_hunk"), desc = "Stage Hunk" },
+      { "<leader>gHr", gitsigns_action("reset_hunk"), desc = "Reset Hunk" },
+      { "<leader>gHS", gitsigns_action("stage_buffer"), desc = "Stage Buffer" },
+      { "<leader>gHR", gitsigns_action("reset_buffer"), desc = "Reset Buffer" },
+      { "<leader>gHv", gitsigns_action("preview_hunk"), desc = "Preview Hunk" },
+      { "<leader>gHd", gitsigns_action("diffthis"), desc = "Diff Buffer" },
       {
         "]h",
         function()
@@ -763,11 +819,12 @@ function M.setup()
         end,
         desc = "Previous Hunk",
       },
-      -- CodeDiff
-      { "<leader>gD", group = "CodeDiff", icon = "󰩫" },
-      { "<leader>gDo", ":CodeDiff<CR>", desc = "Open Diff Explorer" },
-      { "<leader>gDf", ":CodeDiff file HEAD<CR>", desc = "Diff File vs HEAD" },
-      { "<leader>gDh", ":CodeDiff history<CR>", desc = "Show File History" },
+      -- Diffview
+      { "<leader>gD", group = "Diffview", icon = "󰩫" },
+      { "<leader>gDd", "<cmd>DiffviewOpen<cr>", desc = "Open" },
+      { "<leader>gDh", "<cmd>DiffviewFileHistory %<cr>", desc = "File History" },
+      { "<leader>gDH", "<cmd>DiffviewFileHistory<cr>", desc = "Repo History" },
+      { "<leader>gDc", "<cmd>DiffviewClose<cr>", desc = "Close" },
       -- Git links
       {
         "<leader>gy",
@@ -806,7 +863,13 @@ function M.setup()
         desc = "Open Git Link in Browser",
         mode = { "n", "v" },
       },
-      -- Bracket motions
+      -- Conflicts
+      { "<leader>gx", group = "Conflicts", icon = "󰦻" },
+      { "<leader>gxo", ":GitConflictChooseOurs<CR>", desc = "Choose Ours" },
+      { "<leader>gxt", ":GitConflictChooseTheirs<CR>", desc = "Choose Theirs" },
+      { "<leader>gxb", ":GitConflictChooseBoth<CR>", desc = "Choose Both" },
+      { "<leader>gxn", ":GitConflictChooseNone<CR>", desc = "Choose None" },
+      { "<leader>gxl", ":GitConflictListQf<CR>", desc = "List Conflicts" },
       {
         "]x",
         ":GitConflictNextConflict<CR>",
@@ -817,13 +880,6 @@ function M.setup()
         ":GitConflictPrevConflict<CR>",
         desc = "Previous Conflict",
       },
-      -- Conflicts
-      { "<leader>go", ":GitConflictChooseOurs<CR>", desc = "Choose Ours" },
-      { "<leader>gt", ":GitConflictChooseTheirs<CR>", desc = "Choose Theirs" },
-      { "<leader>gx", group = "Conflicts", icon = "󰦻" },
-      { "<leader>gxb", ":GitConflictChooseBoth<CR>", desc = "Choose Both" },
-      { "<leader>gxn", ":GitConflictChooseNone<CR>", desc = "Choose None" },
-      { "<leader>gxl", ":GitConflictListQf<CR>", desc = "List Conflicts" },
       -- GitHub
       { "<leader>gh", group = "GitHub", icon = "" },
       { "<leader>ghp", "<cmd>GHOpenPR<CR>", desc = "Open Pull Request" },
@@ -914,10 +970,10 @@ function M.setup()
       { "]r", mr_action("next_comment"), desc = "Next Review Comment", mode = "n" },
       { "[r", mr_action("prev_comment"), desc = "Previous Review Comment", mode = "n" },
 
-      -- Run & Tasks
-      { "<leader>R", group = "Run", icon = "" },
+      -- Execute / Tasks
+      { "<leader>x", group = "Execute", icon = "" },
       {
-        "<leader>Rr",
+        "<leader>xr",
         function()
           local ok, overseer = pcall(require, "overseer")
           if ok then
@@ -927,7 +983,7 @@ function M.setup()
         desc = "Run Task Template",
       },
       {
-        "<leader>Rl",
+        "<leader>xl",
         function()
           local ok, overseer = pcall(require, "overseer")
           if not ok then
@@ -944,7 +1000,7 @@ function M.setup()
         desc = "Restart Last Task",
       },
       {
-        "<leader>Ro",
+        "<leader>xo",
         function()
           local ok, overseer = pcall(require, "overseer")
           if ok then
@@ -954,9 +1010,6 @@ function M.setup()
         desc = "Toggle Task List",
       },
 
-      -- Treesitter
-      { "<leader>S", group = "Swap", icon = "" },
-
       -- Debug (groups only; actual DAP bindings live in plugin config)
       { "<leader>d", group = "Debug", icon = "" },
       { "<leader>db", group = "Breakpoints", icon = "" },
@@ -964,11 +1017,8 @@ function M.setup()
 
       -- Options & UI
       { "<leader>o", group = "Options", icon = "" },
-      { "<leader>oW", group = "Workspace", icon = "󰙅" },
-      { "<leader>oWa", vim.lsp.buf.add_workspace_folder, desc = "Add Workspace Folder" },
-      { "<leader>oWR", vim.lsp.buf.remove_workspace_folder, desc = "Remove Workspace Folder" },
-      { "<leader>oWL", vim.lsp.buf.list_workspace_folders, desc = "List Workspace Folders" },
       { "<leader>oP", group = "Profiling", icon = "󰔟" },
+      { "<leader>oPs", "<cmd>StartupTime<CR>", desc = "Profile Startup Time" },
       {
         "<leader>og",
         function()
@@ -1106,10 +1156,10 @@ function M.setup()
           vim.g.diagnostics_enabled = not vim.g.diagnostics_enabled
           toggles.update("diagnostics_enabled")
           if vim.g.diagnostics_enabled then
-            vim.diagnostic.enable()
+            vim.diagnostic.enable(true)
             vim.notify("Diagnostics: ON", vim.log.levels.INFO)
           else
-            vim.diagnostic.disable()
+            vim.diagnostic.enable(false)
             vim.notify("Diagnostics: OFF", vim.log.levels.WARN)
           end
         end,
@@ -1192,8 +1242,8 @@ function M.setup()
         desc = "Quick Toggle Day/Night",
       },
 
-      -- Undo & Clipboard
-      { "<leader>u", group = "Undo", icon = "" },
+      -- History
+      { "<leader>u", group = "History", icon = "" },
       {
         "<leader>uu",
         function()
@@ -1209,8 +1259,10 @@ function M.setup()
         desc = "Show Redo History",
       },
 
+      -- Yank / Copy references (OpenCode / Claude compatible)
+      { "<leader>y", group = "Yank", icon = "󰆒" },
       {
-        "<leader>uy",
+        "<leader>yh",
         function()
           local ok, yanky_snacks = pcall(require, "yanky.sources.snacks")
           if ok then
@@ -1221,19 +1273,6 @@ function M.setup()
         end,
         desc = "Show Yank History",
       },
-
-      -- Marks
-      { "<leader>m", group = "Marks", icon = "󰃀" },
-      {
-        "<leader>mm",
-        function()
-          snacks.picker.marks()
-        end,
-        desc = "Search Marks",
-      },
-
-      -- Yank / Copy references (OpenCode / Claude compatible)
-      { "<leader>y", group = "Yank", icon = "󰆒" },
       {
         "<leader>yf",
         copy_file_ref,
@@ -1254,6 +1293,13 @@ function M.setup()
           open_scratch()
         end,
         desc = "Scratch",
+      },
+      {
+        "<leader>Ns",
+        function()
+          open_scratch()
+        end,
+        desc = "Open Scratch",
       },
       {
         "<leader>Nf",
@@ -1362,9 +1408,10 @@ function M.setup()
         mapping.icon = icon_for(mapping.desc)
       end
       local mode = mapping.mode or "n"
-      mapping.mode = nil
+      local entry = vim.tbl_extend("force", {}, mapping)
+      entry.mode = nil
       wk.add({
-        { mode = mode, mapping },
+        { mode = mode, entry },
       })
     end
   end

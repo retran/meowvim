@@ -20,13 +20,6 @@ return {
       desc = "Toggle Scratch Buffer",
     },
     {
-      "<leader>Ns",
-      function()
-        Snacks.scratch.select()
-      end,
-      desc = "Select Scratch Buffer",
-    },
-    {
       "<leader>hn",
       function()
         Snacks.notifier.show_history()
@@ -39,41 +32,6 @@ return {
         Snacks.bufdelete()
       end,
       desc = "Delete Buffer",
-    },
-    {
-      "<leader>gg",
-      function()
-        Snacks.lazygit()
-      end,
-      desc = "Lazygit",
-    },
-    {
-      "<leader>gb",
-      function()
-        Snacks.git.blame_line()
-      end,
-      desc = "Git Blame Line",
-    },
-    {
-      "<leader>gB",
-      function()
-        Snacks.gitbrowse()
-      end,
-      desc = "Git Browse",
-    },
-    {
-      "<leader>gf",
-      function()
-        Snacks.lazygit.log_file()
-      end,
-      desc = "Lazygit Current File History",
-    },
-    {
-      "<leader>gl",
-      function()
-        Snacks.lazygit.log()
-      end,
-      desc = "Lazygit Log",
     },
     {
       "<leader>cR",

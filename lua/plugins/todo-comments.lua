@@ -7,7 +7,7 @@
 return {
   "folke/todo-comments.nvim",
   event = { "BufReadPost", "BufNewFile" },
-  cmd = { "TodoTrouble", "TodoLocList", "TodoQuickFix", "TodoTelescope" },
+  cmd = { "TodoLocList", "TodoQuickFix" },
   dependencies = { "nvim-lua/plenary.nvim" },
   opts = {
     highlight = {

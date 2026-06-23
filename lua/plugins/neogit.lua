@@ -14,9 +14,7 @@ return {
   opts = {
     disable_commit_confirmation = true,
     integrations = {
-      -- neogit integrates with sindrets/diffview.nvim only.
-      -- codediff.lua uses esmuellert/codediff.nvim — a different plugin entirely.
-      diffview = false,
+      diffview = true,
     },
     commit_popup = {
       kind = "floating",

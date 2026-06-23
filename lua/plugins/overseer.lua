@@ -28,6 +28,12 @@ return {
     "OverseerOpen",
     "OverseerClose",
   },
+  dependencies = {
+    {
+      "akinsho/toggleterm.nvim",
+      opts = { direction = "float" },
+    },
+  },
   opts = {},
   config = function(_, opts)
     local overseer = require("overseer")

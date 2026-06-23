@@ -13,20 +13,20 @@ Common workflows in **meowvim**.
 
 ## Navigation
 
-- `<leader><leader>` - Flash jump anywhere
+- `<leader><space>` - Flash jump anywhere
 - `<leader>ff` - File picker
 - `<leader>bb` - Buffer picker
-- `<leader>mm` - Marks picker
-- `<leader>nw` - Workspace symbols (LSP)
+- `<leader>sm` - Marks picker
+- `<leader>sw` - Workspace symbols (LSP)
 - `]d` / `[d` - Next/previous diagnostic
-- `<leader>cd` - Diagnostics list (Trouble)
+- `<leader>cd` - Diagnostics list (Snacks picker)
 - `F2` - Toggle terminal
 
 ### Marks
 
 - `m{a-z}` - Set mark
 - `'{a-z}` - Jump to mark
-- `<leader>mm` - Browse marks
+- `<leader>sm` - Browse marks
 - `:marks` - List marks
 
 ### Windows
@@ -53,11 +53,11 @@ Use `<leader>hc` to fuzzy-find commands.
 - `<leader>gg` - LazyGit
 - `<leader>gf` - LazyGit for file
 - `<leader>gb` - Blame line
-- `<leader>gDo` - Open CodeDiff explorer
-- `<leader>gs` / `<leader>gr` / `<leader>gv` - Stage/reset/preview hunk
+- `<leader>gDd` - Open Diffview explorer
+- `<leader>gHs` / `<leader>gHr` / `<leader>gHv` - Stage/reset/preview hunk
 - `]h` / `[h` - Next/previous hunk
 - `<leader>gy` / `<leader>gY` - Copy/open permalink
-- `<leader>go` / `<leader>gt` - Conflict resolution (ours/theirs)
+- `<leader>gxo` / `<leader>gxt` - Conflict resolution (ours/theirs)
 
 ### LazyGit
 
@@ -66,7 +66,7 @@ Use `<leader>hc` to fuzzy-find commands.
 - Full git workflow: stage, commit, push, rebase
 - Interactive rebase and conflicts
 
-Use Overseer tasks (`<leader>Rr`, `<leader>Rl`, `<leader>Ro`) for custom tasks.
+Use Overseer tasks (`<leader>xr`, `<leader>xl`, `<leader>xo`) for custom tasks.
 
 ## Testing & Debug
 
@@ -83,7 +83,7 @@ Use Overseer tasks (`<leader>Rr`, `<leader>Rl`, `<leader>Ro`) for custom tasks.
 - `<leader>do` - Step out
 - `<leader>du` - Toggle DAP UI
 
-Install adapters via Mason (`<leader>Tm`).
+Install debug adapters via mise or manually per the DAP plugin config.
 
 ## Writing
 
@@ -109,32 +109,32 @@ Sessions save automatically. Your layout, buffers, and state persist across rest
 
 ## Tasks
 
-- `<leader>Rr` - Task picker (Overseer)
-- `<leader>Rl` - Rerun last task
-- `<leader>Ro` - Toggle task list
+- `<leader>xr` - Task picker (Overseer)
+- `<leader>xl` - Rerun last task
+- `<leader>xo` - Toggle task list
 
 Create custom tasks in `lua/plugins/overseer.lua` or `.overseer.json`.
 
 ## Code Review
 
-Quickfix-based code review via `quickfix-review.nvim`:
+AI-assisted inline code review via `meow.review.nvim`:
 
-- `<leader>ri` - Add Issue comment
-- `<leader>rs` - Add Suggestion
-- `<leader>rn` - Add Note
-- `<leader>rp` - Add Praise
-- `<leader>rq` - Add Question
-- `<leader>rk` - Add Insight
-- `<leader>ra` - Cycle through add comment types
+- `<leader>ra` - Add comment (modal; Tab cycles type, `<C-s>` confirms)
 - `<leader>rd` - Delete comment
+- `<leader>rE` - Edit comment (pre-filled modal)
 - `<leader>rv` - View comment
-- `<leader>re` - Export review
-- `<leader>rc` - Clear review
-- `<leader>rS` - Review summary
-- `<leader>rw` - Save review
-- `<leader>rl` - Load review
-- `<leader>ro` - Open review list (quickfix)
-- `<leader>rg` - Goto real file
+- `<leader>re` - Export review to clipboard
+- `<leader>rf` - Export to file (prompts for filename)
+- `<leader>rF` - Export annotations for current file only
+- `<leader>rC` - Export and clear all annotations
+- `<leader>rc` - Clear all annotations
+- `<leader>rr` - Reload from store file
+- `<leader>rg` - Go to comment (picker)
+- `<leader>rG` - Go to comment in current file
+- `<leader>rt` - Go to comment by type
+- `<leader>rx` - Resolve comment at cursor
+- `<leader>rX` - Resolve all comments
+- `<leader>rV` - Validate annotations (detect stale)
 - `]r` / `[r` - Next/previous review comment
 
 Copy references for review notes:
@@ -159,10 +159,11 @@ Copy references for review notes:
 
 ### Performance
 
-- `:MeowvimProfile` or `<leader>oPl` - Plugin load times
+- `:MeowvimProfile` - Plugin load times
 - `:StartupTrends` - Startup analysis
 - `:MeasureRender` - Buffer rendering
 - `:ProfileStart` / `:ProfileStop` - Profile operations
+- `<leader>oPs` - Profile startup time (`:StartupTime`)
 
 ### Keymaps
 
