@@ -6,7 +6,7 @@ This guide covers installation, verification, and maintenance of **meowvim**.
 
 | Level           | Details                                                     |
 | --------------- | ----------------------------------------------------------- |
-| **Required**    | Neovim ≥ 0.11, Git, true-color terminal                     |
+| **Required**    | Neovim ≥ 0.12, Git, true-color terminal                     |
 | **Recommended** | Node.js ≥ 18, Python ≥ 3.8, Go ≥ 1.19, ripgrep, fd, fzf, Nerd Font |
 | **Optional**    | GitHub Copilot, tmux                                         |
 
@@ -62,8 +62,7 @@ After first launch:
 
 1. Run `:checkhealth meowvim`
 2. Check dashboard appears (start Neovim without arguments)
-3. Open Mason (`<leader>Tm`)
-4. Run `:Lazy` to verify plugins
+3. Run `:Lazy` to verify plugins
 
 ## Updates
 
@@ -94,7 +93,6 @@ git pull
 
 # In Neovim:
 :Lazy sync
-:MasonToolsUpdate
 :checkhealth meowvim
 ```
 

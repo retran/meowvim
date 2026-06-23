@@ -2,7 +2,15 @@
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
 
 -- @file: lua/plugins/nvim-treesitter.lua
--- @brief: Treesitter configuration for syntax highlighting and structural editing.
+-- @brief: Treesitter configuration for textobjects and autotag.
+--
+-- NOTE: nvim-treesitter was archived April 2026. Neovim 0.12 ships treesitter
+-- highlighting built-in. This plugin is kept only because nvim-treesitter-textobjects
+-- and nvim-ts-autotag still depend on it. The foldexpr now uses the built-in
+-- vim.treesitter.foldexpr() (see lua/config/options.lua).
+--
+-- Parsers not bundled with Neovim 0.12 can be installed with:
+--   :TSInstall <lang>  (requires tree-sitter CLI from mise.toml)
 
 return {
   "nvim-treesitter/nvim-treesitter",
@@ -16,6 +24,7 @@ return {
   config = function()
     require("nvim-treesitter").setup({
       ensure_installed = {
+        -- Languages not bundled with Neovim 0.12 built-in parsers
         "bash",
         "c",
         "c_sharp",

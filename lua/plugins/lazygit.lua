@@ -16,10 +16,6 @@ return {
   dependencies = {
     "nvim-lua/plenary.nvim",
   },
-  keys = {
-    { "<leader>gg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
-    { "<leader>gf", "<cmd>LazyGitCurrentFile<cr>", desc = "LazyGit Current File" },
-  },
   config = function()
     local function sync_lazygit_theme()
       local config_ok, config = pcall(require, "meowvim.config")

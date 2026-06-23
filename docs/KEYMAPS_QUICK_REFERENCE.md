@@ -26,8 +26,8 @@ Quick reference card for the most commonly used keymaps in meowvim.
 | `<leader>fs` | Save file |
 | `<leader>bb` | Buffer list |
 | `<leader>bd` | Delete buffer |
-| `Tab` / `L` | Next buffer |
-| `Shift+Tab` / `H` | Previous buffer |
+| `Tab` | Next buffer |
+| `Shift+Tab` | Previous buffer |
 
 ## 🔍 Search
 
@@ -35,8 +35,10 @@ Quick reference card for the most commonly used keymaps in meowvim.
 |-----|--------|
 | `<leader>s/` | Grep in project |
 | `<leader>sb` | Search buffers |
+| `<leader>sm` | Search marks |
 | `<leader>sr` | Search & replace |
 | `<leader>st` | TODO comments |
+| `<leader>sw` | Workspace symbols |
 
 ## 🎯 Navigation
 
@@ -46,7 +48,6 @@ Quick reference card for the most commonly used keymaps in meowvim.
 | `<leader>nd` | Go to definition |
 | `<leader>nr` | Find references |
 | `<leader>ni` | Find implementations |
-| `<leader>ns` | Document symbols |
 | `]d` / `[d` | Next/prev diagnostic |
 
 ## 💡 Code
@@ -92,10 +93,10 @@ Quick reference card for the most commonly used keymaps in meowvim.
 
 | Key | Action |
 |-----|--------|
-| `<leader>cRt` | Toggle crates UI |
-| `<leader>cRu` | Update crate |
-| `<leader>cRU` | Update all crates |
-| `<leader>cRH` | Open homepage |
+| `<leader>cCt` | Toggle crates UI |
+| `<leader>cCu` | Update crate |
+| `<leader>cCU` | Update all crates |
+| `<leader>cCH` | Open homepage |
 
 ## 🌿 Git
 
@@ -104,8 +105,8 @@ Quick reference card for the most commonly used keymaps in meowvim.
 | `<leader>gg` | LazyGit |
 | `<leader>gb` | Git blame line |
 | `]h` / `[h` | Next/prev hunk |
-| `<leader>gs` | Stage hunk |
-| `<leader>gv` | Preview hunk |
+| `<leader>gHs` | Stage hunk |
+| `<leader>gHv` | Preview hunk |
 | `<leader>gy` | Copy git link |
 
 ## 🪟 Windows
@@ -160,19 +161,19 @@ Quick reference card for the most commonly used keymaps in meowvim.
 | `p` / `P` | Paste after/before |
 | `Alt+n` / `Alt+p` | Cycle yank history |
 | `<leader>uu` | Undo history |
-| `<leader>uy` | Yank history |
+| `<leader>yh` | Yank history |
 
 ## 🏃 Tasks & Review
 
 | Key | Action |
 |-----|--------|
-| `<leader>Rr` | Run task (Overseer) |
-| `<leader>Rl` | Rerun last task |
-| `<leader>Ro` | Toggle task list |
-| `<leader>ri` | Review: add issue |
-| `<leader>rs` | Review: add suggestion |
-| `<leader>rn` | Review: add note |
-| `<leader>re` | Review: export |
+| `<leader>xr` | Run task (Overseer) |
+| `<leader>xl` | Rerun last task |
+| `<leader>xo` | Toggle task list |
+| `<leader>ra` | Review: add comment |
+| `<leader>rd` | Review: delete comment |
+| `<leader>re` | Review: export to clipboard |
+| `<leader>rg` | Review: go to comment |
 | `]r` / `[r` | Next/prev review comment |
 | `<leader>yf` | Copy file reference |
 | `<leader>yl` | Copy line reference |
@@ -192,7 +193,7 @@ Quick reference card for the most commonly used keymaps in meowvim.
 - Completion uses `<C-j/k>` to navigate, `<C-l>` to smart accept (Copilot inline first, then cmp)
 - Copilot NES uses `<M-l/j/h>` in normal mode
 - Tab always indents, Enter always creates newline
-- Flash jump (`<leader><leader>`) is your friend for quick navigation
+- Flash jump (`<leader><space>`) is your friend for quick navigation
 - f/t movements also show visual jump labels like Flash
 
 ---

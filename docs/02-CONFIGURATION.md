@@ -363,16 +363,15 @@ Tips:
 
 ## Language Tools
 
-Mason manages LSP servers, formatters, linters, and debuggers:
+Language servers, formatters, linters, and debuggers are managed by **mise** (project-local tool management):
 
-- Open Mason: `<leader>Tm` or `:Mason`
 - LSP config: `lua/plugins/nvim-lspconfig.lua`
 - Formatters: `lua/plugins/conform.lua`
 - Linters: `lua/plugins/nvim-lint.lua`
 - Debuggers: `lua/plugins/nvim-dap.lua`
 
 Add language support:
-1. Install via Mason or manually
+1. Install tools via mise (e.g. `mise install`) or manually
 2. Update the plugin config file
 3. Add keymaps in `lua/config/keymaps.lua`
 
@@ -476,7 +475,6 @@ Features:
 Or update manually:
 ```
 :Lazy sync
-:MasonToolsUpdate
 :checkhealth meowvim
 ```
 

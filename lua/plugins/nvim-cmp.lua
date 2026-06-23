@@ -1,268 +1,159 @@
 -- SPDX-License-Identifier: MIT
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
 
--- FINAL CTRL-BASED KEYMAPS (Conflict-checked ✅)
+-- @file: lua/plugins/nvim-cmp.lua
+-- @brief: Completion engine — blink.cmp v1 (replaces nvim-cmp).
 --
--- COMPLETION POPUP (hjkl-based navigation):
---   <C-j>      - Select next item (shows cmp ghost text, dismisses Copilot)
---   <C-k>      - Select prev item (shows cmp ghost text, dismisses Copilot)
---   <C-l>      - Smart accept: Copilot if visible, else selected cmp item
---   <C-b>      - Scroll docs up
---   <C-f>      - Scroll docs down
---   <C-Space>  - Trigger completion manually
+-- KEYMAPS (insert mode):
+--   <C-j>      select next item
+--   <C-k>      select prev item
+--   <C-l>      accept Copilot inline suggestion if visible, else selected item
+--   <C-b>      scroll docs up
+--   <C-f>      scroll docs down
+--   <C-Space>  trigger completion
+--   <Tab>      jump to next snippet placeholder
+--   <S-Tab>    jump to previous snippet placeholder
+--   <CR>       newline (never auto-accepts)
+--   <Esc>      dismiss Copilot inline suggestion (stay in insert), else hide
+--              blink menu and exit insert
 --
--- COPILOT (inline gray text, visible only when nothing is selected in cmp):
---   <C-l>      - Accept Copilot suggestion if visible
---   <C-g>      - Accept next word of Copilot suggestion
---   <C-n>      - Next Copilot suggestion
---   <C-p>      - Previous Copilot suggestion
---
--- DISMISS (universal):
---   <Esc>      - Dismiss Copilot suggestion (stay in insert); else dismiss popup + exit insert
---
--- NORMAL BEHAVIOR PRESERVED:
---   <Tab>      - Indent / Expand snippet / Jump placeholder
---   <S-Tab>    - Dedent / Jump back in snippet
---   <CR>       - New line (always)
---
--- Sources (in priority order):
---   1. LSP (language server)
---   2. LuaSnip (snippets)
---   3. Path (file paths)
---   4. Spell (spelling)
---   5. Buffer (current buffer words)
-
-local function get_dependencies()
-  local deps = {
-    "hrsh7th/cmp-nvim-lsp",
-    "hrsh7th/cmp-buffer",
-    "hrsh7th/cmp-path",
-    "hrsh7th/cmp-nvim-lua",
-    "hrsh7th/cmp-cmdline",
-    "f3fora/cmp-spell",
-    "L3MON4D3/LuaSnip",
-    "saadparwaiz1/cmp_luasnip",
-    "onsails/lspkind.nvim",
-    "saecki/crates.nvim",
-  }
-  return deps
-end
+-- Copilot inline suggestions (copilot.lua) coexist with blink-copilot source:
+-- hide_during_completion=true hides the overlay while the menu is open;
+-- <C-l> and <Esc> handle the overlay when the menu is closed.
 
 return {
-  "hrsh7th/nvim-cmp",
-  event = "InsertEnter",
-  dependencies = get_dependencies(),
-  config = function()
-    local cmp = require("cmp")
-    local luasnip = require("luasnip")
+  "saghen/blink.cmp",
+  version = "1.*",
+  event = { "InsertEnter", "CmdlineEnter" },
+  dependencies = {
+    "L3MON4D3/LuaSnip",
+    "rafamadriz/friendly-snippets",
+    "fang2hou/blink-copilot",
+    "onsails/lspkind.nvim",
+    "saecki/crates.nvim",
+    "ribru17/blink-cmp-spell",
+  },
+  opts = function()
     local lspkind = require("lspkind")
 
-    local format_kinds = function(entry, vim_item)
-      vim_item = lspkind.cmp_format({
-        mode = "symbol_text",
-        maxwidth = 50,
-        ellipsis_char = "...",
-      })(entry, vim_item)
+    return {
+      snippets = { preset = "luasnip" },
 
-      local kind = vim_item.kind
-      local source_name = entry.source.name
-      local source_icons = {
-        nvim_lsp = " LSP",
-        luasnip = " Snip",
-        buffer = " Buffer",
-        path = " Path",
-        lazydev = " LazyDev",
-        spell = " Spell",
-        nvim_lua = "NVIM API",
-        cmdline = " Command",
-      }
-
-      if source_icons[source_name] then
-        vim_item.kind = string.format("%s %s", source_icons[source_name], kind)
-      end
-
-      return vim_item
-    end
-
-    local comparators = {
-      cmp.config.compare.recently_used,
-      cmp.config.compare.score,
-      cmp.config.compare.offset,
-      cmp.config.compare.exact,
-      cmp.config.compare.kind,
-      cmp.config.compare.sort_text,
-      cmp.config.compare.order,
-    }
-
-    local global_sources = {
-      { name = "nvim_lsp" },
-      { name = "luasnip" },
-      { name = "path" },
-      { name = "spell" },
-      { name = "buffer", keyword_length = 3 },
-    }
-
-    cmp.setup({
-      snippet = {
-        expand = function(args)
-          luasnip.lsp_expand(args.body)
-        end,
-      },
-      -- Do not preselect any item; user must explicitly navigate to select
-      preselect = cmp.PreselectMode.None,
-      sources = cmp.config.sources(global_sources),
-      formatting = {
-        format = format_kinds,
-      },
-      mapping = cmp.mapping.preset.insert({
-        -- Navigate items; when an item is selected, show cmp ghost text and
-        -- dismiss Copilot so only one ghost text is visible at a time.
-        ["<C-j>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
-            cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-            local ok, suggestion = pcall(require, "copilot.suggestion")
-            if ok and suggestion.is_visible() then
-              suggestion.dismiss()
-            end
-          else
-            fallback()
-          end
-        end, { "i", "s" }),
-
-        ["<C-k>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
-            cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
-            local ok, suggestion = pcall(require, "copilot.suggestion")
-            if ok and suggestion.is_visible() then
-              suggestion.dismiss()
-            end
-          else
-            fallback()
-          end
-        end, { "i", "s" }),
-
-        -- Reserved for Copilot
-        ["<C-n>"] = cmp.mapping(function(fallback)
-          fallback()
-        end, { "i", "s" }),
-
-        ["<C-p>"] = cmp.mapping(function(fallback)
-          fallback()
-        end, { "i", "s" }),
-
-        ["<C-l>"] = cmp.mapping(function(fallback)
+      keymap = {
+        preset = "none",
+        ["<C-j>"] = { "select_next", "fallback" },
+        ["<C-k>"] = { "select_prev", "fallback" },
+        ["<C-l>"] = function(cmp)
           local ok, suggestion = pcall(require, "copilot.suggestion")
           if ok and suggestion.is_visible() then
             suggestion.accept()
-          elseif cmp.visible() and cmp.get_selected_entry() then
-            cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
-          else
-            fallback()
+            return true
           end
-        end, { "i", "s" }),
-
-        -- Esc: if Copilot suggestion visible, dismiss it and stay in insert mode.
-        -- Otherwise abort cmp (if open) and fall through to normal <Esc>.
-        ["<Esc>"] = cmp.mapping(function(fallback)
+          return cmp.accept()
+        end,
+        ["<C-b>"] = { "scroll_documentation_up", "fallback" },
+        ["<C-f>"] = { "scroll_documentation_down", "fallback" },
+        ["<C-Space>"] = { "show", "show_documentation", "hide_documentation" },
+        ["<Tab>"] = { "snippet_forward", "fallback" },
+        ["<S-Tab>"] = { "snippet_backward", "fallback" },
+        ["<CR>"] = { "fallback" },
+        ["<Esc>"] = function(cmp)
           local ok, suggestion = pcall(require, "copilot.suggestion")
           if ok and suggestion.is_visible() then
             suggestion.dismiss()
-            -- do NOT call fallback — stay in insert mode
-            return
+            return true  -- stay in insert mode
           end
-          if cmp.visible() then
-            cmp.abort()
-          end
-          fallback()
-        end, { "i", "s" }),
-
-        ["<Tab>"] = cmp.mapping(function(fallback)
-          if luasnip.locally_jumpable(1) then
-            luasnip.jump(1)
-          else
-            fallback()
-          end
-        end, { "i", "s" }),
-
-        ["<S-Tab>"] = cmp.mapping(function(fallback)
-          if luasnip.jumpable(-1) then
-            luasnip.jump(-1)
-          else
-            fallback()
-          end
-        end, { "i", "s" }),
-
-        ["<CR>"] = cmp.mapping(function(fallback)
-          fallback()
-        end, { "i", "s" }),
-
-        ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-        ["<C-f>"] = cmp.mapping.scroll_docs(4),
-        ["<C-Space>"] = cmp.mapping.complete(),
-      }),
-      sorting = {
-        priority_weight = 2,
-        comparators = comparators,
+          cmp.hide()
+          return false  -- fall through to exit insert
+        end,
       },
-      experimental = {
-        ghost_text = true,
+
+      sources = {
+        default = { "lsp", "path", "snippets", "buffer", "spell", "copilot" },
+        per_filetype = {
+          lua = { "lazydev", "lsp", "path", "snippets", "buffer", "spell", "copilot" },
+        },
+        providers = {
+          lazydev = {
+            name = "LazyDev",
+            module = "lazydev.integrations.blink",
+            score_offset = 100,
+          },
+          copilot = {
+            name = "copilot",
+            module = "blink-copilot",
+            score_offset = 100,
+            async = true,
+          },
+          spell = {
+            name = "Spell",
+            module = "blink-cmp-spell",
+            opts = { keep_all_entries = false, enable_in_context = function() return vim.opt.spell:get() end },
+          },
+        },
       },
-      window = {
-        completion = cmp.config.window.bordered(),
-        documentation = cmp.config.window.bordered(),
+
+      completion = {
+        accept = { auto_brackets = { enabled = true } },
+        menu = {
+          border = "rounded",
+          draw = {
+            components = {
+              kind_icon = {
+                ellipsis = false,
+                text = function(ctx)
+                  local icon, hl = lspkind.symbolic(ctx.kind, { mode = "symbol" })
+                  return icon or ctx.kind_icon, hl or ("BlinkCmpKind" .. ctx.kind)
+                end,
+              },
+            },
+          },
+        },
+        documentation = {
+          auto_show = true,
+          auto_show_delay_ms = 200,
+          window = { border = "rounded" },
+        },
+        ghost_text = { enabled = true },
+        list = {
+          selection = {
+            preselect = false,
+            auto_insert = false,
+          },
+        },
       },
-    })
 
-    cmp.setup.filetype("lua", {
-      sources = cmp.config.sources({
-        { name = "lazydev", group_index = 0 },
-        { name = "nvim_lsp" },
-        { name = "nvim_lua" },
-        { name = "luasnip" },
-        { name = "path" },
-        { name = "buffer", keyword_length = 3 },
-      }),
-    })
+      signature = {
+        enabled = true,
+        window = { border = "rounded" },
+      },
 
-    vim.api.nvim_create_autocmd("BufReadPost", {
-      pattern = "Cargo.toml",
-      callback = function(_event)
-        cmp.setup.buffer({
-          sources = cmp.config.sources({
-            { name = "crates" },
-            { name = "nvim_lsp" },
-            { name = "luasnip" },
-            { name = "path" },
-            { name = "buffer", keyword_length = 3 },
-          }),
-        })
-      end,
-    })
+      appearance = {
+        use_nvim_cmp_as_default = false,
+      },
 
-    -- Patch ghost_text_view.show on the cmp view instance to only show ghost
-    -- text when an entry is explicitly selected. By default cmp falls back to
-    -- showing the first entry even when nothing is selected, which conflicts
-    -- with Copilot's ghost text.
-    vim.schedule(function()
-      local cmp_view = require("cmp").core.view
-      local orig_show = cmp_view.ghost_text_view.show
-      cmp_view.ghost_text_view.show = function(self, e)
-        if cmp_view:get_selected_entry() then
-          orig_show(self, e)
-        else
-          self:hide()
-        end
-      end
-    end)
+      fuzzy = {
+        sorts = { "score", "sort_text" },
+      },
 
-    cmp.setup.cmdline({ "/", "?" }, {
-      mapping = cmp.mapping.preset.cmdline(),
-      sources = { { name = "buffer" } },
-    })
+      cmdline = {
+        enabled = true,
+        keymap = { preset = "cmdline" },
+        sources = function()
+          local type = vim.fn.getcmdtype()
+          if type == "/" or type == "?" then
+            return { "buffer" }
+          end
+          if type == ":" then
+            return { "cmdline", "path" }
+          end
+          return {}
+        end,
+      },
+    }
+  end,
 
-    cmp.setup.cmdline(":", {
-      mapping = cmp.mapping.preset.cmdline(),
-      sources = cmp.config.sources({ { name = "path" }, { name = "cmdline" } }),
-    })
+  config = function(_, opts)
+    require("blink.cmp").setup(opts)
   end,
 }

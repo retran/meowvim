@@ -6,52 +6,9 @@
 
 return {
   "folke/flash.nvim",
-  keys = {
-    {
-      "f",
-      mode = { "n", "x", "o" },
-      function()
-        require("flash").jump({
-          search = { mode = "search", max_length = 2, forward = true, wrap = false },
-        })
-      end,
-      desc = "Flash forward 2-char",
-    },
-    {
-      "F",
-      mode = { "n", "x", "o" },
-      function()
-        require("flash").jump({
-          search = { mode = "search", max_length = 2, forward = false, wrap = false },
-        })
-      end,
-      desc = "Flash backward 2-char",
-    },
-    {
-      "t",
-      mode = { "n", "x", "o" },
-      function()
-        require("flash").jump({
-          search = { mode = "search", max_length = 2, forward = true, wrap = false },
-          jump = { pos = "end" },
-        })
-      end,
-      desc = "Flash till forward 2-char",
-    },
-    {
-      "T",
-      mode = { "n", "x", "o" },
-      function()
-        require("flash").jump({
-          search = { mode = "search", max_length = 2, forward = false, wrap = false },
-          jump = { pos = "end" },
-        })
-      end,
-      desc = "Flash till backward 2-char",
-    },
-  },
+  -- No keys table: f/F/t/T are handled via modes.char below so that
+  -- ; and , repeat correctly (search-mode overrides broke repeat).
   opts = {
-    -- Use all available characters for labels (with uppercase, this gives 52 + 10 = 62 positions)
     labels = "asdfghjklqwertyuiopzxcvbnm1234567890",
     search = {
       multi_window = true,
@@ -61,7 +18,7 @@ return {
       autojump = false,
     },
     label = {
-      uppercase = true, -- This will add A-Z automatically, doubling available labels
+      uppercase = true,
       after = true,
       before = false,
       style = "overlay",
@@ -77,27 +34,27 @@ return {
       search = {
         enabled = true,
       },
+      -- Use char mode for f/F/t/T so that ; and , repeat work correctly.
+      -- max_length = 2 gives the 2-char jump behaviour while preserving repeat.
       char = {
-        enabled = false, -- Disabled since we use custom 2-char f/t/F/T mappings
+        enabled = true,
         jump_labels = true,
         keys = { "f", "F", "t", "T", ";", "," },
         config = function(opts)
           opts.autohide = opts.autohide or (vim.fn.mode(true):find("no") and vim.v.operator == "y")
           opts.jump_labels = true
         end,
-        char_actions = function(motion)
-          return {
-            [";"] = "next",
-            [","] = "prev",
-          }
+        char_actions = function(_motion)
+          return { [";"] = "next", [","] = "prev" }
         end,
         search = {
-          wrap = true,
+          wrap = false,
           multi_window = false,
+          max_length = 2,
         },
         highlight = { backdrop = true },
         jump = {
-          register = false,
+          register = true,
           autojump = false,
         },
         multi_line = true,

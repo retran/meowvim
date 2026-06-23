@@ -41,13 +41,17 @@ opt.guicursor = {
   "r-cr-o:hor20-Cursor/lCursor",
 }
 
+-- Rounded borders on all floating windows (hover, signature help, etc.)
+-- Replaces per-handler border config which was removed in Neovim 0.12.
+vim.o.winborder = "rounded"
+
 opt.tabstop = 2
 opt.shiftwidth = 2
 opt.expandtab = true
 opt.autoindent = true
 opt.smartindent = true
 opt.wrap = false
-opt.linebreak = true
+opt.linebreak = true  -- soft-wrap at word boundaries when wrap is toggled on
 opt.breakindent = true
 
 opt.ignorecase = true

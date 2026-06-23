@@ -29,9 +29,5 @@ return {
       end,
       close_buffers_with_windows = false,
     })
-
-    vim.keymap.set("n", "<leader>bp", "<cmd>lua require('hbac').toggle_pin()<cr>", { desc = "Toggle Buffer Pin" })
-    vim.keymap.set("n", "<leader>bP", "<cmd>lua require('hbac').pin_all()<cr>", { desc = "Pin All Buffers" })
-    vim.keymap.set("n", "<leader>bu", "<cmd>lua require('hbac').unpin_all()<cr>", { desc = "Unpin All Buffers" })
   end,
 }

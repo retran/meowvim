@@ -4,7 +4,8 @@
 -- @file: lua/plugins/lualine.lua
 -- @brief: Customizable statusline with Git, LSP, and mode indicators.
 
--- Cache catppuccin palette to avoid fetching on every opts() call
+-- Cache catppuccin palette; invalidated on ColorScheme so day/night toggles
+-- pick up the correct colours without a restart.
 local cached_palette = nil
 local function get_palette()
   if not cached_palette then
@@ -24,6 +25,13 @@ local function get_palette()
   end
   return cached_palette
 end
+
+vim.api.nvim_create_autocmd("ColorScheme", {
+  group = vim.api.nvim_create_augroup("meowvim-lualine-palette", { clear = true }),
+  callback = function()
+    cached_palette = nil
+  end,
+})
 
 local function get_dependencies()
   return {
@@ -137,7 +145,7 @@ return {
         lualine_y = {},
         lualine_z = {},
       },
-      extensions = { "lazy", "nvim-tree", "trouble" },
+      extensions = { "lazy" },
     }
   end,
 }

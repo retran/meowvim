@@ -24,11 +24,9 @@ primary prefix for most commands.
 - [Debug (DAP)](#debug-dap)
 - [Options & UI](#options--ui)
 - [Sessions](#sessions)
-- [Workspace](#workspace)
 - [Undo & History](#undo--history)
 - [Notes & Scratch](#notes--scratch)
 - [Help & Discovery](#help--discovery)
-- [Mason](#mason)
 - [Yank/Put Operations](#yankput-operations)
 - [Yank References](#yank-references)
 - [Quit](#quit)
@@ -51,8 +49,6 @@ primary prefix for most commands.
 |-----|-------------|
 | `Tab` | Next buffer |
 | `Shift+Tab` | Previous buffer |
-| `L` | Next buffer (alternative) |
-| `H` | Previous buffer (alternative) |
 
 ### Spelling
 
@@ -94,18 +90,15 @@ primary prefix for most commands.
 | `<leader>bD` | Force delete buffer |
 | `<leader>bo` | Delete other buffers |
 | `<leader>ba` | Delete all buffers |
+| `<leader>bp` | Toggle pin buffer |
+| `<leader>bP` | Pin all buffers |
+| `<leader>bu` | Unpin all buffers |
 
 ---
 
 ## Bookmarks
 
-**Prefix:** `<leader>m`
-
-| Key | Description |
-|-----|-------------|
-| `<leader>mm` | Search marks (Snacks picker) |
-
-Note: The bookmark system has been replaced with a simpler marks-based system using Snacks picker.
+The bookmark system has been replaced with a simpler marks-based system using Snacks picker. See `<leader>sm` under [Search & Navigation](#search--navigation).
 
 ---
 
@@ -169,8 +162,10 @@ Note: The bookmark system has been replaced with a simpler marks-based system us
 | `<leader>s/` | Search in project (grep) |
 | `<leader>sb` | Search in open buffers |
 | `<leader>sg` | Search in git (git grep) |
+| `<leader>sm` | Search marks (Snacks picker) |
 | `<leader>sr` | Search and replace (Spectre) |
 | `<leader>st` | Search TODO comments |
+| `<leader>sw` | Workspace symbols (Snacks picker) |
 
 **Note:** `<leader>sr` works in both normal and visual mode for selection-based search.
 
@@ -203,8 +198,16 @@ Note: The bookmark system has been replaced with a simpler marks-based system us
 | `<leader>nr` | Glance references |
 | `<leader>ni` | Glance implementations |
 | `<leader>nt` | Glance type definitions |
-| `<leader>ns` | Document symbols |
-| `<leader>nw` | Workspace symbols |
+
+### Workspace Folders
+
+**Prefix:** `<leader>nW`
+
+| Key | Description |
+|-----|-------------|
+| `<leader>nWa` | Add workspace folder |
+| `<leader>nWR` | Remove workspace folder |
+| `<leader>nWL` | List workspace folders |
 
 ### Hierarchies
 
@@ -236,11 +239,11 @@ Note: The bookmark system has been replaced with a simpler marks-based system us
 
 | Key | Description |
 |-----|-------------|
-| `<leader>cd` | Project diagnostics (Trouble) |
-| `<leader>cD` | Buffer diagnostics (Trouble) |
+| `<leader>cd` | Project diagnostics (Snacks picker) |
+| `<leader>cD` | Buffer diagnostics (Snacks picker) |
 | `<leader>ch` | Line diagnostics (float) |
 | `<leader>cq` | Quickfix list |
-| `<leader>cs` | Browse symbols (Trouble) |
+| `<leader>cs` | Browse symbols (Snacks picker) |
 | `]d` / `[d` | Next/Previous diagnostic |
 | `]q` / `[q` | Next/Previous quickfix item |
 | `]l` / `[l` | Next/Previous location list item |
@@ -248,30 +251,30 @@ Note: The bookmark system has been replaced with a simpler marks-based system us
 
 ### Rust Crates Management
 
-**Prefix:** `<leader>cR`
+**Prefix:** `<leader>cC`
 
 Available when editing `Cargo.toml` files:
 
 | Key | Description |
 |-----|-------------|
-| `<leader>cRt` | Toggle crates UI |
-| `<leader>cRr` | Reload crates data |
-| `<leader>cRu` | Update crate under cursor |
-| `<leader>cRU` | Update all crates |
-| `<leader>cRH` | Open crate homepage |
-| `<leader>cRD` | Open crate documentation |
+| `<leader>cCt` | Toggle crates UI |
+| `<leader>cCr` | Reload crates data |
+| `<leader>cCu` | Update crate under cursor |
+| `<leader>cCU` | Update all crates |
+| `<leader>cCH` | Open crate homepage |
+| `<leader>cCD` | Open crate documentation |
 
 ---
 
 ## Completion & Copilot
 
 meowvim features two separate systems that work together:
-- **Completion popup** (nvim-cmp) - Shows LSP suggestions, snippets, and buffer words
+- **Completion popup** (blink.cmp) - Shows LSP suggestions, snippets, and buffer words
 - **Copilot** - Inline gray text AI suggestions
 
 Both systems are designed to never interfere with each other, with completely separate keymaps.
 
-### Completion Popup (nvim-cmp)
+### Completion Popup (blink.cmp)
 
 **Navigation (hjkl-based):**
 
@@ -369,7 +372,6 @@ This design allows both Copilot and the completion popup to coexist without conf
 |-----|-------------|
 | `<leader>gg` | LazyGit (full TUI) |
 | `<leader>gf` | LazyGit current file |
-| `<leader>gl` | Git log |
 | `<leader>gb` | Git blame line |
 | `<leader>gB` | Git browse (open in browser) |
 | `<leader>gC` | Commit (Neogit) |
@@ -379,25 +381,28 @@ This design allows both Copilot and the completion popup to coexist without conf
 
 ### Hunks
 
+**Prefix:** `<leader>gH`
+
 | Key | Description |
 |-----|-------------|
-| `<leader>gs` | Stage hunk |
-| `<leader>gr` | Reset hunk |
-| `<leader>gS` | Stage buffer |
-| `<leader>gR` | Reset buffer |
-| `<leader>gv` | Preview hunk |
-| `<leader>gd` | Diff buffer |
+| `<leader>gHs` | Stage hunk |
+| `<leader>gHr` | Reset hunk |
+| `<leader>gHS` | Stage buffer |
+| `<leader>gHR` | Reset buffer |
+| `<leader>gHv` | Preview hunk |
+| `<leader>gHd` | Diff buffer |
 | `]h` / `[h` | Next/Previous hunk |
 
-### CodeDiff
+### Diffview
 
 **Prefix:** `<leader>gD`
 
 | Key | Description |
 |-----|-------------|
-| `<leader>gDo` | Open diff explorer |
-| `<leader>gDf` | Diff current file vs HEAD |
-| `<leader>gDh` | Show file history |
+| `<leader>gDd` | Open diff explorer |
+| `<leader>gDh` | File history |
+| `<leader>gDH` | Repo history |
+| `<leader>gDc` | Close Diffview |
 
 ### Git Links
 
@@ -408,19 +413,16 @@ This design allows both Copilot and the completion popup to coexist without conf
 
 ### Conflicts
 
-| Key | Description |
-|-----|-------------|
-| `<leader>go` | Choose ours |
-| `<leader>gt` | Choose theirs |
-| `]x` / `[x` | Next/Previous conflict |
-
 **Prefix:** `<leader>gx`
 
 | Key | Description |
 |-----|-------------|
+| `<leader>gxo` | Choose ours |
+| `<leader>gxt` | Choose theirs |
 | `<leader>gxb` | Choose both |
 | `<leader>gxn` | Choose none |
 | `<leader>gxl` | List conflicts |
+| `]x` / `[x` | Next/Previous conflict |
 
 ### GitHub
 
@@ -454,54 +456,52 @@ This design allows both Copilot and the completion popup to coexist without conf
 
 ## Tasks & Runners
 
-**Prefix:** `<leader>R`
+**Prefix:** `<leader>x`
 
 | Key | Description |
 |-----|-------------|
-| `<leader>Rr` | Run task template (Overseer) |
-| `<leader>Rl` | Restart last task |
-| `<leader>Ro` | Toggle task list |
+| `<leader>xr` | Run task template (Overseer) |
+| `<leader>xl` | Restart last task |
+| `<leader>xo` | Toggle task list |
 
 ---
 
 ## Code Review
 
-Quickfix-based inline code review via `quickfix-review.nvim`.
+AI-assisted inline code review via `meow.review.nvim`.
 
 **Prefix:** `<leader>r`
 
-### Adding Comments
+### Adding & Managing Comments
 
 | Key | Modes | Description |
 |-----|-------|-------------|
-| `<leader>ri` | n, v | Add Issue comment |
-| `<leader>rs` | n, v | Add Suggestion |
-| `<leader>rn` | n, v | Add Note |
-| `<leader>rp` | n, v | Add Praise |
-| `<leader>rq` | n, v | Add Question |
-| `<leader>rk` | n, v | Add Insight |
-| `<leader>ra` | n | Cycle through add comment types |
+| `<leader>ra` | n, v | Add comment (modal; Tab cycles type, `<C-s>` confirms) |
 | `<leader>rd` | n, v | Delete comment |
+| `<leader>rE` | n | Edit comment (pre-filled modal) |
+| `<leader>rv` | n | View comment under cursor |
 
-### Review Actions
-
-| Key | Description |
-|-----|-------------|
-| `<leader>rv` | View comment under cursor |
-| `<leader>re` | Export review to file |
-| `<leader>rc` | Clear all review comments |
-| `<leader>rS` | Review summary |
-| `<leader>rw` | Save review |
-| `<leader>rl` | Load review |
-| `<leader>ro` | Open review list (quickfix window) |
-| `<leader>rg` | Goto real file from review |
-| `<leader>rj` | Cycle to next comment type |
-| `<leader>rh` | Cycle to previous comment type |
-
-### Navigation
+### Export
 
 | Key | Description |
 |-----|-------------|
+| `<leader>re` | Export review to clipboard |
+| `<leader>rf` | Export to file (prompts for filename) |
+| `<leader>rF` | Export annotations for current file only |
+| `<leader>rC` | Export and clear all annotations |
+| `<leader>rc` | Clear all annotations |
+| `<leader>rr` | Reload from store file |
+
+### Navigation & Pickers
+
+| Key | Description |
+|-----|-------------|
+| `<leader>rg` | Go to comment (picker; jump to any annotation) |
+| `<leader>rG` | Go to comment in current file |
+| `<leader>rt` | Go to comment by type (type picker, then annotation picker) |
+| `<leader>rx` | Resolve comment at cursor |
+| `<leader>rX` | Resolve all comments |
+| `<leader>rV` | Validate annotations (detect stale) |
 | `]r` | Next review comment |
 | `[r` | Previous review comment |
 
@@ -578,10 +578,7 @@ Quickfix-based inline code review via `quickfix-review.nvim`.
 
 | Key | Description |
 |-----|-------------|
-| `<leader>oPs` | Start profiling |
-| `<leader>oPe` | Stop profiling |
-| `<leader>oPl` | Show plugin load times |
-| `<leader>oPr` | Measure render time |
+| `<leader>oPs` | Profile startup time (`:StartupTime`) |
 
 Commands:
 - `:KeymapConflicts` - Show keymap conflicts
@@ -599,22 +596,14 @@ Commands:
 
 | Key | Description |
 |-----|-------------|
+| `<leader>qs` | Restore session |
+| `<leader>qS` | Select session |
+| `<leader>ql` | Restore last session |
+| `<leader>qd` | Stop saving session |
 | `<leader>qq` | Quit all |
 | `<leader>qQ` | Force quit all |
 
-Note: Sessions save and restore automatically via `persistence.nvim`. No manual session keymaps are needed.
-
----
-
-## Workspace
-
-**Prefix:** `<leader>oW`
-
-| Key | Description |
-|-----|-------------|
-| `<leader>oWa` | Add workspace folder |
-| `<leader>oWR` | Remove workspace folder |
-| `<leader>oWL` | List workspace folders |
+Sessions are managed by `persistence.nvim` and save automatically.
 
 ---
 
@@ -626,7 +615,6 @@ Note: Sessions save and restore automatically via `persistence.nvim`. No manual 
 |-----|-------------|
 | `<leader>uu` | Undo history |
 | `<leader>ur` | Redo history |
-| `<leader>uy` | Yank history (Snacks picker) |
 
 ---
 
@@ -636,7 +624,8 @@ Note: Sessions save and restore automatically via `persistence.nvim`. No manual 
 
 | Key | Description |
 |-----|-------------|
-| `<leader>.` | Open/toggle scratch buffer |
+| `<leader>.` | Open/toggle scratch buffer (fast alias) |
+| `<leader>Ns` | Open scratch buffer |
 | `<leader>Nf` | Find scratch buffers |
 | `<leader>Nn` | New named scratch buffer |
 
@@ -653,17 +642,6 @@ Note: Sessions save and restore automatically via `persistence.nvim`. No manual 
 | `<leader>hk` | Search keymaps |
 | `<leader>hm` | Search man pages |
 | `<leader>hn` | Notification history |
-
----
-
-## Mason
-
-**Prefix:** `<leader>T`
-
-| Key | Description |
-|-----|-------------|
-| `<leader>Tm` | Open Mason UI |
-| `<leader>Ti` | Install Mason tools |
 
 ---
 
@@ -721,6 +699,7 @@ Copy file/line references in OpenCode/Claude-compatible format (e.g. `@lua/plugi
 | Key | Modes | Description |
 |-----|-------|-------------|
 | `<leader>yf` | n | Copy file reference (e.g. `@lua/plugins/copilot.lua`) |
+| `<leader>yh` | n | Show yank history (Snacks picker) |
 | `<leader>yl` | n, v | Copy line reference (e.g. `@lua/plugins/copilot.lua:42`) |
 
 ---

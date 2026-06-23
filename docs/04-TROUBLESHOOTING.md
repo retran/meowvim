@@ -15,7 +15,6 @@ Checks:
 - Config system
 - Dependencies (ripgrep, fd, lazygit)
 - LSP servers
-- Mason tools
 - Plugins
 - Treesitter parsers
 
@@ -64,13 +63,12 @@ nvim
 ## LSP Issues
 
 ### `LSP: No client with id ...`
-- Open Mason: `<leader>Tm` or `:Mason`
-- Install the server
+- Install the server via mise or manually
 - Check `lua/plugins/nvim-lspconfig.lua`
 - Restart Neovim
 
 ### Formatting does nothing
-- Check formatter in Mason
+- Check formatter is installed (via mise or manually)
 - Run `:ConformInfo`
 - Configure priorities in `lua/plugins/conform.lua`
 
@@ -96,13 +94,13 @@ nvim
 
 | Issue | Fix |
 | ----- | --- |
-| Slow startup | `:MeowvimProfile` or `<leader>oL`, `:StartupTrends` |
+| Slow startup | `:MeowvimProfile`, `:StartupTrends` |
 | Lag while typing | Disable virtual text: `:lua vim.diagnostic.config({ virtual_text = false })` |
-| High memory | Use hbac: `<leader>bp` to pin buffers; close CodeDiff/Neotest |
+| High memory | Use hbac: `<leader>bp` to pin buffers; close Diffview/Neotest |
 
 ### Performance Tools
 
-- `:MeowvimProfile` or `<leader>oL` - Plugin load times
+- `:MeowvimProfile` - Plugin load times
 - `:StartupTrends` - Startup analysis
 - `:MeasureRender` - Render benchmark
 - `:ProfileStart` / `:ProfileStop` - Profile operations
@@ -129,7 +127,7 @@ Add overrides in `after/plugin/keymaps.lua`. Adjust which-key in `lua/plugins/wh
 - Install: `brew install diff-so-fancy`
 - Or disable in `lua/plugins/neogit.lua`
 
-### CodeDiff not opening
+### Diffview not opening
 - Run `:Lazy sync`
 - Check Git ≥ 2.30 installed
 
@@ -156,7 +154,7 @@ Add overrides in `after/plugin/keymaps.lua`. Adjust which-key in `lua/plugins/wh
 ### Completion popup missing
 - Trigger: `<C-Space>`
 - Check LSP: `:LspInfo`
-- Check `lua/plugins/nvim-cmp.lua`
+- Check `lua/plugins/nvim-cmp.lua` (configures blink.cmp)
 
 ### Completion keymaps not working
 - Navigation: `<C-j>` (down), `<C-k>` (up), `<C-l>` (smart accept: Copilot first, then cmp)

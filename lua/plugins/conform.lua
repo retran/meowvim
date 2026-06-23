@@ -3,8 +3,6 @@
 
 -- @file: lua/plugins/conform.lua
 
-local toggles = require("utils.toggles")
-
 local desired_formatters_by_ft = {
   lua = { "stylua" },
   python = { "ruff_format", "ruff_organize_imports" },
@@ -163,6 +161,7 @@ return {
   end,
 
   init = function()
+    local toggles = require("utils.toggles")
     toggles.ensure("disable_autoformat")
     vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
 
