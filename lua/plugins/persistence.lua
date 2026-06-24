@@ -7,6 +7,23 @@
 return {
   "folke/persistence.nvim",
   event = "BufReadPre",
+  -- Registered in init (not config) so the auto-restore hook exists on every
+  -- startup, even when the plugin would otherwise stay lazy (e.g. nvim started
+  -- in an empty project dir, where no BufReadPre fires).
+  init = function()
+    local config_ok, config = pcall(require, "meowvim.config")
+    local auto_restore = not config_ok or config.get("sessions.auto_restore", true) ~= false
+    if not auto_restore then
+      return
+    end
+    vim.api.nvim_create_autocmd("VimEnter", {
+      group = vim.api.nvim_create_augroup("PersistenceAutoRestore", { clear = true }),
+      nested = true,
+      callback = function()
+        require("utils.session").auto_restore()
+      end,
+    })
+  end,
   keys = {
     {
       "<leader>qs",
@@ -68,7 +85,8 @@ return {
     local config_ok, config = pcall(require, "meowvim.config")
     local per_branch = config_ok and config.get("sessions.per_branch", false) or false
     local auto_save = config_ok and config.get("sessions.auto_save", true) or true
-    local auto_restore = config_ok and config.get("sessions.auto_restore", true) or true
+    -- auto_restore is wired up in the spec's init() (VimEnter) so it works even
+    -- when this plugin stays lazy; see utils.session.auto_restore().
 
     if auto_save then
       vim.api.nvim_create_autocmd("DirChanged", {
@@ -102,19 +120,6 @@ return {
         end
         original_save()
       end
-    end
-
-    if auto_restore then
-      vim.api.nvim_create_autocmd("VimEnter", {
-        group = vim.api.nvim_create_augroup("PersistenceAutoRestore", { clear = true }),
-        callback = function()
-          -- Only load the session if nvim was started with no arguments
-          if vim.fn.argc(-1) == 0 then
-            persistence.load()
-          end
-        end,
-        nested = true,
-      })
     end
   end,
 }

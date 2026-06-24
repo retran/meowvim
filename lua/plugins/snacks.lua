@@ -90,6 +90,14 @@ return {
 
     return {
       dashboard = {
+        -- Skip the dashboard when this cwd is a project / has a saved session;
+        -- in that case auto_restore() (VimEnter) opens it instead. The dashboard
+        -- auto-opens on UIEnter (before VimEnter), so it must be gated here
+        -- statically rather than closed afterwards.
+        enabled = not (function()
+          local ok, session = pcall(require, "utils.session")
+          return ok and session.should_auto_restore()
+        end)(),
         width = 52,
         preset = {
           keys = {

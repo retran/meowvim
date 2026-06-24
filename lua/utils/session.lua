@@ -63,6 +63,97 @@ function M.load(opts)
   end
 end
 
+-- True when nvim was launched with no file arguments in an interactive TUI,
+-- i.e. exactly the situation where the dashboard would normally appear.
+local function fresh_interactive_start()
+  if vim.fn.argc(-1) ~= 0 then
+    return false
+  end
+  if vim.api.nvim_buf_get_name(0) ~= "" then
+    return false -- started with +cmd or an explicit buffer name
+  end
+  local uis = vim.api.nvim_list_uis()
+  if #uis == 0 then
+    return false -- headless
+  end
+  if uis[1].stdout_tty and not uis[1].stdin_tty then
+    return false -- input is piped in
+  end
+  return true
+end
+
+-- Path of an existing session file for the current cwd, or nil. Mirrors
+-- persistence.load(): branch-aware name first, branch-less name as fallback.
+local function existing_session_file()
+  local ok, persistence = pcall(require, "persistence")
+  if not ok then
+    return nil
+  end
+  local file = persistence.current()
+  if vim.fn.filereadable(file) ~= 0 then
+    return file
+  end
+  file = persistence.current({ branch = false })
+  if vim.fn.filereadable(file) ~= 0 then
+    return file
+  end
+  return nil
+end
+
+-- The meowvim project (from ~/.config/meowvim/projects.lua) matching the
+-- current cwd, if any.
+local function current_project()
+  local ok, cfg = pcall(require, "meowvim.config")
+  if not ok then
+    return nil
+  end
+  return cfg.detect_current_project()
+end
+
+-- Whether a saved session exists for the current cwd.
+function M.has_session()
+  return existing_session_file() ~= nil
+end
+
+-- Decide whether, on a fresh start, we should open a saved session / project
+-- instead of the dashboard. True only when there is a concrete thing to
+-- restore: a saved session, or a configured project with an on_open command.
+function M.should_auto_restore()
+  if not fresh_interactive_start() then
+    return false
+  end
+  if M.has_session() then
+    return true
+  end
+  local project = current_project()
+  if project and project.on_open then
+    return true
+  end
+  return false
+end
+
+-- Open the saved session and/or run the project's on_open command. Returns
+-- true when something was restored. Intended to run on VimEnter.
+function M.auto_restore()
+  if not M.should_auto_restore() then
+    return false
+  end
+
+  local restored = false
+  if M.has_session() then
+    restored = M.load()
+  end
+
+  local project = current_project()
+  if project and project.on_open then
+    vim.defer_fn(function()
+      pcall(vim.cmd, project.on_open)
+    end, restored and 150 or 50)
+  end
+
+  return true
+end
+
 function M.reset()
   local ok, err = pcall(function()
     close_floating_windows()
