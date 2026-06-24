@@ -79,14 +79,6 @@ Quick reference card for the most commonly used keymaps in meowvim.
 | `<C-l>` | Accept suggestion (smart: Copilot first, then cmp) |
 | `<Esc>` | Dismiss suggestion (stay in insert mode) |
 
-### Copilot NES (Normal Mode)
-
-| Key | Action |
-|-----|--------|
-| `<M-l>` | Accept NES + jump to end of edit |
-| `<M-j>` | Accept NES, stay at cursor |
-| `<M-h>` | Dismiss NES |
-
 **Note:** Tab indents, Enter creates newline (never intercepted)
 
 ### 🦀 Rust (Cargo.toml)
@@ -190,8 +182,7 @@ Quick reference card for the most commonly used keymaps in meowvim.
 
 - Leader key is `<space>`
 - Use `<leader>hk` to search all keymaps interactively
-- Completion uses `<C-j/k>` to navigate, `<C-l>` to smart accept (Copilot inline first, then cmp)
-- Copilot NES uses `<M-l/j/h>` in normal mode
+- Completion uses `<C-j/k>` to navigate, `<C-l>` to smart accept (Copilot inline first, then cmp), `<C-u>/<C-d>` to scroll docs
 - Tab always indents, Enter always creates newline
 - Flash jump (`<leader><space>`) is your friend for quick navigation
 - f/t movements also show visual jump labels like Flash

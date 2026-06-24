@@ -103,7 +103,6 @@ Sessions save automatically. Your layout, buffers, and state persist across rest
 - Inline suggestions auto-trigger in insert mode
 - `<C-l>` - Accept inline suggestion (or selected completion item)
 - `<Esc>` - Dismiss inline suggestion (stay in insert mode)
-- NES (Next Edit Suggestions): `<M-l>` accept+goto, `<M-j>` accept, `<M-h>` dismiss
 - Toggle: `<leader>oC`
 - Configure in `lua/plugins/copilot.lua`
 

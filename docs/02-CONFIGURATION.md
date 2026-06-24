@@ -292,22 +292,20 @@ config.set("ui.transparency", 50)
 ```
 ~/.config/nvim/
 ├── init.lua              # Entry point
-├── after/                # Local overrides (loads last)
+├── bin/                  # Helper scripts (update, test)
 ├── docs/                 # Documentation
 ├── lua/
 │   ├── config/           # Core Neovim settings
 │   │   ├── keymaps.lua   # Keybindings
-│   │   ├── neovide.lua   # GUI settings
 │   │   └── options.lua   # Vim options
 │   ├── meowvim/          # Configuration system
-│   │   └── config/       # Config loader
+│   │   └── config/       # Config loader, schema, cache, watcher
 │   ├── plugins/          # Plugin specs (one per file)
-│   └── utils/            # Helpers
-├── scripts/              # Helper commands
+│   └── utils/            # Helpers (hooks, patches, toggles, session)
 └── spell/                # Dictionaries
 ```
 
-Customize in `lua/config/` and `lua/plugins/`. Use `after/` for local changes you don't want to commit.
+Customize in `lua/config/` and `lua/plugins/`.
 
 ## Editor Options
 
@@ -442,18 +440,6 @@ Toggle features with `<leader>o*`:
 - **Profiler**: `:ProfileStart`, `:ProfileStop`, `:MeowvimProfile`
 - **Startup**: `:StartupTrends`
 - **Render**: `:MeasureRender`
-
-## Local Overrides
-
-Machine-specific changes in `after/`:
-
-```
-after/plugin/local.lua       # keymaps, commands
-after/plugin/copilot.lua     # Copilot settings
-after/plugin/autocmds.lua    # autocommands
-```
-
-Add to `.gitignore` to keep these local.
 
 ## Automation
 

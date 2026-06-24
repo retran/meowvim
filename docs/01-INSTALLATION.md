@@ -141,7 +141,7 @@ return {
 1. Backup old config: `mv ~/.config/nvim ~/.config/nvim.prev`
 2. Follow fresh install
 3. Copy snippets or plugins from backup
-4. Add local changes in `after/`
+4. Add local plugin overrides in `lua/plugins/`
 
 ## Uninstall
 

@@ -41,7 +41,7 @@
 
 - LSP servers with diagnostics, actions, and symbol navigation
 - Treesitter syntax highlighting and structural selection
-- Completion with `<C-j/k>` navigate, `<C-l>` smart accept (Copilot inline first, then blink.cmp); GitHub Copilot NES via `<M-l/j/h>`
+- Completion with `<C-j/k>` navigate, `<C-l>` smart accept (Copilot inline first, then blink.cmp), `<C-u>/<C-d>` scroll documentation
 
 ### 🚀 Navigation & Productivity
 
