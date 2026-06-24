@@ -6,6 +6,7 @@
 
 return {
   "nvim-treesitter/nvim-treesitter-context",
+  enabled = false, -- broken with nvim 0.12.x: `range` method removed from treesitter API
   event = { "BufReadPost", "BufNewFile" },
   opts = {
     enable = true,

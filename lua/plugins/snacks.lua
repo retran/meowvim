@@ -119,7 +119,7 @@ return {
       notifier = {},
       terminal = {},
       image = {
-        enabled = image_preview and not vim.env.ZELLIJ,
+        enabled = false, -- broken with nvim 0.12.x: treesitter `range` API removed
       },
       scope = {
         enabled = scope_highlighting,
