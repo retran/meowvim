@@ -8,8 +8,8 @@
 --   <C-j>      select next item
 --   <C-k>      select prev item
 --   <C-l>      accept Copilot inline suggestion if visible, else selected item
---   <C-b>      scroll docs up
---   <C-f>      scroll docs down
+--   <C-u>      scroll docs up
+--   <C-d>      scroll docs down
 --   <C-Space>  trigger completion
 --   <Tab>      jump to next snippet placeholder
 --   <S-Tab>    jump to previous snippet placeholder
@@ -58,8 +58,8 @@ return {
           end
           return cmp.accept()
         end },
-        ["<C-b>"] = { "scroll_documentation_up", "fallback" },
-        ["<C-f>"] = { "scroll_documentation_down", "fallback" },
+        ["<C-u>"] = { "scroll_documentation_up", "fallback" },
+        ["<C-d>"] = { "scroll_documentation_down", "fallback" },
         ["<C-Space>"] = { "show", "show_documentation", "hide_documentation" },
         ["<Tab>"] = { "snippet_forward", "fallback" },
         ["<S-Tab>"] = { "snippet_backward", "fallback" },

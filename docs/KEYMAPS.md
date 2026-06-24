@@ -290,8 +290,8 @@ Both systems are designed to never interfere with each other, with completely se
 
 | Key | Description |
 |-----|-------------|
-| `<C-b>` | Scroll documentation up |
-| `<C-f>` | Scroll documentation down |
+| `<C-u>` | Scroll documentation up |
+| `<C-d>` | Scroll documentation down |
 
 **Snippet Navigation:**
 
@@ -312,14 +312,6 @@ Copilot shows gray text suggestions as you type (auto-triggered).
 |-----|-------------|
 | `<C-l>` | Accept inline suggestion (smart: Copilot first, then selected cmp item) |
 | `<Esc>` | Dismiss inline suggestion and stay in insert mode; if no suggestion, exit insert |
-
-**NES – Next Edit Suggestions (normal mode):**
-
-| Key | Description |
-|-----|-------------|
-| `<M-l>` | Accept NES suggestion and jump to end of edit |
-| `<M-j>` | Accept NES suggestion, stay at cursor |
-| `<M-h>` | Dismiss NES suggestion |
 
 **Toggle:**
 
@@ -354,7 +346,6 @@ The keymaps are designed to be completely conflict-free:
 
 - **Completion popup** uses `<C-j/k/l>` (hjkl pattern)
 - **Copilot inline** accept uses `<C-l>` (shared smart accept — Copilot takes priority)
-- **Copilot NES** uses `<M-l/j/h>` (normal mode, entirely separate)
 - `<Esc>` dismisses Copilot inline suggestion first (staying in insert); falls through to exit insert if no suggestion is visible
 - `<Tab>` and `<Enter>` never interfere with completion
 
