@@ -17,7 +17,7 @@
 --   <Esc>      dismiss Copilot inline suggestion (stay in insert), else hide
 --              blink menu and exit insert
 --
--- Copilot inline suggestions (copilot.lua) coexist with blink-copilot source:
+-- Copilot inline suggestions (copilot.lua) are separate from blink menu:
 -- hide_during_completion=true hides the overlay while the menu is open;
 -- <C-l> and <Esc> handle the overlay when the menu is closed.
 
@@ -28,7 +28,6 @@ return {
   dependencies = {
     "L3MON4D3/LuaSnip",
     "rafamadriz/friendly-snippets",
-    "fang2hou/blink-copilot",
     "onsails/lspkind.nvim",
     "saecki/crates.nvim",
     "ribru17/blink-cmp-spell",
@@ -41,8 +40,16 @@ return {
 
       keymap = {
         preset = "none",
-        ["<C-j>"] = { "select_next", "fallback" },
-        ["<C-k>"] = { "select_prev", "fallback" },
+        ["<C-j>"] = { function()
+          local ok, suggestion = pcall(require, "copilot.suggestion")
+          if ok and suggestion.is_visible() then suggestion.dismiss() end
+          return false
+        end, "select_next", "fallback" },
+        ["<C-k>"] = { function()
+          local ok, suggestion = pcall(require, "copilot.suggestion")
+          if ok and suggestion.is_visible() then suggestion.dismiss() end
+          return false
+        end, "select_prev", "fallback" },
         ["<C-l>"] = { function(cmp)
           local ok, suggestion = pcall(require, "copilot.suggestion")
           if ok and suggestion.is_visible() then
@@ -59,31 +66,27 @@ return {
         ["<CR>"] = { "fallback" },
         ["<Esc>"] = { function(cmp)
           local ok, suggestion = pcall(require, "copilot.suggestion")
-          if ok and suggestion.is_visible() then
-            suggestion.dismiss()
-            return true  -- stay in insert mode
+          local had_inline = ok and suggestion.is_visible()
+          if had_inline then suggestion.dismiss() end
+          if cmp.is_visible() then
+            cmp.hide()
+            return true
           end
-          cmp.hide()
-          return false  -- fall through to exit insert
-        end },
+          if had_inline then return true end
+          return false
+        end, "fallback" },
       },
 
       sources = {
-        default = { "lsp", "path", "snippets", "buffer", "spell", "copilot" },
+        default = { "lsp", "path", "snippets", "buffer", "spell" },
         per_filetype = {
-          lua = { "lazydev", "lsp", "path", "snippets", "buffer", "spell", "copilot" },
+          lua = { "lazydev", "lsp", "path", "snippets", "buffer", "spell" },
         },
         providers = {
           lazydev = {
             name = "LazyDev",
             module = "lazydev.integrations.blink",
             score_offset = 100,
-          },
-          copilot = {
-            name = "copilot",
-            module = "blink-copilot",
-            score_offset = 100,
-            async = true,
           },
           spell = {
             name = "Spell",

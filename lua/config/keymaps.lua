@@ -375,6 +375,10 @@ function M.setup()
   local wk_ok, wk = pcall(require, "which-key")
   if wk_ok then
     local mappings = {
+      -- Mark gc/gC as operator-prefixes so which-key doesn't flag gcc/gbc as overlaps
+      { "gc", group = "Comment", icon = "󰆈", mode = { "n", "x" } },
+      { "gC", group = "Comment (block)", icon = "󰆈", mode = { "n", "x" } },
+
       -- Files
       { "<leader>f", group = "Files", icon = "󰈞" },
       {

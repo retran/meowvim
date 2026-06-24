@@ -7,6 +7,17 @@
 local M = {}
 local snacks_picker_patched = false
 
+-- Neovim 0.12.3 bug: vim.treesitter.get_range() can receive a nil node
+-- from injection query captures, causing a crash in the highlighter.
+-- Guard against it by returning a zero-range instead of crashing.
+local _orig_ts_get_range = vim.treesitter.get_range
+vim.treesitter.get_range = function(node, source, metadata)
+  if node == nil then
+    return { 0, 0, 0, 0, 0, 0 }
+  end
+  return _orig_ts_get_range(node, source, metadata)
+end
+
 local function patch_snacks_picker()
   if snacks_picker_patched then
     return true

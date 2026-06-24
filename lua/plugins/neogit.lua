@@ -9,7 +9,7 @@ return {
   cmd = { "Neogit" },
   dependencies = {
     "nvim-lua/plenary.nvim",
-    "nvim-tree/nvim-web-devicons",
+    "echasnovski/mini.icons",
   },
   opts = {
     disable_commit_confirmation = true,

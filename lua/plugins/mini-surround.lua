@@ -17,8 +17,8 @@ return {
       highlight = "gsh",
       replace = "gsr",
       update_n_lines = "gsn",
-      suffix_last = "gsL",
-      suffix_next = "gsN",
+      suffix_last = "N",
+      suffix_next = "n",
     },
   },
   config = function(_, opts)
