@@ -13,12 +13,26 @@ return {
     vim.g.rustaceanvim = {
       tools = {},
       server = {
+        on_attach = function(client, _bufnr)
+          -- Workaround for rust-analyzer 1.96.0 bug: panics on textDocument/didSave
+          -- while VFS is still initializing (FileSourceRootInput not set for FileId).
+          -- checkOnSave still works via didChange debounce.
+          if client.server_capabilities.textDocumentSync then
+            client.server_capabilities.textDocumentSync.save = false
+          end
+        end,
         default_settings = {
           ["rust-analyzer"] = {
-            -- checkOnSave is boolean in v6+; clippy is configured under check.command
-            checkOnSave = true,
-            check = {
-              command = "clippy",
+            files = {
+              excludeDirs = {
+                ".agents",
+                ".claude",
+                ".codex",
+                ".github",
+                "docs",
+                "target",
+                "tests/.cache",
+              },
             },
           },
         },
