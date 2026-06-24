@@ -38,11 +38,19 @@ return {
       -- max_length = 2 gives the 2-char jump behaviour while preserving repeat.
       char = {
         enabled = true,
-        jump_labels = true,
+        -- jump_labels = false: f/t do a direct jump instead of entering the
+        -- label-selection loop. That loop was what left the match highlights
+        -- lingering across buffers (and surviving <space><space>/typing),
+        -- because it kept a separate flash state alive. ;/, still repeat.
+        jump_labels = false,
         keys = { "f", "F", "t", "T", ";", "," },
         config = function(opts)
+          -- autohide in operator-pending; never force jump labels on
           opts.autohide = opts.autohide or (vim.fn.mode(true):find("no") and vim.v.operator == "y")
-          opts.jump_labels = true
+          opts.jump_labels = opts.jump_labels
+            and vim.v.count == 0
+            and vim.fn.reg_executing() == ""
+            and vim.fn.reg_recording() == ""
         end,
         char_actions = function(_motion)
           return { [";"] = "next", [","] = "prev" }
@@ -55,11 +63,16 @@ return {
         highlight = { backdrop = true },
         jump = {
           register = true,
+          -- clear 'hlsearch' after the jump: register = true writes the char
+          -- to the search register, which otherwise lights up every match in
+          -- all buffers until :nohl. nohlsearch keeps the register for n/N.
+          nohlsearch = true,
           autojump = false,
         },
         multi_line = true,
         label = { exclude = "hjkliardc" },
-        autohide = false,
+        -- Hide match highlights immediately after the jump; ;/, still repeat.
+        autohide = true,
       },
       treesitter = {
         labels = "abcdefghijklmnopqrstuvwxyz",

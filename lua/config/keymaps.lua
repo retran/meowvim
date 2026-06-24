@@ -16,7 +16,6 @@ local ICON_EXACT = {
   ["Browse Files"] = "",
   ["Browse Git Branches"] = "",
   ["Browse Git Status"] = "󰊢",
-  ["Browse Symbols"] = "󰌗",
   ["Choose Both"] = "󰡖",
   ["Choose None"] = "󰚝",
   ["Choose Ours"] = "󰅂",
@@ -178,7 +177,6 @@ local ICON_EXACT = {
   ["Toggle Pin"] = "󰐃",
   ["Pin All Buffers"] = "󰐄",
   ["Unpin All Buffers"] = "󰐅",
-  ["Workspace Symbols"] = "󰙅",
   -- Review
   ["Add Issue"] = "󰅙",
   ["Add Suggestion"] = "󰌹",
@@ -591,13 +589,6 @@ function M.setup()
         desc = "List TODO Comments",
       },
       {
-        "<leader>sw",
-        function()
-          snacks.picker.lsp_workspace_symbols()
-        end,
-        desc = "Workspace Symbols",
-      },
-      {
         "<leader>sm",
         function()
           snacks.picker.marks()
@@ -623,6 +614,20 @@ function M.setup()
         desc = "Declaration",
       },
       { "<leader>nr", glance_action("references"), desc = "Reference" },
+      {
+        "<leader>ns",
+        function()
+          snacks.picker.lsp_symbols()
+        end,
+        desc = "Go To Document Symbols",
+      },
+      {
+        "<leader>nS",
+        function()
+          snacks.picker.lsp_workspace_symbols()
+        end,
+        desc = "Go To Workspace Symbols",
+      },
       { "<leader>ni", glance_action("implementations"), desc = "Implementation" },
       { "<leader>nt", glance_action("type_definitions"), desc = "Type Definition" },
       {
@@ -714,13 +719,6 @@ function M.setup()
       { "[t", "<cmd>tabprevious<CR>", desc = "Previous Tab", mode = "n" },
       -- CodeLens & Symbols
       { "<leader>cq", "<cmd>copen<CR>", desc = "Quickfix List" },
-      {
-        "<leader>cs",
-        function()
-          snacks.picker.lsp_symbols()
-        end,
-        desc = "Browse Symbols",
-      },
       { "<leader>cl", vim.lsp.codelens.run, desc = "Run CodeLens" },
       {
         "<leader>cL",
