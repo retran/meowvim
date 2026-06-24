@@ -255,7 +255,7 @@ return {
     -- from lspconfig's bundled defaults automatically.
     local function setup_server(server_name)
       local server_opts = vim.tbl_deep_extend("force", {}, server_settings[server_name] or {})
-      local cmd = server_opts.cmd or default_config.cmd
+      local cmd = server_opts.cmd
       if cmd and type(cmd) == "table" and cmd[1] and vim.fn.executable(cmd[1]) == 0 then
         return
       end

@@ -43,21 +43,21 @@ return {
         preset = "none",
         ["<C-j>"] = { "select_next", "fallback" },
         ["<C-k>"] = { "select_prev", "fallback" },
-        ["<C-l>"] = function(cmp)
+        ["<C-l>"] = { function(cmp)
           local ok, suggestion = pcall(require, "copilot.suggestion")
           if ok and suggestion.is_visible() then
             suggestion.accept()
             return true
           end
           return cmp.accept()
-        end,
+        end },
         ["<C-b>"] = { "scroll_documentation_up", "fallback" },
         ["<C-f>"] = { "scroll_documentation_down", "fallback" },
         ["<C-Space>"] = { "show", "show_documentation", "hide_documentation" },
         ["<Tab>"] = { "snippet_forward", "fallback" },
         ["<S-Tab>"] = { "snippet_backward", "fallback" },
         ["<CR>"] = { "fallback" },
-        ["<Esc>"] = function(cmp)
+        ["<Esc>"] = { function(cmp)
           local ok, suggestion = pcall(require, "copilot.suggestion")
           if ok and suggestion.is_visible() then
             suggestion.dismiss()
@@ -65,7 +65,7 @@ return {
           end
           cmp.hide()
           return false  -- fall through to exit insert
-        end,
+        end },
       },
 
       sources = {
