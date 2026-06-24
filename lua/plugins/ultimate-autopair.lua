@@ -45,12 +45,6 @@ return {
       autoclose = true,
     }
 
-    local configs = { config }
-    local cmp_ok, cmpair = pcall(require, "ultimate-autopair.experimental.cmpair")
-    if cmp_ok then
-      table.insert(configs, { profile = cmpair.init })
-    end
-
-    autopair.init(configs)
+    autopair.init({ config })
   end,
 }
