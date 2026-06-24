@@ -159,7 +159,7 @@ return {
       },
       {
         "n",
-        "<leader>db",
+        "<leader>dbt",
         function()
           dap.toggle_breakpoint()
         end,

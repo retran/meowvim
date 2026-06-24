@@ -2,49 +2,31 @@
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
 
 -- @file: lua/plugins/ultimate-autopair.lua
--- @brief: Advanced autopairing with Treesitter-aware behaviour and CMP integration.
+-- @brief: Auto-pairing brackets and quotes via mini.pairs.
+--
+-- Replaced ultimate-autopair (broken with Neovim 0.12.3) with mini.pairs.
+-- Tabout and fastwarp features from ultimate-autopair are not available in
+-- mini.pairs — use <C-f> to jump past closing bracket if needed.
 
 return {
-  "altermo/ultimate-autopair.nvim",
-  branch = "v0.6",
+  "echasnovski/mini.pairs",
+  version = false,
   event = { "InsertEnter", "CmdlineEnter" },
-  config = function()
-    local autopair = require("ultimate-autopair")
-    local config = autopair.extend_default()
-
-    config.bs.enable = true
-
-    config.tabout = {
-      enable = true,
-      map = "<A-Tab>",
-      cmap = "<A-Tab>",
-      hopout = true,
-      do_nothing_if_fail = true,
-    }
-
-    config.fastwarp = {
-      enable = true,
-      map = "<A-e>",
-      rmap = "<A-E>",
-      nocursormove = true,
-      multiline = true,
-      do_nothing_if_fail = true,
-    }
-
-    config.close = {
-      enable = true,
-      map = "<A-)>",
-      cmap = "<A-)>",
-      do_nothing_if_fail = true,
-    }
-
-    config.space.enable = true
-
-    config.cr = {
-      enable = true,
-      autoclose = true,
-    }
-
-    autopair.init({ config })
+  opts = {
+    modes = { insert = true, command = true, terminal = false },
+    mappings = {
+      ["("] = { action = "open", pair = "()", neigh_pattern = "[^\\]." },
+      ["["] = { action = "open", pair = "[]", neigh_pattern = "[^\\]." },
+      ["{"] = { action = "open", pair = "{}", neigh_pattern = "[^\\]." },
+      [")"] = { action = "close", pair = "()", neigh_pattern = "[^\\]." },
+      ["]"] = { action = "close", pair = "[]", neigh_pattern = "[^\\]." },
+      ["}"] = { action = "close", pair = "{}", neigh_pattern = "[^\\]." },
+      ['"'] = { action = "closeopen", pair = '""', neigh_pattern = "[^\\].", register = { cr = false } },
+      ["'"] = { action = "closeopen", pair = "''", neigh_pattern = "[^%a\\].", register = { cr = false } },
+      ["`"] = { action = "closeopen", pair = "``", neigh_pattern = "[^\\].", register = { cr = false } },
+    },
+  },
+  config = function(_, opts)
+    require("mini.pairs").setup(opts)
   end,
 }

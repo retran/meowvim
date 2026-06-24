@@ -2,20 +2,18 @@
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
 
 -- @file: lua/plugins/nvim-treesitter.lua
--- @brief: Treesitter configuration for textobjects and autotag.
+-- @brief: Treesitter parser management and textobject/autotag integration.
 --
--- NOTE: nvim-treesitter was archived April 2026. Neovim 0.12 ships treesitter
--- highlighting built-in. This plugin is kept only because nvim-treesitter-textobjects
--- and nvim-ts-autotag still depend on it. The foldexpr now uses the built-in
--- vim.treesitter.foldexpr() (see lua/config/options.lua).
---
--- Parsers not bundled with Neovim 0.12 can be installed with:
---   :TSInstall <lang>  (requires tree-sitter CLI from mise.toml)
+-- nvim-treesitter was rewritten for Neovim 0.12+:
+--   - lazy = false is required (plugin does not support lazy-loading)
+--   - ensure_installed is gone; use require('nvim-treesitter').install({...})
+--   - setup() only accepts install_dir
+--   - Parsers bundled with Neovim 0.12.3: c, lua, markdown, markdown_inline,
+--     query, vim, vimdoc — do not reinstall them to avoid ABI conflicts
 
 return {
   "nvim-treesitter/nvim-treesitter",
-  version = "v0.10.*", -- Pin to stable 0.10.x releases (compat with Neovim 0.12+)
-  event = { "BufReadPost", "BufNewFile" },
+  lazy = false,
   build = ":TSUpdate",
   dependencies = {
     "nvim-treesitter/nvim-treesitter-textobjects",
@@ -23,45 +21,53 @@ return {
   },
   config = function()
     require("nvim-treesitter").setup({
-      ensure_installed = {
-        -- Languages not bundled with Neovim 0.12 built-in parsers
-        "bash",
-        "c",
-        "c_sharp",
-        "css",
-        "diff",
-        "dockerfile",
-        "gdscript",
-        "gitcommit",
-        "go",
-        "gomod",
-        "gosum",
-        "gowork",
-        "graphql",
-        "html",
-        "javascript",
-        "jsdoc",
-        "json",
-        "json5",
-        "lua",
-        "luadoc",
-        "markdown",
-        "markdown_inline",
-        "python",
-        "query",
-        "regex",
-        "rust",
-        "scss",
-        "sql",
-        "toml",
-        "tsx",
-        "typescript",
-        "vim",
-        "vimdoc",
-        "yaml",
-      },
+      install_dir = vim.fn.stdpath("data") .. "/site",
     })
 
-    require("nvim-ts-autotag").setup()
+    -- Install parsers not bundled with Neovim 0.12.3.
+    -- Runs async in the background; safe to call on every startup
+    -- (no-op for already-installed parsers).
+    require("nvim-treesitter").install({
+      "bash",
+      "c_sharp",
+      "css",
+      "diff",
+      "dockerfile",
+      "gdscript",
+      "gitcommit",
+      "go",
+      "gomod",
+      "gosum",
+      "gowork",
+      "graphql",
+      "html",
+      "javascript",
+      "jsdoc",
+      "json",
+      "json5",
+      "luadoc",
+      "python",
+      "regex",
+      "rust",
+      "scss",
+      "sql",
+      "toml",
+      "tsx",
+      "typescript",
+      "yaml",
+    })
+
+    -- Register compound filetypes that use an existing parser
+    vim.treesitter.language.register("yaml", "yaml.docker-compose")
+    vim.treesitter.language.register("yaml", "yaml.gitlab")
+    vim.treesitter.language.register("yaml", "yaml.helm-values")
+
+    require("nvim-ts-autotag").setup({
+      opts = {
+        enable_close = true,
+        enable_rename = true,
+        enable_close_on_slash = false,
+      },
+    })
   end,
 }

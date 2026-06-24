@@ -255,8 +255,15 @@ return {
     -- from lspconfig's bundled defaults automatically.
     local function setup_server(server_name)
       local server_opts = vim.tbl_deep_extend("force", {}, server_settings[server_name] or {})
+      -- Resolve binary: prefer explicit cmd override, fall back to lspconfig bundled default.
+      -- vim.lsp.config[name] is available in Neovim 0.12 after rtp is set by lazy.nvim.
       local cmd = server_opts.cmd
-      if cmd and type(cmd) == "table" and cmd[1] and vim.fn.executable(cmd[1]) == 0 then
+      if not cmd then
+        local default = vim.lsp.config[server_name]
+        cmd = default and default.cmd
+      end
+      -- Skip silently when binary is missing. Function-type cmd (e.g. ts_ls) manages itself.
+      if type(cmd) == "table" and cmd[1] and vim.fn.executable(cmd[1]) == 0 then
         return
       end
       local custom_on_attach = server_opts.on_attach

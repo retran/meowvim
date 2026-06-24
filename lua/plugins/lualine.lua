@@ -35,7 +35,7 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 
 local function get_dependencies()
   return {
-    "nvim-tree/nvim-web-devicons",
+    "echasnovski/mini.icons",
     "AndreM222/copilot-lualine",
   }
 end

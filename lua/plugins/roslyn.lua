@@ -10,13 +10,6 @@ return {
     local exe = "roslyn"
 
     if vim.fn.executable(exe) ~= 1 then
-      vim.notify(
-        string.format(
-          "[roslyn.nvim] Executable '%s' not found. Install Roslyn via mise or ensure it is on PATH.",
-          exe
-        ),
-        vim.log.levels.WARN
-      )
       return
     end
 
