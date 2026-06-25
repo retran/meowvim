@@ -3,13 +3,8 @@
 
 return {
   "seblyng/roslyn.nvim",
-  opts = {
-    exe = "roslyn",
-  },
   config = function(_, opts)
-    local exe = "roslyn"
-
-    if vim.fn.executable(exe) ~= 1 then
+    if vim.fn.executable("roslyn-language-server") ~= 1 then
       return
     end
 
