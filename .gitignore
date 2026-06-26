@@ -90,3 +90,6 @@ htmlcov/
 profile.json
 metrics.json
 startup-*.log
+
+# Claude Code local settings (machine-specific; never commit)
+.claude/settings.local.json
