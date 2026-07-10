@@ -799,6 +799,13 @@ function M.setup()
         end,
         desc = "Branches",
       },
+      {
+        "<leader>gs",
+        function()
+          snacks.picker.git_status({ layout = { fullscreen = true } })
+        end,
+        desc = "Browse Git Status",
+      },
       -- Hunks
       { "<leader>gH", group = "Hunks", icon = "󰊢" },
       { "<leader>gHs", gitsigns_action("stage_hunk"), desc = "Stage Hunk" },
@@ -821,12 +828,47 @@ function M.setup()
         end,
         desc = "Previous Hunk",
       },
-      -- Diffview
-      { "<leader>gD", group = "Diffview", icon = "󰩫" },
-      { "<leader>gDd", "<cmd>DiffviewOpen<cr>", desc = "Open" },
-      { "<leader>gDh", "<cmd>DiffviewFileHistory %<cr>", desc = "File History" },
-      { "<leader>gDH", "<cmd>DiffviewFileHistory<cr>", desc = "Repo History" },
-      { "<leader>gDc", "<cmd>DiffviewClose<cr>", desc = "Close" },
+      -- Git Diff (snacks picker — fullscreen hunk list + diff preview)
+      { "<leader>gD", group = "Diff", icon = "󰩫" },
+      {
+        "<leader>gDd",
+        function()
+          snacks.picker.git_diff({ layout = { fullscreen = true } })
+        end,
+        desc = "Diff Working Tree",
+      },
+      {
+        "<leader>gDs",
+        function()
+          snacks.picker.git_diff({ staged = true, layout = { fullscreen = true } })
+        end,
+        desc = "Diff Staged",
+      },
+      {
+        "<leader>gDb",
+        function()
+          vim.ui.input({ prompt = "Base branch/commit: " }, function(base)
+            if base and base ~= "" then
+              snacks.picker.git_diff({ base = base, layout = { fullscreen = true } })
+            end
+          end)
+        end,
+        desc = "Diff vs Branch",
+      },
+      {
+        "<leader>gDh",
+        function()
+          snacks.picker.git_log({ current_file = true, follow = true, layout = { fullscreen = true } })
+        end,
+        desc = "Show File History",
+      },
+      {
+        "<leader>gDH",
+        function()
+          snacks.picker.git_log({ layout = { fullscreen = true } })
+        end,
+        desc = "View Git Log",
+      },
       -- Git links
       {
         "<leader>gy",
