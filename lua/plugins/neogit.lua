@@ -14,7 +14,7 @@ return {
   opts = {
     disable_commit_confirmation = true,
     integrations = {
-      diffview = true,
+      diffview = false,
     },
     commit_popup = {
       kind = "floating",
