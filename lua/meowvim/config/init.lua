@@ -267,7 +267,13 @@ function M.get(key, default)
     end
   end
 
-  return value ~= nil and value or default
+  -- `value ~= nil and value or default` would turn a stored `false` into the
+  -- default, silently discarding every "disable this" setting.
+  if value == nil then
+    return default
+  end
+
+  return value
 end
 
 -- Set configuration value (runtime only, doesn't persist)

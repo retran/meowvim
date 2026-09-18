@@ -17,7 +17,7 @@ M.schema = {
     day_night_mode = {
       type = "string",
       default = "auto",
-      enum = { "manual", "auto", "sync" },
+      enum = { "manual", "auto" },
     },
     day_theme = { type = "string", default = "catppuccin" },
     day_variant = { type = "string", default = "latte" },
@@ -41,7 +41,6 @@ M.schema = {
     buffer_auto_close = { type = "boolean", default = true },
     buffer_threshold = { type = "number", default = 10, min = 1 },
     startup_dashboard = { type = "boolean", default = true },
-    lazy_load_plugins = { type = "boolean", default = true },
   },
 
   ui = {
@@ -53,9 +52,7 @@ M.schema = {
   },
 
   lsp = {
-    auto_install = { type = "boolean", default = true },
     diagnostics = { type = "table" },
-    inlay_hints = { type = "boolean", default = true },
   },
 
   formatting = {
@@ -89,8 +86,6 @@ M.schema = {
   },
 
   toggles = {
-    autoformat = { type = "boolean", default = true },
-    autosave = { type = "boolean", default = false },
     copilot = { type = "boolean", default = false },
     diagnostics = { type = "boolean", default = true },
     inlay_hints = { type = "boolean", default = false },

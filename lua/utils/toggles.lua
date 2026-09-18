@@ -6,14 +6,14 @@ local registry = {
     store = "DisableAutoFormat",
     default = true,
     type = "boolean",
-    config_key = "toggles.autoformat",
+    config_key = "editor.format_on_save",
     invert = true,
   },
   disable_autosave = {
     store = "DisableAutoSave",
     default = false,
     type = "boolean",
-    config_key = "toggles.autosave",
+    config_key = "editor.auto_save",
     invert = true,
   },
   miniindentscope_disable = {

@@ -7,14 +7,8 @@
 local M = {}
 
 function M.setup()
-  local function get_config_path()
-    local config_dir = vim.env.XDG_CONFIG_HOME and (vim.env.XDG_CONFIG_HOME .. "/meowvim")
-      or vim.fn.expand("~/.config/meowvim")
-    return config_dir .. "/config.lua"
-  end
-
   vim.api.nvim_create_user_command("MeowvimConfig", function()
-    vim.cmd("edit " .. get_config_path())
+    vim.cmd("edit " .. vim.fn.fnameescape(require("meowvim.config").get_config_path()))
   end, {
     desc = "Edit meowvim configuration",
   })

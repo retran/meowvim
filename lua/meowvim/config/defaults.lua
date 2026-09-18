@@ -30,6 +30,8 @@ M.defaults = {
     line_numbers = true,
     relative_numbers = true,
     wrap = false,
+    -- These two are the live switches behind <leader>oa / <leader>of;
+    -- utils/toggles.lua reads them and <leader>op persists them back here.
     auto_save = false,
     format_on_save = true,
   },
@@ -38,7 +40,6 @@ M.defaults = {
     buffer_auto_close = true,
     buffer_threshold = 10,
     startup_dashboard = true,
-    lazy_load_plugins = true,
   },
 
   ui = {
@@ -50,44 +51,28 @@ M.defaults = {
   },
 
   lsp = {
-    auto_install = true,
     diagnostics = {
       virtual_text = true,
       signs = true,
       underline = true,
       update_in_insert = false,
     },
-    inlay_hints = true,
   },
 
   formatting = {
-    formatters = {
-      lua = { "stylua" },
-      go = { "gofmt", "goimports" },
-      typescript = { "prettier" },
-      javascript = { "prettier" },
-      typescriptreact = { "prettier" },
-      javascriptreact = { "prettier" },
-      rust = { "rustfmt" },
-      python = { "black", "isort" },
-      json = { "prettier" },
-      yaml = { "prettier" },
-      markdown = { "prettier" },
-      html = { "prettier" },
-      css = { "prettier" },
-    },
+    -- Per-filetype overrides on top of the defaults in
+    -- lua/plugins/conform.lua. Values are conform formatter names and replace
+    -- the built-in entry for that filetype, e.g. `python = { "black" }`.
+    formatters = {},
     timeout_ms = 3000,
   },
 
   linting = {
     auto_lint = true,
-    linters = {
-      lua = { "luacheck" },
-      go = { "golangci-lint" },
-      typescript = { "eslint" },
-      javascript = { "eslint" },
-      python = { "ruff" },
-    },
+    -- Per-filetype overrides on top of the defaults in
+    -- lua/plugins/nvim-lint.lua. Values are nvim-lint linter names (which are
+    -- not always the binary name: `golangcilint` runs `golangci-lint`).
+    linters = {},
   },
 
   git = {
@@ -108,14 +93,11 @@ M.defaults = {
     scope_highlighting = true,
     custom_styles = true,
     dashboard = {
-      show_recent = 10,
       show_projects = 8,
     },
   },
 
   toggles = {
-    autoformat = true,
-    autosave = false,
     copilot = false,
     diagnostics = true,
     inlay_hints = false,

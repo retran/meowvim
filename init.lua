@@ -47,7 +47,7 @@ require("lazy").setup({
   rocks = { enabled = false },
 
   checker = {
-    enabled = true,
+    enabled = config_ok and config.get("core.update_check", true) or false,
     notify = false,
   },
   change_detection = {
