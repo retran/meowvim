@@ -4,21 +4,74 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge)](./LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/retran/meowvim?style=for-the-badge)](https://github.com/retran/meowvim/stargazers)
 
-A Neovim configuration for Neovim 0.12, built around snacks.nvim, blink.cmp,
-and the built-in LSP client. It starts with 17 plugins loaded and installs the
-rest on demand.
+A Neovim 0.12 configuration with a settings layer of its own. It bundles the
+plugins you would expect, and it adds a handful of things those plugins do not
+do: one validated settings file that reloads as you save it, themes that follow
+the system between day and night, per-project overrides, and tooling that is
+resolved when it runs so a per-project toolchain works.
 
-meowvim keeps your settings in one Lua table at `~/.config/meowvim/config.lua`.
-The repository holds the plugin specs; that file holds the choices you make,
-and a file watcher reloads it when you save.
+83 plugins are declared and 17 load at startup.
+
+## What meowvim adds
+
+These are written here rather than pulled from a plugin. If you are comparing
+configurations, this is the part that differs.
+
+**Settings as one validated table.** Your configuration is a plain Lua table at
+`~/.config/meowvim/config.lua` with 56 options across 13 sections, each with a
+type, a default, and a range. `:MeowvimConfigValidate` checks it. A file watcher
+reloads it 500 ms after you save, and defers the reload while you are in insert
+mode or on the command line, so a save mid-edit never interrupts you.
+
+**Themes that follow the system.** 17 colorschemes with 69 variants, described
+once and installed but idle until you pick one. meowvim asks the operating
+system for its appearance and switches between a day theme and a night theme
+when it changes, with 16 ready-made pairs to choose from. The probe runs through
+`vim.system` on a 30 second timer plus a check when the terminal regains focus,
+so it never blocks typing. It reads macOS through `osascript`, Windows through
+the registry, and Linux through gsettings, KDE, or the freedesktop portal.
+
+**Per-project settings.** `~/.config/meowvim/projects.lua` gives a directory its
+own theme and a command to run when you open it. meowvim matches the working
+directory, applies the settings, and feeds the same list to the project picker.
+
+**Tooling resolved when it runs.** Language servers, formatters, and linters are
+declared in full and checked at the moment they are used, not at startup. A
+project that provides its own toolchain through mise works without touching this
+configuration, and a host without Rust simply has no Rust support rather than an
+error. 17 language servers are configured, 16 of them gated on their binary and
+gdscript on a connection Godot opens.
+
+**A health check that knows about your project.** `:checkhealth meowvim` walks up
+from the working directory for a `mise.toml`, lists the tools it declares, and
+marks the ones that are not installed with the command that installs them. It
+also reports the configuration, the projects and their paths, the external tools,
+and the plugin and parser counts.
+
+**One keymap table.** Every mapping is declared in one place with a description
+and an icon, and which-key renders it. `:KeymapConflicts` reports mappings that
+resolve to more than one action, and `:KeymapList` prints everything for a mode.
+
+**Toggles that persist.** The switches under `<leader>o` are backed by a registry
+that keeps Vim's state, the session, and your configuration in step.
+`<leader>op` writes all of them to disk, so the next start begins where you left
+off.
+
+**Startup you can measure.** meowvim records every start and keeps the last 100.
+`<leader>oPt` compares them, which is what tells you whether a change cost you
+something; `<leader>oPl` breaks the current start down by plugin.
+
+**Upgrades with a way back.** `bin/update-meowvim.sh` saves the lock file as a
+restore point, updates, and runs the health check. Rolling back restores the
+pinned versions.
+
+**A lazygit theme generated from yours.** meowvim derives lazygit's colors from
+the active colorscheme and layers them over your config through
+`LG_CONFIG_FILE`, so the two match without meowvim ever editing a file you own.
 
 ## Quick start
 
-You need Neovim 0.12 or later, Git, and a terminal with true color. Everything
-else is optional and the configuration checks for it before using it.
-
-Move any existing configuration aside, clone this repository in its place, and
-start Neovim:
+You need Neovim 0.12 or later, Git, and a terminal with true color.
 
 ```bash
 mv ~/.config/nvim ~/.config/nvim.backup
@@ -26,40 +79,26 @@ git clone https://github.com/retran/meowvim.git ~/.config/nvim
 nvim
 ```
 
-lazy.nvim bootstraps itself on the first run and installs the plugins. Run
-`:checkhealth meowvim` when it finishes: the report lists which external tools
-it found and what each missing one would give you.
+lazy.nvim bootstraps itself and installs the plugins; treesitter then compiles
+its parsers in the background. Run `:checkhealth meowvim` when it settles.
 
-Press `<leader>` (space) to see the top-level menu, or `<leader>hk` to search
-every mapping.
+Press space and wait: which-key lists the groups. `<leader>hk` searches every
+mapping by name.
 
-## What you get
+## What it bundles
 
-**Finding things.** snacks.nvim provides the picker, the file explorer, the
-dashboard, scratch buffers, and the terminal. `<leader>ff` finds a file,
-`<leader>s/` greps the project, and `<leader>fe` opens the explorer.
+snacks.nvim provides the picker, explorer, dashboard, scratch buffers, terminal,
+and the GitHub pull request review. blink.cmp handles completion, with Copilot
+inline suggestions accepted by the same key. Treesitter installs 30 parsers.
+conform formats and nvim-lint lints. gitsigns, Neogit, and LazyGit cover Git,
+neotest runs Go, Python, Jest, and Vitest, and nvim-dap debugs Go, Python, C#,
+and Godot. Everything except the startup set loads on first use.
 
-**Language support.** The built-in LSP client is configured through
-`vim.lsp.config()` for 17 servers, and each one starts only when its binary is
-on your PATH. Treesitter installs 27 parsers on top of the 7 that ship with
-Neovim. conform formats and nvim-lint lints; both resolve their tools when they
-run, so a project-local toolchain works.
-
-**Git.** gitsigns shows the hunks, `<leader>gg` opens LazyGit, `<leader>gD`
-browses diffs through the snacks picker, and `<leader>gh` reviews pull requests
-through the GitHub CLI without leaving the editor.
-
-**Themes.** 17 colorschemes with 70 variants. meowvim reads the system
-appearance and switches between a day theme and a night theme; `<leader>ok`
-opens the theme menu.
-
-**Tests and debugging.** neotest runs Go, Python, Jest, and Vitest suites.
-nvim-dap debugs Go, Python, C#, and Godot. Both load on first use.
+Two plugins come from the same author as this configuration: `meow.review.nvim`
+for inline code review annotations, and `meow.yarn.nvim` for call and type
+hierarchy trees.
 
 ## Configuration
-
-Your settings live in `~/.config/meowvim/config.lua`, which meowvim creates on
-the first run. It is a plain Lua table:
 
 ```lua
 return {
@@ -69,13 +108,9 @@ return {
 }
 ```
 
-Save the file and meowvim reloads it. `:MeowvimConfig` opens it,
-`:MeowvimConfigValidate` checks it against the schema, and `<leader>op` writes
-the current toggle states back into it.
-
-Per-project overrides go in `~/.config/meowvim/projects.lua`. The
-[configuration reference](docs/02-CONFIGURATION.md) lists every option with its
-type, default, and range.
+Save it and meowvim reloads. `:MeowvimConfig` opens the file and `<leader>ok`
+opens the theme menu, which writes your choice back into it. The
+[configuration reference](docs/02-CONFIGURATION.md) lists every option.
 
 ## Documentation
 
@@ -85,25 +120,17 @@ type, default, and range.
 - [Keymap reference](docs/KEYMAPS.md) and the [one-page card](docs/KEYMAPS_QUICK_REFERENCE.md)
 - [Troubleshooting](docs/04-TROUBLESHOOTING.md)
 
-Inside Neovim, `:help meowvim` covers the same ground.
-
-## Staying current
-
-`bin/update-meowvim.sh` saves the current `lazy-lock.json` as a restore point,
-updates the plugins, and runs the health check. If the update goes wrong,
-`bin/update-meowvim.sh --rollback <restore-point>` puts the old versions back.
-
-You can also run `:Lazy sync` and check `:checkhealth meowvim` yourself.
+`:help meowvim` covers the same ground without leaving the editor.
 
 ## Contributing
 
 Open an issue with steps to reproduce, or send a pull request. `stylua` formats
-the Lua, `luacheck` lints it, and `bin/test-config.sh` runs the checks that CI
-runs. `mise install` fetches all three.
+the Lua, `luacheck` lints it, and `bin/test-config.sh` runs what CI runs;
+`mise install` fetches all three. Keep the cat puns tasteful and the Lua tidy.
 
 ## License
 
 MIT. See [LICENSE](./LICENSE).
 
 Made by Andrew Vasilyev, with feline assistance from Sonya Blade, Mila, and
-Marcus Fenix.
+Marcus Fenix, who supervised every commit from the warm side of the keyboard.
