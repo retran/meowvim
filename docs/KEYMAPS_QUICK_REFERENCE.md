@@ -104,6 +104,7 @@ from inside Neovim.
 | `<leader>ow` / `<leader>os` | Wrap / spell |
 | `<leader>on` | Cycle the line numbers |
 | `<leader>ox` / `<leader>oi` | Diagnostics / inlay hints |
+| `<leader>oD` | Deleted lines in the gutter |
 | `<leader>of` / `<leader>oa` | Format on save / auto-save |
 | `<leader>oC` | Copilot |
 | `<leader>ok` / `<leader>oK` | Theme menu / day and night |

@@ -316,6 +316,7 @@ The runtime toggles. `<leader>op` writes the current state of all of them into
 | `<leader>oC` | Toggle Copilot | n |
 | `<leader>oc` | Toggle Cursorline | n |
 | `<leader>od` | Toggle Dim Background | n |
+| `<leader>oD` | Toggle Deleted Lines | n |
 | `<leader>oe` | Toggle Signcolumn | n |
 | `<leader>of` | Toggle Format on Save | n |
 | `<leader>og` | Toggle Indent Guides | n |

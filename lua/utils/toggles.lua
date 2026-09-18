@@ -38,6 +38,12 @@ local registry = {
     config_key = "toggles.inlay_hints",
   },
   copilot_enabled = { store = "CopilotEnabled", default = false, type = "boolean", config_key = "toggles.copilot" },
+  git_show_deleted = {
+    store = "GitShowDeleted",
+    default = false,
+    type = "boolean",
+    config_key = "git.show_deleted",
+  },
   -- Vim option toggles
   number_mode = { store = "NumberMode", default = "relative", type = "string", config_key = "toggles.number_mode" }, -- "off", "number", "relative"
   wrap = { store = "Wrap", default = false, type = "boolean", config_key = "toggles.wrap" },

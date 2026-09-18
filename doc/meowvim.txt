@@ -256,10 +256,10 @@ The runtime switches under `<leader>o`:
     <leader>on  line number mode     <leader>oc  cursorline
     <leader>ol  whitespace           <leader>oh  search highlight
     <leader>oe  sign column          <leader>og  indent guides
-    <leader>od  dim inactive         <leader>ox  diagnostics
-    <leader>oi  inlay hints          <leader>ot  linting
-    <leader>of  format on save       <leader>oa  auto-save
-    <leader>oC  Copilot
+    <leader>od  dim inactive         <leader>oD  deleted lines
+    <leader>ox  diagnostics          <leader>oi  inlay hints
+    <leader>ot  linting              <leader>of  format on save
+    <leader>oa  auto-save            <leader>oC  Copilot
 
 `<leader>op` writes the current state of all of them into
 `~/.config/meowvim/config.lua`, so the next start begins where you left off.

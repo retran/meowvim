@@ -78,7 +78,9 @@ M.defaults = {
   git = {
     enable_signs = true,
     blame_line = false,
-    show_deleted = true,
+    -- Virtual lines for removed code while you edit; noisy by default.
+    -- <leader>oD toggles it.
+    show_deleted = false,
     lazygit_theme_sync = true,
   },
 

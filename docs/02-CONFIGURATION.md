@@ -134,7 +134,7 @@ which ones resolve.
 | --- | --- | --- | --- |
 | `enable_signs` | boolean | `true` | gitsigns in the sign column |
 | `blame_line` | boolean | `false` | Inline blame for the current line |
-| `show_deleted` | boolean | `true` | Shows removed lines in a hunk preview |
+| `show_deleted` | boolean | `false` | Virtual lines for removed code; `<leader>oD` toggles it |
 | `lazygit_theme_sync` | boolean | `true` | Generates a lazygit theme from the active colorscheme |
 
 meowvim writes the generated theme to its own file under `stdpath("state")` and
@@ -180,6 +180,7 @@ the editor.
 | `snacks_dim` | boolean | `false` | `<leader>od` |
 | `spell` | boolean | `false` | `<leader>os` |
 | `wrap` | boolean | `false` | `<leader>ow` |
+| `git.show_deleted` | boolean | `false` | `<leader>oD` |
 | `number_mode` | string | `"relative"` | `<leader>on`, one of `off`, `number`, `relative` |
 | `signcolumn` | string | `"yes"` | `<leader>oe`, one of `yes`, `no`, `auto` |
 
