@@ -7,13 +7,7 @@
 return {
   "linrongbin16/gitlinker.nvim",
   cmd = { "GitLink" },
-  opts = {
-    mappings = nil,
-    opts = {
-      add_current_line_on_normal_mode = true,
-    },
-  },
-  config = function(_, opts)
-    require("gitlinker").setup(opts)
-  end,
+  -- gitlinker v5 has no `mappings` or nested `opts` keys; the keymaps live in
+  -- lua/config/keymaps.lua and drive the :GitLink command.
+  opts = {},
 }

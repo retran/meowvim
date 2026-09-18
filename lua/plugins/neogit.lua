@@ -12,12 +12,12 @@ return {
     "echasnovski/mini.icons",
   },
   opts = {
-    disable_commit_confirmation = true,
+    -- `disable_commit_confirmation` and `commit_popup` used to be set here;
+    -- neither key exists in neogit's config any more and neogit's validator
+    -- ignores unknown keys, so they were silently dead.
     integrations = {
       diffview = false,
-    },
-    commit_popup = {
-      kind = "floating",
+      snacks = true,
     },
     signs = {
       section = { "", "" },

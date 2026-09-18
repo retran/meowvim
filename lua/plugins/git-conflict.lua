@@ -9,11 +9,8 @@ return {
   version = "*",
   event = "BufReadPost",
   opts = {
+    -- Conflict actions are bound under <leader>gx in lua/config/keymaps.lua.
     default_mappings = false,
     disable_diagnostics = true,
-    highlights = {
-      incoming = "DiffAdd",
-      current = "DiffText",
-    },
   },
 }
