@@ -11,75 +11,50 @@ return {
   lazy = false,
   dependencies = {
     "saghen/blink.cmp",
-    "onsails/lspkind.nvim",
     "b0o/SchemaStore.nvim",
   },
   config = function()
-    local ok_lspkind, lspkind = pcall(require, "lspkind")
-    if ok_lspkind then
-      lspkind.init({
-        mode = "symbol_text",
-        preset = "codicons",
-      })
-    end
-
     local is_ci = vim.env.CI or vim.env.DOCKER or vim.fn.filereadable("/.dockerenv") == 1
     if is_ci then
       vim.notify("Skipping LSP setup in CI/container environment", vim.log.levels.INFO)
       return
     end
 
-    local function lsp_handler_with(handler, default_opts)
-      return function(err, result, ctx, config)
-        config = vim.tbl_deep_extend("force", default_opts, config or {})
-        handler(err, result, ctx, config)
-      end
-    end
-
-    vim.lsp.handlers["textDocument/hover"] = lsp_handler_with(vim.lsp.handlers.hover, { border = "rounded" })
-    vim.lsp.handlers["textDocument/signatureHelp"] =
-      lsp_handler_with(vim.lsp.handlers.signature_help, { border = "rounded" })
+    -- Float borders come from `vim.o.winborder` (see lua/config/options.lua);
+    -- Neovim 0.12 applies it to every floating window, so hover and signature
+    -- help need no per-handler border config of their own.
+    local config_ok, config = pcall(require, "meowvim.config")
+    local diagnostics = (config_ok and config.get("lsp.diagnostics", nil)) or {}
 
     vim.diagnostic.config({
-      virtual_text = { prefix = "", spacing = 2 },
-      signs = true,
-      underline = true,
-      update_in_insert = false,
+      virtual_text = diagnostics.virtual_text ~= false and { prefix = "", spacing = 2 } or false,
+      underline = diagnostics.underline ~= false,
+      update_in_insert = diagnostics.update_in_insert == true,
       severity_sort = true,
+      signs = diagnostics.signs ~= false and {
+        text = {
+          [vim.diagnostic.severity.ERROR] = "󰅚",
+          [vim.diagnostic.severity.WARN] = "󰀪",
+          [vim.diagnostic.severity.HINT] = "󰌶",
+          [vim.diagnostic.severity.INFO] = "󰋼",
+        },
+      } or false,
       float = {
-        border = "rounded",
         source = "if_many",
         header = "",
         prefix = "",
       },
     })
 
-    local catppuccin_lsp_ok, catppuccin_lsp = pcall(require, "catppuccin.integrations.lsp")
-    if catppuccin_lsp_ok then
-      if type(catppuccin_lsp) == "table" and type(catppuccin_lsp.setup) == "function" then
-        catppuccin_lsp.setup()
-      elseif type(catppuccin_lsp) == "function" then
-        catppuccin_lsp()
-      end
-    end
-
-    vim.diagnostic.config(vim.tbl_deep_extend("force", vim.diagnostic.config() or {}, {
-      signs = {
-        text = {
-          [vim.diagnostic.severity.ERROR] = "󰅚",
-          [vim.diagnostic.severity.WARN]  = "󰀪",
-          [vim.diagnostic.severity.HINT]  = "󰌶",
-          [vim.diagnostic.severity.INFO]  = "󰋼",
-        },
-      },
-    }))
-
     local caps = require("blink.cmp").get_lsp_capabilities()
     caps.textDocument.semanticTokens =
       vim.tbl_deep_extend("force", caps.textDocument.semanticTokens or {}, { dynamicRegistration = true })
 
+    -- `vim.g.inlay_hints_enabled` is owned by utils.toggles (<leader>oi) and
+    -- seeded from `toggles.inlay_hints` in the user config, so honour it here
+    -- instead of switching hints on for every buffer that supports them.
     local on_attach = function(client, bufnr)
-      if client.server_capabilities.inlayHintProvider then
+      if client.server_capabilities.inlayHintProvider and vim.g.inlay_hints_enabled then
         vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
       end
     end
@@ -145,10 +120,11 @@ return {
         },
       },
       ts_ls = {
-        on_attach = function(client, bufnr)
+        -- <leader>co is mapped globally in lua/config/keymaps.lua and checks the
+        -- filetype itself, so no buffer-local mapping is needed here.
+        on_attach = function(client)
           client.server_capabilities.documentFormattingProvider = false
           client.server_capabilities.documentRangeFormattingProvider = false
-          vim.keymap.set("n", "<leader>co", "<cmd>LspOrganize<CR>", { buffer = bufnr, desc = "Organize Imports" })
         end,
         settings = {
           typescript = {

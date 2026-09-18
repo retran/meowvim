@@ -1,7 +1,7 @@
 -- SPDX-License-Identifier: MIT
 -- Copyright (c) 2025 Andrew Vasilyev < me@retran.me >
 
--- @file: lua/plugins/nvim-cmp.lua
+-- @file: lua/plugins/blink-cmp.lua
 -- @brief: Completion engine — blink.cmp v1 (replaces nvim-cmp).
 --
 -- KEYMAPS (insert mode):
@@ -24,57 +24,80 @@
 return {
   "saghen/blink.cmp",
   version = "1.*",
-  event = { "InsertEnter", "CmdlineEnter" },
+  -- Not lazy: nvim-lspconfig needs get_lsp_capabilities() while configuring
+  -- servers at startup, so any `event` here would be bypassed anyway. blink
+  -- does not register its capabilities through `vim.lsp.config` on its own.
+  lazy = false,
   dependencies = {
     "L3MON4D3/LuaSnip",
     "rafamadriz/friendly-snippets",
-    "onsails/lspkind.nvim",
-    "saecki/crates.nvim",
+    "echasnovski/mini.icons",
     "ribru17/blink-cmp-spell",
   },
   opts = function()
-    local lspkind = require("lspkind")
+    local mini_icons = require("mini.icons")
 
     return {
       snippets = { preset = "luasnip" },
 
       keymap = {
         preset = "none",
-        ["<C-j>"] = { function()
-          local ok, suggestion = pcall(require, "copilot.suggestion")
-          if ok and suggestion.is_visible() then suggestion.dismiss() end
-          return false
-        end, "select_next", "fallback" },
-        ["<C-k>"] = { function()
-          local ok, suggestion = pcall(require, "copilot.suggestion")
-          if ok and suggestion.is_visible() then suggestion.dismiss() end
-          return false
-        end, "select_prev", "fallback" },
-        ["<C-l>"] = { function(cmp)
-          local ok, suggestion = pcall(require, "copilot.suggestion")
-          if ok and suggestion.is_visible() then
-            suggestion.accept()
-            return true
-          end
-          return cmp.accept()
-        end },
+        ["<C-j>"] = {
+          function()
+            local ok, suggestion = pcall(require, "copilot.suggestion")
+            if ok and suggestion.is_visible() then
+              suggestion.dismiss()
+            end
+            return false
+          end,
+          "select_next",
+          "fallback",
+        },
+        ["<C-k>"] = {
+          function()
+            local ok, suggestion = pcall(require, "copilot.suggestion")
+            if ok and suggestion.is_visible() then
+              suggestion.dismiss()
+            end
+            return false
+          end,
+          "select_prev",
+          "fallback",
+        },
+        ["<C-l>"] = {
+          function(cmp)
+            local ok, suggestion = pcall(require, "copilot.suggestion")
+            if ok and suggestion.is_visible() then
+              suggestion.accept()
+              return true
+            end
+            return cmp.accept()
+          end,
+        },
         ["<C-u>"] = { "scroll_documentation_up", "fallback" },
         ["<C-d>"] = { "scroll_documentation_down", "fallback" },
         ["<C-Space>"] = { "show", "show_documentation", "hide_documentation" },
         ["<Tab>"] = { "snippet_forward", "fallback" },
         ["<S-Tab>"] = { "snippet_backward", "fallback" },
         ["<CR>"] = { "fallback" },
-        ["<Esc>"] = { function(cmp)
-          local ok, suggestion = pcall(require, "copilot.suggestion")
-          local had_inline = ok and suggestion.is_visible()
-          if had_inline then suggestion.dismiss() end
-          if cmp.is_visible() then
-            cmp.hide()
-            return true
-          end
-          if had_inline then return true end
-          return false
-        end, "fallback" },
+        ["<Esc>"] = {
+          function(cmp)
+            local ok, suggestion = pcall(require, "copilot.suggestion")
+            local had_inline = ok and suggestion.is_visible()
+            if had_inline then
+              suggestion.dismiss()
+            end
+            if cmp.is_visible() then
+              cmp.hide()
+              return true
+            end
+            if had_inline then
+              return true
+            end
+            return false
+          end,
+          "fallback",
+        },
       },
 
       sources = {
@@ -91,7 +114,12 @@ return {
           spell = {
             name = "Spell",
             module = "blink-cmp-spell",
-            opts = { keep_all_entries = false, enable_in_context = function() return vim.opt.spell:get() end },
+            opts = {
+              keep_all_entries = false,
+              enable_in_context = function()
+                return vim.opt.spell:get()
+              end,
+            },
           },
         },
       },
@@ -99,13 +127,14 @@ return {
       completion = {
         accept = { auto_brackets = { enabled = true } },
         menu = {
-          border = "rounded",
           draw = {
             components = {
+              -- Kind icons come from mini.icons so the completion menu matches
+              -- the icons used everywhere else (file explorer, pickers, lualine).
               kind_icon = {
                 ellipsis = false,
                 text = function(ctx)
-                  local icon, hl = lspkind.symbolic(ctx.kind, { mode = "symbol" })
+                  local icon, hl = mini_icons.get("lsp", ctx.kind)
                   return icon or ctx.kind_icon, hl or ("BlinkCmpKind" .. ctx.kind)
                 end,
               },
@@ -115,7 +144,6 @@ return {
         documentation = {
           auto_show = true,
           auto_show_delay_ms = 200,
-          window = { border = "rounded" },
         },
         ghost_text = { enabled = true },
         list = {
@@ -126,9 +154,10 @@ return {
         },
       },
 
+      -- Window borders come from `vim.o.winborder`; blink falls back to it
+      -- whenever `border` is unset (blink/cmp/lib/window/utils.lua).
       signature = {
         enabled = true,
-        window = { border = "rounded" },
       },
 
       appearance = {

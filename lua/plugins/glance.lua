@@ -8,15 +8,10 @@ return {
   "dnlhc/glance.nvim",
   cmd = "Glance",
   opts = {
-    detached = function(winid)
-      return winid > -1
-    end,
-    preview = {
-      type = "float",
-      win = {
-        border = "rounded",
-      },
-    },
+    -- Always use the detached layout. glance has no top-level `preview`
+    -- option (see GlanceOpts in glance/config.lua) — the previous
+    -- `preview = { type = ..., win = ... }` block was silently ignored.
+    detached = true,
   },
   config = function(_, opts)
     require("glance").setup(opts)

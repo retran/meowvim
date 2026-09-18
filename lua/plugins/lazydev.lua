@@ -9,11 +9,15 @@ return {
   ft = "lua",
   opts = {
     library = {
+      -- `vim.uv` is used throughout the config (timers, fs_event, fs_stat);
+      -- without the luv meta types LuaLS reports every call as unknown.
+      { path = "${3rd}/luv/library", words = { "vim%.uv" } },
       "lazy.nvim",
+      "snacks.nvim",
     },
     integrations = {
       lspconfig = true,
-      cmp = false,  -- blink.cmp uses its own lazydev source (see nvim-cmp.lua which configures blink.cmp)
+      cmp = false, -- blink.cmp uses its own lazydev source (see blink-cmp.lua)
     },
   },
 }
