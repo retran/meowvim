@@ -10,7 +10,7 @@ return {
   config = function()
     require("which-key").setup({
       preset = "helix",
-      sort = { "manual", "group", "alphanum" },
+      sort = { "local", "manual", "group", "alphanum" },
       icons = {
         breadcrumb = "»",
         separator = "➜",

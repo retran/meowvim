@@ -10,7 +10,12 @@ return {
   version = false,
   lazy = false,
   config = function()
-    require("mini.icons").setup()
+    local config_ok, config = pcall(require, "meowvim.config")
+    local glyphs = not config_ok or config.get("ui.icons", true)
+
+    require("mini.icons").setup({
+      style = glyphs and "glyph" or "ascii",
+    })
     -- Provide nvim-web-devicons-compatible API so lualine, neogit, etc.
     -- work without changes.
     MiniIcons.mock_nvim_web_devicons()

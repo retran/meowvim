@@ -18,6 +18,23 @@ vim.treesitter.get_range = function(node, source, metadata)
   return _orig_ts_get_range(node, source, metadata)
 end
 
+-- Neovim core bug: `$/progress` notifications without a `token` crash the
+-- built-in handler at `vim/lsp/handlers.lua` with "table index is nil", because
+-- it does `client.progress.pending[params.token] = ...`. Normalise the token so
+-- a misbehaving language server cannot take the LSP client down.
+local _orig_lsp_progress = vim.lsp.handlers["$/progress"]
+vim.lsp.handlers["$/progress"] = function(err, result, ctx, config)
+  if result and result.token == nil then
+    result.token = ""
+  end
+  if result and result.value and result.value.token == nil then
+    result.value.token = ""
+  end
+  if _orig_lsp_progress then
+    return _orig_lsp_progress(err, result, ctx, config)
+  end
+end
+
 local function patch_snacks_picker()
   if snacks_picker_patched then
     return true

@@ -4,71 +4,11 @@
 -- @file: lua/plugins/snacks.lua
 -- @brief: Collection of useful utilities and UI components.
 
--- luacheck: globals Snacks
-
 return {
   "folke/snacks.nvim",
   version = "v2.*", -- Pin to stable 2.x releases
   priority = 1000,
   lazy = false,
-  keys = {
-    {
-      "<leader>.",
-      function()
-        Snacks.scratch()
-      end,
-      desc = "Toggle Scratch Buffer",
-    },
-    {
-      "<leader>hn",
-      function()
-        Snacks.notifier.show_history()
-      end,
-      desc = "Notification History",
-    },
-    {
-      "<leader>bd",
-      function()
-        Snacks.bufdelete()
-      end,
-      desc = "Delete Buffer",
-    },
-    {
-      "<leader>cR",
-      function()
-        Snacks.rename()
-      end,
-      desc = "Rename File",
-    },
-    {
-      "<c-/>",
-      function()
-        Snacks.terminal()
-      end,
-      desc = "Toggle Terminal",
-    },
-    {
-      "<c-_>",
-      function()
-        Snacks.terminal()
-      end,
-      desc = "Toggle Terminal (which-key)",
-    },
-    {
-      "]w",
-      function()
-        Snacks.words.jump(vim.v.count1)
-      end,
-      desc = "Next Reference",
-    },
-    {
-      "[w",
-      function()
-        Snacks.words.jump(-vim.v.count1)
-      end,
-      desc = "Prev Reference",
-    },
-  },
   config = function(_, opts)
     require("snacks").setup(opts)
     local patches = require("utils.patches")
@@ -81,11 +21,15 @@ return {
     local image_preview = true
     local scope_highlighting = true
     local custom_styles = true
+    local startup_dashboard = true
+    local project_limit = 8
 
     if config_ok then
       image_preview = config.get("snacks.image_preview", true)
       scope_highlighting = config.get("snacks.scope_highlighting", true)
       custom_styles = config.get("snacks.custom_styles", true)
+      startup_dashboard = config.get("performance.startup_dashboard", true)
+      project_limit = config.get("snacks.dashboard.show_projects", project_limit)
     end
 
     return {
@@ -94,7 +38,7 @@ return {
         -- in that case auto_restore() (VimEnter) opens it instead. The dashboard
         -- auto-opens on UIEnter (before VimEnter), so it must be gated here
         -- statically rather than closed afterwards.
-        enabled = not (function()
+        enabled = startup_dashboard and not (function()
           local ok, session = pcall(require, "utils.session")
           return ok and session.should_auto_restore()
         end)(),
@@ -112,7 +56,7 @@ return {
         },
         sections = {
           { section = "header", padding = 1 },
-          { section = "projects", padding = 1 },
+          { section = "projects", limit = project_limit, padding = 1 },
           { section = "keys", gap = 0, padding = 1 },
           { section = "startup", padding = 1 },
         },
@@ -123,11 +67,18 @@ return {
       explorer = {
         replace_netrw = true,
       },
+      -- GitHub CLI integration: gh_pr / gh_issue / gh_diff / gh_actions pickers.
+      -- Replaces gh.nvim + litee.nvim; requires the `gh` binary.
+      gh = {},
       input = {},
       notifier = {},
+      -- Renders the file before plugins load when opening `nvim <file>`.
+      quickfile = {},
       terminal = {},
+      -- LSP document highlights + ]w / [w navigation between references.
+      words = {},
       image = {
-        enabled = false, -- broken with nvim 0.12.x: treesitter `range` API removed
+        enabled = image_preview,
       },
       scope = {
         enabled = scope_highlighting,

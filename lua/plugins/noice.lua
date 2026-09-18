@@ -7,24 +7,12 @@
 return {
   "folke/noice.nvim",
   event = "VeryLazy",
+  -- Notifications render through snacks.notifier: noice's default
+  -- `views.notify.backend` is { "snacks", "notify" } and the snacks backend is
+  -- available whenever snacks.notifier is enabled, so nvim-notify is never used.
   dependencies = {
     "MunifTanjim/nui.nvim",
-    "rcarriga/nvim-notify",
   },
-  init = function()
-    local original_handler = vim.lsp.handlers["$/progress"]
-    vim.lsp.handlers["$/progress"] = function(err, result, ctx, config)
-      if result and result.token == nil then
-        result.token = ""
-      end
-      if result and result.value and result.value.token == nil then
-        result.value.token = ""
-      end
-      if original_handler then
-        return original_handler(err, result, ctx, config)
-      end
-    end
-  end,
   opts = {
     lsp = {
       override = {
