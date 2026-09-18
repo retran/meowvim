@@ -131,6 +131,18 @@ local function run()
     end
   end
 
+  -- The reverse direction: a command this configuration defines but never
+  -- documented. Only doc/meowvim.txt is required to carry them, because that is
+  -- the reference a user reaches through :help.
+  local reference = read("doc/meowvim.txt") or ""
+  for _, file in ipairs(vim.fn.glob("lua/**/*.lua", false, true)) do
+    for name in (read(file) or ""):gmatch('nvim_create_user_command%("([A-Za-z]+)"') do
+      if not reference:find("*:" .. name .. "*", 1, true) then
+        table.insert(problems, ("doc/meowvim.txt: :%s is defined in %s but not documented"):format(name, file))
+      end
+    end
+  end
+
   if #problems > 0 then
     io.stderr:write(table.concat(problems, "\n") .. "\n")
     vim.cmd("cquit 1")

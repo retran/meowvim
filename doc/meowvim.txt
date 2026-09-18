@@ -208,6 +208,12 @@ first project that contains it. The paths also feed the `<leader>fp` picker.
                                                               *:FormatToggle*
 :FormatToggle[!]        Toggle it, globally or for the buffer
 
+                                                          *:AutoSaveDisable*
+:AutoSaveDisable[!]     Turn auto-save off, globally or for the buffer
+
+                                                           *:AutoSaveEnable*
+:AutoSaveEnable[!]      Turn it back on
+
                                                            *:AutoSaveToggle*
 :AutoSaveToggle[!]      Toggle auto-save, globally or for the buffer
 
