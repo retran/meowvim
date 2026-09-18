@@ -280,12 +280,26 @@ local function flash_action(action_name, multi_window)
   end
 end
 
+-- glance opens an empty window when no server answers the request, so check the
+-- capability first and say which one is missing.
+local GLANCE_METHODS = {
+  definitions = { method = "textDocument/definition", what = "go to definition" },
+  references = { method = "textDocument/references", what = "find references" },
+  implementations = { method = "textDocument/implementation", what = "go to implementation" },
+  type_definitions = { method = "textDocument/typeDefinition", what = "go to type definition" },
+}
+
 local function glance_action(action_type)
   return function()
     local glance = safe_require("glance")
-    if glance then
-      glance.open(action_type)
+    if not glance then
+      return
     end
+
+    local spec = GLANCE_METHODS[action_type]
+    require("utils.lsp").require_capability(spec.method, function()
+      glance.open(action_type)
+    end, spec.what)
   end
 end
 
@@ -641,7 +655,9 @@ function M.setup()
       {
         "<leader>nD",
         function()
-          snacks.picker.lsp_declarations()
+          require("utils.lsp").require_capability("textDocument/declaration", function()
+            snacks.picker.lsp_declarations()
+          end, "go to declaration")
         end,
         desc = "Declaration",
       },
@@ -649,14 +665,22 @@ function M.setup()
       {
         "<leader>ns",
         function()
-          snacks.picker.lsp_symbols()
+          require("utils.lsp").with_fallback("textDocument/documentSymbol", function()
+            snacks.picker.lsp_symbols()
+          end, function()
+            snacks.picker.treesitter()
+          end, "No document symbols from a language server; listing treesitter symbols instead")
         end,
         desc = "Go To Document Symbols",
       },
       {
         "<leader>nS",
         function()
-          snacks.picker.lsp_workspace_symbols()
+          require("utils.lsp").with_fallback("workspace/symbol", function()
+            snacks.picker.lsp_workspace_symbols()
+          end, function()
+            snacks.picker.grep()
+          end, "No workspace symbols from a language server; grepping the project instead")
         end,
         desc = "Go To Workspace Symbols",
       },

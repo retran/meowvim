@@ -35,12 +35,18 @@ the registry, and Linux through gsettings, KDE, or the freedesktop portal.
 own theme and a command to run when you open it. meowvim matches the working
 directory, applies the settings, and feeds the same list to the project picker.
 
-**Tooling resolved when it runs.** Language servers, formatters, and linters are
-declared in full and checked at the moment they are used, not at startup. A
-project that provides its own toolchain through mise works without touching this
-configuration, and a host without Rust simply has no Rust support rather than an
-error. 17 language servers are configured, 16 of them gated on their binary and
-gdscript on a connection Godot opens.
+**Tooling resolved when it runs, and features that degrade.** Language servers,
+formatters, and linters are declared in full and checked at the moment they are
+used, not at startup, so a project that brings its own toolchain through mise
+works without touching this configuration. 17 language servers are configured,
+16 gated on their binary and gdscript on a connection Godot opens.
+
+When a server is missing or answers only part of the protocol, the commands that
+depend on it fall back rather than open an empty window: document symbols come
+from treesitter, workspace symbols become a project grep, folds come from
+treesitter and then indentation, formatting falls back to the server and then to
+nothing, and diagnostics still arrive from nvim-lint. What has no fallback says
+which capability is missing.
 
 **A health check that knows about your project.** `:checkhealth meowvim` walks up
 from the working directory for a `mise.toml`, lists the tools it declares, and

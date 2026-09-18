@@ -44,6 +44,13 @@ searches symbols across the workspace.
 and `<leader>nh` and `<leader>nH` open the type hierarchy. These render as trees
 you can expand, which is what makes them worth using over a flat reference list.
 
+In a buffer with no language server, or one whose server does not answer that
+request, these degrade rather than open an empty window. `<leader>ns` lists
+treesitter symbols instead of LSP symbols, `<leader>nS` greps the project
+instead of searching workspace symbols, and the rest say which capability is
+missing. Folding does the same: nvim-ufo takes its ranges from the server, then
+treesitter, then indentation.
+
 ## Change code
 
 `<leader>cc` runs a code action. `<leader>cr` renames the symbol under the
