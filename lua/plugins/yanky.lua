@@ -8,23 +8,11 @@ return {
   "gbprod/yanky.nvim",
   event = { "BufReadPost", "BufNewFile" },
   opts = {
-    ring = {
-      history_length = 100,
-      storage = "shada",
-      sync_with_numbered_registers = true,
-      cancel_event = "update",
-      ignore_registers = { "_" },
-    },
-    system_clipboard = {
-      sync_with_ring = true,
-    },
+    -- Everything else (shada-backed 100-entry ring, numbered-register sync,
+    -- system clipboard sync, cursor preservation) already matches yanky's
+    -- defaults; only the highlight duration is shortened.
     highlight = {
-      on_put = true,
-      on_yank = true,
       timer = 200,
-    },
-    preserve_cursor_position = {
-      enabled = true,
     },
   },
   config = function(_, opts)

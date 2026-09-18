@@ -51,7 +51,7 @@ opt.expandtab = true
 opt.autoindent = true
 opt.smartindent = true
 opt.wrap = false
-opt.linebreak = true  -- soft-wrap at word boundaries when wrap is toggled on
+opt.linebreak = true -- soft-wrap at word boundaries when wrap is toggled on
 opt.breakindent = true
 
 opt.ignorecase = true
@@ -84,6 +84,9 @@ opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 opt.foldcolumn = "1"
 opt.foldenable = true
 opt.foldlevel = 99
+-- nvim-ufo requires foldlevelstart = 99 as well, otherwise a buffer can open
+-- with folds already closed when something resets 'foldlevel'.
+opt.foldlevelstart = 99
 
 opt.backspace = "indent,eol,start"
 opt.iskeyword:append("-")

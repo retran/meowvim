@@ -10,18 +10,10 @@ return {
   cmd = { "TodoLocList", "TodoQuickFix" },
   dependencies = { "nvim-lua/plenary.nvim" },
   opts = {
+    -- The `search` block that used to be here repeated todo-comments' own
+    -- defaults (rg with the same five flags) verbatim.
     highlight = {
       keyword = "bg",
-    },
-    search = {
-      command = "rg",
-      args = {
-        "--color=never",
-        "--no-heading",
-        "--with-filename",
-        "--line-number",
-        "--column",
-      },
     },
   },
 }

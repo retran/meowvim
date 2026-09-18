@@ -8,23 +8,14 @@ return {
   "HiPhish/rainbow-delimiters.nvim",
   event = { "BufReadPost", "BufNewFile" },
   config = function()
-    local rainbow = require("rainbow-delimiters")
+    -- Only the Lua query is customised: `rainbow-blocks` also colours do/end
+    -- and if/then blocks, not just delimiters. Strategy, highlight groups and
+    -- priority are left at the plugin's defaults (the previous copies of them
+    -- here were identical to what rainbow-delimiters ships).
     require("rainbow-delimiters.setup").setup({
-      strategy = {
-        [""] = rainbow.strategy["global"],
-      },
       query = {
         [""] = "rainbow-delimiters",
         lua = "rainbow-blocks",
-      },
-      highlight = {
-        "RainbowDelimiterRed",
-        "RainbowDelimiterYellow",
-        "RainbowDelimiterBlue",
-        "RainbowDelimiterOrange",
-        "RainbowDelimiterGreen",
-        "RainbowDelimiterViolet",
-        "RainbowDelimiterCyan",
       },
     })
   end,
