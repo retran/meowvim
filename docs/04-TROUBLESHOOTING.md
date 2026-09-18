@@ -23,7 +23,7 @@ Delete `~/.local/share/nvim/lazy` and start Neovim again to retry.
 
 ### The first run sits on "Installing plugins"
 
-That run clones about 80 repositories, then compiles 30 treesitter parsers.
+That run clones about 80 repositories, then compiles 27 treesitter parsers.
 Watch `:Lazy` for progress.
 
 If one plugin hangs, press `q` to close the window. `:Lazy restore` puts you
@@ -76,8 +76,12 @@ instead, or switch `core.day_night_mode` to `manual`.
 ### No server attaches
 
 meowvim starts a server only when its binary is on your PATH.
-`:checkhealth meowvim` lists the ones it found. For the live clients use
-`:checkhealth vim.lsp`, because nvim-lspconfig 2 removed `:LspInfo`.
+`:checkhealth meowvim` lists the ones it found, and `:checkhealth vim.lsp` shows
+the live clients.
+
+Neovim 0.12 ships its own `:lsp` command, and nvim-lspconfig stops before
+defining `:LspInfo`, `:LspLog`, `:LspStart`, `:LspRestart`, and `:LspStop` when
+it sees one. Use `:lsp` and `:checkhealth vim.lsp` instead.
 
 ### A project-local toolchain is ignored
 

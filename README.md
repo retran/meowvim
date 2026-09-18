@@ -36,7 +36,8 @@ here, and a machine that lacks one does without that feature.
 
 Under the hood: snacks.nvim for the picker, explorer, dashboard, and terminal,
 and blink.cmp with Copilot for completion. 17 language servers run through
-`vim.lsp.config`, with 30 treesitter parsers, conform, and nvim-lint. Git is
+`vim.lsp.config`, with 27 treesitter parsers on top of the 7 Neovim ships,
+conform, and nvim-lint. Git is
 gitsigns, Neogit, and LazyGit, plus pull request review through the GitHub CLI.
 Tests run under neotest for Go, Python, Jest, and Vitest; nvim-dap debugs Go,
 Python, C#, and Godot.

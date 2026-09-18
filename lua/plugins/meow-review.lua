@@ -5,7 +5,7 @@
 -- @brief: lazy.nvim spec for meow.review.nvim — AI code review annotations.
 --
 -- Keymaps (all managed in keymaps.lua under <leader>r):
---   <leader>ra  Add Comment              [n, v] — modal: Tab cycles type, <C-s> confirms
+--   <leader>ra  Add Comment              [n, v] - modal: <C-t> cycles type, <C-s> confirms
 --   <leader>rd  Delete Comment           [n, v]
 --   <leader>rE  Edit Comment             [n]    — pre-filled modal
 --   <leader>rv  View Comment             [n]

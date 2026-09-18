@@ -298,9 +298,9 @@ Settings have no effect:
     the spelling. |:MeowvimConfigShow| prints what meowvim actually read.
 
 No language server attaches:
-    meowvim starts a server only when its binary is on PATH. Use
-    `:checkhealth vim.lsp` for the live clients; `:LspInfo` was removed in
-    nvim-lspconfig 2.
+    meowvim starts a server only when its binary is on PATH. Use |:lsp| or
+    `:checkhealth vim.lsp` for the live clients: Neovim 0.12 ships `:lsp`, and
+    nvim-lspconfig then skips defining `:LspInfo` and friends.
 
 Formatting or linting does nothing:
     `:ConformInfo` and |:LintInfo| list the tools for the filetype and mark

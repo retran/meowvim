@@ -21,9 +21,9 @@ restores the last one you used anywhere.
 
 ## Find a file
 
-`<leader>ff` picks the strategy for you: Git files inside a repository, recent
-files when they match, a full listing otherwise. Use `<leader>fF` when you want
-the plain listing and `<leader>fg` when you want only tracked files.
+`<leader>ff` searches open buffers, recent files, and the whole tree at once,
+ranked by how often and how recently you opened each one. Use `<leader>fF` for a
+plain listing with no ranking, and `<leader>fg` for tracked files only.
 
 `<leader>fe` opens the explorer on the right, which is the better choice when
 you want to see what a directory holds.
@@ -129,8 +129,8 @@ which prints a message and keeps running.
 meow.review.nvim keeps comments in `.cache/meow-review/` inside the project, so
 they survive a restart and do not touch the code.
 
-`<leader>ra` adds a comment; the modal cycles the type with `Tab` and confirms
-with `<C-s>`. `]r` and `[r` move between them, `<leader>rx` resolves the one
+`<leader>ra` adds a comment. In the modal, `<C-t>` cycles the annotation type
+and `<C-s>` confirms; `<CR>` also confirms from normal mode. `]r` and `[r` move between them, `<leader>rx` resolves the one
 under the cursor, and `<leader>rg` opens a picker over all of them.
 
 When the review is done, `<leader>re` copies it to the clipboard as markdown and
