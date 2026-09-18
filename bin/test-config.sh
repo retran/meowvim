@@ -197,6 +197,21 @@ end
 }
 
 # Test: Lua syntax check
+# Test: the documentation names only mappings and commands that exist
+test_docs() {
+    log_test "Checking the documentation against the configuration..."
+
+    local output
+    if output=$(nvim --headless -c "luafile bin/check-docs.lua" 2>&1); then
+        log_success "Documentation matches the configuration"
+        return 0
+    fi
+
+    log_error "Documentation names something that does not exist:"
+    echo "$output"
+    return 1
+}
+
 test_lua_syntax() {
     log_test "Checking Lua syntax in config files..."
     
@@ -252,6 +267,7 @@ main() {
     test_treesitter || true
     test_health_checks || true
     test_keymap_conflicts || true
+    test_docs || true
     
     # Check if luac is available for syntax checking
     if command -v luac &> /dev/null; then

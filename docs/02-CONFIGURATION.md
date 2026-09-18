@@ -268,7 +268,7 @@ to disk.
 ```
 ~/.config/nvim/
   init.lua              entry point: providers, mise PATH, lazy, hooks
-  bin/                  update and test scripts
+  bin/                  update, test, and documentation check scripts
   doc/                  :help meowvim
   docs/                 these guides
   lua/
@@ -276,7 +276,10 @@ to disk.
     meowvim/            config layer, themes, health, profiler
       config/           loader, defaults, schema, cache, watcher
     plugins/            one file per plugin
-    utils/              sessions, toggles, upstream workarounds
+    utils/              sessions, toggles, LSP fallbacks, upstream workarounds
 ```
+
+Add a plugin by dropping a new file in `lua/plugins/`; lazy.nvim picks it up
+without any further registration.
 
 Next: [daily workflows](03-WORKFLOWS.md).

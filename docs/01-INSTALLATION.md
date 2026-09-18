@@ -164,6 +164,7 @@ sync` and then `:checkhealth meowvim`.
 - the treesitter parsers are installed
 - the health check passes
 - no two mappings collide
+- the documentation names only mappings and commands that exist
 - every Lua file parses
 
 ```bash

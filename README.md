@@ -122,8 +122,10 @@ point.
 
 Open an issue with steps to reproduce, or send a pull request. `stylua` formats
 the Lua, `luacheck` lints it, and `bin/test-config.sh` runs the same checks CI
-runs; `mise install` fetches all three. Keep the cat puns tasteful and the Lua
-tidy.
+runs; `mise install` fetches all three. One of those checks reads every mapping
+and command named in the documentation and fails if one no longer exists, so a
+rename has to reach the docs before it lands. Keep the cat puns tasteful and the
+Lua tidy.
 
 ## License
 
