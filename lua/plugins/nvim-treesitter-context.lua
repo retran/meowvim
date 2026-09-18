@@ -3,11 +3,15 @@
 
 -- @file: lua/plugins/nvim-treesitter-context.lua
 -- @brief: Sticky code context from Tree-sitter scopes.
+--
+-- Previously disabled with the note that Neovim 0.12 removed the treesitter
+-- `range` method. That is not the case: the plugin calls `TSNode:range()`,
+-- which is alive and well on 0.12.5.
 
 return {
   "nvim-treesitter/nvim-treesitter-context",
-  enabled = false, -- broken with nvim 0.12.x: `range` method removed from treesitter API
   event = { "BufReadPost", "BufNewFile" },
+  dependencies = { "nvim-treesitter/nvim-treesitter" },
   opts = {
     enable = true,
     max_lines = 3,

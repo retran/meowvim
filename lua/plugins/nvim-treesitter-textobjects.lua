@@ -15,7 +15,12 @@ return {
     require("nvim-treesitter-textobjects").setup({
       select = {
         lookahead = true,
-        include_surrounding_whitespace = true,
+        -- Only outer textobjects swallow the surrounding whitespace. With a
+        -- plain `true` here `cif` would also eat the blank line after the
+        -- function body.
+        include_surrounding_whitespace = function(opts)
+          return opts.query_string:match("outer") ~= nil
+        end,
       },
       move = {
         set_jumps = true,
@@ -74,12 +79,6 @@ return {
       move.goto_previous_end("@class.outer", "textobjects")
     end, { desc = "Previous class end" })
 
-    local swap = require("nvim-treesitter-textobjects.swap")
-    vim.keymap.set("n", "<leader>S>", function()
-      swap.swap_next("@parameter.inner")
-    end, { desc = "Swap with next parameter" })
-    vim.keymap.set("n", "<leader>S<", function()
-      swap.swap_previous("@parameter.inner")
-    end, { desc = "Swap with previous parameter" })
+    -- <leader>S swaps live in lua/config/keymaps.lua so which-key picks them up.
   end,
 }
