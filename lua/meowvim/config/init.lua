@@ -22,21 +22,9 @@ function M.get_projects_path()
   return M.get_config_dir() .. "/projects.lua"
 end
 
-local function get_config_dir()
-  return M.get_config_dir()
-end
-
-local function get_config_path()
-  return M.get_config_path()
-end
-
-local function get_projects_path()
-  return M.get_projects_path()
-end
-
 local function create_default_config()
-  local config_dir = get_config_dir()
-  local config_path = get_config_path()
+  local config_dir = M.get_config_dir()
+  local config_path = M.get_config_path()
 
   if vim.fn.filereadable(config_path) == 1 then
     return
@@ -120,7 +108,7 @@ end
 local function load_user_config()
   create_default_config()
 
-  local config_path = get_config_path()
+  local config_path = M.get_config_path()
 
   local cache = require("meowvim.config.cache")
   if cache.is_valid(config_path) then
@@ -172,7 +160,7 @@ local function validate_project(name, project)
 end
 
 local function load_projects_config()
-  local projects_path = get_projects_path()
+  local projects_path = M.get_projects_path()
 
   if vim.fn.filereadable(projects_path) == 1 then
     local ok, projects = pcall(dofile, projects_path)
@@ -467,7 +455,7 @@ function M.persist()
     M.init()
   end
 
-  local config_path = get_config_path()
+  local config_path = M.get_config_path()
 
   -- Temporarily disable watcher to prevent reload loop
   local watcher_ok, watcher = pcall(require, "meowvim.config.watcher")

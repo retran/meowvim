@@ -6,7 +6,19 @@
 
 local M = {}
 
-local snacks = require("snacks")
+-- snacks drives most of the pickers below. Resolving it on first use keeps a
+-- failure to load from taking the whole mapping table down with it: only the
+-- snacks mappings break, and they say why.
+local snacks = setmetatable({}, {
+  __index = function(_, key)
+    local ok, mod = pcall(require, "snacks")
+    if not ok then
+      error("snacks.nvim is not available: " .. tostring(mod), 2)
+    end
+    return mod[key]
+  end,
+})
+
 local toggles = require("utils.toggles")
 
 local ICON_EXACT = {
@@ -374,6 +386,11 @@ function M.setup()
       { "gc", group = "Comment", icon = "󰆈", mode = { "n", "x" } },
       { "gC", group = "Comment (block)", icon = "󰆈", mode = { "n", "x" } },
       { "gs", group = "Surround", icon = "󰅩", mode = { "n", "x" } },
+
+      -- Neovim 0.11 and 0.12 bind these themselves. They are listed so
+      -- which-key shows them next to the <leader> equivalents rather than
+      -- leaving them undiscoverable.
+      { "gr", group = "LSP (built-in)", icon = "󰅩" },
 
       -- Files
       { "<leader>f", group = "Files", icon = "󰈞" },
