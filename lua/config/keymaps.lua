@@ -10,33 +10,47 @@ local snacks = require("snacks")
 local toggles = require("utils.toggles")
 
 local ICON_EXACT = {
+  ["Add Comment"] = "󰆈",
   ["Add Word to Dictionary"] = "󰓆",
   ["Add Workspace Folder"] = "",
-  ["Apply Code Action"] = "󰆳",
+  ["All Windows"] = "",
+  ["Blame Line"] = "󰆘",
+  ["Branches"] = "",
   ["Browse Files"] = "",
-  ["Browse Git Branches"] = "",
   ["Browse Git Status"] = "󰊢",
+  ["Buffer Diagnostics"] = "󰒡",
+  ["Call Hierarchy (Callees)"] = "󰭻",
+  ["Call Hierarchy (Callers)"] = "󰭻",
   ["Choose Both"] = "󰡖",
   ["Choose None"] = "󰚝",
   ["Choose Ours"] = "󰅂",
   ["Choose Theirs"] = "󰅙",
-  ["Close All Folds"] = "󰂔",
+  ["Clear All"] = "󰜺",
   ["Close Other Windows"] = "󰅖",
   ["Close Window"] = "󰅖",
-  ["Commit Changes"] = "󰜘",
-  ["Compare Current Buffer"] = "",
+  ["Code Action"] = "󰆳",
+  ["Copy File Reference"] = "󰆒",
   ["Copy Git Link"] = "",
+  ["Copy Line Reference"] = "󰆒",
   ["Create Buffer"] = "",
   ["Create File"] = "",
   ["Create Scratch"] = "󰎚",
+  ["Current PR Actions"] = "",
   ["Debug Nearest Test"] = "",
+  ["Declaration"] = "󰜢",
   ["Decrease Height"] = "",
   ["Decrease Width"] = "",
   ["Delete All Buffers"] = "󰆴",
   ["Delete Buffer"] = "󰆴",
+  ["Delete Comment"] = "󰆴",
   ["Delete Other Buffers"] = "󰆴",
+  ["Edit Comment"] = "󰏫",
   ["Equalize Windows"] = "󰞷",
   ["Exit Insert Mode"] = "󱊷",
+  ["Export Current File"] = "󰈔",
+  ["Export Review"] = "󰈈",
+  ["Export Review to File"] = "󰈈",
+  ["Export and Clear"] = "󰩺",
   ["Find File"] = "",
   ["Find Git File"] = "",
   ["Find Scratch"] = "󰍉",
@@ -47,29 +61,17 @@ local ICON_EXACT = {
   ["Force Delete Buffer"] = "󰗼",
   ["Force Quit All"] = "󰅚",
   ["Format Buffer"] = "󰉵",
-  ["Go To Declaration"] = "󰜢",
-  ["Go To Definitions"] = "󰜢",
   ["Go To Document Symbols"] = "󰌗",
-  ["Go To Implementations"] = "󰅩",
-  ["Go To Next Buffer"] = "",
-  ["Go To Next Conflict"] = "",
-  ["Go To Next Diagnostic"] = "",
-  ["Go To Next Hunk"] = "",
-  ["Go To Previous Buffer"] = "",
-  ["Go To Previous Conflict"] = "",
-  ["Go To Previous Diagnostic"] = "",
-  ["Go To Previous Hunk"] = "",
-  ["Go To References"] = "󰈈",
-  ["Go To Type Definitions"] = "󰜢",
   ["Go To Workspace Symbols"] = "󰙅",
+  ["Go to Comment"] = "󰒡",
+  ["Go to Comment by Type"] = "󱍢",
+  ["Go to Comment in File"] = "󰒡",
+  ["Implementation"] = "󰅩",
   ["Increase Height"] = "",
   ["Increase Width"] = "",
-  ["Install Tools"] = "󰚰",
+  ["Issues"] = "󰞋",
   ["Jump"] = "",
-  ["Jump to Match"] = "",
-  ["All Windows"] = "",
-  ["Remote Target"] = "󰈣",
-  ["Treesitter Node"] = "󰉖",
+  ["Line Diagnostics"] = "󰒡",
   ["List Buffers"] = "󰕘",
   ["List Conflicts"] = "󰦻",
   ["List TODO Comments"] = "󰄴",
@@ -78,31 +80,59 @@ local ICON_EXACT = {
   ["Move Window Far Right"] = "",
   ["Move Window to Bottom"] = "",
   ["Move Window to Top"] = "",
-  ["Open All Folds"] = "󰂓",
-  ["Open Git Link"] = "󰴂",
-  ["Open Issue"] = "󰞋",
-  ["Open Latest Scratch"] = "󰎚",
-  ["Open Location List"] = "󰉹",
-  ["Open Pull Request"] = "",
-  ["Open Quickfix List"] = "󰁨",
-  ["Scratch"] = "󰎚",
-  ["Open Tool Manager"] = "",
+  ["Navigate to Definition"] = "󰜢",
+  ["Neogit Status"] = "󰊢",
+  ["Next Buffer"] = "",
+  ["Swap With Next Parameter"] = "",
+  ["Swap With Previous Parameter"] = "",
+  ["Next Conflict"] = "",
+  ["Next Diagnostic"] = "",
+  ["Next Hunk"] = "",
+  ["Next Reference"] = "󰈈",
+  ["Next Review Comment"] = "",
+  ["Notification History"] = "󰒡",
+  ["Noice Message History"] = "󰒡",
+  ["Open Git Link in Browser"] = "󰴂",
+  ["Open Scratch"] = "󰎚",
   ["Peek Fold"] = "󰙵",
+  ["Open All Folds"] = "󰙵",
+  ["Close All Folds"] = "󰙵",
+  ["Pin All Buffers"] = "󰐄",
   ["Preview Hunk"] = "󰈈",
-  ["Pull Changes"] = "󰳁",
-  ["Push Changes"] = "󰳂",
+  ["Profile Startup Time"] = "󰔟",
+  ["Startup Time Trends"] = "󰔟",
+  ["Start Profiling"] = "󰔟",
+  ["Stop Profiling"] = "󰔟",
+  ["Plugin Load Times"] = "󰔟",
+  ["Measure Render Time"] = "󰔟",
+  ["Previous Buffer"] = "",
+  ["Previous Conflict"] = "",
+  ["Previous Diagnostic"] = "",
+  ["Previous Hunk"] = "",
+  ["Previous Reference"] = "󰈈",
+  ["Previous Review Comment"] = "",
+  ["Project Diagnostics"] = "󰒡",
+  ["Pull Request Diff"] = "",
+  ["Pull Requests"] = "",
+  ["Quickfix List"] = "󰁨",
   ["Quit All"] = "󰅚",
+  ["Reference"] = "󰈈",
   ["Refresh CodeLens"] = "",
-  ["Refresh Conflicts"] = "",
-  ["Remove from Dictionary"] = "󰹙",
+  ["Reload Review"] = "󰁯",
+  ["Remote Target"] = "󰈣",
   ["Remove Workspace Folder"] = "",
+  ["Remove from Dictionary"] = "󰹙",
   ["Rename Buffer"] = "󰑕",
-  ["Rename Symbol"] = "󰑕",
+  ["Restore Session"] = "󰁯",
+  ["Restore Last Session"] = "󰁯",
+  ["Select Session"] = "󰁯",
+  ["Stop Session Saving"] = "󰅚",
+  ["Rename File"] = "󰑕",
   ["Reset Buffer"] = "󰜺",
   ["Reset Hunk"] = "󰜺",
+  ["Resolve All"] = "󰄲",
+  ["Resolve Comment"] = "󰄬",
   ["Restart Last Task"] = "",
-  ["Restore Last Session"] = "󰁯",
-  ["Restore Session"] = "󰁯",
   ["Run CodeLens"] = "󰈈",
   ["Run File Tests"] = "󰙨",
   ["Run Nearest Test"] = "󰙨",
@@ -110,101 +140,52 @@ local ICON_EXACT = {
   ["Run Test Suite"] = "󰙨",
   ["Save All Files"] = "󰆓",
   ["Save File"] = "󰆓",
-  ["Scale Down"] = "",
-  ["Scale Up"] = "",
+  ["Scratch"] = "󰎚",
   ["Search Commands"] = "󰘳",
   ["Search Git Repository"] = "",
   ["Search Help"] = "󰋖",
-  ["Search Issues"] = "󰞋",
   ["Search Keymaps"] = "󰌌",
   ["Search Marks"] = "󰧀",
   ["Search Open Buffers"] = "",
   ["Search Project Text"] = "",
-  ["Search Pull Requests"] = "",
-  ["Search and Replace Project"] = "󰛔",
-  ["Show Buffer Diagnostics"] = "󰒡",
-  ["Show Call Hierarchy (Callees)"] = "󰭻",
-  ["Show Call Hierarchy (Callers)"] = "󰭻",
+  ["Search and Replace"] = "󰛔",
   ["Show File History"] = "󰋘",
-  ["Show Line Blame"] = "󰆘",
-  ["Show Line Diagnostics"] = "󰒡",
-  ["Show Project Diagnostics"] = "󰒡",
   ["Show Recent Files"] = "󰋜",
-  ["Show Redo History"] = "󰑖",
   ["Show Test Output"] = "󰙨",
-  ["Show Type Hierarchy (Subtypes)"] = "󰓼",
-  ["Type Hierarchy (Super)"] = "󰓼",
   ["Show Undo History"] = "󰦓",
   ["Show Yank History"] = "",
   ["Split Window Horizontally"] = "󰤼",
   ["Split Window Vertically"] = "󰤻",
   ["Stage Buffer"] = "󰄬",
   ["Stage Hunk"] = "󰄬",
-  ["Stop Session Saving"] = "",
   ["Stop Tests"] = "",
   ["Switch Project"] = "󰙅",
-  ["Toggle Blame"] = "󰆘",
-  ["Toggle Cursorcolumn"] = "󰄮",
+  ["Toggle Auto Save"] = "󰆓",
   ["Toggle Cursorline"] = "󰄯",
+  ["Toggle Diagnostics"] = "󰒡",
   ["Toggle Dim Background"] = "󰓃",
   ["Toggle File Explorer"] = "󰙅",
   ["Toggle Format on Save"] = "󰉵",
-  ["Toggle Fullscreen"] = "󰍹",
-  ["Toggle Auto Save"] = "󰆓",
   ["Toggle Indent Guides"] = "󰉢",
+  ["Toggle Inlay Hints"] = "󰏪",
   ["Toggle Numbers"] = "󰎠",
-  ["Toggle Signs"] = "󰨙",
+  ["Toggle Pin"] = "󰐃",
+  ["Toggle Search Highlight"] = "",
+  ["Toggle Signcolumn"] = "󰐕",
   ["Toggle Spell"] = "󰓆",
   ["Toggle Task List"] = "󰑐",
   ["Toggle Terminal"] = "",
   ["Toggle Test Summary"] = "󰙨",
-  ["Toggle Threads"] = "󰓢",
-  ["Toggle Word Diff"] = "󰹭",
+  ["Toggle Whitespace"] = "󰐡",
   ["Toggle Wrap"] = "󰖶",
-  ["Toggle Signcolumn"] = "󰐕",
-  ["Toggle List"] = "󰐡",
-  ["Toggle Search Highlight"] = "",
-  ["Toggle Mouse"] = "󰍽",
-  ["Toggle Foldenable"] = "󰴋",
-  ["Toggle Diagnostics"] = "󰒡",
-  ["Toggle Inlay Hints"] = "󰏪",
-  ["Toggle Conceal"] = "󰈈",
-  ["View File Git Log"] = "󰋘",
-  ["View Git Log"] = "󰋘",
-  ["View Git Status"] = "󰊢",
-  ["Copy File Reference"] = "󰆒",
-  ["Copy Line Reference"] = "󰆒",
-  ["Toggle Pin"] = "󰐃",
-  ["Pin All Buffers"] = "󰐄",
+  ["Treesitter Node"] = "󰉖",
+  ["Type Definition"] = "󰜢",
+  ["Type Hierarchy (Subtypes)"] = "󰓼",
+  ["Type Hierarchy (Super)"] = "󰓼",
   ["Unpin All Buffers"] = "󰐅",
-  -- Review
-  ["Add Issue"] = "󰅙",
-  ["Add Suggestion"] = "󰌹",
-  ["Add Note"] = "󰏫",
-  ["Add Praise"] = "󰙵",
-  ["Add Question"] = "󰋖",
-  ["Add Insight"] = "",
-  ["Add Comment"] = "󰆈",
-  ["Delete Comment"] = "󰆴",
-  ["Edit Comment"] = "󰏫",
-  ["View Comment"] = "󰋼",
-  ["Export Review"] = "󰈈",
-  ["Export Current File"] = "󰈔",
-  ["Export and Clear"] = "󰩺",
-  ["Clear Review"] = "󰜺",
-  ["Review Summary"] = "󰒡",
-  ["Go to Comment"] = "󰒡",
-  ["Go to Comment in File"] = "󰒡",
-  ["Go to Comment by Type"] = "󱍢",
-  ["Resolve Comment"] = "󰄬",
-  ["Resolve All"] = "󰄲",
   ["Validate Annotations"] = "󰑤",
-  ["Load Review"] = "󰁯",
-  ["Goto Real File"] = "󰜢",
-  ["Next Review Comment"] = "",
-  ["Previous Review Comment"] = "",
-  ["Cycle Next Type"] = "",
-  ["Cycle Prev Type"] = "",
+  ["View Comment"] = "󰋼",
+  ["View Git Log"] = "󰋘",
 }
 
 local ICON_PATTERNS = {
@@ -235,8 +216,6 @@ local ICON_PATTERNS = {
   { pattern = "diff", icon = "" },
 }
 
-local DEFAULT_ICON = "󰛡"
-
 local function icon_for(desc)
   if not desc then
     return nil
@@ -251,7 +230,8 @@ local function icon_for(desc)
       return rule.icon
     end
   end
-  return DEFAULT_ICON
+  -- No match: let which-key fall back to its own icon rules.
+  return nil
 end
 
 local function safe_require(module)
@@ -296,7 +276,6 @@ local function glance_action(action_type)
   end
 end
 
-
 local function gitsigns_action(action_name)
   return function()
     require("gitsigns")[action_name]()
@@ -315,6 +294,23 @@ end
 -- Copy a file path or file:line reference to the system clipboard in the
 -- format used by OpenCode / Claude (e.g. "@lua/plugins/copilot.lua:42").
 -- Paths are relative to cwd so they stay short and portable.
+-- Open the snacks gh diff picker for the PR of the current branch, falling
+-- back to a prompt when the branch has no associated pull request.
+local function gh_pr_diff()
+  local api_ok, api = pcall(require, "snacks.gh.api")
+  local pr = api_ok and api.current_pr() or nil
+  if pr and pr.number then
+    snacks.picker.gh_diff({ pr = pr.number })
+    return
+  end
+  vim.ui.input({ prompt = "PR number: " }, function(number)
+    local n = tonumber(number)
+    if n then
+      snacks.picker.gh_diff({ pr = n })
+    end
+  end)
+end
+
 local function copy_file_ref()
   local path = vim.fn.expand("%:.")
   if path == "" then
@@ -376,6 +372,7 @@ function M.setup()
       -- Mark gc/gC as operator-prefixes so which-key doesn't flag gcc/gbc as overlaps
       { "gc", group = "Comment", icon = "󰆈", mode = { "n", "x" } },
       { "gC", group = "Comment (block)", icon = "󰆈", mode = { "n", "x" } },
+      { "gs", group = "Surround", icon = "󰅩", mode = { "n", "x" } },
 
       -- Files
       { "<leader>f", group = "Files", icon = "󰈞" },
@@ -541,6 +538,23 @@ function M.setup()
       { "<leader>wt", "<cmd>tabnew<CR>", desc = "New Tab" },
       { "<leader>wT", "<cmd>tabclose<CR>", desc = "Close Tab" },
 
+      -- Swap (treesitter textobjects)
+      { "<leader>S", group = "Swap", icon = "" },
+      {
+        "<leader>S>",
+        function()
+          require("nvim-treesitter-textobjects.swap").swap_next("@parameter.inner")
+        end,
+        desc = "Swap With Next Parameter",
+      },
+      {
+        "<leader>S<",
+        function()
+          require("nvim-treesitter-textobjects.swap").swap_previous("@parameter.inner")
+        end,
+        desc = "Swap With Previous Parameter",
+      },
+
       -- Search & Navigaton
       { "<leader>s", group = "Search", icon = "" },
       {
@@ -670,7 +684,7 @@ function M.setup()
       {
         "<leader>cf",
         function()
-          require("conform").format({ async = true, lsp_fallback = true })
+          require("conform").format({ async = true, lsp_format = "fallback" })
         end,
         desc = "Format Buffer",
       },
@@ -707,8 +721,22 @@ function M.setup()
       { "<leader>ch", vim.diagnostic.open_float, desc = "Line Diagnostics" },
       -- ]d/[d are Neovim 0.11+ built-in defaults; override here to ensure
       -- they stay in which-key's group display under <leader>c
-      { "]d", function() vim.diagnostic.jump({ count = 1, float = true }) end, desc = "Next Diagnostic", mode = "n" },
-      { "[d", function() vim.diagnostic.jump({ count = -1, float = true }) end, desc = "Previous Diagnostic", mode = "n" },
+      {
+        "]d",
+        function()
+          vim.diagnostic.jump({ count = 1, float = true })
+        end,
+        desc = "Next Diagnostic",
+        mode = "n",
+      },
+      {
+        "[d",
+        function()
+          vim.diagnostic.jump({ count = -1, float = true })
+        end,
+        desc = "Previous Diagnostic",
+        mode = "n",
+      },
       { "]q", "<cmd>cnext<CR>", desc = "Next Quickfix Item", mode = "n" },
       { "[q", "<cmd>cprev<CR>", desc = "Previous Quickfix Item", mode = "n" },
       { "]l", "<cmd>lnext<CR>", desc = "Next Location List Item", mode = "n" },
@@ -719,6 +747,13 @@ function M.setup()
       { "[t", "<cmd>tabprevious<CR>", desc = "Previous Tab", mode = "n" },
       -- CodeLens & Symbols
       { "<leader>cq", "<cmd>copen<CR>", desc = "Quickfix List" },
+      {
+        "<leader>cR",
+        function()
+          snacks.rename()
+        end,
+        desc = "Rename File",
+      },
       { "<leader>cl", vim.lsp.codelens.run, desc = "Run CodeLens" },
       {
         "<leader>cL",
@@ -870,43 +905,11 @@ function M.setup()
         desc = "View Git Log",
       },
       -- Git links
-      {
-        "<leader>gy",
-        function()
-          local ok, gitlinker = pcall(require, "gitlinker")
-          if not ok then
-            return
-          end
-          local actions = require("gitlinker.actions")
-          local mode = vim.fn.mode()
-          if mode == "v" or mode == "V" then
-            gitlinker.get_buf_range_url("v", { action_callback = actions.copy_to_clipboard })
-          else
-            gitlinker.get_buf_range_url("n", { action_callback = actions.copy_to_clipboard })
-          end
-          vim.notify("Git link copied", vim.log.levels.INFO)
-        end,
-        desc = "Copy Git Link",
-        mode = { "n", "v" },
-      },
-      {
-        "<leader>gY",
-        function()
-          local ok, gitlinker = pcall(require, "gitlinker")
-          if not ok then
-            return
-          end
-          local actions = require("gitlinker.actions")
-          local mode = vim.fn.mode()
-          if mode == "v" or mode == "V" then
-            gitlinker.get_buf_range_url("v", { action_callback = actions.open_in_browser })
-          else
-            gitlinker.get_buf_range_url("n", { action_callback = actions.open_in_browser })
-          end
-        end,
-        desc = "Open Git Link in Browser",
-        mode = { "n", "v" },
-      },
+      -- :GitLink handles the range itself (visual mode prefixes '<,'> via `:`)
+      -- and the bang selects the browser action instead of the clipboard.
+      { "<leader>gy", ":GitLink<CR>", desc = "Copy Git Link", mode = { "n", "v" }, silent = true },
+      { "<leader>gY", ":GitLink!<CR>", desc = "Open Git Link in Browser", mode = { "n", "v" }, silent = true },
+
       -- Conflicts
       { "<leader>gx", group = "Conflicts", icon = "󰦻" },
       { "<leader>gxo", ":GitConflictChooseOurs<CR>", desc = "Choose Ours" },
@@ -924,13 +927,30 @@ function M.setup()
         ":GitConflictPrevConflict<CR>",
         desc = "Previous Conflict",
       },
-      -- GitHub
+      -- GitHub (snacks.gh; requires the `gh` CLI)
       { "<leader>gh", group = "GitHub", icon = "" },
-      { "<leader>ghp", "<cmd>GHOpenPR<CR>", desc = "Open Pull Request" },
-      { "<leader>ghi", "<cmd>GHOpenIssue<CR>", desc = "Open Issue" },
-      { "<leader>ghP", "<cmd>GHSearchPRs<CR>", desc = "Search Pull Requests" },
-      { "<leader>ghI", "<cmd>GHSearchIssues<CR>", desc = "Search Issues" },
-      { "<leader>ght", "<cmd>GHToggleThreads<CR>", desc = "Toggle Threads" },
+      {
+        "<leader>ghp",
+        function()
+          snacks.picker.gh_pr()
+        end,
+        desc = "Pull Requests",
+      },
+      {
+        "<leader>ghi",
+        function()
+          snacks.picker.gh_issue()
+        end,
+        desc = "Issues",
+      },
+      {
+        "<leader>gha",
+        function()
+          snacks.picker.gh_actions()
+        end,
+        desc = "Current PR Actions",
+      },
+      { "<leader>ghd", gh_pr_diff, desc = "Pull Request Diff" },
 
       -- Tests
       { "<leader>t", group = "Tests", icon = "󰙨" },
@@ -1054,15 +1074,167 @@ function M.setup()
         desc = "Toggle Task List",
       },
 
-      -- Debug (groups only; actual DAP bindings live in plugin config)
+      -- Debug (nvim-dap loads on first use through these requires)
       { "<leader>d", group = "Debug", icon = "" },
       { "<leader>db", group = "Breakpoints", icon = "" },
       { "<leader>dv", group = "Inspect", icon = "󰈈" },
+      {
+        "<leader>dc",
+        function()
+          require("dap").continue()
+        end,
+        desc = "Continue or Run",
+      },
+      {
+        "<leader>dt",
+        function()
+          require("dap").terminate()
+        end,
+        desc = "Terminate Debugger",
+      },
+      {
+        "<leader>ds",
+        function()
+          require("dap").step_over()
+        end,
+        desc = "Step Over",
+      },
+      {
+        "<leader>di",
+        function()
+          require("dap").step_into()
+        end,
+        desc = "Step Into",
+      },
+      {
+        "<leader>do",
+        function()
+          require("dap").step_out()
+        end,
+        desc = "Step Out",
+      },
+      {
+        "<leader>dr",
+        function()
+          require("dap").run_to_cursor()
+        end,
+        desc = "Run to Cursor",
+      },
+      {
+        "<leader>dR",
+        function()
+          require("dap").repl.open()
+        end,
+        desc = "Open Debug REPL",
+      },
+      {
+        "<leader>dB",
+        function()
+          require("dap").clear_breakpoints()
+        end,
+        desc = "Clear All Breakpoints",
+      },
+      {
+        "<leader>dbt",
+        function()
+          require("dap").toggle_breakpoint()
+        end,
+        desc = "Toggle Breakpoint",
+      },
+      {
+        "<leader>dbc",
+        function()
+          require("dap").set_breakpoint(vim.fn.input("Condition: "))
+        end,
+        desc = "Set Conditional Breakpoint",
+      },
+      {
+        "<leader>dbl",
+        function()
+          require("dap").set_breakpoint(nil, nil, vim.fn.input("Log Message: "))
+        end,
+        desc = "Set Log Point",
+      },
+      {
+        "<leader>dbe",
+        function()
+          require("dap").set_exception_breakpoints()
+        end,
+        desc = "Set Exception Breakpoints",
+      },
+      {
+        "<leader>du",
+        function()
+          require("dapui").toggle()
+        end,
+        desc = "Toggle Debug UI",
+      },
+      {
+        "<leader>dvs",
+        function()
+          local widgets = require("dap.ui.widgets")
+          widgets.centered_float(widgets.scopes)
+        end,
+        desc = "View Debug Scopes",
+      },
+      {
+        "<leader>dvf",
+        function()
+          local widgets = require("dap.ui.widgets")
+          widgets.centered_float(widgets.frames)
+        end,
+        desc = "View Debug Frames",
+      },
+      {
+        "<leader>dvh",
+        function()
+          require("dap.ui.widgets").hover()
+        end,
+        desc = "Inspect Hover Value",
+        mode = { "n", "v" },
+      },
+      {
+        "<leader>dvp",
+        function()
+          require("dap.ui.widgets").preview()
+        end,
+        desc = "Preview Variable Value",
+        mode = { "n", "v" },
+      },
 
       -- Options & UI
       { "<leader>o", group = "Options", icon = "" },
       { "<leader>oP", group = "Profiling", icon = "󰔟" },
       { "<leader>oPs", "<cmd>StartupTime<CR>", desc = "Profile Startup Time" },
+      { "<leader>oPt", "<cmd>StartupTrends<CR>", desc = "Startup Time Trends" },
+      {
+        "<leader>oPp",
+        function()
+          require("meowvim.profiler").start()
+        end,
+        desc = "Start Profiling",
+      },
+      {
+        "<leader>oPe",
+        function()
+          require("meowvim.profiler").stop()
+        end,
+        desc = "Stop Profiling",
+      },
+      {
+        "<leader>oPl",
+        function()
+          require("meowvim.profiler").show_plugin_times()
+        end,
+        desc = "Plugin Load Times",
+      },
+      {
+        "<leader>oPr",
+        function()
+          require("meowvim.profiler").measure_buffer_render()
+        end,
+        desc = "Measure Render Time",
+      },
       {
         "<leader>og",
         function()
@@ -1295,13 +1467,6 @@ function M.setup()
         end,
         desc = "Show Undo History",
       },
-      {
-        "<leader>ur",
-        function()
-          snacks.picker.redo()
-        end,
-        desc = "Show Redo History",
-      },
 
       -- Yank / Copy references (OpenCode / Claude compatible)
       { "<leader>y", group = "Yank", icon = "󰆒" },
@@ -1365,6 +1530,20 @@ function M.setup()
       },
 
       -- Help & Discovery
+      {
+        "<leader>hn",
+        function()
+          snacks.notifier.show_history()
+        end,
+        desc = "Notification History",
+      },
+      {
+        "<leader>hN",
+        function()
+          snacks.picker.noice()
+        end,
+        desc = "Noice Message History",
+      },
       { "<leader>h", group = "Help", icon = "󰋖" },
       {
         "<leader>hh",
@@ -1399,6 +1578,34 @@ function M.setup()
       { "<leader>q", group = "Quit", icon = "󰅚" },
       { "<leader>qq", ":qa<CR>", desc = "Quit All" },
       { "<leader>qQ", ":qa!<CR>", desc = "Force Quit All" },
+      {
+        "<leader>qs",
+        function()
+          require("persistence").load()
+        end,
+        desc = "Restore Session",
+      },
+      {
+        "<leader>qS",
+        function()
+          require("persistence").select()
+        end,
+        desc = "Select Session",
+      },
+      {
+        "<leader>ql",
+        function()
+          require("persistence").load({ last = true })
+        end,
+        desc = "Restore Last Session",
+      },
+      {
+        "<leader>qd",
+        function()
+          require("persistence").stop()
+        end,
+        desc = "Stop Session Saving",
+      },
 
       -- External Terminal
       {
@@ -1408,6 +1615,40 @@ function M.setup()
         end,
         desc = "Toggle Terminal",
         mode = { "n", "t" },
+      },
+
+      -- Terminal (alternate bindings kept from the snacks spec)
+      {
+        "<C-/>",
+        function()
+          snacks.terminal.toggle()
+        end,
+        desc = "Toggle Terminal",
+        mode = { "n", "t" },
+      },
+      {
+        "<C-_>",
+        function()
+          snacks.terminal.toggle()
+        end,
+        desc = "Toggle Terminal",
+        mode = { "n", "t" },
+      },
+
+      -- LSP reference navigation (snacks.words)
+      {
+        "]w",
+        function()
+          snacks.words.jump(vim.v.count1)
+        end,
+        desc = "Next Reference",
+      },
+      {
+        "[w",
+        function()
+          snacks.words.jump(-vim.v.count1)
+        end,
+        desc = "Previous Reference",
       },
 
       -- Spelling helpers
@@ -1451,21 +1692,15 @@ function M.setup()
       if mapping.desc and not mapping.icon then
         mapping.icon = icon_for(mapping.desc)
       end
-      local mode = mapping.mode or "n"
-      local entry = vim.tbl_extend("force", {}, mapping)
-      entry.mode = nil
-      wk.add({
-        { mode = mode, entry },
-      })
     end
+
+    wk.add(ordered_mappings)
   end
 
   vim.keymap.set("i", "jj", "<Esc>", { desc = "Exit Insert Mode" })
   vim.keymap.set("i", "оо", "<Esc>", { desc = "Exit Insert Mode" })
 
   -- Normal-mode Tab: cycle buffers.
-  -- copilot.lua wraps this with NES accept+goto on InsertEnter load,
-  -- passing through to bnext when no NES is active.
   vim.keymap.set("n", "<Tab>", ":bnext<CR>", { desc = "Next Buffer", silent = true })
   vim.keymap.set("n", "<S-Tab>", ":bprevious<CR>", { desc = "Previous Buffer", silent = true })
 
@@ -1476,6 +1711,25 @@ function M.setup()
       ufo.peekFoldedLinesUnderCursor()
     end
   end, { desc = "Peek Fold" })
+
+  -- nvim-ufo keeps its own fold state; the built-in zR/zM do not update it.
+  vim.keymap.set("n", "zR", function()
+    local ok, ufo = pcall(require, "ufo")
+    if ok then
+      ufo.openAllFolds()
+    else
+      vim.cmd("normal! zR")
+    end
+  end, { desc = "Open All Folds" })
+
+  vim.keymap.set("n", "zM", function()
+    local ok, ufo = pcall(require, "ufo")
+    if ok then
+      ufo.closeAllFolds()
+    else
+      vim.cmd("normal! zM")
+    end
+  end, { desc = "Close All Folds" })
 end
 
 return M
