@@ -1,42 +1,45 @@
-# 📚 meowvim Documentation Den
+# meowvim documentation
 
-Welcome to the knowledge lounge for **project meow** developers. Grab a warm beverage, curl up with your editor, and explore the guides below.
+Five guides, in the order you are likely to need them. Each one stands on its
+own; none of them assume you read the others first.
 
-## 🐾 Start Here
+## Guides
 
-- **[01 – Installation & Upgrade Guide](01-INSTALLATION.md)**  
-  Step-by-step setup for fresh environments, project meow integration, and staying current.
+- **[Installation and upgrades](01-INSTALLATION.md)** covers a fresh install,
+  the optional tools and what each one adds, upgrades with a restore point, and
+  removal.
 
-- **[02 – Configuration & Personalization](02-CONFIGURATION.md)**  
-  Understand the directory layout, key files, and how to make meowvim truly yours.
+- **[Configuration reference](02-CONFIGURATION.md)** lists every option in
+  `~/.config/meowvim/config.lua` with its type, default, and range, plus the
+  commands that read and write that file and the per-project overrides.
 
-- **[03 – Daily Workflows & Recipes](03-WORKFLOWS.md)**  
-  Practical routines for navigation, coding, testing, debugging, and automation.
+- **[Daily workflows](03-WORKFLOWS.md)** shows the sequences you repeat:
+  finding a file, resolving a conflict, running one test, reviewing a pull
+  request, switching a theme.
 
-- **[04 – Troubleshooting & Health Checks](04-TROUBLESHOOTING.md)**  
-  Common fixes, diagnostic commands, and tips.
+- **[Troubleshooting](04-TROUBLESHOOTING.md)** starts from the symptom. Each
+  entry names the cause and the fix, and says which ones you can ignore.
 
-## 🎹 Keymaps & Shortcuts
+- **[Keymap reference](KEYMAPS.md)** groups every mapping the way which-key
+  groups them. The [one-page card](KEYMAPS_QUICK_REFERENCE.md) holds the
+  subset you use daily.
 
-- **[Complete Keymap Reference](KEYMAPS.md)** — Exhaustive list organized by category.
-- **[Quick Reference Card](KEYMAPS_QUICK_REFERENCE.md)** — One-page cheat sheet.
-- Within Neovim, press `<leader>hk` to search every keymap interactively.
+## Finding a mapping without leaving Neovim
 
-## ✨ Useful Paths
+Press `<leader>` and wait: which-key lists the groups, and each keystroke
+narrows the list. `<leader>hk` searches every mapping by name, which is faster
+when you know what the command is called but not where it sits.
 
-- Core configuration: `lua/config/`
-- Plugin specs: `lua/plugins/`
-- Personal overrides: `after/`
+## Where the code lives
 
-## 🤝 Contributing to the Docs
+`lua/config/` holds the options and the keymap table. `lua/meowvim/` holds the
+configuration layer, the theme system, and the health check. `lua/plugins/`
+holds one file per plugin. `lua/utils/` holds the session helpers, the toggle
+registry, and the workarounds for upstream bugs.
 
-Spot an opportunity to improve these pages?
+## Contributing
 
-1. Open an issue or discussion with your idea.
-2. Submit a pull request — stylistic cat puns encouraged but optional.
+Open an issue or send a pull request. Documentation changes follow the same
+review as code changes.
 
-All documentation is covered by the project’s [MIT License](../LICENSE).
-
----
-
-- [← Back to Main README](../README.md)
+This documentation is covered by the project's [MIT License](../LICENSE).

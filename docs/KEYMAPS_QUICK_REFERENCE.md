@@ -1,192 +1,128 @@
-# 🎹 meowvim Quick Keymap Reference
+# Keymap card
 
-Quick reference card for the most commonly used keymaps in meowvim.
+The mappings worth memorizing, on one page. The leader is space. Everything
+else is in the [full reference](KEYMAPS.md), and `<leader>hk` searches all of it
+from inside Neovim.
 
-## 🔥 Most Used
+## The ten you will use every day
 
 | Key | Action |
-|-----|--------|
-| `<leader>ff` | Smart find file |
-| `<leader>s/` | Search in project |
-| `<leader><space>` | Flash jump |
-| `<leader>bb` | List buffers |
-| `<leader>fe` | Toggle file explorer |
+| --- | --- |
+| `<leader>ff` | Find a file |
+| `<leader>s/` | Grep the project |
+| `<leader>bb` | Switch buffer |
+| `<leader><space>` | Jump to any visible spot |
 | `<leader>gg` | LazyGit |
 | `<leader>cc` | Code action |
 | `<leader>cr` | Rename symbol |
+| `<leader>cf` | Format the buffer |
 | `<leader>nd` | Go to definition |
-| `<leader>nr` | Find references |
+| `F2` | Terminal |
 
-## 📁 Files & Buffers
-
-| Key | Action |
-|-----|--------|
-| `<leader>ff` | Find file (smart) |
-| `<leader>fr` | Recent files |
-| `<leader>fs` | Save file |
-| `<leader>bb` | Buffer list |
-| `<leader>bd` | Delete buffer |
-| `Tab` | Next buffer |
-| `Shift+Tab` | Previous buffer |
-
-## 🔍 Search
+## Files and buffers
 
 | Key | Action |
-|-----|--------|
-| `<leader>s/` | Grep in project |
-| `<leader>sb` | Search buffers |
-| `<leader>sm` | Search marks |
-| `<leader>sr` | Search & replace |
-| `<leader>st` | TODO comments |
-| `<leader>sw` | Workspace symbols |
+| --- | --- |
+| `<leader>ff` / `<leader>fF` | Smart find / browse all files |
+| `<leader>fr` / `<leader>fg` | Recent files / Git files |
+| `<leader>fe` | File explorer |
+| `<leader>fp` | Switch project |
+| `<leader>fs` / `<leader>fS` | Write the buffer / all buffers |
+| `<leader>bb` / `<leader>bd` | List buffers / delete this one |
+| `<Tab>` / `<S-Tab>` | Next / previous buffer |
 
-## 🎯 Navigation
+## Moving around
 
 | Key | Action |
-|-----|--------|
+| --- | --- |
 | `<leader><space>` | Flash jump |
-| `<leader>nd` | Go to definition |
-| `<leader>nr` | Find references |
-| `<leader>ni` | Find implementations |
-| `]d` / `[d` | Next/prev diagnostic |
+| `<leader>jt` | Jump to a treesitter node |
+| `f` `F` `t` `T` | Character motions, with `;` and `,` to repeat |
+| `]h` / `[h` | Next / previous Git hunk |
+| `]d` / `[d` | Next / previous diagnostic |
+| `]w` / `[w` | Next / previous reference of this symbol |
 
-## 💡 Code
+## Code
 
 | Key | Action |
-|-----|--------|
+| --- | --- |
+| `<leader>nd` / `<leader>nr` | Definition / references, in a peek window |
+| `<leader>ns` / `<leader>nS` | Document / workspace symbols |
 | `<leader>cc` | Code action |
-| `<leader>cr` | Rename symbol |
-| `<leader>cf` | Format buffer |
-| `<leader>cd` | Show diagnostics |
-| `<leader>ch` | Line diagnostics |
+| `<leader>cr` | Rename symbol, with a live preview |
+| `<leader>cf` | Format |
+| `<leader>cd` / `<leader>cD` | Project / buffer diagnostics |
+| `<leader>ch` | Diagnostic for this line |
 
-## ✨ Completion & AI
-
-### Completion Popup
+## Completion
 
 | Key | Action |
-|-----|--------|
-| `<C-j>` | Next item (↓) |
-| `<C-k>` | Previous item (↑) |
-| `<C-l>` | Accept completion |
-| `<C-Space>` | Trigger manually |
-| `<Esc>` | Dismiss |
+| --- | --- |
+| `<C-j>` / `<C-k>` | Next / previous item |
+| `<C-l>` | Accept: Copilot first, then the selected item |
+| `<C-Space>` | Open the menu |
+| `<CR>` | Newline; it never accepts |
+| `jj` | Leave insert mode |
 
-### Copilot (Inline)
-
-| Key | Action |
-|-----|--------|
-| `<C-l>` | Accept suggestion (smart: Copilot first, then cmp) |
-| `<Esc>` | Dismiss suggestion (stay in insert mode) |
-
-**Note:** Tab indents, Enter creates newline (never intercepted)
-
-### 🦀 Rust (Cargo.toml)
+## Git
 
 | Key | Action |
-|-----|--------|
-| `<leader>cCt` | Toggle crates UI |
-| `<leader>cCu` | Update crate |
-| `<leader>cCU` | Update all crates |
-| `<leader>cCH` | Open homepage |
-
-## 🌿 Git
-
-| Key | Action |
-|-----|--------|
+| --- | --- |
 | `<leader>gg` | LazyGit |
-| `<leader>gb` | Git blame line |
-| `]h` / `[h` | Next/prev hunk |
-| `<leader>gHs` | Stage hunk |
-| `<leader>gHv` | Preview hunk |
-| `<leader>gy` | Copy git link |
+| `<leader>gn` | Neogit |
+| `<leader>gs` | Status picker |
+| `<leader>gDd` / `<leader>gDs` | Diff the working tree / the index |
+| `<leader>gHs` / `<leader>gHr` | Stage / reset the hunk |
+| `<leader>gb` | Blame this line |
+| `<leader>gy` / `<leader>gY` | Copy / open a permalink |
+| `<leader>ghp` / `<leader>ghi` | Pull requests / issues |
 
-## 🪟 Windows
-
-| Key | Action |
-|-----|--------|
-| `<leader>wh/j/k/l` | Navigate windows |
-| `<leader>ws` | Split horizontal |
-| `<leader>wv` | Split vertical |
-| `<leader>wc` | Close window |
-
-## 🧪 Testing
+## Windows
 
 | Key | Action |
-|-----|--------|
-| `<leader>tn` | Run nearest test |
-| `<leader>tf` | Run file tests |
-| `<leader>ts` | Run test suite |
-| `<leader>tS` | Toggle summary |
+| --- | --- |
+| `<C-h>` `<C-j>` `<C-k>` `<C-l>` | Move between windows and tmux panes |
+| `<leader>ws` / `<leader>wv` | Split below / right |
+| `<leader>wc` / `<leader>wo` | Close this / all others |
+| `<leader>wt` / `<leader>wT` | New / close tab |
 
-## 🐛 Debug
-
-| Key | Action |
-|-----|--------|
-| `<leader>dc` | Continue/Start |
-| `<leader>db` | Toggle breakpoint |
-| `<leader>ds` | Step over |
-| `<leader>di` | Step into |
-| `<leader>do` | Step out |
-| `<leader>du` | Toggle UI |
-
-## ⚙️ Options
+## Tests and debugging
 
 | Key | Action |
-|-----|--------|
-| `<leader>on` | Toggle line numbers |
-| `<leader>ow` | Toggle wrap |
-| `<leader>os` | Toggle spell |
-| `<leader>og` | Toggle indent guides |
-| `<leader>od` | Toggle dim |
-| `<leader>of` | Toggle format on save |
-| `F2` | Toggle terminal |
-| `<leader>ok` | Colorscheme switcher |
+| --- | --- |
+| `<leader>tn` / `<leader>tf` | Run the nearest test / this file |
+| `<leader>ts` / `<leader>tS` | Run everything / toggle the summary |
+| `<leader>dc` | Start or continue debugging |
+| `<leader>dbt` | Toggle a breakpoint |
+| `<leader>ds` / `<leader>di` / `<leader>do` | Step over / into / out |
+| `<leader>du` | Toggle the debug UI |
 
-## 📝 Editing
+## Toggles
 
 | Key | Action |
-|-----|--------|
-| `jj` | Exit insert mode |
-| `<Tab>` | Indent / Snippet jump |
-| `<CR>` | New line (always) |
-| `p` / `P` | Paste after/before |
-| `Alt+n` / `Alt+p` | Cycle yank history |
-| `<leader>uu` | Undo history |
-| `<leader>yh` | Yank history |
+| --- | --- |
+| `<leader>ow` / `<leader>os` | Wrap / spell |
+| `<leader>on` | Cycle the line numbers |
+| `<leader>ox` / `<leader>oi` | Diagnostics / inlay hints |
+| `<leader>of` / `<leader>oa` | Format on save / auto-save |
+| `<leader>oC` | Copilot |
+| `<leader>ok` / `<leader>oK` | Theme menu / day and night |
+| `<leader>op` | Write the current toggles to the config |
 
-## 🏃 Tasks & Review
-
-| Key | Action |
-|-----|--------|
-| `<leader>xr` | Run task (Overseer) |
-| `<leader>xl` | Rerun last task |
-| `<leader>xo` | Toggle task list |
-| `<leader>ra` | Review: add comment |
-| `<leader>rd` | Review: delete comment |
-| `<leader>re` | Review: export to clipboard |
-| `<leader>rg` | Review: go to comment |
-| `]r` / `[r` | Next/prev review comment |
-| `<leader>yf` | Copy file reference |
-| `<leader>yl` | Copy line reference |
-
-## 🆘 Help
+## Sessions and help
 
 | Key | Action |
-|-----|--------|
-| `<leader>hh` | Search help |
-| `<leader>hk` | Search keymaps |
-| `<leader>hc` | Search commands |
+| --- | --- |
+| `<leader>qs` / `<leader>ql` | Restore this session / the last one |
+| `<leader>qq` | Quit |
+| `<leader>hk` | Search every mapping |
+| `<leader>hh` / `<leader>hc` | Help / commands |
 
-## 💡 Tips
+## Two habits worth forming
 
-- Leader key is `<space>`
-- Use `<leader>hk` to search all keymaps interactively
-- Completion uses `<C-j/k>` to navigate, `<C-l>` to smart accept (Copilot inline first, then cmp), `<C-u>/<C-d>` to scroll docs
-- Tab always indents, Enter always creates newline
-- Flash jump (`<leader><space>`) is your friend for quick navigation
-- f/t movements also show visual jump labels like Flash
+Press `<leader>` and read the menu instead of guessing: which-key shows every
+group with its icon, and the path to a command is usually shorter than you
+expect.
 
----
-
-For complete documentation, see [KEYMAPS.md](KEYMAPS.md)
+Use `<leader>op` after a session where you changed toggles. It writes them to
+`~/.config/meowvim/config.lua`, so the next start begins the way you left off.

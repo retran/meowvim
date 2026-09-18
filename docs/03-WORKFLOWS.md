@@ -1,184 +1,159 @@
-# Daily Workflows
+# Daily workflows
 
-Common workflows in **meowvim**.
+Ten sequences you repeat often enough that the keystrokes should be automatic.
+Each one starts from a goal, not from a plugin, and names the alternative when
+there is a reason to pick between two paths.
 
-## Starting
+If a mapping here is unfamiliar, `<leader>hk` searches all of them by name.
 
-1. Launch `nvim` for dashboard
-2. Dashboard shortcuts:
-   - `f` - Recent files
-   - `p` - Switch projects
-   - `n` - Scratch notes
-3. Press `<leader>hk` to search keymaps
+## Open the editor where you left it
 
-## Navigation
+Start Neovim in a project directory with no file arguments. If a session exists
+for that directory, meowvim restores it and runs the project's `on_open`
+command; otherwise the dashboard opens with the recent projects.
 
-- `<leader><space>` - Flash jump anywhere
-- `<leader>ff` - File picker
-- `<leader>bb` - Buffer picker
-- `<leader>sm` - Marks picker
-- `<leader>sw` - Workspace symbols (LSP)
-- `]d` / `[d` - Next/previous diagnostic
-- `<leader>cd` - Diagnostics list (Snacks picker)
-- `F2` - Toggle terminal
+Sessions save when the working directory changes. To carry one per Git branch,
+set `sessions.per_branch = true`: the branch becomes part of the session name,
+so switching branches gives you the buffers you had on that branch.
 
-### Marks
+`<leader>qs` restores the session for this directory by hand, and `<leader>ql`
+restores the last one you used anywhere.
 
-- `m{a-z}` - Set mark
-- `'{a-z}` - Jump to mark
-- `<leader>sm` - Browse marks
-- `:marks` - List marks
+## Find a file
 
-### Windows
+`<leader>ff` picks the strategy for you: Git files inside a repository, recent
+files when they match, a full listing otherwise. Use `<leader>fF` when you want
+the plain listing and `<leader>fg` when you want only tracked files.
 
-- `<leader>wv` / `<leader>ws` - Split vertical/horizontal
-- `<leader>wh/j/k/l` - Move between windows
-- `<leader>wc` - Close window
-- `<leader>wo` - Keep only current window
+`<leader>fe` opens the explorer on the right, which is the better choice when
+you are looking at a directory rather than for a file.
 
-## Editing
+To search the contents instead of the names, `<leader>s/` greps the project and
+`<leader>sb` greps only the open buffers.
 
-- `<leader>cc` - Code actions (LSP)
-- `<leader>cr` - Rename symbol
-- `<leader>cf` - Format buffer
-- `<leader>nd` - Peek definition
-- `<leader>nr` - Find references
-- `<leader>ni` - Implementations
-- Surround: `sa`, `sd`, `sr` (mini-surround)
+## Read code you did not write
 
-Use `<leader>hc` to fuzzy-find commands.
+`<leader>nd` opens the definition in a peek window, so you keep the call site
+on screen. `<leader>nr` does the same for references. Both come from glance, and
+`q` closes the window.
 
-## Git
+For the shape of a file, `<leader>ns` lists its symbols, and `<leader>nS`
+searches symbols across the workspace.
 
-- `<leader>gg` - LazyGit
-- `<leader>gf` - LazyGit for file
-- `<leader>gb` - Blame line
-- `<leader>gDd` - Open Diffview explorer
-- `<leader>gHs` / `<leader>gHr` / `<leader>gHv` - Stage/reset/preview hunk
-- `]h` / `[h` - Next/previous hunk
-- `<leader>gy` / `<leader>gY` - Copy/open permalink
-- `<leader>gxo` / `<leader>gxt` - Conflict resolution (ours/theirs)
+`<leader>nc` and `<leader>nC` open the call hierarchy for callers and callees,
+and `<leader>nh` and `<leader>nH` open the type hierarchy. These render as trees
+you can expand, which is what makes them worth using over a flat reference list.
 
-### LazyGit
+## Change code
 
-- Auto-syncs with Neovim theme
-- Supports all colorschemes
-- Full git workflow: stage, commit, push, rebase
-- Interactive rebase and conflicts
+`<leader>cc` runs a code action. `<leader>cr` renames the symbol under the
+cursor and previews the change in every file as you type, so you can back out
+before committing to a name.
 
-Use Overseer tasks (`<leader>xr`, `<leader>xl`, `<leader>xo`) for custom tasks.
+Formatting happens on write. `<leader>cf` formats now, and `<leader>of` turns
+format-on-save off for the session when you are editing someone else's style.
 
-## Testing & Debug
+Buffers up to 800 lines format during the write. Larger ones format just
+afterwards so the write does not block, and files over 5000 lines are left
+alone.
 
-- `<leader>tS` - Neotest summary
-- `<leader>tn` - Run nearest test
-- `<leader>tf` - Run file tests
-- `<leader>ts` - Run test suite
-- `<leader>to` - Test output
-- `<leader>td` - Debug test
-- `<leader>db` - Toggle breakpoint
-- `<leader>dc` - Continue
-- `<leader>ds` - Step over
-- `<leader>di` - Step in
-- `<leader>do` - Step out
-- `<leader>du` - Toggle DAP UI
+## Review your changes before committing
 
-Install debug adapters via mise or manually per the DAP plugin config.
+`<leader>gs` lists the changed files, and `<leader>gDd` shows the working tree
+as a list of hunks with the diff beside it. `<leader>gDs` shows what is already
+staged, which is the check worth running before you write the commit message.
 
-## Writing
+Stage from the editor with `<leader>gHs` for the hunk under the cursor or
+`<leader>gHS` for the file, and undo with `<leader>gHr` and `<leader>gHR`.
+`]h` and `[h` walk the hunks.
 
-- `<leader>cc` - Toggle comments (Treesitter-aware)
-- `zg` - Add to dictionary
-- `zw` - Mark as incorrect
-- `<leader>os` - Toggle spell check
-- `<leader>.` - Scratch buffer
+For anything more involved, `<leader>gg` opens LazyGit, which is faster for
+interactive rebases and partial staging.
 
-## Sessions
+## Resolve a merge conflict
 
-Sessions save automatically. Your layout, buffers, and state persist across restarts.
+git-conflict marks the conflicting regions when you open the file. `]x` and
+`[x` move between them, and then you pick: `<leader>gxo` keeps ours,
+`<leader>gxt` keeps theirs, `<leader>gxb` keeps both, and `<leader>gxn` keeps
+neither.
 
-## AI
+`<leader>gxl` puts every conflict in the project into the quickfix list, which
+tells you how much is left.
 
-- Authenticate: `:Copilot auth`
-- Inline suggestions auto-trigger in insert mode
-- `<C-l>` - Accept inline suggestion (or selected completion item)
-- `<Esc>` - Dismiss inline suggestion (stay in insert mode)
-- Toggle: `<leader>oC`
-- Configure in `lua/plugins/copilot.lua`
+## Review a pull request
 
-## Tasks
+`<leader>ghp` lists the open pull requests and searches as you type. Enter opens
+the actions for the selected one: approve, request changes, start a review,
+merge, check out the branch, or open the diff.
 
-- `<leader>xr` - Task picker (Overseer)
-- `<leader>xl` - Rerun last task
-- `<leader>xo` - Toggle task list
+`<leader>ghd` opens the diff for the pull request on the current branch, with
+the review comments inline, and `a` in the preview adds a comment to the line
+under the cursor.
 
-Create custom tasks in `lua/plugins/overseer.lua` or `.overseer.json`.
+All of this shells out to the GitHub CLI, so `gh auth login` has to have run
+once.
 
-## Code Review
+## Run one test, then all of them
 
-AI-assisted inline code review via `meow.review.nvim`:
+`<leader>tn` runs the test nearest the cursor, which is the fast loop.
+`<leader>tf` runs the file and `<leader>ts` the whole suite.
 
-- `<leader>ra` - Add comment (modal; Tab cycles type, `<C-s>` confirms)
-- `<leader>rd` - Delete comment
-- `<leader>rE` - Edit comment (pre-filled modal)
-- `<leader>rv` - View comment
-- `<leader>re` - Export review to clipboard
-- `<leader>rf` - Export to file (prompts for filename)
-- `<leader>rF` - Export annotations for current file only
-- `<leader>rC` - Export and clear all annotations
-- `<leader>rc` - Clear all annotations
-- `<leader>rr` - Reload from store file
-- `<leader>rg` - Go to comment (picker)
-- `<leader>rG` - Go to comment in current file
-- `<leader>rt` - Go to comment by type
-- `<leader>rx` - Resolve comment at cursor
-- `<leader>rX` - Resolve all comments
-- `<leader>rV` - Validate annotations (detect stale)
-- `]r` / `[r` - Next/previous review comment
+`<leader>tS` opens the summary panel on the right, where you can run individual
+tests from the tree. `<leader>to` shows the output of the last run, and
+`<leader>tx` stops a run that is taking too long.
 
-Copy references for review notes:
-- `<leader>yf` - Copy file reference (e.g. `@lua/plugins/copilot.lua`)
-- `<leader>yl` - Copy line reference (e.g. `@lua/plugins/copilot.lua:42`)
+To debug a failing test rather than read its output, `<leader>td` runs the
+nearest test under nvim-dap with the adapter for that language.
 
-## Themes
+## Debug
 
-- `<leader>ok` - Theme switcher
-- `:ColorschemeSelect` - Browse themes
-- 17 colorschemes with 70+ variants
-- Configure transparency in `~/.config/meowvim/config.lua`
+Set a breakpoint with `<leader>dbt`, then `<leader>dc` starts the session or
+continues a paused one. `<leader>ds`, `<leader>di`, and `<leader>do` step over,
+into, and out.
 
-### Theme Workflow
+`<leader>du` toggles the debug UI, and it opens on its own when a session
+starts. For a single value, `<leader>dvh` hovers the expression under the cursor
+and works on a visual selection too.
 
-1. Press `<leader>ok` or `:ColorschemeSelect`
-2. Browse with arrows or search
-3. Preview in real-time (cancel with `q`)
-4. Enter to apply and save
+Conditional breakpoints are `<leader>dbc`, and `<leader>dbl` sets a log point,
+which prints instead of stopping.
 
-## Developer Tools
+## Annotate a review
 
-### Performance
+meow.review.nvim keeps comments in `.cache/meow-review/` inside the project, so
+they survive a restart and do not touch the code.
 
-- `:MeowvimProfile` - Plugin load times
-- `:StartupTrends` - Startup analysis
-- `:MeasureRender` - Buffer rendering
-- `:ProfileStart` / `:ProfileStop` - Profile operations
-- `<leader>oPs` - Profile startup time (`:StartupTime`)
+`<leader>ra` adds a comment; the modal cycles the type with `Tab` and confirms
+with `<C-s>`. `]r` and `[r` move between them, `<leader>rx` resolves the one
+under the cursor, and `<leader>rg` opens a picker over all of them.
 
-### Keymaps
+When the review is done, `<leader>re` copies it to the clipboard as markdown and
+`<leader>rf` writes it to a file. `<leader>rC` exports and clears in one step,
+which is the usual end of a pass.
 
-- `:KeymapConflicts` - Find conflicts
-- `:KeymapList [mode]` - List keymaps
-- `<leader>hk` - Interactive search
+To point at code from a chat, `<leader>yf` copies `@path` and `<leader>yl`
+copies `@path:line` for the cursor or the selection.
 
-### Config
+## Switch the theme
 
-- `:MeowvimConfig` - Edit config
-- `:MeowvimConfigReload` - Reload config
-- `:MeowvimConfigValidate` - Check errors
-- `:MeowvimConfigShow` - Show config
-- `:MeowvimProjects` - Manage projects
-- `:MeowvimProject <name>` - Switch project
+`<leader>ok` opens the theme menu: a day theme, a night theme, the mode, and the
+ready-made pairs. Pick a pair and both slots change together.
 
----
+In `auto` mode meowvim follows the system appearance and switches when the
+system does. `<leader>oK` switches by hand and puts the mode into `manual`.
+`:ColorschemeSelect` picks a single theme regardless of day and night.
 
-Next: [Troubleshooting](./04-TROUBLESHOOTING.md)
+Your choice is written to `~/.config/meowvim/config.lua`, so it survives a
+restart.
+
+## Keep an eye on startup
+
+`<leader>oPs` profiles the startup with vim-startuptime, and `<leader>oPt`
+shows how the last 100 starts compare, which is the one that tells you whether
+something regressed.
+
+`<leader>oPl` lists the plugins by load time. `<leader>oPp` and `<leader>oPe`
+start and stop Neovim's own profiler when you need to know where a slow command
+spends its time.
+
+Next: [troubleshooting](04-TROUBLESHOOTING.md).

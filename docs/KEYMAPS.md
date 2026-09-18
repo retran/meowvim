@@ -1,794 +1,446 @@
-# 🎹 meowvim Keymaps Reference
-
-> Comprehensive guide to all keyboard shortcuts and keybindings in meowvim.
-
-This document provides a complete reference of all keymaps available in
-meowvim. The configuration uses `<leader>` (space key by default) as the
-primary prefix for most commands.
-
-## 📚 Table of Contents
-
-- [General Bindings](#general-bindings)
-- [File Operations](#file-operations)
-- [Buffer Management](#buffer-management)
-- [Window Management](#window-management)
-- [Search & Navigation](#search--navigation)
-- [Jump (Flash)](#jump-flash)
-- [Code Navigation](#code-navigation)
-- [Code Intelligence](#code-intelligence)
-- [Completion & Copilot](#completion--copilot)
-- [Git & Version Control](#git--version-control)
-- [Testing](#testing)
-- [Tasks & Runners](#tasks--runners)
-- [Code Review](#code-review)
-- [Debug (DAP)](#debug-dap)
-- [Options & UI](#options--ui)
-- [Sessions](#sessions)
-- [Undo & History](#undo--history)
-- [Notes & Scratch](#notes--scratch)
-- [Help & Discovery](#help--discovery)
-- [Yank/Put Operations](#yankput-operations)
-- [Yank References](#yank-references)
-- [Quit](#quit)
-- [Terminal](#terminal)
-
----
-
-## General Bindings
-
-### Insert Mode
-
-| Key | Description |
-|-----|-------------|
-| `jj` | Exit insert mode (Escape alternative) |
-| `оо` | Exit insert mode (Cyrillic layout support) |
-
-### Normal Mode - Buffer Navigation
-
-| Key | Description |
-|-----|-------------|
-| `Tab` | Next buffer |
-| `Shift+Tab` | Previous buffer |
-
-### Spelling
-
-| Key | Description |
-|-----|-------------|
-| `zg` | Add word to spell file |
-| `zw` | Mark word as incorrect |
-
----
-
-## File Operations
-
-**Prefix:** `<leader>f`
-
-| Key | Description |
-|-----|-------------|
-| `<leader>ff` | Smart find file (context-aware) |
-| `<leader>fF` | Find file (all files) |
-| `<leader>fg` | Find in git files |
-| `<leader>fr` | Recent files |
-| `<leader>fn` | New file (with path creation) |
-| `<leader>fe` | Toggle file explorer |
-| `<leader>fp` | Project picker |
-| `<leader>fs` | Save current file |
-| `<leader>fS` | Save all files |
-
----
-
-## Buffer Management
-
-**Prefix:** `<leader>b`
-
-| Key | Description |
-|-----|-------------|
-| `<leader>bb` | List buffers (picker) |
-| `<leader>bn` | New buffer |
-| `<leader>br` | Rename buffer |
-| `<leader>bd` | Delete buffer |
-| `<leader>bD` | Force delete buffer |
-| `<leader>bo` | Delete other buffers |
-| `<leader>ba` | Delete all buffers |
-| `<leader>bp` | Toggle pin buffer |
-| `<leader>bP` | Pin all buffers |
-| `<leader>bu` | Unpin all buffers |
-
----
-
-## Bookmarks
-
-The bookmark system has been replaced with a simpler marks-based system using Snacks picker. See `<leader>sm` under [Search & Navigation](#search--navigation).
-
----
-
-## Window Management
-
-**Prefix:** `<leader>w`
-
-### Navigation
-
-| Key | Description |
-|-----|-------------|
-| `<leader>wh` | Focus left window |
-| `<leader>wj` | Focus lower window |
-| `<leader>wk` | Focus upper window |
-| `<leader>wl` | Focus right window |
-
-### Splits
-
-| Key | Description |
-|-----|-------------|
-| `<leader>ws` | Split horizontal |
-| `<leader>wv` | Split vertical |
-| `<leader>wc` | Close window |
-| `<leader>wo` | Close other windows |
-
-### Tabs
-
-| Key | Description |
-|-----|-------------|
-| `<leader>wt` | New tab |
-| `<leader>wT` | Close tab |
-| `]t` / `[t` | Next/Previous tab |
-
-### Resize
-
-| Key | Description |
-|-----|-------------|
-| `<leader>w=` | Equalize windows |
-| `<leader>w>` | Increase width |
-| `<leader>w<` | Decrease width |
-| `<leader>w+` | Increase height |
-| `<leader>w-` | Decrease height |
-
-### Move
-
-| Key | Description |
-|-----|-------------|
-| `<leader>wH` | Move window far left |
-| `<leader>wL` | Move window far right |
-| `<leader>wK` | Move window far top |
-| `<leader>wJ` | Move window far bottom |
-
----
-
-## Search & Navigation
-
-**Prefix:** `<leader>s`
-
-| Key | Description |
-|-----|-------------|
-| `<leader>s/` | Search in project (grep) |
-| `<leader>sb` | Search in open buffers |
-| `<leader>sg` | Search in git (git grep) |
-| `<leader>sm` | Search marks (Snacks picker) |
-| `<leader>sr` | Search and replace (Spectre) |
-| `<leader>st` | Search TODO comments |
-| `<leader>sw` | Workspace symbols (Snacks picker) |
-
-**Note:** `<leader>sr` works in both normal and visual mode for selection-based search.
-
----
-
-## Jump (Flash)
-
-**Prefix:** `<leader>j` and `<leader><space>`
-
-| Key | Modes | Description |
-|-----|-------|-------------|
-| `<leader><space>` | n, x, o | Quick jump (Flash) |
-| `<leader>jj` | n, x, o | Flash jump in current window |
-| `<leader>jt` | n, x, o | Flash treesitter (jump to AST nodes) |
-| `<leader>ja` | n, x, o | Flash jump (all windows) |
-| `<leader>jm` | n, x, o | Flash remote operation |
-
----
-
-## Code Navigation
-
-**Prefix:** `<leader>n`
-
-### LSP Navigation
-
-| Key | Description |
-|-----|-------------|
-| `<leader>nd` | Glance definitions |
-| `<leader>nD` | Pick declaration (picker) |
-| `<leader>nr` | Glance references |
-| `<leader>ni` | Glance implementations |
-| `<leader>nt` | Glance type definitions |
-
-### Workspace Folders
-
-**Prefix:** `<leader>nW`
-
-| Key | Description |
-|-----|-------------|
-| `<leader>nWa` | Add workspace folder |
-| `<leader>nWR` | Remove workspace folder |
-| `<leader>nWL` | List workspace folders |
-
-### Hierarchies
-
-| Key | Description |
-|-----|-------------|
-| `<leader>nh` | Type hierarchy (subtypes) |
-| `<leader>nH` | Type hierarchy (supertypes) |
-| `<leader>nc` | Call hierarchy (callers) |
-| `<leader>nC` | Call hierarchy (callees) |
-
----
-
-## Code Intelligence
-
-**Prefix:** `<leader>c`
-
-### Actions
-
-| Key | Modes | Description |
-|-----|-------|-------------|
-| `<leader>cc` | n, v | Code action |
-| `<leader>cr` | n | Rename symbol |
-| `<leader>cl` | n | Run code lens |
-| `<leader>cL` | n | Refresh code lenses |
-| `<leader>cf` | n | Format buffer |
-| `<leader>co` | n | Organize imports (TypeScript/JavaScript) |
-
-### Diagnostics
-
-| Key | Description |
-|-----|-------------|
-| `<leader>cd` | Project diagnostics (Snacks picker) |
-| `<leader>cD` | Buffer diagnostics (Snacks picker) |
-| `<leader>ch` | Line diagnostics (float) |
-| `<leader>cq` | Quickfix list |
-| `<leader>cs` | Browse symbols (Snacks picker) |
-| `]d` / `[d` | Next/Previous diagnostic |
-| `]q` / `[q` | Next/Previous quickfix item |
-| `]l` / `[l` | Next/Previous location list item |
-| `]b` / `[b` | Next/Previous buffer |
-
-### Rust Crates Management
-
-**Prefix:** `<leader>cC`
-
-Available when editing `Cargo.toml` files:
-
-| Key | Description |
-|-----|-------------|
-| `<leader>cCt` | Toggle crates UI |
-| `<leader>cCr` | Reload crates data |
-| `<leader>cCu` | Update crate under cursor |
-| `<leader>cCU` | Update all crates |
-| `<leader>cCH` | Open crate homepage |
-| `<leader>cCD` | Open crate documentation |
-
----
-
-## Completion & Copilot
-
-meowvim features two separate systems that work together:
-- **Completion popup** (blink.cmp) - Shows LSP suggestions, snippets, and buffer words
-- **Copilot** - Inline gray text AI suggestions
-
-Both systems are designed to never interfere with each other, with completely separate keymaps.
-
-### Completion Popup (blink.cmp)
-
-**Navigation (hjkl-based):**
-
-| Key | Description |
-|-----|-------------|
-| `<C-j>` | Navigate down in popup (next item) |
-| `<C-k>` | Navigate up in popup (previous item) |
-| `<C-l>` | Accept selected completion (move right/forward) |
-| `<C-Space>` | Manually trigger completion |
-| `<Esc>` | Dismiss popup (and Copilot) |
-
-**Documentation:**
-
-| Key | Description |
-|-----|-------------|
-| `<C-u>` | Scroll documentation up |
-| `<C-d>` | Scroll documentation down |
-
-**Snippet Navigation:**
-
-| Key | Description |
-|-----|-------------|
-| `<Tab>` | Jump to next snippet placeholder (or indent) |
-| `<S-Tab>` | Jump to previous snippet placeholder (or dedent) |
-
-**Note:** `<C-l>` is a smart accept: if a Copilot inline suggestion is visible it accepts that; otherwise it confirms the selected cmp item.
-
-### GitHub Copilot (Inline Suggestions)
-
-Copilot shows gray text suggestions as you type (auto-triggered).
-
-**Inline suggestion control (insert mode):**
-
-| Key | Description |
-|-----|-------------|
-| `<C-l>` | Accept inline suggestion (smart: Copilot first, then selected cmp item) |
-| `<Esc>` | Dismiss inline suggestion and stay in insert mode; if no suggestion, exit insert |
-
-**Toggle:**
-
-| Key | Description |
-|-----|-------------|
-| `<leader>oC` | Toggle Copilot on/off globally |
-
-### Tab & Enter Behavior
-
-These keys preserve their normal Vim behavior:
-
-| Key | Behavior |
-|-----|----------|
-| `<Tab>` | Indent (or jump to next snippet placeholder if in snippet) |
-| `<S-Tab>` | Dedent (or jump to previous snippet placeholder if in snippet) |
-| `<CR>` | Always creates a newline (never intercepts for completion) |
-
-### Enable/Disable Copilot
-
-```vim
-:Copilot enable   " Enable Copilot
-:Copilot disable  " Disable Copilot
-:Copilot auth     " Authenticate with GitHub
-:Copilot status   " Check Copilot status
-```
-
-Or use the toggle keymap: `<leader>oC`
-
-### Conflict-Free Design
-
-The keymaps are designed to be completely conflict-free:
-
-- **Completion popup** uses `<C-j/k/l>` (hjkl pattern)
-- **Copilot inline** accept uses `<C-l>` (shared smart accept — Copilot takes priority)
-- `<Esc>` dismisses Copilot inline suggestion first (staying in insert); falls through to exit insert if no suggestion is visible
-- `<Tab>` and `<Enter>` never interfere with completion
-
-This design allows both Copilot and the completion popup to coexist without conflicts.
-
----
-
-## Git & Version Control
-
-**Prefix:** `<leader>g`
-
-### LazyGit & Status
-
-| Key | Description |
-|-----|-------------|
-| `<leader>gg` | LazyGit (full TUI) |
-| `<leader>gf` | LazyGit current file |
-| `<leader>gb` | Git blame line |
-| `<leader>gB` | Git browse (open in browser) |
-| `<leader>gC` | Commit (Neogit) |
-| `<leader>gp` | Pull (Neogit) |
-| `<leader>gP` | Push (Neogit) |
-| `<leader>gw` | Browse branches |
-
-### Hunks
-
-**Prefix:** `<leader>gH`
-
-| Key | Description |
-|-----|-------------|
-| `<leader>gHs` | Stage hunk |
-| `<leader>gHr` | Reset hunk |
-| `<leader>gHS` | Stage buffer |
-| `<leader>gHR` | Reset buffer |
-| `<leader>gHv` | Preview hunk |
-| `<leader>gHd` | Diff buffer |
-| `]h` / `[h` | Next/Previous hunk |
-
-### Diffview
-
-**Prefix:** `<leader>gD`
-
-| Key | Description |
-|-----|-------------|
-| `<leader>gDd` | Open diff explorer |
-| `<leader>gDh` | File history |
-| `<leader>gDH` | Repo history |
-| `<leader>gDc` | Close Diffview |
-
-### Git Links
-
-| Key | Modes | Description |
-|-----|-------|-------------|
-| `<leader>gy` | n, v | Copy git link |
-| `<leader>gY` | n, v | Open git link in browser |
-
-### Conflicts
-
-**Prefix:** `<leader>gx`
-
-| Key | Description |
-|-----|-------------|
-| `<leader>gxo` | Choose ours |
-| `<leader>gxt` | Choose theirs |
-| `<leader>gxb` | Choose both |
-| `<leader>gxn` | Choose none |
-| `<leader>gxl` | List conflicts |
-| `]x` / `[x` | Next/Previous conflict |
-
-### GitHub
-
-**Prefix:** `<leader>gh`
-
-| Key | Description |
-|-----|-------------|
-| `<leader>ghp` | Open pull request |
-| `<leader>ghi` | Open issue |
-| `<leader>ghP` | Search pull requests |
-| `<leader>ghI` | Search issues |
-| `<leader>ght` | Toggle threads |
-
----
-
-## Testing
-
-**Prefix:** `<leader>t`
-
-| Key | Description |
-|-----|-------------|
-| `<leader>tn` | Run nearest test |
-| `<leader>tf` | Run file tests |
-| `<leader>ts` | Run test suite |
-| `<leader>tS` | Toggle test summary |
-| `<leader>to` | Show test output |
-| `<leader>td` | Debug nearest test |
-| `<leader>tx` | Stop tests |
-
----
-
-## Tasks & Runners
-
-**Prefix:** `<leader>x`
-
-| Key | Description |
-|-----|-------------|
-| `<leader>xr` | Run task template (Overseer) |
-| `<leader>xl` | Restart last task |
-| `<leader>xo` | Toggle task list |
-
----
-
-## Code Review
-
-AI-assisted inline code review via `meow.review.nvim`.
-
-**Prefix:** `<leader>r`
-
-### Adding & Managing Comments
-
-| Key | Modes | Description |
-|-----|-------|-------------|
-| `<leader>ra` | n, v | Add comment (modal; Tab cycles type, `<C-s>` confirms) |
-| `<leader>rd` | n, v | Delete comment |
-| `<leader>rE` | n | Edit comment (pre-filled modal) |
-| `<leader>rv` | n | View comment under cursor |
-
-### Export
-
-| Key | Description |
-|-----|-------------|
-| `<leader>re` | Export review to clipboard |
-| `<leader>rf` | Export to file (prompts for filename) |
-| `<leader>rF` | Export annotations for current file only |
-| `<leader>rC` | Export and clear all annotations |
-| `<leader>rc` | Clear all annotations |
-| `<leader>rr` | Reload from store file |
-
-### Navigation & Pickers
-
-| Key | Description |
-|-----|-------------|
-| `<leader>rg` | Go to comment (picker; jump to any annotation) |
-| `<leader>rG` | Go to comment in current file |
-| `<leader>rt` | Go to comment by type (type picker, then annotation picker) |
-| `<leader>rx` | Resolve comment at cursor |
-| `<leader>rX` | Resolve all comments |
-| `<leader>rV` | Validate annotations (detect stale) |
-| `]r` | Next review comment |
-| `[r` | Previous review comment |
-
----
-
-## Debug (DAP)
-
-**Prefix:** `<leader>d`
-
-### Debug Control
-
-| Key | Description |
-|-----|-------------|
-| `<leader>dc` | Continue / Start debugging |
-| `<leader>dt` | Terminate debug session |
-| `<leader>ds` | Step over |
-| `<leader>di` | Step into |
-| `<leader>do` | Step out |
-| `<leader>dr` | Run to cursor |
-| `<leader>du` | Toggle debug UI |
-| `<leader>dR` | Open REPL |
-
-### Breakpoints
-
-**Prefix:** `<leader>db`
-
-| Key | Description |
-|-----|-------------|
-| `<leader>db` | Toggle breakpoint |
-| `<leader>dB` | Clear all breakpoints |
-| `<leader>dbc` | Conditional breakpoint |
-| `<leader>dbl` | Log point |
-| `<leader>dbe` | Exception breakpoints |
-
-### Debug Views
-
-**Prefix:** `<leader>dv`
-
-| Key | Modes | Description |
-|-----|-------|-------------|
-| `<leader>dvs` | n | View scopes |
-| `<leader>dvf` | n | View frames |
-| `<leader>dvh` | n, v | Inspect hover |
-| `<leader>dvp` | n, v | Preview variable |
-
----
-
-## Options & UI
-
-**Prefix:** `<leader>o`
-
-### UI Toggles
-
-| Key | Description |
-|-----|-------------|
-| `<leader>og` | Toggle indent guides |
-| `<leader>on` | Toggle line numbers (cycles: none → normal → relative) |
-| `<leader>ow` | Toggle line wrap |
-| `<leader>os` | Toggle spell check |
-| `<leader>oc` | Toggle cursor line |
-| `<leader>of` | Toggle format on save |
-| `<leader>oa` | Toggle auto-save |
-| `<leader>od` | Toggle dim inactive |
-| `<leader>oe` | Toggle signcolumn |
-| `<leader>ol` | Toggle whitespace characters |
-| `<leader>oh` | Toggle search highlighting |
-| `<leader>ox` | Toggle diagnostics |
-| `<leader>oi` | Toggle inlay hints |
-| `<leader>ok` | Colorscheme switcher (interactive) |
-
-### Developer Tools
-
-**Prefix:** `<leader>oP`
-
-| Key | Description |
-|-----|-------------|
-| `<leader>oPs` | Profile startup time (`:StartupTime`) |
-
-Commands:
-- `:KeymapConflicts` - Show keymap conflicts
-- `:KeymapList [mode]` - List all keymaps for mode
-- `:ProfileStart` / `:ProfileStop` - Control profiling
-- `:MeowvimProfile` - Show plugin load times
-- `:MeasureRender` - Measure buffer render time
-- `:StartupTrends` - Analyze startup time trends
-
----
-
-## Sessions
-
-**Prefix:** `<leader>q`
-
-| Key | Description |
-|-----|-------------|
-| `<leader>qs` | Restore session |
-| `<leader>qS` | Select session |
-| `<leader>ql` | Restore last session |
-| `<leader>qd` | Stop saving session |
-| `<leader>qq` | Quit all |
-| `<leader>qQ` | Force quit all |
-
-Sessions are managed by `persistence.nvim` and save automatically.
-
----
-
-## Undo & History
-
-**Prefix:** `<leader>u`
-
-| Key | Description |
-|-----|-------------|
-| `<leader>uu` | Undo history |
-| `<leader>ur` | Redo history |
-
----
-
-## Notes & Scratch
-
-**Prefix:** `<leader>N` and `<leader>.`
-
-| Key | Description |
-|-----|-------------|
-| `<leader>.` | Open/toggle scratch buffer (fast alias) |
-| `<leader>Ns` | Open scratch buffer |
-| `<leader>Nf` | Find scratch buffers |
-| `<leader>Nn` | New named scratch buffer |
-
----
-
-## Help & Discovery
-
-**Prefix:** `<leader>h`
-
-| Key | Description |
-|-----|-------------|
-| `<leader>hh` | Search help |
-| `<leader>hc` | Search commands |
-| `<leader>hk` | Search keymaps |
-| `<leader>hm` | Search man pages |
-| `<leader>hn` | Notification history |
-
----
-
-## Yank/Put Operations
-
-### Basic Put/Paste
-
-| Key | Modes | Description |
-|-----|-------|-------------|
-| `p` | n, x | Put after cursor (Yanky) |
-| `P` | n, x | Put before cursor (Yanky) |
-| `gp` | n, x | Put after and leave cursor after |
-| `gP` | n, x | Put before and leave cursor after |
-
-### Cycle Through Yank History
-
-| Key | Description |
-|-----|-------------|
-| `Alt+n` | Next entry in yank ring |
-| `Alt+p` | Previous entry in yank ring |
-
-### Indented Put
-
-| Key | Description |
-|-----|-------------|
-| `]p` | Put after with indent (linewise) |
-| `[p` | Put before with indent (linewise) |
-| `]P` | Put after with indent (linewise, alternative) |
-| `[P` | Put before with indent (linewise, alternative) |
-
-### Shifted Put
-
-| Key | Description |
-|-----|-------------|
-| `>p` | Put after and shift right |
-| `<p` | Put after and shift left |
-| `>P` | Put before and shift right |
-| `<P` | Put before and shift left |
-
-### Filtered Put
-
-| Key | Description |
-|-----|-------------|
-| `=p` | Put after with filter |
-| `=P` | Put before with filter |
-
----
-
-## Yank References
-
-Copy file/line references in OpenCode/Claude-compatible format (e.g. `@lua/plugins/copilot.lua:42`).
-
-**Prefix:** `<leader>y`
-
-| Key | Modes | Description |
-|-----|-------|-------------|
-| `<leader>yf` | n | Copy file reference (e.g. `@lua/plugins/copilot.lua`) |
-| `<leader>yh` | n | Show yank history (Snacks picker) |
-| `<leader>yl` | n, v | Copy line reference (e.g. `@lua/plugins/copilot.lua:42`) |
-
----
-
-## Quit
-
-**Prefix:** `<leader>q`
-
-| Key | Description |
-|-----|-------------|
-| `<leader>qq` | Quit all |
-| `<leader>qQ` | Force quit all |
-
----
+# Keymap reference
+
+The leader is space. Press it and wait: which-key lists the groups, and each
+further key narrows the list until you reach a command. `<leader>hk` searches
+every mapping by name, which is faster when you know what the command is called
+but not where it lives.
+
+This page groups the mappings the same way which-key groups them. Modes are
+`n` for normal, `v` and `x` for visual, `o` for operator-pending, `i` for
+insert, and `t` for terminal.
+
+## Files
+
+Finding and creating files, and the file explorer. `<leader>ff` is the one to
+learn first: it picks between Git files, recent files, and a full listing based
+on where you are.
+
+| Key | Action | Modes |
+| --- | --- | --- |
+| `<leader>fe` | Toggle File Explorer | n |
+| `<leader>fF` | Browse Files | n |
+| `<leader>ff` | Find File | n |
+| `<leader>fg` | Find Git File | n |
+| `<leader>fn` | Create File | n |
+| `<leader>fp` | Switch Project | n |
+| `<leader>fr` | Show Recent Files | n |
+| `<leader>fS` | Save All Files | n |
+| `<leader>fs` | Save File | n |
+
+## Buffers
+
+Listing, deleting, and pinning buffers. hbac closes unedited buffers once you
+pass the threshold in `performance.buffer_threshold`, and pinning protects a
+buffer from that.
+
+| Key | Action | Modes |
+| --- | --- | --- |
+| `<leader>ba` | Delete All Buffers | n |
+| `<leader>bb` | List Buffers | n |
+| `<leader>bD` | Force Delete Buffer | n |
+| `<leader>bd` | Delete Buffer | n |
+| `<leader>bn` | Create Buffer | n |
+| `<leader>bo` | Delete Other Buffers | n |
+| `<leader>bP` | Pin All Buffers | n |
+| `<leader>bp` | Toggle Pin | n |
+| `<leader>br` | Rename Buffer | n |
+| `<leader>bu` | Unpin All Buffers | n |
+
+`<Tab>` and `<S-Tab>` cycle buffers in normal mode, and `]b` and `[b` do the
+same.
+
+## Search
+
+Grep across the project, the open buffers, or the Git index. `<leader>sr` opens
+Spectre for search and replace, and it takes the visual selection when you have
+one.
+
+| Key | Action | Modes |
+| --- | --- | --- |
+| `<leader>s/` | Search Project Text | n |
+| `<leader>sb` | Search Open Buffers | n |
+| `<leader>sg` | Search Git Repository | n |
+| `<leader>sm` | Search Marks | n |
+| `<leader>sr` | Search and Replace | n,x |
+| `<leader>st` | List TODO Comments | n |
+
+## Jump
+
+flash.nvim labels the visible targets and jumps to the one you type.
+`<leader><space>` is the plain jump; the rest scope it differently.
+
+| Key | Action | Modes |
+| --- | --- | --- |
+| `<leader>.` | Scratch | n |
+| `<leader>ja` | All Windows | n,o,x |
+| `<leader>jm` | Remote Target | n,o,x |
+| `<leader>jt` | Treesitter Node | n,o,x |
+
+`f`, `F`, `t`, and `T` also run through flash, so `;` and `,` repeat them and
+pressing the motion key again advances to the next match.
+
+## Windows
+
+Splits, focus, size, and tabs. `<C-h>`, `<C-j>`, `<C-k>`, and `<C-l>` move
+between windows and tmux panes alike.
+
+| Key | Action | Modes |
+| --- | --- | --- |
+| `<leader>w+` | Increase Height | n |
+| `<leader>w-` | Decrease Height | n |
+| `<leader>w<` | Decrease Width | n |
+| `<leader>w=` | Equalize Windows | n |
+| `<leader>w>` | Increase Width | n |
+| `<leader>wc` | Close Window | n |
+| `<leader>wH` | Move Window Far Left | n |
+| `<leader>wh` | Focus Left Window | n |
+| `<leader>wJ` | Move Window to Bottom | n |
+| `<leader>wj` | Focus Lower Window | n |
+| `<leader>wK` | Move Window to Top | n |
+| `<leader>wk` | Focus Upper Window | n |
+| `<leader>wL` | Move Window Far Right | n |
+| `<leader>wl` | Focus Right Window | n |
+| `<leader>wo` | Close Other Windows | n |
+| `<leader>ws` | Split Window Horizontally | n |
+| `<leader>wT` | Close Tab | n |
+| `<leader>wt` | New Tab | n |
+| `<leader>wv` | Split Window Vertically | n |
+
+## Navigate
+
+Code navigation through the language server. The `<leader>n` mappings open
+glance for definitions and references, and the hierarchy mappings open
+meow.yarn trees.
+
+| Key | Action | Modes |
+| --- | --- | --- |
+| `<leader>nC` | Call Hierarchy (Callees) | n |
+| `<leader>nc` | Call Hierarchy (Callers) | n |
+| `<leader>nD` | Declaration | n |
+| `<leader>nd` | Navigate to Definition | n |
+| `<leader>nH` | Type Hierarchy (Super) | n |
+| `<leader>nh` | Type Hierarchy (Subtypes) | n |
+| `<leader>ni` | Implementation | n |
+| `<leader>nr` | Reference | n |
+| `<leader>nS` | Go To Workspace Symbols | n |
+| `<leader>ns` | Go To Document Symbols | n |
+| `<leader>nt` | Type Definition | n |
+| `<leader>nWa` | Add Workspace Folder | n |
+| `<leader>nWL` | List Workspace Folders | n |
+| `<leader>nWR` | Remove Workspace Folder | n |
+
+`]w` and `[w` move between references of the symbol under the cursor.
+
+## Code
+
+Actions on the code in the current buffer: diagnostics, formatting, code lens,
+and Rust crates.
+
+| Key | Action | Modes |
+| --- | --- | --- |
+| `<leader>cc` | Code Action | n,v |
+| `<leader>cCD` | Open Crate Documentation | n |
+| `<leader>cCH` | Open Crate Homepage | n |
+| `<leader>cCr` | Reload Crates | n |
+| `<leader>cCt` | Toggle Crates | n |
+| `<leader>cCU` | Update All Crates | n |
+| `<leader>cCu` | Update Crate | n |
+| `<leader>cD` | Buffer Diagnostics | n |
+| `<leader>cd` | Project Diagnostics | n |
+| `<leader>cf` | Format Buffer | n |
+| `<leader>ch` | Line Diagnostics | n |
+| `<leader>cL` | Refresh CodeLens | n |
+| `<leader>cl` | Run CodeLens | n |
+| `<leader>co` | Organize Imports | n |
+| `<leader>cq` | Quickfix List | n |
+| `<leader>cR` | Rename File | n |
+
+`<leader>cr` renames the symbol with a live preview, and `<leader>cs` takes a
+code screenshot in visual mode when silicon is installed.
+
+## Git
+
+Hunks, diffs, conflicts, and pull requests. `<leader>gg` opens LazyGit, which
+is where most day-to-day work happens; the rest is for the cases where staying
+in the editor is faster.
+
+| Key | Action | Modes |
+| --- | --- | --- |
+| `<leader>gB` | Browse Remote | n |
+| `<leader>gb` | Blame Line | n |
+| `<leader>gC` | Commit | n |
+| `<leader>gDb` | Diff vs Branch | n |
+| `<leader>gDd` | Diff Working Tree | n |
+| `<leader>gDH` | View Git Log | n |
+| `<leader>gDh` | Show File History | n |
+| `<leader>gDs` | Diff Staged | n |
+| `<leader>gf` | LazyGit Current File | n |
+| `<leader>gg` | LazyGit | n |
+| `<leader>gha` | Current PR Actions | n |
+| `<leader>gHd` | Diff Buffer | n |
+| `<leader>ghd` | Pull Request Diff | n |
+| `<leader>ghi` | Issues | n |
+| `<leader>ghp` | Pull Requests | n |
+| `<leader>gHR` | Reset Buffer | n |
+| `<leader>gHr` | Reset Hunk | n |
+| `<leader>gHS` | Stage Buffer | n |
+| `<leader>gHs` | Stage Hunk | n |
+| `<leader>gHv` | Preview Hunk | n |
+| `<leader>gn` | Neogit Status | n |
+| `<leader>gP` | Push | n |
+| `<leader>gp` | Pull | n |
+| `<leader>gs` | Browse Git Status | n |
+| `<leader>gw` | Branches | n |
+| `<leader>gxb` | Choose Both | n |
+| `<leader>gxl` | List Conflicts | n |
+| `<leader>gxn` | Choose None | n |
+| `<leader>gxo` | Choose Ours | n |
+| `<leader>gxt` | Choose Theirs | n |
+| `<leader>gY` | Open Git Link in Browser | n,v |
+| `<leader>gy` | Copy Git Link | n,v |
+
+`]h` and `[h` move between hunks, `]x` and `[x` between conflicts.
+
+The `<leader>gh` mappings shell out to the GitHub CLI, so they need `gh` on
+your PATH and an authenticated account. The pickers search live, and Enter on a
+pull request opens approve, review, merge, checkout, and diff.
+
+## Tests
+
+neotest runs the suite for the current file, the nearest test, or everything.
+The adapters cover Go, Python, Jest, and Vitest, and `<leader>td` runs the
+nearest test under the debugger.
+
+| Key | Action | Modes |
+| --- | --- | --- |
+| `<leader>td` | Debug Nearest Test | n |
+| `<leader>tf` | Run File Tests | n |
+| `<leader>tn` | Run Nearest Test | n |
+| `<leader>to` | Show Test Output | n |
+| `<leader>tS` | Toggle Test Summary | n |
+| `<leader>ts` | Run Test Suite | n |
+| `<leader>tx` | Stop Tests | n |
+
+## Debug
+
+nvim-dap, which loads the first time you press one of these. Adapters are
+configured for Go, Python, C# through netcoredbg, and Godot.
+
+| Key | Action | Modes |
+| --- | --- | --- |
+| `<leader>dB` | Clear All Breakpoints | n |
+| `<leader>dbc` | Set Conditional Breakpoint | n |
+| `<leader>dbe` | Set Exception Breakpoints | n |
+| `<leader>dbl` | Set Log Point | n |
+| `<leader>dbt` | Toggle Breakpoint | n |
+| `<leader>dc` | Continue or Run | n |
+| `<leader>di` | Step Into | n |
+| `<leader>do` | Step Out | n |
+| `<leader>dR` | Open Debug REPL | n |
+| `<leader>dr` | Run to Cursor | n |
+| `<leader>ds` | Step Over | n |
+| `<leader>dt` | Terminate Debugger | n |
+| `<leader>du` | Toggle Debug UI | n |
+| `<leader>dvf` | View Debug Frames | n |
+| `<leader>dvh` | Inspect Hover Value | n,v |
+| `<leader>dvp` | Preview Variable Value | n,v |
+| `<leader>dvs` | View Debug Scopes | n |
+
+## Tasks
+
+overseer runs the build and test tasks it detects for the project: npm scripts,
+`go test`, and `dotnet build`.
+
+| Key | Action | Modes |
+| --- | --- | --- |
+| `<leader>xl` | Restart Last Task | n |
+| `<leader>xo` | Toggle Task List | n |
+| `<leader>xr` | Run Task Template | n |
+
+## Review
+
+meow.review.nvim keeps inline annotations in `.cache/meow-review/` and exports
+them as markdown, which is how the review reaches a chat or a pull request.
+
+| Key | Action | Modes |
+| --- | --- | --- |
+| `<leader>ra` | Add Comment | n,v |
+| `<leader>rC` | Export and Clear | n |
+| `<leader>rc` | Clear All | n |
+| `<leader>rd` | Delete Comment | n,v |
+| `<leader>rE` | Edit Comment | n |
+| `<leader>re` | Export Review | n |
+| `<leader>rF` | Export Current File | n |
+| `<leader>rf` | Export Review to File | n |
+| `<leader>rG` | Go to Comment in File | n |
+| `<leader>rg` | Go to Comment | n |
+| `<leader>rr` | Reload Review | n |
+| `<leader>rt` | Go to Comment by Type | n |
+| `<leader>rV` | Validate Annotations | n |
+| `<leader>rv` | View Comment | n |
+| `<leader>rX` | Resolve All | n |
+| `<leader>rx` | Resolve Comment | n |
+
+`]r` and `[r` move between annotations.
+
+## Yank and history
+
+The yank ring, the undo history, and the file references that paste into a chat
+as `@path:line`.
+
+| Key | Action | Modes |
+| --- | --- | --- |
+| `<leader>uu` | Show Undo History | n |
+| `<leader>yf` | Copy File Reference | n |
+| `<leader>yh` | Show Yank History | n |
+| `<leader>yl` | Copy Line Reference | n,v |
+
+## Notes
+
+Scratch buffers, keyed by working directory, that survive a restart.
+
+| Key | Action | Modes |
+| --- | --- | --- |
+| `<leader>Nf` | Find Scratch | n |
+| `<leader>Nn` | Create Scratch | n |
+| `<leader>Ns` | Open Scratch | n |
+
+## Options
+
+The runtime toggles. `<leader>op` writes the current state of all of them into
+`~/.config/meowvim/config.lua`, so the next start begins where you left off.
+
+| Key | Action | Modes |
+| --- | --- | --- |
+| `<leader>oa` | Toggle Auto Save | n |
+| `<leader>oC` | Toggle Copilot | n |
+| `<leader>oc` | Toggle Cursorline | n |
+| `<leader>od` | Toggle Dim Background | n |
+| `<leader>oe` | Toggle Signcolumn | n |
+| `<leader>of` | Toggle Format on Save | n |
+| `<leader>og` | Toggle Indent Guides | n |
+| `<leader>oh` | Toggle Search Highlight | n |
+| `<leader>oi` | Toggle Inlay Hints | n |
+| `<leader>oK` | Quick Toggle Day/Night | n |
+| `<leader>ok` | Theme Settings | n |
+| `<leader>ol` | Toggle Whitespace | n |
+| `<leader>on` | Toggle Numbers | n |
+| `<leader>op` | Persist Settings | n |
+| `<leader>oPe` | Stop Profiling | n |
+| `<leader>oPl` | Plugin Load Times | n |
+| `<leader>oPp` | Start Profiling | n |
+| `<leader>oPr` | Measure Render Time | n |
+| `<leader>oPs` | Profile Startup Time | n |
+| `<leader>oPt` | Startup Time Trends | n |
+| `<leader>os` | Toggle Spell | n |
+| `<leader>ot` | Toggle Linting | n |
+| `<leader>ow` | Toggle Wrap | n |
+| `<leader>ox` | Toggle Diagnostics | n |
+
+## Quit and sessions
+
+Sessions are saved per directory, and per branch when you set
+`sessions.per_branch`.
+
+| Key | Action | Modes |
+| --- | --- | --- |
+| `<leader>qd` | Stop Session Saving | n |
+| `<leader>ql` | Restore Last Session | n |
+| `<leader>qQ` | Force Quit All | n |
+| `<leader>qq` | Quit All | n |
+| `<leader>qS` | Select Session | n |
+| `<leader>qs` | Restore Session | n |
+
+## Help
+
+| Key | Action | Modes |
+| --- | --- | --- |
+| `<leader>hc` | Search Commands | n |
+| `<leader>hh` | Search Help | n |
+| `<leader>hk` | Search Keymaps | n |
+| `<leader>hm` | Search Man Pages | n |
+| `<leader>hN` | Noice Message History | n |
+| `<leader>hn` | Notification History | n |
+
+## Swap
+
+Swaps the parameter under the cursor with its neighbour, using the treesitter
+parameter textobject.
+
+| Key | Action | Modes |
+| --- | --- | --- |
+| `<leader>S<` | Swap With Previous Parameter | n |
+| `<leader>S>` | Swap With Next Parameter | n |
+
+## Completion
+
+blink.cmp, in insert mode. `<C-l>` accepts the Copilot suggestion when one is
+showing and the selected completion otherwise, which is why it is the only
+accept key you need.
+
+| Key | Action |
+| --- | --- |
+| `<C-j>` / `<C-k>` | Select the next or previous item |
+| `<C-l>` | Accept the Copilot suggestion, else the selected item |
+| `<C-Space>` | Open the menu, then the documentation |
+| `<C-u>` / `<C-d>` | Scroll the documentation |
+| `<Tab>` / `<S-Tab>` | Move between snippet placeholders |
+| `<CR>` | Newline; it never accepts |
+| `<Esc>` | Dismiss the Copilot suggestion, else close the menu and leave insert |
+
+`jj` also leaves insert mode, and so does the Russian `oo`, for a keyboard
+layout you did not mean to be in.
+
+## Text objects
+
+Treesitter textobjects, in visual and operator-pending mode.
+
+| Key | Selects |
+| --- | --- |
+| `af` / `if` | A function, with or without its signature and braces |
+| `ac` / `ic` | A class |
+| `aa` / `ia` | A parameter |
+| `al` / `il` | A loop |
+
+Movement between them uses `]m` and `[m` for functions and `]]` and `[[` for
+classes, with the uppercase forms landing on the end instead of the start.
+
+`gs` surrounds: `gsa` adds, `gsd` deletes, `gsr` replaces, `gsf` and `gsF` find,
+and `gsh` highlights. `gc` and `gC` comment.
+
+## Folds
+
+nvim-ufo provides the folds, taking its ranges from the language server, then
+treesitter, then indentation.
+
+| Key | Action |
+| --- | --- |
+| `zR` / `zM` | Open or close every fold |
+| `zp` | Peek at the folded lines under the cursor |
 
 ## Terminal
 
-| Key | Modes | Description |
-|-----|-------|-------------|
-| `F2` | n, t | Toggle floating terminal |
+| Key | Action | Modes |
+| --- | --- | --- |
+| `<F2>` | Toggle the terminal | n, t |
+| `<C-/>` | Toggle the terminal | n, t |
+| `<C-_>` | Toggle the terminal, for terminals that send this instead | n, t |
 
----
+## Diagnostics and lists
 
-## Plugin-Specific Keymaps
+| Key | Action |
+| --- | --- |
+| `]d` / `[d` | Next or previous diagnostic, with the float |
+| `]q` / `[q` | Next or previous quickfix item |
+| `]l` / `[l` | Next or previous location list item |
+| `]t` / `[t` | Next or previous tab |
 
-### Treesitter Swap
+## Spelling
 
-**Prefix:** `<leader>S`
+| Key | Action |
+| --- | --- |
+| `zg` | Add the word under the cursor to the dictionary |
+| `zw` | Mark the word under the cursor as misspelled |
 
-Treesitter swap operations are available through the group `<leader>S`. Actual bindings are defined by the nvim-treesitter plugin configuration.
-
----
-
-## Tips & Tricks
-
-### Context-Aware Features
-
-- **Smart Find File** (`<leader>ff`): Intelligently chooses between git files,
-  recent files, or all files based on context
-- **Flash Jump** (`<leader><space>` or `<leader>jj`): Quick navigation to any
-  visible text with minimal keystrokes
-- **Code Actions** (`<leader>cc`): Context-aware actions based on cursor
-  position and LSP capabilities
-
-### Visual Mode Enhancements
-
-Many operations work in visual mode:
-
-- `<leader>sr`: Search and replace with selection
-- `<leader>gyy/gyo`: Git link operations on selected lines
-- `<leader>cc`: Code actions on selection
-- All yank/put operations
-
-### Multi-Window Navigation
-
-Flash Jump supports multi-window jumping:
-
-- `<leader>ja`: Jump to any text in any visible window
-- `<leader>jm`: Remote operations across windows
-
-### Diagnostic Navigation
-
-Quick diagnostic navigation without prefix:
-
-- `]d`: Next diagnostic
-- `[d`: Previous diagnostic
-
----
-
-## Configuration
-
-All keymaps are defined in:
-
-- Main keymaps: `lua/config/keymaps.lua`
-- Plugin-specific: `lua/plugins/*.lua`
-
-To customize keymaps, edit these files or add your own in `lua/config/custom.lua`.
-
----
-
-## Legend
-
-- **n**: Normal mode
-- **i**: Insert mode
-- **v**: Visual mode
-- **x**: Visual and select mode
-- **o**: Operator-pending mode
-- **t**: Terminal mode
-
-**Notation:**
-
-- `<leader>` = Space key
-- `Ctrl` = Control key
-- `Shift` = Shift key
-- `Alt` = Alt/Option key
-
----
-
-## Documentation Info
-
-Documentation last updated: 2026-04-01
+Spell checking turns on for gitcommit, markdown, text, rst, and tex buffers, and
+`<leader>os` toggles it anywhere else.

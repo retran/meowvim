@@ -1,35 +1,76 @@
-# Installation & Upgrade
+# Installation and upgrades
 
-This guide covers installation, verification, and maintenance of **meowvim**.
+This guide installs meowvim, tells you which optional tools change what, and
+shows how to upgrade with a way back. It ends with removal, so you can undo
+everything this page did.
 
-## Requirements
+## What you need
 
-| Level           | Details                                                     |
-| --------------- | ----------------------------------------------------------- |
-| **Required**    | Neovim ≥ 0.12, Git, true-color terminal                     |
-| **Recommended** | Node.js ≥ 18, Python ≥ 3.8, Go ≥ 1.19, ripgrep, fd, fzf, Nerd Font |
-| **Optional**    | GitHub Copilot, tmux                                         |
+meowvim requires Neovim 0.12 or later, Git, and a terminal that supports true
+color. It checks for everything else at runtime and does without what it cannot
+find, so a minimal install works and grows as you add tools.
 
-Install a Nerd Font (e.g. JetBrains Mono) and enable it in your terminal for icons.
+Install a Nerd Font and select it in your terminal, otherwise icons render as
+boxes. JetBrains Mono Nerd Font is the one the code screenshots assume.
 
-## Fresh Install
+## Install
+
+Move any existing configuration aside, clone this repository in its place, and
+start Neovim:
 
 ```bash
-# Backup existing config
 mv ~/.config/nvim ~/.config/nvim.backup
-
-# Clone meowvim
 git clone https://github.com/retran/meowvim.git ~/.config/nvim
-
-# Start Neovim
 nvim
 ```
 
-First launch installs `lazy.nvim` and syncs all plugins automatically.
+lazy.nvim bootstraps itself on the first run and installs the plugins, which
+takes a couple of minutes on a cold cache. Treesitter then compiles 27 parsers
+in the background, so the first files you open may highlight a moment late.
 
-## Project Meow Install
+Check the result with `:checkhealth meowvim`. The report has four kinds of
+entry: Neovim's version, the configuration and its projects file, the external
+tools, and the plugin and parser counts. A warning about a missing optional
+tool is informative, and the next section says what each one buys.
 
-If you use the **project meow** ecosystem:
+## Optional tools
+
+Everything here is optional. The left column names what stops working without
+it.
+
+| Without it you lose | Tool | Install |
+| --- | --- | --- |
+| Project-wide grep in the picker | ripgrep | `brew install ripgrep` or `apt install ripgrep` |
+| Fast file listing in the picker | fd | `brew install fd` or `apt install fd-find` |
+| `<leader>gg` and `<leader>gf` | lazygit | `brew install lazygit` or `apt install lazygit` |
+| `<leader>cs` code screenshots | silicon | `cargo install silicon` |
+| GitHub review under `<leader>gh` | GitHub CLI | `brew install gh`, then `gh auth login` |
+| Copilot suggestions | copilot-language-server | see the copilot.lua README |
+
+Language servers, formatters, and linters are separate. meowvim configures 17
+servers and starts each one only when its binary is on your PATH, so install
+the ones your projects need and nothing happens for the rest. The same applies
+to conform's formatters and nvim-lint's linters, which resolve their tools every
+time they run. A project-local toolchain, through mise or anything else that
+changes PATH, therefore works without touching this configuration.
+
+## Platform notes
+
+On macOS, use Ghostty, Kitty, WezTerm, or iTerm2. meowvim enables true color
+only when the terminal advertises it, because forcing it under a multiplexer
+that does not support it causes partial redraws.
+
+On Linux, set `XDG_CONFIG_HOME` if you do not use `~/.config`. meowvim reads it
+for both its own directory and Neovim's.
+
+On Windows, install Neovim inside WSL and run it from Windows Terminal with a
+Nerd Font selected. The native Windows build is not tested.
+
+## Install through meowctl
+
+If you manage your dotfiles with meowctl, add meowvim as a component instead of
+cloning it by hand. meowctl links the repository into `~/.config/nvim` and keeps
+it in step with the rest of your environment:
 
 ```bash
 git clone https://github.com/retran/meow.git ~/.meow
@@ -38,119 +79,78 @@ git submodule update --init
 ./bin/meowctl install personal
 ```
 
-This links meowvim with your dotfiles.
+## Your first configuration
 
-## Platform Notes
+meowvim writes `~/.config/meowvim/config.lua` on the first run and reloads it
+whenever you save. Start by choosing a theme:
 
-- **macOS** — ghostty, kitty, or iTerm2 recommended
-- **Linux** — ensure `$XDG_CONFIG_HOME` is set (defaults to `~/.config`)
-- **Windows (WSL)** — install Neovim on WSL side, use Windows Terminal with Nerd Font
+```lua
+return {
+  core = {
+    -- catppuccin, tokyonight, rose-pine, gruvbox, nord, kanagawa, everforest,
+    -- nightfox, zenbones, solarized-osaka, ayu, dracula, monokai-pro, onedark,
+    -- material, melange, github
+    theme = "catppuccin",
+    variant = "mocha",
+  },
+  ui = { transparency = 0 },
+}
+```
 
-## Optional Tools
+Save it and the theme changes. `:MeowvimConfig` opens the file, and
+`<leader>ok` opens a menu that writes your choice back into it. The
+[configuration reference](02-CONFIGURATION.md) lists every option.
 
-| Tool      | Purpose           | Install                                    |
-| --------- | ----------------- | ------------------------------------------ |
-| `ripgrep` | Fast search       | `brew install ripgrep` · `apt install ripgrep` |
-| `fd`      | File finder       | `brew install fd` · `apt install fd-find`     |
-| `fzf`     | Fuzzy finder      | `brew install fzf` · `apt install fzf`        |
-| `neovide` | GUI client        | `brew install neovide`                        |
-| `lazygit` | Git TUI           | `brew install lazygit` · `apt install lazygit` |
+## Upgrades
 
-## Verify Install
-
-After first launch:
-
-1. Run `:checkhealth meowvim`
-2. Check dashboard appears (start Neovim without arguments)
-3. Run `:Lazy` to verify plugins
-
-## Updates
-
-### Automated (Recommended)
+`bin/update-meowvim.sh` copies the current `lazy-lock.json` into a restore
+point, runs `:Lazy! sync`, and then runs the health check:
 
 ```bash
 ./bin/update-meowvim.sh
 ```
 
-Features:
-- Timestamped backups
-- Git pull + plugin sync
-- Health checks
-- Auto-rollback on failure
-- Keeps last 10 backups
-
-### Manual Rollback
+The restore point is the lock file, not a copy of the plugin directory, because
+lazy.nvim pins every plugin to a commit there. Rolling back puts the file back
+and runs `:Lazy! restore`:
 
 ```bash
-./bin/update-meowvim.sh --rollback backup_TIMESTAMP
+./bin/update-meowvim.sh --rollback              # lists the restore points
+./bin/update-meowvim.sh --rollback backup_20260918_143000
 ```
 
-### Manual Update
+The script keeps the last 10 restore points. To upgrade by hand, run `:Lazy
+sync` and then `:checkhealth meowvim`.
 
-```bash
-cd ~/.config/nvim
-git pull
+## Checking a change
 
-# In Neovim:
-:Lazy sync
-:checkhealth meowvim
-```
-
-### Test Config
+`bin/test-config.sh` runs what CI runs: Neovim starts, the configuration layer
+loads, your user config validates, the plugins load, the LSP and treesitter
+setup answers, the health check passes, no two mappings collide, and every Lua
+file parses.
 
 ```bash
 ./bin/test-config.sh
 ```
 
-Tests:
-- Startup
-- Config loading
-- Health checks
-- Plugin integrity
-- LSP, Treesitter
-- Syntax
+## Moving from another configuration
 
-## Initial Config
+Keep your old configuration at `~/.config/nvim.backup` until you are sure. Add
+your own plugin specs as new files in `lua/plugins/`, one per plugin, and lazy
+picks them up without any further registration. Options belong in
+`lua/config/options.lua` and mappings in `lua/config/keymaps.lua`, where
+which-key shows them alongside everything else.
 
-After install, customize:
+## Removal
 
-1. Edit `~/.config/meowvim/config.lua` (auto-created)
-2. Set theme and options:
-
-```lua
-return {
-  core = {
-    theme = "catppuccin",  -- catppuccin, tokyonight, rose-pine, gruvbox, nord, kanagawa,
-                           -- everforest, nightfox, zenbones, solarized-osaka, ayu, dracula,
-                           -- monokai-pro, onedark, material, melange, github
-    variant = "mocha",
-    enable_copilot = false,
-  },
-
-  ui = {
-    transparency = 0,  -- 0-100
-  },
-}
-```
-
-3. Reload: `:MeowvimConfigReload` or restart
-4. Theme picker: `:ColorschemeSelect` or `<leader>ok`
-
-## Migrate from Another Config
-
-1. Backup old config: `mv ~/.config/nvim ~/.config/nvim.prev`
-2. Follow fresh install
-3. Copy snippets or plugins from backup
-4. Add local plugin overrides in `lua/plugins/`
-
-## Uninstall
+This deletes the configuration, the plugins, and the state, including your
+sessions and the undo history:
 
 ```bash
-rm -rf ~/.config/nvim
-rm -rf ~/.local/share/nvim
-rm -rf ~/.local/state/nvim
+rm -rf ~/.config/nvim ~/.local/share/nvim ~/.local/state/nvim
 ```
 
----
+Your settings in `~/.config/meowvim/` survive that, so delete the directory too
+if you want nothing left.
 
-Next: [Configuration](./02-CONFIGURATION.md)
+Next: [configuration reference](02-CONFIGURATION.md).

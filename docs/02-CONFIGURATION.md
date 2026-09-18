@@ -1,255 +1,229 @@
-# Configuration
+# Configuration reference
 
-meowvim loads configuration from `~/.config/meowvim/config.lua`. Edit this file to change themes, toggle features, and adjust editor behavior. Changes reload automatically within 500ms.
+Every setting meowvim reads lives in one Lua table at
+`~/.config/meowvim/config.lua`. This page lists each option with its type,
+default, and range, then covers the commands that read and write that file and
+the per-project overrides.
 
-## Quick Start
-
-Edit your config:
-```
-:MeowvimConfig
-```
-
-Your config is a plain Lua table:
+meowvim creates the file on the first run and watches it: save it and the new
+values apply, without a restart. Options you leave out keep their defaults, so
+the file only needs to hold what you changed.
 
 ```lua
 return {
-  core = {
-    theme = "catppuccin",
-    variant = "mocha",
-    enable_copilot = false,
-  },
-
-  editor = {
-    tabstop = 2,
-    indent = 2,
-    format_on_save = true,
-  },
-
-  ui = {
-    transparency = 0, -- 0-100
-    cmdheight = 1,
-  },
+  core = { theme = "catppuccin", variant = "mocha" },
+  editor = { tabstop = 2, indent = 2 },
+  ui = { transparency = 0 },
 }
 ```
 
-Changes save automatically and apply within 500ms.
+`:MeowvimConfigValidate` checks the file against the schema and names any
+option whose type or range is wrong. An option the schema does not know is left
+alone, so a typo fails quietly; run the validator after an edit you are unsure
+about.
 
-## Configuration Sections
+## core
 
-### core
+Identity of the configuration: which theme, which leader, whether Copilot runs.
 
-Theme and global settings:
+| Option | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `theme` | string | `"catppuccin"` | One of the 17 names listed under [Themes](#themes) |
+| `variant` | string | `"mocha"` | Variant of the active theme |
+| `leader_key` | string | `" "` | Read before the plugins load |
+| `enable_copilot` | boolean | `false` | Copilot stays disabled until you turn this on |
+| `update_check` | boolean | `true` | Lets lazy.nvim check for plugin updates |
+| `day_night_mode` | string | `"auto"` | `auto` follows the system appearance, `manual` waits for `<leader>oK` |
+| `day_theme` | string | `"catppuccin"` | Applied when the system is in light mode |
+| `day_variant` | string | `"latte"` | |
+| `night_theme` | string | `"catppuccin"` | Applied when the system is in dark mode |
+| `night_variant` | string | `"mocha"` | |
+| `last_preset` | string | `"catppuccin"` | Written by `:DayNightPreset`; you do not set it by hand |
 
-```lua
-core = {
-  theme = "catppuccin",           -- colorscheme name
-  variant = "mocha",               -- theme variant
-  enable_copilot = false,          -- GitHub Copilot toggle
-  leader_key = " ",                -- leader key (space)
-  update_check = true,             -- check for updates
-  day_night_mode = "auto",         -- "manual" | "auto" | "sync"
-  day_theme = "catppuccin",        -- theme for daytime
-  day_variant = "latte",           -- variant for daytime
-  night_theme = "catppuccin",      -- theme for nighttime
-  night_variant = "mocha",         -- variant for nighttime
-}
-```
+In `auto` mode meowvim asks the operating system for its appearance every 30
+seconds and whenever the terminal regains focus. The probe runs outside the
+editor loop, so it never blocks typing.
 
-### editor
+## editor
 
-Text editing behavior:
+Text handling. These apply before the plugins load, which is why changing
+`tabstop` here beats setting it in a plugin.
 
-```lua
-editor = {
-  tabstop = 2,                     -- tab width (1-8)
-  indent = 2,                      -- indent width (1-8)
-  expand_tabs = true,              -- use spaces instead of tabs
-  line_numbers = true,             -- show line numbers
-  relative_numbers = true,         -- show relative line numbers
-  wrap = false,                    -- wrap long lines
-  auto_save = false,               -- save on focus loss
-  format_on_save = true,           -- format when saving
-}
-```
+| Option | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `tabstop` | number | `2` | 1 to 8 |
+| `indent` | number | `2` | 1 to 8, sets `shiftwidth` |
+| `expand_tabs` | boolean | `true` | |
+| `line_numbers` | boolean | `true` | |
+| `relative_numbers` | boolean | `true` | |
+| `wrap` | boolean | `false` | `<leader>ow` toggles it per window |
+| `auto_save` | boolean | `false` | Writes 1500 ms after you stop typing |
+| `format_on_save` | boolean | `true` | `<leader>of` toggles it for the session |
 
-### ui
+`auto_save` and `format_on_save` are also the two switches `<leader>oa` and
+`<leader>of` flip, and `<leader>op` writes the current state of every toggle
+back into this file.
 
-Interface appearance:
+## ui
 
-```lua
-ui = {
-  transparency = 0,                -- window transparency (0-100)
-  winbar = true,                   -- show winbar
-  cmdheight = 1,                   -- command line height (0-3)
-  pumheight = 10,                  -- popup menu height (5-20)
-  icons = true,                    -- show icons
-}
-```
+Appearance of the frame around the text.
 
-### lsp
+| Option | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `transparency` | number | `0` | 0 to 100, passed to the theme and to `winblend` |
+| `winbar` | boolean | `true` | Shows the file name per window, which matters under `laststatus=3` |
+| `cmdheight` | number | `1` | 0 to 3 |
+| `pumheight` | number | `10` | 5 to 20 |
+| `icons` | boolean | `true` | Set to `false` for ASCII icons in mini.icons and lualine |
 
-Language server settings:
+## performance
 
-```lua
-lsp = {
-  auto_install = true,             -- install servers automatically
-  diagnostics = {
-    virtual_text = true,           -- show inline diagnostics
-    signs = true,                  -- show gutter signs
-    underline = true,              -- underline problems
-    update_in_insert = false,      -- update while typing
-  },
-  inlay_hints = true,              -- show type hints inline
-}
-```
+| Option | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `buffer_auto_close` | boolean | `true` | hbac closes unedited buffers past the threshold |
+| `buffer_threshold` | number | `10` | At least 1 |
+| `startup_dashboard` | boolean | `true` | The dashboard is skipped anyway when a session is restored |
 
-### formatting
+## lsp
 
-Code formatting:
+| Option | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `diagnostics.virtual_text` | boolean | `true` | |
+| `diagnostics.signs` | boolean | `true` | |
+| `diagnostics.underline` | boolean | `true` | |
+| `diagnostics.update_in_insert` | boolean | `false` | |
+
+Which servers start is not configured here. meowvim declares 17 and enables
+each one whose binary is on your PATH, so installing `gopls` is all it takes
+for Go.
+
+## formatting
+
+| Option | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `formatters` | table | `{}` | Per-filetype override, replaces the built-in entry |
+| `timeout_ms` | number | `3000` | At least 500 |
+
+`formatters` takes conform formatter names, which are not always the binary
+name: `ruff_format` runs `ruff`, and `clang_format` runs `clang-format`.
 
 ```lua
 formatting = {
-  timeout_ms = 3000,               -- format timeout (min: 500)
-  formatters = {
-    lua = { "stylua" },
-    go = { "gofmt", "goimports" },
-    typescript = { "prettier" },
-    python = { "black", "isort" },
-    -- add more languages
-  },
+  formatters = { python = { "black" }, markdown = { "prettier" } },
 }
 ```
 
-### linting
+Buffers up to 800 lines format during the write. Larger ones format
+asynchronously afterwards, and anything past 5000 lines is left alone.
 
-Code linting:
+## linting
 
-```lua
-linting = {
-  auto_lint = true,                -- lint automatically
-  linters = {
-    lua = { "luacheck" },
-    go = { "golangci-lint" },
-    typescript = { "eslint" },
-    python = { "ruff" },
-    -- add more languages
-  },
-}
-```
+| Option | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `auto_lint` | boolean | `true` | Runs on write and when you leave insert mode |
+| `linters` | table | `{}` | Per-filetype override, replaces the built-in entry |
 
-### git
+`linters` takes nvim-lint linter names. Those differ from the binaries more
+often than conform's do: `golangcilint` runs `golangci-lint` and `clippy` runs
+`cargo`. `:LintInfo` prints the linters for the current filetype and marks
+which ones resolve.
 
-Git integration:
+## git
 
-```lua
-git = {
-  enable_signs = true,             -- show git changes in gutter
-  blame_line = false,              -- show blame inline
-  show_deleted = true,             -- show deleted lines
-  lazygit_theme_sync = true,       -- sync theme with lazygit
-}
-```
+| Option | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `enable_signs` | boolean | `true` | gitsigns in the sign column |
+| `blame_line` | boolean | `false` | Inline blame for the current line |
+| `show_deleted` | boolean | `true` | Shows removed lines in a hunk preview |
+| `lazygit_theme_sync` | boolean | `true` | Generates a lazygit theme from the active colorscheme |
 
-### sessions
+meowvim writes the generated theme to its own file under `stdpath("state")` and
+layers it over your lazygit config through `LG_CONFIG_FILE`. It never edits
+your config, which matters when that file is a symlink into a dotfiles tree.
 
-Session management:
+## sessions
 
-```lua
-sessions = {
-  auto_save = true,                -- save session on exit
-  auto_restore = true,             -- restore session on start
-  per_branch = false,              -- separate session per git branch
-}
-```
+| Option | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `auto_save` | boolean | `true` | Saves when the working directory changes |
+| `auto_restore` | boolean | `true` | Restores on start when a session exists for the directory |
+| `per_branch` | boolean | `false` | Set to `true` for one session per Git branch |
 
-### snacks
+A session is restored only when you start Neovim with no file arguments and one
+exists for the directory. Otherwise the dashboard opens.
 
-Snacks plugin features:
+## snacks
 
-```lua
-snacks = {
-  image_preview = true,            -- preview images
-  scope_highlighting = true,       -- highlight scope
-  custom_styles = true,            -- custom UI styles
-  dashboard = {
-    show_recent = 10,              -- recent files count
-    show_projects = 8,             -- project count
-  },
-}
-```
+| Option | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `image_preview` | boolean | `true` | Inline images, needs a terminal with a graphics protocol |
+| `scope_highlighting` | boolean | `true` | |
+| `custom_styles` | boolean | `true` | |
+| `dashboard.show_projects` | number | `8` | Projects listed on the dashboard |
 
-### toggles
+## toggles
 
-Toggle states (persisted):
+The runtime switches under `<leader>o`. meowvim reads them at startup and
+`<leader>op` writes the current state back, so this section records how you left
+the editor.
 
-```lua
-toggles = {
-  autoformat = true,               -- format on save
-  autosave = false,                -- auto-save files
-  copilot = false,                 -- Copilot suggestions
-  diagnostics = true,              -- LSP diagnostics
-  inlay_hints = false,             -- type hints
-  lint = true,                     -- linting
-  mini_indentscope = true,         -- indent scope highlighting
-  snacks_dim = false,              -- dim inactive windows
-  cursorline = false,              -- highlight current line
-  hlsearch = true,                 -- highlight search
-  list = false,                    -- show whitespace
-  number_mode = "relative",        -- "off" | "number" | "relative"
-  signcolumn = "yes",              -- "yes" | "no" | "auto"
-  spell = false,                   -- spell checking
-  wrap = false,                    -- line wrapping
-}
-```
+| Option | Type | Default | Toggle |
+| --- | --- | --- | --- |
+| `copilot` | boolean | `false` | `<leader>oC` |
+| `cursorline` | boolean | `false` | `<leader>oc` |
+| `diagnostics` | boolean | `true` | `<leader>ox` |
+| `hlsearch` | boolean | `true` | `<leader>oh` |
+| `inlay_hints` | boolean | `false` | `<leader>oi` |
+| `lint` | boolean | `true` | `<leader>ot` |
+| `list` | boolean | `false` | `<leader>ol` |
+| `mini_indentscope` | boolean | `true` | `<leader>og` |
+| `snacks_dim` | boolean | `false` | `<leader>od` |
+| `spell` | boolean | `false` | `<leader>os` |
+| `wrap` | boolean | `false` | `<leader>ow` |
+| `number_mode` | string | `"relative"` | `<leader>on`, one of `off`, `number`, `relative` |
+| `signcolumn` | string | `"yes"` | `<leader>oe`, one of `yes`, `no`, `auto` |
 
-### performance
+Auto-save and format-on-save are toggles too, and they read `editor.auto_save`
+and `editor.format_on_save` rather than duplicating them here.
 
-Performance settings:
+## plugins and custom
 
-```lua
-performance = {
-  buffer_auto_close = true,        -- close old buffers
-  buffer_threshold = 10,           -- max buffers before closing (min: 1)
-  startup_dashboard = true,        -- show dashboard on startup
-  lazy_load_plugins = true,        -- lazy-load plugins
-}
-```
+Two free-form tables the schema accepts without checking. `plugins` is there
+for your own plugin settings and `custom` for anything else you want to read
+back with `config.get()`.
 
-### plugins
+## Themes
 
-Custom plugin settings (any key-value pairs):
+17 colorschemes ship with meowvim, and only the active one is loaded at
+startup. The rest are installed but idle, so switching costs a load and not a
+download.
 
-```lua
-plugins = {
-  -- your custom plugin config
-}
-```
+catppuccin, tokyonight, rose-pine, gruvbox, nord, kanagawa, everforest,
+nightfox, zenbones, solarized-osaka, ayu, dracula, monokai-pro, onedark,
+material, melange, github.
 
-### custom
-
-Your own settings (any key-value pairs):
-
-```lua
-custom = {
-  -- your custom settings
-}
-```
+`<leader>ok` opens a menu for the day theme, the night theme, the mode, and the
+ready-made pairs. `:ColorschemeSelect` picks a single theme and writes it to
+your config. `<leader>oK` switches between day and night by hand and puts the
+mode into `manual`.
 
 ## Commands
 
-| Command | Action |
-|---------|--------|
-| `:MeowvimConfig` | Edit config file |
-| `:MeowvimConfigReload` | Reload config now |
-| `:MeowvimConfigValidate` | Check for errors |
-| `:MeowvimConfigShow` | Show current config |
-| `:MeowvimProjects` | Edit projects file |
-| `:MeowvimProject <name>` | Switch to project |
-| `:MeowvimProjectCurrent` | Show current project |
+| Command | What it does |
+| --- | --- |
+| `:MeowvimConfig` | Opens `~/.config/meowvim/config.lua` |
+| `:MeowvimConfigReload` | Rereads the file now |
+| `:MeowvimConfigValidate` | Checks types and ranges against the schema |
+| `:MeowvimConfigShow` | Prints the merged configuration |
+| `:MeowvimProjects` | Opens `~/.config/meowvim/projects.lua` |
+| `:MeowvimProject <name>` | Changes directory to a project and applies its settings |
+| `:MeowvimProjectCurrent` | Prints the project matching the current directory |
 
-## Projects
+## Per-project overrides
 
-Override settings per project in `~/.config/meowvim/projects.lua`:
+`~/.config/meowvim/projects.lua` gives a directory its own theme and a command
+to run when you open it. meowvim matches the current directory against each
+`path` and applies the first project that contains it.
 
 ```lua
 return {
@@ -257,23 +231,25 @@ return {
     path = "~/work",
     theme = "tokyonight",
     variant = "night",
-    on_open = "Neogit",        -- optional command to run
-    inherit = true,            -- inherit base config (default: true)
+    on_open = "Neogit",
   },
-  
   personal = {
     path = "~/personal",
     theme = "rose-pine",
     variant = "moon",
+    inherit = false,
   },
 }
 ```
 
-meowvim detects your project automatically based on the current directory and applies its settings.
+`path` is required and expands `~` and environment variables. `theme` and
+`variant` override `core`, `on_open` runs after the session loads, and
+`inherit = false` stops the project from overriding the base theme. The project
+paths also feed the `<leader>fp` picker.
 
-## Reading Config in Lua
+## Reading the configuration from Lua
 
-Access config values from plugins:
+Your own plugin specs can read the same table:
 
 ```lua
 local config = require("meowvim.config")
@@ -281,219 +257,25 @@ local theme = config.get("core.theme", "catppuccin")
 local transparency = config.get("ui.transparency", 0)
 ```
 
-Set runtime values (not persisted):
+`config.get(key, default)` returns the default only when the key is absent, so
+an option set to `false` comes back as `false`. `config.set(key, value)` changes
+the value for this session, and `config.persist()` writes the whole table back
+to disk.
 
-```lua
-config.set("ui.transparency", 50)
-```
-
-## Directory Structure
+## Layout of the repository
 
 ```
 ~/.config/nvim/
-├── init.lua              # Entry point
-├── bin/                  # Helper scripts (update, test)
-├── docs/                 # Documentation
-├── lua/
-│   ├── config/           # Core Neovim settings
-│   │   ├── keymaps.lua   # Keybindings
-│   │   └── options.lua   # Vim options
-│   ├── meowvim/          # Configuration system
-│   │   └── config/       # Config loader, schema, cache, watcher
-│   ├── plugins/          # Plugin specs (one per file)
-│   └── utils/            # Helpers (hooks, patches, toggles, session)
-└── spell/                # Dictionaries
+  init.lua              entry point: providers, mise PATH, lazy, hooks
+  bin/                  update and test scripts
+  doc/                  :help meowvim
+  docs/                 these guides
+  lua/
+    config/             options.lua and keymaps.lua
+    meowvim/            config layer, themes, health, profiler
+      config/           loader, defaults, schema, cache, watcher
+    plugins/            one file per plugin
+    utils/              sessions, toggles, upstream workarounds
 ```
 
-Customize in `lua/config/` and `lua/plugins/`.
-
-## Editor Options
-
-`lua/config/options.lua` sets base Neovim options:
-
-- **UI**: Relative numbers, cursorline, folds
-- **Editing**: 2-space indent, smart tabs
-- **Search**: Smart case, incremental
-- **Spell**: Auto-enable for Markdown, git commits
-- **Performance**: Optimized update times
-
-Override in `after/plugin/options.lua` for local tweaks.
-
-## Keymaps
-
-Keybindings live in `lua/config/keymaps.lua`:
-
-```lua
-{ "<leader>ff", require("snacks").picker.files, desc = "Find files" }
-```
-
-- Press `<leader>hk` to search keymaps interactively
-- Add local keymaps in `after/plugin/keymaps.lua`
-- See [Keymaps Reference](./KEYMAPS.md) for the full list
-
-Check for conflicts:
-```
-:KeymapConflicts
-:KeymapList [mode]
-```
-
-## Plugins
-
-Each file in `lua/plugins/` returns a plugin spec:
-
-```lua
--- lua/plugins/catppuccin.lua
-return {
-  "catppuccin/nvim",
-  name = "catppuccin",
-  priority = 1000,
-  config = function()
-    require("catppuccin").setup({ flavour = "mocha" })
-    vim.cmd.colorscheme("catppuccin")
-  end,
-}
-```
-
-Tips:
-- Use `event`, `cmd`, `ft` for lazy loading
-- Follow patterns from existing plugins
-- Add personal plugins in your fork
-
-## Language Tools
-
-Language servers, formatters, linters, and debuggers are managed by **mise** (project-local tool management):
-
-- LSP config: `lua/plugins/nvim-lspconfig.lua`
-- Formatters: `lua/plugins/conform.lua`
-- Linters: `lua/plugins/nvim-lint.lua`
-- Debuggers: `lua/plugins/nvim-dap.lua`
-
-Add language support:
-1. Install tools via mise (e.g. `mise install`) or manually
-2. Update the plugin config file
-3. Add keymaps in `lua/config/keymaps.lua`
-
-## Themes
-
-17 colorschemes with 70+ variants:
-
-1. **Catppuccin**: mocha, latte, frappe, macchiato
-2. **TokyoNight**: storm, night, moon, day
-3. **Rose Pine**: main, moon, dawn
-4. **Gruvbox**: hard, medium, soft
-5. **Nord**: single variant
-6. **Kanagawa**: wave, dragon, lotus
-7. **Everforest**: dark_hard, dark_medium, dark_soft, light_hard, light_medium, light_soft
-8. **Nightfox**: nightfox, dayfox, dawnfox, duskfox, nordfox, terafox, carbonfox
-9. **Zenbones**: zenbones, zenwritten, neobones, tokyobones, seoulbones, forestbones, nordbones, kanagawabones, rosebones
-10. **Solarized Osaka**: storm, night, moon, day
-11. **Ayu**: dark, light, mirage
-12. **Dracula**: single variant
-13. **Monokai Pro**: pro, octagon, machine, ristretto, spectrum, classic
-14. **One Dark**: onedark, onelight, onedark_vivid, onedark_dark
-15. **Material**: darker, lighter, oceanic, palenight, deep ocean
-16. **Melange**: single variant
-17. **GitHub**: github_dark, github_dark_dimmed, github_dark_high_contrast, github_light, github_light_high_contrast, and more
-
-### Transparency
-
-```lua
-ui = {
-  transparency = 25,  -- 0-100
-}
-```
-
-### Theme Switcher
-
-Live preview themes:
-```
-:ColorschemeSelect
-<leader>ok
-```
-
-## Sessions
-
-Session management via `persistence.nvim`:
-
-- Auto-save on directory change
-- Per-branch sessions (optional)
-- Session picker
-
-Sessions save and restore automatically. No manual keymaps required.
-
-## Toggles
-
-Toggle features with `<leader>o*`:
-
-- `<leader>og` - Indent guides
-- `<leader>on` - Number modes
-- `<leader>ow` - Line wrap
-- `<leader>os` - Spell check
-- `<leader>oa` - Auto-save
-- `<leader>oF` - Format on save
-- `<leader>od` - Dim inactive
-- `<leader>ok` - Theme switcher
-
-## Developer Tools
-
-- **Conflicts**: `:KeymapConflicts`, `:KeymapList`
-- **Profiler**: `:ProfileStart`, `:ProfileStop`, `:MeowvimProfile`
-- **Startup**: `:StartupTrends`
-- **Render**: `:MeasureRender`
-
-## Automation
-
-### Updates
-
-Safe updates with backup:
-
-```bash
-./bin/update-meowvim.sh
-```
-
-Features:
-- Timestamped backups
-- Plugin updates
-- Health checks
-- Auto-rollback on failure
-- Manual rollback: `./bin/update-meowvim.sh --rollback backup_TIMESTAMP`
-
-Or update manually:
-```
-:Lazy sync
-:checkhealth meowvim
-```
-
-### Tests
-
-Verify config:
-
-```bash
-./bin/test-config.sh
-```
-
-Checks:
-- Startup
-- Config loading
-- Health checks
-- Plugin integrity
-- LSP, Treesitter
-- Syntax
-
-
-
-## Environment Variables
-
-- `XDG_CONFIG_HOME` - Config directory (default: `~/.config`)
-
-Config values support environment expansion:
-
-```lua
-core = {
-  custom_path = "$HOME/projects",  -- expands to /Users/you/projects
-}
-```
-
----
-
-Next: [Daily Workflows](./03-WORKFLOWS.md)
+Next: [daily workflows](03-WORKFLOWS.md).

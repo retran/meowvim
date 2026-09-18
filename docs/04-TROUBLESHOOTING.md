@@ -1,233 +1,169 @@
 # Troubleshooting
 
-Common fixes for **meowvim** issues.
+This page starts from what you see. Each entry names the cause and the fix, and
+says when the symptom is expected and can be ignored.
 
-## Health Check
+Run `:checkhealth meowvim` first. It reports Neovim's version, whether the
+configuration and projects files load and validate, which external tools it
+found, the mise tools declared for the current project, the plugin and parser
+counts, and which language servers are on your PATH. Most of what follows is a
+line from that report explained.
 
-Run this first:
+A warning about a missing tool is informative: meowvim checks for every
+external tool before using it, so a missing one costs you that feature and
+nothing else.
 
-```vim
-:checkhealth meowvim
-```
+## Installing and starting
 
-Checks:
-- Neovim version
-- Config system
-- Dependencies (ripgrep, fd, lazygit)
-- LSP servers
-- Plugins
-- Treesitter parsers
+**`E492: Not an editor command: Lazy`.** lazy.nvim did not bootstrap. Check
+that `~/.config/nvim/init.lua` exists and that `~/.local/share/nvim/lazy/lazy.nvim`
+was cloned; a proxy or a missing certificate usually stops the clone. Remove
+`~/.local/share/nvim/lazy` and start Neovim again to retry.
 
-## Installation & Startup
+**It sits on "Installing plugins" for minutes.** The first run clones about 80
+repositories and then compiles 27 treesitter parsers. Watch `:Lazy` for the
+progress. If a single plugin hangs, `q` closes the window and `:Lazy restore`
+puts you back on the pinned commits.
 
-### `E492: Not an editor command: Lazy`
-**Cause**: `lazy.nvim` install failed
+**Icons render as boxes.** Install a Nerd Font and select it in the terminal,
+not in Neovim. To go without, set `ui.icons = false` in
+`~/.config/meowvim/config.lua`.
 
-**Fix**:
-```bash
-rm -rf ~/.local/share/nvim/lazy
-nvim
-```
+**Colors look wrong or the screen tears under tmux or zellij.** meowvim enables
+true color only when the terminal advertises it through `COLORTERM`, `TERM`, or
+`TERM_PROGRAM`, because forcing it where it is unsupported causes partial
+redraws. Export `COLORTERM=truecolor` in the shell your multiplexer starts.
 
-### Stuck on "Installing plugins..."
-- Check internet connection
-- Verify Git is in `$PATH`
-- Run `:Lazy sync` manually
-- Check `:messages`
+## Configuration
 
-### Icons appear as boxes
-- Install a Nerd Font (e.g. JetBrainsMono Nerd Font)
-- Set it in your terminal (ghostty, kitty, iTerm2, etc.)
+**Your settings have no effect.** Run `:MeowvimConfigValidate`. It reports any
+option whose type or range is wrong, and it stays silent about an option the
+schema does not know, so check the spelling against the
+[reference](02-CONFIGURATION.md). `:MeowvimConfigShow` prints the merged table,
+which tells you what meowvim actually read.
 
-## Config Issues
+**An edit needs a restart.** It should not: a file watcher reloads
+`~/.config/meowvim/config.lua` 500 ms after you save, and it defers the reload
+until you leave insert mode or the command line. `:MeowvimConfigReload` forces
+it. Options that only apply before the plugins load, such as `leader_key`, do
+need a restart.
 
-### Config not loading
-- Run `:MeowvimConfigValidate`
-- Check `~/.config/meowvim/config.lua` exists
-- View config: `:MeowvimConfigShow`
-- Reload: `:MeowvimConfigReload`
+**The theme does not change.** Check `core.theme` against the 17 names in the
+reference and `core.variant` against that theme's variants. In `auto` mode the
+day and night themes win over `core.theme`, so set those two instead, or switch
+`core.day_night_mode` to `manual`.
 
-### Theme not applying
-- Use `:ColorschemeSelect` or `<leader>ok`
-- Check config:
-  ```lua
-  core = { theme = "catppuccin", variant = "mocha" }
-  ```
-- Available: catppuccin, tokyonight, rose-pine, gruvbox, nord, kanagawa, everforest, nightfox, zenbones, solarized-osaka, ayu, dracula, monokai-pro, onedark, material, melange, github
+## Language servers
 
-### Changes not taking effect
-- Auto-reload has 500ms debounce
-- Force reload: `:MeowvimConfigReload`
-- Check errors: `:MeowvimConfigValidate`
+**No server attaches.** meowvim starts a server only when its binary is on your
+PATH. `:checkhealth meowvim` lists the ones it found, and `:LspInfo` was removed
+in nvim-lspconfig 2, so use `:checkhealth vim.lsp` for the live clients. Install
+the server and reopen the file.
 
-## LSP Issues
+**A project-local toolchain is not picked up.** meowvim resolves servers,
+formatters, and linters when they run, not at startup, so a directory change
+into a project with its own tools works. What does not work is a tool that only
+exists in a shell meowvim never sees; start Neovim from that shell, or put the
+tool on PATH globally.
 
-### `LSP: No client with id ...`
-- Install the server via mise or manually
-- Check `lua/plugins/nvim-lspconfig.lua`
-- Restart Neovim
+**Formatting does nothing.** `:ConformInfo` lists the formatters for the
+filetype and marks which resolve. A filetype with no formatter falls back to the
+language server, and with neither the buffer is left alone. Check that
+format-on-save is on with `<leader>of`, and remember that files over 5000 lines
+are skipped on purpose.
 
-### Formatting does nothing
-- Check formatter is installed (via mise or manually)
-- Run `:ConformInfo`
-- Configure priorities in `lua/plugins/conform.lua`
+**Diagnostics are missing.** Check the toggle with `<leader>ox`, then check that
+a server attached. If the server runs but reports nothing, the project probably
+has no configuration it recognizes, such as a `tsconfig.json` or a `go.mod`.
 
-### Diagnostics missing
-- Run `:LspInfo` to check server
-- Check `lua/plugins/nvim-lspconfig.lua`
+**Linting does nothing.** `:LintInfo` lists the linters for the filetype and
+marks the ones that resolve. Names differ from binaries here more than
+elsewhere: `golangcilint` runs `golangci-lint` and `clippy` runs `cargo`.
 
-## Treesitter & Syntax
+## Syntax and folds
 
-### `:TSInstall` fails
-- Requires C compiler (`clang` or `gcc`)
-- macOS: Install Xcode Command Line Tools
-- Linux: `apt install build-essential`
-- Run `:TSUpdate` after install
+**A file has no syntax highlighting.** meowvim starts treesitter for any
+filetype with an installed parser. `:checkhealth meowvim` counts the installed
+parsers, and `:TSInstall <language>` adds one. A very large file has its
+filetype set to `bigfile` on purpose, which turns highlighting off.
 
-### Folding issues
-- Uses Treesitter expressions
-- Toggle: `zi`
-- Reset: `zr`
-- Check `vim.opt.foldexpr` in `lua/config/options.lua`
+**`:TSInstall` fails.** The parser is compiled locally, so it needs a C
+compiler and `tree-sitter`. Install `gcc` or `clang`, and `tree-sitter` through
+mise or your package manager.
 
-## Performance
-
-| Issue | Fix |
-| ----- | --- |
-| Slow startup | `:MeowvimProfile`, `:StartupTrends` |
-| Lag while typing | Disable virtual text: `:lua vim.diagnostic.config({ virtual_text = false })` |
-| High memory | Use hbac: `<leader>bp` to pin buffers; close Diffview/Neotest |
-
-### Performance Tools
-
-- `:MeowvimProfile` - Plugin load times
-- `:StartupTrends` - Startup analysis
-- `:MeasureRender` - Render benchmark
-- `:ProfileStart` / `:ProfileStop` - Profile operations
-
-Increase `vim.opt.updatetime` (e.g. 500) for lower-powered machines.
-
-## Keymap Conflicts
-
-- `:KeymapConflicts` - Show conflicts
-- `:KeymapList [mode]` - List keymaps
-- `<leader>hk` - Interactive search
-
-Add overrides in `after/plugin/keymaps.lua`. Adjust which-key in `lua/plugins/which-key.lua`.
+**Folds are wrong or everything is folded on open.** nvim-ufo takes its ranges
+from the language server, then treesitter, then indentation, so a file whose
+server has not attached yet folds differently for a moment. `zR` opens
+everything.
 
 ## Git
 
-### LazyGit not launching
-- Install: `brew install lazygit` or `apt install lazygit`
-- Theme syncs automatically
-- Check `~/.config/lazygit/config.yml` for manual override
-- Test: `:LazyGit` or `<leader>gg`
+**`<leader>gg` does nothing.** lazygit is not installed. `brew install lazygit`
+or `apt install lazygit`.
 
-### Neogit missing `diff-so-fancy`
-- Install: `brew install diff-so-fancy`
-- Or disable in `lua/plugins/neogit.lua`
+**lazygit looks unthemed.** meowvim generates a theme from the active
+colorscheme into its own file under `~/.local/state/nvim/meowvim/` and layers it
+over yours through `LG_CONFIG_FILE`. It never edits your lazygit config. Set
+`git.lazygit_theme_sync = false` to keep your own colors.
 
-### Diffview not opening
-- Run `:Lazy sync`
-- Check Git ≥ 2.30 installed
+**The diff pickers are empty.** They need Git 2.30 or later and a file inside a
+work tree.
 
-## Copilot & AI
+**`<leader>gh` reports that gh is missing.** Install the GitHub CLI and run `gh
+auth login` once.
 
-### `:Copilot auth` fails
-- Check Node.js ≥ 18: `node --version`
-- Sign out: `:Copilot signout`
-- Retry auth
-- Check `:Copilot panel` for logs
+## Copilot
 
-### No suggestions
-- Check status: `:Copilot status`
-- Enable: `:Copilot enable`
-- Check supported filetype (disabled in git commits, help)
-- Verify `auto_trigger = true` in `lua/plugins/copilot.lua:19`
+**Suggestions never appear.** Copilot is off unless `core.enable_copilot` is
+`true`, and `<leader>oC` toggles it for the session. It also needs
+`copilot-language-server` on your PATH and `:Copilot auth` to have run.
 
-### Suggestions not accepting
-- Accept inline suggestion: `<C-l>`
-- Dismiss inline suggestion: `<Esc>` (stays in insert mode)
-- NES (Next Edit Suggestions): `<M-l>` accept+goto, `<M-j>` accept, `<M-h>` dismiss
-- See [Keymaps](KEYMAPS.md#completion--copilot)
+**`:Copilot auth` fails.** Check that Node.js runs at all: a version manager
+shim with no version selected exists on PATH and fails when executed, which
+looks like a missing binary from inside Neovim. `:Copilot signout` and retry.
 
-### Completion popup missing
-- Trigger: `<C-Space>`
-- Check LSP: `:LspInfo`
-- Check `lua/plugins/nvim-cmp.lua` (configures blink.cmp)
+## Performance
 
-### Completion keymaps not working
-- Navigation: `<C-j>` (down), `<C-k>` (up), `<C-l>` (smart accept: Copilot first, then cmp)
-- Tab indents, Enter creates newline (by design)
-- See [Keymaps](KEYMAPS.md#completion--copilot)
+**Startup feels slow.** `<leader>oPl` lists the plugins by load time and
+`<leader>oPt` compares the last 100 starts, which is the one that shows a
+regression. meowvim loads 17 plugins at startup and the rest on demand.
 
-## Plugin Issues
+**Typing lags in a large file.** Turn off inline diagnostics with
+`lsp.diagnostics.virtual_text = false`, and raise `updatetime` if the machine
+is slow. Very large files already have most features disabled through
+`snacks.bigfile`.
 
-- Clean: `:Lazy clean`
-- Clear cache:
-  ```bash
-  rm -rf ~/.local/share/nvim/{lazy,treesitter,site,packer*}
-  ```
-- Restore snapshot: `:Lazy restore`
+**Memory grows over a long session.** hbac closes unedited buffers past
+`performance.buffer_threshold`, which defaults to 10. `<leader>bp` pins a buffer
+so it survives that, and closing the neotest and debug panels releases the rest.
 
-## Update & Rollback
+## Mappings
 
-### Safe updates
+`:KeymapConflicts` lists mappings that resolve to more than one action, and
+`:KeymapList <mode>` prints everything for a mode. Note that a buffer-local
+mapping shadowing a global one shows up here, which is usually intended rather
+than a conflict.
 
-```bash
-./bin/update-meowvim.sh
-```
+To change a mapping, edit `lua/config/keymaps.lua`, where every mapping is
+declared in one table with its description and icon.
 
-Features:
-- Timestamped backup
-- Plugin updates
-- Health checks
-- Auto-rollback
+## Reading the logs
 
-### Manual rollback
+`:messages` shows what Neovim printed, `<leader>hN` opens the noice history with
+the messages that scrolled past, and `:Lazy log` shows what the plugin manager
+did. The file log is at `~/.local/state/nvim/log`.
+
+## Starting over
+
+This clears the plugins and the state but keeps your configuration:
 
 ```bash
-./bin/update-meowvim.sh --rollback backup_TIMESTAMP
-```
-
-### Test config
-
-```bash
-./bin/test-config.sh
-```
-
-Tests:
-- Startup
-- Config loading
-- Health checks
-- Plugin integrity
-- LSP, Treesitter
-- Syntax
-
-## Logging
-
-- `:messages` - Recent output
-- `:checkhealth meowvim` - Health check
-- `:checkhealth` - All subsystems
-- `:Lazy log` - Plugin logs
-- Log file: `~/.local/state/nvim/log`
-
-## Reset
-
-When all else fails:
-
-```bash
-rm -rf ~/.local/share/nvim
-rm -rf ~/.local/state/nvim
-rm -rf ~/.cache/nvim  # optional
+rm -rf ~/.local/share/nvim ~/.local/state/nvim
 nvim
 ```
 
-This keeps your config but clears plugins and cache.
+Your sessions and undo history go with it. `~/.config/meowvim/` is untouched, so
+your settings survive.
 
----
-
-Still stuck? Open an issue with:
-- Logs
-- `nvim --version`
-- Description of the problem
+Before opening an issue, run `bin/test-config.sh` and include its output, the
+output of `nvim --version`, and what you did to reach the problem.
