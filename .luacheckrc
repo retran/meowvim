@@ -9,6 +9,9 @@ globals = {
 
 read_globals = {
   "jit",
+  -- Globals published by plugins
+  "MiniIcons",
+  "Snacks",
 }
 
 ignore = {
