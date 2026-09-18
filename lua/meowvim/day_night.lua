@@ -3,140 +3,142 @@
 
 -- @file: lua/meowvim/day_night.lua
 -- @brief: Day/night mode system with system theme sync
+--
+-- Appearance detection shells out to the OS, which is far too slow to do on the
+-- main loop: a single `osascript` call costs ~110ms. Every probe therefore runs
+-- through `vim.system()` asynchronously and answers from `cached_appearance`,
+-- refreshed on a slow timer and whenever the terminal regains focus.
 
 local M = {}
 
 local timer = nil
 local is_watching = false
+local cached_appearance = nil
 
--- Detect system appearance cross-platform
-local function get_system_appearance()
-  -- macOS
+local POLL_INTERVAL_MS = 30000
+
+-- Ordered list of probes for the current platform. The first one that yields a
+-- mode wins; the rest are only tried when it fails or is not installed.
+local function appearance_probes()
   if vim.fn.has("mac") == 1 then
-    -- osascript: works reliably on macOS 14+ and Sequoia
-    local handle =
-      io.popen("osascript -e 'tell app \"System Events\" to tell appearance preferences to get dark mode' 2>/dev/null")
-    if handle then
-      local result = handle:read("*a")
-      handle:close()
-      if result and result:match("true") then
-        return "night"
-      elseif result and result:match("false") then
-        return "day"
-      end
-    end
-
-    -- Fallback: defaults read (older macOS)
-    handle = io.popen("defaults read -g AppleInterfaceStyle 2>/dev/null")
-    if handle then
-      local result = handle:read("*a")
-      handle:close()
-      if result and result:match("Dark") then
-        return "night"
-      else
-        return "day"
-      end
-    end
-
-    return nil
-  end
-
-  -- Windows
-  if vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1 then
-    -- Check Windows Registry for theme
-    local handle = io.popen(
-      'reg query "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize" /v AppsUseLightTheme 2>nul'
-    )
-    if not handle then
-      return nil
-    end
-
-    local result = handle:read("*a")
-    handle:close()
-
-    -- AppsUseLightTheme = 0x0 means dark mode
-    -- AppsUseLightTheme = 0x1 means light mode
-    if result:match("0x0") then
-      return "night"
-    elseif result:match("0x1") then
-      return "day"
-    end
-
-    return nil
-  end
-
-  -- Linux - try multiple desktop environments
-  if vim.fn.has("unix") == 1 then
-    -- Try GNOME (gsettings)
-    local handle = io.popen("gsettings get org.gnome.desktop.interface gtk-theme 2>/dev/null")
-    if handle then
-      local result = handle:read("*a")
-      handle:close()
-
-      if result then
-        -- Check if theme name contains "dark" (case-insensitive)
-        if result:lower():match("dark") then
-          return "night"
-        elseif result:lower():match("light") then
-          return "day"
-        end
-      end
-    end
-
-    -- Try KDE Plasma (kreadconfig5)
-    handle = io.popen("kreadconfig5 --group General --key ColorScheme 2>/dev/null")
-    if handle then
-      local result = handle:read("*a")
-      handle:close()
-
-      if result then
-        if result:lower():match("dark") then
-          return "night"
-        elseif result:lower():match("light") then
-          return "day"
-        end
-      end
-    end
-
-    -- Try checking GTK theme directly from config file
-    local gtk_config = vim.fn.expand("~/.config/gtk-3.0/settings.ini")
-    if vim.fn.filereadable(gtk_config) == 1 then
-      local file = io.open(gtk_config, "r")
-      if file then
-        local content = file:read("*a")
-        file:close()
-
-        local theme = content:match("gtk%-theme%-name%s*=%s*(.-)%s*\n")
-        if theme then
-          if theme:lower():match("dark") then
+    return {
+      {
+        cmd = { "osascript", "-e", 'tell app "System Events" to tell appearance preferences to get dark mode' },
+        parse = function(out)
+          if out:match("true") then
             return "night"
-          elseif theme:lower():match("light") then
+          elseif out:match("false") then
             return "day"
           end
-        end
-      end
-    end
+        end,
+      },
+      {
+        cmd = { "defaults", "read", "-g", "AppleInterfaceStyle" },
+        parse = function(out)
+          return out:match("Dark") and "night" or nil
+        end,
+      },
+    }
+  end
 
-    -- Try freedesktop color-scheme standard (newer method)
-    handle = io.popen(
-      "dbus-send --session --print-reply=literal --dest=org.freedesktop.portal.Desktop /org/freedesktop/portal/desktop org.freedesktop.portal.Settings.Read string:'org.freedesktop.appearance' string:'color-scheme' 2>/dev/null"
-    )
-    if handle then
-      local result = handle:read("*a")
-      handle:close()
+  if vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1 then
+    return {
+      {
+        cmd = {
+          "reg",
+          "query",
+          [[HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize]],
+          "/v",
+          "AppsUseLightTheme",
+        },
+        -- AppsUseLightTheme: 0x0 = dark, 0x1 = light
+        parse = function(out)
+          if out:match("0x0") then
+            return "night"
+          elseif out:match("0x1") then
+            return "day"
+          end
+        end,
+      },
+    }
+  end
 
-      -- 0 = no preference, 1 = prefer dark, 2 = prefer light
-      if result:match("uint32 1") then
+  if vim.fn.has("unix") == 1 then
+    local function by_name(out)
+      out = out:lower()
+      if out:match("dark") then
         return "night"
-      elseif result:match("uint32 2") then
+      elseif out:match("light") then
         return "day"
       end
     end
 
-    return nil
+    return {
+      { cmd = { "gsettings", "get", "org.gnome.desktop.interface", "color-scheme" }, parse = by_name },
+      { cmd = { "gsettings", "get", "org.gnome.desktop.interface", "gtk-theme" }, parse = by_name },
+      { cmd = { "kreadconfig5", "--group", "General", "--key", "ColorScheme" }, parse = by_name },
+      {
+        cmd = {
+          "dbus-send",
+          "--session",
+          "--print-reply=literal",
+          "--dest=org.freedesktop.portal.Desktop",
+          "/org/freedesktop/portal/desktop",
+          "org.freedesktop.portal.Settings.Read",
+          "string:org.freedesktop.appearance",
+          "string:color-scheme",
+        },
+        -- 0 = no preference, 1 = prefer dark, 2 = prefer light
+        parse = function(out)
+          if out:match("uint32 1") then
+            return "night"
+          elseif out:match("uint32 2") then
+            return "day"
+          end
+        end,
+      },
+    }
   end
 
-  return nil
+  return {}
+end
+
+-- Detect the system appearance without blocking; `callback` receives
+-- "day" | "night" | nil.
+local function detect_appearance(callback)
+  local probes = appearance_probes()
+
+  local function try(index)
+    local probe = probes[index]
+    if not probe then
+      callback(nil)
+      return
+    end
+
+    if vim.fn.executable(probe.cmd[1]) == 0 then
+      try(index + 1)
+      return
+    end
+
+    vim.system(probe.cmd, { text = true }, function(result)
+      local mode = result.code == 0 and result.stdout and probe.parse(result.stdout) or nil
+      vim.schedule(function()
+        if mode then
+          cached_appearance = mode
+          callback(mode)
+        else
+          try(index + 1)
+        end
+      end)
+    end)
+  end
+
+  try(1)
+end
+
+local function configured_mode()
+  local config_ok, config = pcall(require, "meowvim.config")
+  return config_ok and config.get("core.day_night_mode", "manual") or "manual"
 end
 
 -- Get theme pair for current mode
@@ -162,40 +164,51 @@ local function apply_mode_theme(mode)
     return false
   end
 
-  -- Use colorscheme switcher to apply theme
   local switcher_ok, switcher = pcall(require, "meowvim.colorscheme_switcher")
   if switcher_ok and switcher.apply_theme then
-    switcher.apply_theme(theme, variant)
-    return true
+    return switcher.apply_theme(theme, variant) ~= false
   end
 
   return false
 end
 
--- Get current effective mode (resolves "auto" to day/night)
+-- Current effective mode. In "auto" this answers from the last probe, so it
+-- never blocks; in "manual" there is no implicit mode.
 function M.get_effective_mode()
-  local config_ok, config = pcall(require, "meowvim.config")
-  if not config_ok then
-    return "night"
+  if configured_mode() == "auto" then
+    return cached_appearance or "night"
+  end
+  return nil
+end
+
+-- Probe the system and apply the matching theme when it changed.
+function M.check_appearance(force)
+  if configured_mode() ~= "auto" then
+    M.stop_watching()
+    return
   end
 
-  local mode = config.get("core.day_night_mode", "manual")
-
-  if mode == "auto" then
-    return get_system_appearance() or "night"
-  else
-    -- manual mode - return current state
-    return nil
-  end
+  local previous = cached_appearance
+  detect_appearance(function(appearance)
+    if not appearance then
+      return
+    end
+    if force or appearance ~= previous then
+      apply_mode_theme(appearance)
+      if previous and appearance ~= previous then
+        vim.notify(string.format("System theme changed to %s mode", appearance), vim.log.levels.INFO)
+      end
+    end
+  end)
 end
 
 -- Apply theme based on current day_night_mode setting
 function M.apply_current_mode()
-  local mode = M.get_effective_mode()
-  if mode then
-    return apply_mode_theme(mode)
+  if configured_mode() ~= "auto" then
+    return false
   end
-  return false
+  M.check_appearance(true)
+  return true
 end
 
 -- Set day/night mode (manual, auto)
@@ -211,15 +224,11 @@ function M.set_mode(mode)
     config.set("core.day_night_mode", mode)
   end
 
-  -- Stop watching if we're not in auto mode
-  if mode ~= "auto" then
-    M.stop_watching()
-  end
-
-  -- Apply theme immediately if in auto mode
   if mode == "auto" then
     M.apply_current_mode()
     M.start_watching()
+  else
+    M.stop_watching()
   end
 
   vim.notify(string.format("Day/night mode set to: %s", mode), vim.log.levels.INFO)
@@ -236,47 +245,30 @@ function M.toggle()
   end
 
   -- Switch to manual mode immediately
-  local current_mode = config.get("core.day_night_mode", "manual")
-  if current_mode ~= "manual" then
+  if config.get("core.day_night_mode", "manual") ~= "manual" then
     config.set("core.day_night_mode", "manual")
     M.stop_watching()
   end
 
-  -- Get current theme to determine if we're on day or night
   local current_theme = config.get("core.theme", "catppuccin")
   local current_variant = config.get("core.variant", "mocha")
   local day_theme = config.get("core.day_theme", "catppuccin")
   local day_variant = config.get("core.day_variant", "latte")
-  local night_theme = config.get("core.night_theme", "catppuccin")
-  local night_variant = config.get("core.night_variant", "mocha")
 
-  -- Check if currently on day or night theme
   local is_day = (current_theme == day_theme and current_variant == day_variant)
-  local is_night = (current_theme == night_theme and current_variant == night_variant)
+  local target = is_day and "night" or "day"
 
-  if is_day then
-    -- Switch to night
-    apply_mode_theme("night")
-    vim.notify("Switched to night theme (manual mode)", vim.log.levels.INFO)
-  elseif is_night then
-    -- Switch to day
-    apply_mode_theme("day")
-    vim.notify("Switched to day theme (manual mode)", vim.log.levels.INFO)
-  else
-    -- Not on either theme, default to day
-    apply_mode_theme("day")
-    vim.notify("Switched to day theme (manual mode)", vim.log.levels.INFO)
-  end
+  apply_mode_theme(target)
+  vim.notify(string.format("Switched to %s theme (manual mode)", target), vim.log.levels.INFO)
 end
 
--- Set theme pair for day/night modes
-local function set_theme_for_time(time_of_day, theme, variant)
+-- Set theme pair for day/night modes. `persist` defaults to true; callers that
+-- change both slots at once pass false and persist once at the end.
+local function set_theme_for_time(time_of_day, theme, variant, persist)
   local config_ok, config = pcall(require, "meowvim.config")
   if not config_ok then
     return
   end
-
-  local mode = config.get("core.day_night_mode", "manual")
 
   local current_theme = config.get("core.theme", "catppuccin")
   local current_variant = config.get("core.variant", "mocha")
@@ -287,40 +279,30 @@ local function set_theme_for_time(time_of_day, theme, variant)
   if variant then
     config.set("core." .. time_of_day .. "_variant", variant)
   end
-  config.persist()
+  if persist ~= false then
+    config.persist()
+  end
 
-  if mode == "auto" then
-    local current_mode = M.get_effective_mode()
-    if current_mode == time_of_day then
+  if configured_mode() == "auto" then
+    if M.get_effective_mode() == time_of_day then
       apply_mode_theme(time_of_day)
     end
-  else
-    if current_theme == old_theme and current_variant == old_variant then
-      apply_mode_theme(time_of_day)
-    end
+  elseif current_theme == old_theme and current_variant == old_variant then
+    apply_mode_theme(time_of_day)
   end
 end
 
-function M.set_day_theme(theme, variant)
-  set_theme_for_time("day", theme, variant)
+function M.set_day_theme(theme, variant, persist)
+  set_theme_for_time("day", theme, variant, persist)
 end
 
-function M.set_night_theme(theme, variant)
-  set_theme_for_time("night", theme, variant)
+function M.set_night_theme(theme, variant, persist)
+  set_theme_for_time("night", theme, variant, persist)
 end
 
--- Watch system appearance changes (cross-platform)
+-- Watch system appearance changes
 function M.start_watching()
-  local platform = "unknown"
-  if vim.fn.has("mac") == 1 then
-    platform = "macOS"
-  elseif vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1 then
-    platform = "Windows"
-  elseif vim.fn.has("unix") == 1 then
-    platform = "Linux"
-  end
-
-  if platform == "unknown" then
+  if #appearance_probes() == 0 then
     vim.notify("System theme sync not supported on this platform", vim.log.levels.WARN)
     return false
   end
@@ -329,40 +311,29 @@ function M.start_watching()
     return true
   end
 
-  local last_appearance = get_system_appearance()
-
-  -- Poll every 2 seconds for system appearance changes
-  timer = vim.loop.new_timer()
+  timer = vim.uv.new_timer()
   if not timer then
     return false
   end
 
   timer:start(
-    2000,
-    2000,
+    POLL_INTERVAL_MS,
+    POLL_INTERVAL_MS,
     vim.schedule_wrap(function()
-      local current_appearance = get_system_appearance()
-
-      if current_appearance and current_appearance ~= last_appearance then
-        last_appearance = current_appearance
-
-        -- Check if still in auto mode
-        local config_ok, config = pcall(require, "meowvim.config")
-        local mode = config_ok and config.get("core.day_night_mode", "manual") or "manual"
-
-        if mode == "auto" then
-          apply_mode_theme(current_appearance)
-          vim.notify(string.format("System theme changed to %s mode", current_appearance), vim.log.levels.INFO)
-        else
-          -- Mode changed, stop watching
-          M.stop_watching()
-        end
-      end
+      M.check_appearance()
     end)
   )
 
+  -- Returning to the terminal is the moment a stale theme is most visible, so
+  -- probe then too instead of relying on the slow timer alone.
+  vim.api.nvim_create_autocmd({ "FocusGained", "VimResume" }, {
+    group = vim.api.nvim_create_augroup("meowvim-day-night-focus", { clear = true }),
+    callback = function()
+      M.check_appearance()
+    end,
+  })
+
   is_watching = true
-  vim.notify(string.format("Started watching system theme (%s)", platform), vim.log.levels.INFO)
   return true
 end
 
@@ -374,13 +345,13 @@ function M.stop_watching()
     end
     timer = nil
   end
+  pcall(vim.api.nvim_del_augroup_by_name, "meowvim-day-night-focus")
   is_watching = false
 end
 
 -- Interactive mode selector
 function M.select_mode()
-  local config_ok, config = pcall(require, "meowvim.config")
-  local current_mode = config_ok and config.get("core.day_night_mode", "manual") or "manual"
+  local current_mode = configured_mode()
 
   local modes = {
     { mode = "manual", desc = "toggle with <leader>oK" },
@@ -406,25 +377,17 @@ end
 
 -- Interactive day/night theme pair setup
 function M.setup_themes()
-  local switcher_ok, _ = pcall(require, "meowvim.colorscheme_switcher")
-  if not switcher_ok then
-    vim.notify("Colorscheme switcher not available", vim.log.levels.ERROR)
-    return
-  end
-
   local config_ok, config = pcall(require, "meowvim.config")
   if not config_ok then
     vim.notify("Config not available", vim.log.levels.ERROR)
     return
   end
 
-  -- Get current day/night themes
   local current_day_theme = config.get("core.day_theme", "catppuccin")
   local current_day_variant = config.get("core.day_variant", "latte")
   local current_night_theme = config.get("core.night_theme", "catppuccin")
   local current_night_variant = config.get("core.night_variant", "mocha")
 
-  -- Show menu
   local options = {
     string.format("Day theme: %s (%s)", current_day_theme, current_day_variant or "default"),
     string.format("Night theme: %s (%s)", current_night_theme, current_night_variant or "default"),
@@ -444,23 +407,18 @@ function M.setup_themes()
     end
 
     if idx == 1 then
-      -- Select day theme
       M._select_theme_for_slot("day")
     elseif idx == 2 then
-      -- Select night theme
       M._select_theme_for_slot("night")
-    elseif idx == 3 then
-      -- Set current as day
+    elseif idx == 3 or idx == 4 then
       local theme = config.get("core.theme", "catppuccin")
       local variant = config.get("core.variant", "mocha")
-      M.set_day_theme(theme, variant)
-    elseif idx == 4 then
-      -- Set current as night
-      local theme = config.get("core.theme", "catppuccin")
-      local variant = config.get("core.variant", "mocha")
-      M.set_night_theme(theme, variant)
+      if idx == 3 then
+        M.set_day_theme(theme, variant)
+      else
+        M.set_night_theme(theme, variant)
+      end
     elseif idx == 5 then
-      -- Use preset
       local presets_ok, presets = pcall(require, "meowvim.day_night_presets")
       if presets_ok then
         presets.select_preset()
@@ -479,7 +437,6 @@ function M._select_theme_for_slot(slot)
     return
   end
 
-  -- Get all theme options with variants
   local options = switcher.get_all_theme_options()
 
   local displays = vim.tbl_map(function(opt)
@@ -494,7 +451,6 @@ function M._select_theme_for_slot(slot)
   }, function(choice, idx)
     if choice and idx then
       local selected = options[idx]
-
       if slot == "day" then
         M.set_day_theme(selected.theme, selected.variant)
       else
@@ -506,18 +462,13 @@ end
 
 -- Setup
 function M.setup()
-  -- Apply mode on startup
   vim.defer_fn(function()
-    local config_ok, config = pcall(require, "meowvim.config")
-    local mode = config_ok and config.get("core.day_night_mode", "manual") or "manual"
-
-    if mode == "auto" then
+    if configured_mode() == "auto" then
       M.apply_current_mode()
       M.start_watching()
     end
   end, 100)
 
-  -- Cleanup on exit
   vim.api.nvim_create_autocmd("VimLeavePre", {
     group = vim.api.nvim_create_augroup("meowvim-day-night-cleanup", { clear = true }),
     callback = function()
@@ -536,7 +487,6 @@ function M.setup()
     end,
   })
 
-  -- Register commands
   vim.api.nvim_create_user_command("DayNightMode", function(opts)
     if opts.args == "" then
       M.select_mode()
@@ -559,7 +509,6 @@ function M.setup()
     M.setup_themes()
   end, { desc = "Setup day/night theme pairs interactively" })
 
-  -- Command to set current theme as day or night theme
   vim.api.nvim_create_user_command("DayNightSetTheme", function(opts)
     local mode = opts.args
     if mode ~= "day" and mode ~= "night" then
@@ -573,17 +522,18 @@ function M.setup()
       return
     end
 
-    -- Get current theme and variant
     local theme = config.get("core.theme", "catppuccin")
     local variant = config.get("core.variant", "mocha")
 
     if mode == "day" then
       M.set_day_theme(theme, variant)
-      vim.notify(string.format("Day theme set to: %s (%s)", theme, variant or "default"), vim.log.levels.INFO)
     else
       M.set_night_theme(theme, variant)
-      vim.notify(string.format("Night theme set to: %s (%s)", theme, variant or "default"), vim.log.levels.INFO)
     end
+    vim.notify(
+      string.format("%s theme set to: %s (%s)", mode:gsub("^%l", string.upper), theme, variant or "default"),
+      vim.log.levels.INFO
+    )
   end, {
     nargs = 1,
     complete = function()

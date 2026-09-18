@@ -203,13 +203,11 @@ function M.apply_preset(preset_name)
   local day_night = require("meowvim.day_night")
   local config_ok, config = pcall(require, "meowvim.config")
 
-  -- Set day theme
-  day_night.set_day_theme(preset.day.theme, preset.day.variant)
+  -- Both slots change at once, so skip the per-slot writes and persist once
+  -- below: each persist() rewrites the config file and wakes the file watcher.
+  day_night.set_day_theme(preset.day.theme, preset.day.variant, false)
+  day_night.set_night_theme(preset.night.theme, preset.night.variant, false)
 
-  -- Set night theme
-  day_night.set_night_theme(preset.night.theme, preset.night.variant)
-
-  -- Save last preset for detection
   if config_ok then
     config.set("core.last_preset", preset_name)
     config.persist()
@@ -226,9 +224,9 @@ function M.apply_preset(preset_name)
       "Applied preset: %s\nDay: %s (%s)\nNight: %s (%s)",
       preset.name,
       preset.day.theme,
-      preset.day.variant,
+      preset.day.variant or "default",
       preset.night.theme,
-      preset.night.variant
+      preset.night.variant or "default"
     ),
     vim.log.levels.INFO
   )

@@ -6,6 +6,11 @@
 
 local M = {}
 
+local function preset_count()
+  local ok, presets = pcall(require, "meowvim.day_night_presets")
+  return ok and vim.tbl_count(presets.presets) or 0
+end
+
 -- Show current configuration
 local function get_current_config()
   local config_ok, config = pcall(require, "meowvim.config")
@@ -75,7 +80,7 @@ function M.show_menu()
       id = "preset",
       label = "Use preset",
       value = preset_display,
-      desc = "Choose from 9 ready-made theme pairs",
+      desc = string.format("Choose from %d ready-made theme pairs", preset_count()),
     },
     {
       id = "day",
