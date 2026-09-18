@@ -2,9 +2,9 @@ name: Meowvim CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [dev, main]
   pull_request:
-    branches: [ main ]
+    branches: [dev, main]
 
 jobs:
   lint:
@@ -12,100 +12,74 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Install stylua
         run: |
-          wget -qO- https://github.com/JohnnyMorganz/StyLua/releases/latest/download/stylua-linux-x86_64.zip | funzip > stylua
+          wget -qO stylua.zip https://github.com/JohnnyMorganz/StyLua/releases/latest/download/stylua-linux-x86_64.zip
+          unzip -p stylua.zip stylua > stylua
           chmod +x stylua
           sudo mv stylua /usr/local/bin/
-      
-      - name: Run stylua
+
+      - name: Check formatting
         run: stylua --check lua/ init.lua
 
-  test-linux:
-    name: Test on Linux
-    runs-on: ubuntu-latest
+  test:
+    name: Test on ${{ matrix.os }} with Neovim ${{ matrix.nvim-version }}
+    runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        nvim-version: ['stable', 'nightly']
+        os: [ubuntu-latest, macos-latest]
+        nvim-version: [stable, nightly]
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Install Neovim
-        run: |
-          if [ "${{ matrix.nvim-version }}" = "stable" ]; then
-            wget -qO- https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz | tar xz
-          else
-            wget -qO- https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz | tar xz
-          fi
-          sudo mv nvim-linux64 /opt/nvim
-          echo "/opt/nvim/bin" >> $GITHUB_PATH
-      
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y git ripgrep fd-find
-          mkdir -p ~/.local/bin
-          ln -s $(which fdfind) ~/.local/bin/fd
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-      
-      - name: Setup config
-        run: |
-          mkdir -p ~/.config/nvim
-          cp -r * ~/.config/nvim/
-          mkdir -p ~/.config/meowvim
-          cat > ~/.config/meowvim/config.lua <<EOF
-          local config = require("meowvim.config.builder")
-          config.core({ theme = "catppuccin", variant = "mocha", enable_copilot = false })
-          config.editor({ tabstop = 2, indent = 2 })
-          config.performance({ buffer_auto_close = false })
-          return config.build()
-          EOF
-      
-      - name: Test Neovim starts
-        run: |
-          nvim --version
-          nvim --headless "+lua print('Neovim starts successfully')" +qa
-      
-      - name: Run config tests
-        run: |
-          cd ~/.config/nvim
-          bash bin/test-config.sh || true
-      
-      - name: Check health
-        run: |
-          nvim --headless "+checkhealth meowvim" "+write /tmp/health.txt" +qa || true
-          cat /tmp/health.txt
 
-  test-macos:
-    name: Test on macOS
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Install Neovim
+      - name: Install Neovim and search tools
+        uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: ${{ matrix.nvim-version }}
+
+      - name: Install ripgrep and fd
         run: |
-          brew install neovim ripgrep fd
-      
-      - name: Setup config
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            sudo apt-get update
+            sudo apt-get install -y ripgrep fd-find
+            mkdir -p "$HOME/.local/bin"
+            ln -s "$(command -v fdfind)" "$HOME/.local/bin/fd"
+            echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          else
+            brew install ripgrep fd
+          fi
+
+      # The checkout is used in place: copying it would drop the dotfiles that
+      # stylua and luacheck read.
+      - name: Point Neovim at the checkout
         run: |
-          mkdir -p ~/.config/nvim
-          cp -r * ~/.config/nvim/
-          mkdir -p ~/.config/meowvim
-          cat > ~/.config/meowvim/config.lua <<EOF
-          local config = require("meowvim.config.builder")
-          config.core({ theme = "catppuccin", variant = "mocha", enable_copilot = false })
-          config.editor({ tabstop = 2, indent = 2 })
-          config.performance({ buffer_auto_close = false })
-          return config.build()
-          EOF
-      
-      - name: Test Neovim starts
+          mkdir -p "$HOME/.config"
+          ln -s "$GITHUB_WORKSPACE" "$HOME/.config/nvim"
+
+      # A plain table, which is what meowvim.config expects. No user config at
+      # all would also work; this one pins the theme so the run is reproducible.
+      - name: Write the user config
         run: |
-          nvim --version
-          nvim --headless "+lua print('Neovim starts successfully')" +qa
-      
-      - name: Run config tests
+          mkdir -p "$HOME/.config/meowvim"
+          cat > "$HOME/.config/meowvim/config.lua" <<'LUA'
+          return {
+            core = { theme = "catppuccin", variant = "mocha", enable_copilot = false },
+            editor = { tabstop = 2, indent = 2 },
+            performance = { buffer_auto_close = false },
+          }
+          LUA
+
+      - name: Install plugins
+        run: nvim --headless "+Lazy! sync" +qa
+
+      - name: Run the config tests
+        run: bash bin/test-config.sh
+
+      - name: Show the health report
+        if: always()
         run: |
-          cd ~/.config/nvim
-          bash bin/test-config.sh || true
+          nvim --headless "+checkhealth meowvim" "+write! /tmp/health.txt" +qa
+          cat /tmp/health.txt
