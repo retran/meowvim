@@ -68,16 +68,46 @@ Nerd Font selected. The native Windows build is not tested.
 
 ## Install through meowctl
 
-If you manage your dotfiles with meowctl, add meowvim as a component instead of
-cloning it by hand. meowctl links the repository into `~/.config/nvim` and keeps
-it in step with the rest of your environment:
+If you manage your environment with [meowctl](https://github.com/meowshed/meowctl),
+meowvim arrives with the [dotmeow](https://github.com/meowshed/dotmeow) module
+rather than as a component you add by name. dotmeow clones this repository into
+`~/.config/nvim`, fast-forwards it on `meowctl upgrade`, and exports `EDITOR`
+and `VISUAL` as `nvim`.
+
+Bootstrap a machine from an existing dotfiles repository:
 
 ```bash
-git clone https://github.com/retran/meow.git ~/.meow
-cd ~/.meow
-git submodule update --init
-./bin/meowctl install personal
+meowctl init https://github.com/YOUR_USER/dotfiles
+meowctl apply
 ```
+
+Starting without one, scaffold a config directory, declare the dependency, and
+reference the module:
+
+```bash
+meowctl init
+meowctl dep add dotmeow
+```
+
+Then add one line to `~/.config/meowctl/init.star` and apply it:
+
+```python
+component("@dotmeow")
+```
+
+```bash
+meowctl apply
+```
+
+dotmeow brings the rest of the terminal environment with it, including the
+ghostty, tmux, fish, ripgrep, and lazygit configurations meowvim expects. The
+ghostty theme follows the system appearance between Catppuccin Latte and Mocha,
+which is the pair meowvim defaults to, so the editor and the terminal switch
+together.
+
+If `~/.config/nvim` already exists and is not a Git clone, the component logs a
+message and skips rather than overwriting it. Move the directory aside and run
+`meowctl apply` again.
 
 ## Your first configuration
 
