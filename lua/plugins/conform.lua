@@ -3,7 +3,11 @@
 
 -- @file: lua/plugins/conform.lua
 
-local desired_formatters_by_ft = {
+-- conform resolves availability per buffer at format time and stays quiet about
+-- missing tools unless formatters are named explicitly, so no pre-filtering is
+-- done here. That also matters for project-local mise toolchains: a startup
+-- snapshot would go stale the moment the working directory changes.
+local formatters_by_ft = {
   lua = { "stylua" },
   python = { "ruff_format", "ruff_organize_imports" },
   javascript = { "prettierd", "prettier", stop_after_first = true },
@@ -26,13 +30,14 @@ local desired_formatters_by_ft = {
   zsh = { "shfmt" },
   c = { "clang_format" },
   cpp = { "clang_format" },
-  cs = { "csharpier", "dotnet_format", lsp_format = "fallback" },
+  cs = { "csharpier", lsp_format = "fallback" },
   java = { "google-java-format" },
   gdscript = { "gdformat" },
   gdshader = { "clang_format" },
   tex = { "latexindent" },
   bib = { "bibtex-tidy" },
-  ["_"] = { "codespell" },
+  -- Applies to filetypes without an entry above.
+  ["_"] = { "codespell", "trim_whitespace" },
 }
 
 return {
@@ -40,95 +45,59 @@ return {
   event = { "BufWritePre" },
   cmd = { "ConformInfo" },
   opts = function()
-    local formatters_by_ft = {}
+    local config_ok, config = pcall(require, "meowvim.config")
+    local timeout_ms = 3000
 
-    for ft, formatters in pairs(desired_formatters_by_ft) do
-      local available_formatters = {}
-      for key, value in pairs(formatters) do
-        if type(key) == "string" then
-          available_formatters[key] = value
-        end
-      end
-
-      for _, formatter in ipairs(formatters) do
-        if type(formatter) == "string" then
-          if vim.fn.executable(formatter) == 1 then
-            table.insert(available_formatters, formatter)
-          end
-        end
-      end
-
-      if #available_formatters > 0 then
-        formatters_by_ft[ft] = available_formatters
+    if config_ok then
+      timeout_ms = config.get("formatting.timeout_ms", timeout_ms)
+      -- `formatting.formatters` in the user config replaces the entry for a
+      -- filetype.
+      local user_formatters = config.get("formatting.formatters", nil)
+      if type(user_formatters) == "table" and not vim.tbl_isempty(user_formatters) then
+        formatters_by_ft = vim.tbl_extend("force", formatters_by_ft, user_formatters)
       end
     end
-
-    formatters_by_ft["_"] = formatters_by_ft["_"] or {}
-    table.insert(formatters_by_ft["_"], "trim_whitespace")
 
     return {
       formatters_by_ft = formatters_by_ft,
 
       default_format_opts = {
-        timeout_ms = 3000,
+        timeout_ms = timeout_ms,
         async = false,
         quiet = false,
         lsp_format = "fallback", -- Use LSP formatting if no external formatter available
       },
 
-      -- Optional: Support per-project .conform.json configuration
-      -- Allows teams to override formatter settings per-project
-      -- Example .conform.json:
-      -- {
-      --   "formatters_by_ft": { "python": ["black"] },
-      --   "args": { "black": ["--line-length", "100"] }
-      -- }
-      -- Uncomment to enable:
-      -- config_file = vim.fn.findfile('.conform.json', '.;'),
-
+      -- Format on write for everything up to 800 lines; larger buffers are
+      -- handled asynchronously by format_after_save so the write does not block.
+      -- Anything past 5000 lines is left alone entirely.
       format_on_save = function(bufnr)
         if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
           return
         end
-        local bufname = vim.api.nvim_buf_get_name(bufnr)
-        if bufname:match("/node_modules/") then
+        if vim.api.nvim_buf_get_name(bufnr):match("/node_modules/") then
           return
         end
-        local line_count = vim.api.nvim_buf_line_count(bufnr)
-        if line_count > 5000 then
-          return
-        end
-
-        -- format_on_save does not support async; use format_after_save for large files
-        if line_count > 800 then
+        if vim.api.nvim_buf_line_count(bufnr) > 800 then
           return
         end
 
-        return {
-          timeout_ms = line_count > 2000 and 2000 or 750,
-        }
+        return { timeout_ms = 750 }
       end,
+
       format_after_save = function(bufnr)
         if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
           return
         end
-        local bufname = vim.api.nvim_buf_get_name(bufnr)
-        if bufname:match("/node_modules/") then
+        if vim.api.nvim_buf_get_name(bufnr):match("/node_modules/") then
           return
         end
         local line_count = vim.api.nvim_buf_line_count(bufnr)
-        if line_count > 5000 then
+        if line_count <= 800 or line_count > 5000 then
           return
         end
 
-        -- Only format async for files > 800 lines; smaller files handled by format_on_save
-        if line_count <= 800 then
-          return
-        end
-
-        return {
-          timeout_ms = line_count > 2000 and 2000 or 750,
-        }
+        return { timeout_ms = line_count > 2000 and 2000 or 750 }
       end,
 
       formatters = {
@@ -138,22 +107,15 @@ return {
         stylua = {
           prepend_args = { "--indent-type", "Spaces", "--indent-width", "2" },
         },
-        black = {
-          prepend_args = { "--line-length", "88" },
-        },
-        gdformat = {
-          command = "gdformat",
-        },
         pg_format = {
           prepend_args = { "--spaces", "2", "--comma-start", "--keyword-case", "1" },
         },
         codespell = {
-          condition = function(ctx)
-            local bufnr = ctx and ctx.bufnr
-            if not bufnr or bufnr == 0 then
-              return false
-            end
-            return vim.api.nvim_buf_line_count(bufnr) <= 1000
+          -- conform calls conditions as (self, ctx); the previous single-argument
+          -- signature received `self`, so `ctx.bufnr` was always nil and codespell
+          -- never ran.
+          condition = function(_, ctx)
+            return vim.api.nvim_buf_line_count(ctx.bufnr) <= 1000
           end,
         },
       },

@@ -4,7 +4,13 @@
 -- @file: lua/plugins/nvim-lint.lua
 -- @brief: Asynchronous linting engine with multiple linter support.
 
-local desired_linters_by_ft = {
+-- Linters are declared in full and filtered when linting actually runs, not at
+-- startup: several nvim-lint names differ from the binary they invoke
+-- (`golangcilint` runs `golangci-lint`, `clippy` runs `cargo`), and with
+-- project-local mise toolchains a startup snapshot goes stale as soon as the
+-- working directory changes.
+local linters_by_ft = {
+  lua = { "luacheck" },
   python = { "pylint", "mypy" },
   javascript = { "eslint_d" },
   typescript = { "eslint_d" },
@@ -25,95 +31,98 @@ local desired_linters_by_ft = {
 return {
   "mfussenegger/nvim-lint",
   event = { "BufReadPre", "BufNewFile" },
-  opts = function()
-    local linters_by_ft = {}
-    for ft, linters in pairs(desired_linters_by_ft) do
-      local available_linters = {}
-      for _, linter in ipairs(linters) do
-        if vim.fn.executable(linter) == 1 then
-          table.insert(available_linters, linter)
-        end
-      end
-      if #available_linters > 0 then
-        linters_by_ft[ft] = available_linters
-      end
-    end
-
-    return {
-      linters_by_ft = linters_by_ft,
-      linters = {
-        luacheck = {
-          args = { "--globals", "vim", "--read-globals", "love", "--formatter", "plain", "--codes", "--ranges", "-" },
-        },
-        pylint = {
-          args = { "-f", "json", "--disable=C0111", "--disable=C0103" },
-        },
-        golangcilint = {
-          args = {
-            "run",
-            "--out-format",
-            "json",
-          },
-        },
-        markdownlint = {
-          args = function()
-            local config = vim.fn.expand("~/.markdownlint.json")
-            if vim.fn.filereadable(config) == 1 then
-              return { "--stdin", "--config", config }
-            end
-            return { "--stdin" }
-          end,
-        },
-        sqlfluff = {
-          args = {
-            "lint",
-            "--format",
-            "json",
-            "--dialect",
-            "postgres",
-            "-",
-          },
-        },
-      },
-    }
-  end,
-
-  config = function(_, opts)
+  config = function()
     local toggles = require("utils.toggles")
     local lint = require("lint")
 
-    lint.linters_by_ft = opts.linters_by_ft or {}
-
-    if opts.linters then
-      for linter_name, linter_config in pairs(opts.linters) do
-        if lint.linters[linter_name] then
-          lint.linters[linter_name] = vim.tbl_deep_extend("force", lint.linters[linter_name], linter_config)
-        end
+    local config_ok, config = pcall(require, "meowvim.config")
+    local auto_lint = true
+    if config_ok then
+      auto_lint = config.get("linting.auto_lint", true)
+      -- `linting.linters` in the user config replaces the entry for a filetype.
+      local user_linters = config.get("linting.linters", nil)
+      if type(user_linters) == "table" and not vim.tbl_isempty(user_linters) then
+        linters_by_ft = vim.tbl_extend("force", linters_by_ft, user_linters)
       end
     end
 
-    local lint_callback = vim.schedule_wrap(function()
-      if vim.g.lint_enabled ~= false then
-        lint.try_lint()
-      end
-    end)
+    lint.linters_by_ft = linters_by_ft
 
-    local lint_augroup = vim.api.nvim_create_augroup("lint", { clear = true })
-    vim.api.nvim_create_autocmd({ "BufWritePost", "InsertLeave" }, {
-      group = lint_augroup,
-      callback = lint_callback,
+    -- Only the deltas from nvim-lint's own definitions. Overriding `args`
+    -- replaces them wholesale, which is why pylint (`--from-stdin <file>`) and
+    -- golangcilint (version-dependent flags) are deliberately left alone.
+    lint.linters.markdownlint = vim.tbl_deep_extend("force", lint.linters.markdownlint, {
+      args = function()
+        local markdownlint_config = vim.fn.expand("~/.markdownlint.json")
+        if vim.fn.filereadable(markdownlint_config) == 1 then
+          return { "--stdin", "--config", markdownlint_config }
+        end
+        return { "--stdin" }
+      end,
     })
+
+    lint.linters.sqlfluff = vim.tbl_deep_extend("force", lint.linters.sqlfluff, {
+      args = { "lint", "--format=json", "--dialect", "postgres", "-" },
+    })
+
+    -- A linter is runnable only when its resolved command exists. `cmd` can be
+    -- a function (eslint_d looks for a project-local binary), so resolve it
+    -- every time rather than caching the answer.
+    local function is_runnable(name)
+      local ok, linter = pcall(function()
+        return lint.linters[name]
+      end)
+      if not ok or type(linter) ~= "table" then
+        return false
+      end
+
+      local cmd = linter.cmd
+      if type(cmd) == "function" then
+        local resolved_ok, resolved = pcall(cmd)
+        cmd = resolved_ok and resolved or nil
+      end
+
+      return type(cmd) == "string" and vim.fn.executable(cmd) == 1
+    end
+
+    local function lint_buffer()
+      if vim.g.lint_enabled == false then
+        return
+      end
+
+      local names = lint.linters_by_ft[vim.bo.filetype]
+      if not names then
+        return
+      end
+
+      local runnable = vim.tbl_filter(is_runnable, names)
+      if #runnable > 0 then
+        lint.try_lint(runnable)
+      end
+    end
+
+    if auto_lint then
+      vim.api.nvim_create_autocmd({ "BufWritePost", "InsertLeave" }, {
+        group = vim.api.nvim_create_augroup("lint", { clear = true }),
+        callback = vim.schedule_wrap(lint_buffer),
+      })
+    end
 
     toggles.ensure("lint_enabled")
 
     vim.api.nvim_create_user_command("LintInfo", function()
       local ft = vim.bo.filetype
-      local linters_for_ft = lint.linters_by_ft[ft] or {}
-      if #linters_for_ft == 0 then
+      local names = lint.linters_by_ft[ft] or {}
+      if #names == 0 then
         vim.notify("No linters configured for filetype: " .. ft, vim.log.levels.INFO)
-      else
-        vim.notify("Linters for " .. ft .. ": " .. table.concat(linters_for_ft, ", "), vim.log.levels.INFO)
+        return
       end
+
+      local lines = { "Linters for " .. ft .. ":" }
+      for _, name in ipairs(names) do
+        table.insert(lines, string.format("  %s %s", is_runnable(name) and "✓" or "✗", name))
+      end
+      vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO)
     end, { desc = "Show Linters for Current Filetype" })
 
     vim.api.nvim_create_user_command("LintToggle", function()
