@@ -9,9 +9,9 @@ would expect, and it keeps your own settings in a single Lua file that it
 validates and reloads as you save. 83 plugins are declared and 17 load at
 startup; the rest wait until you use them.
 
-Language servers, formatters, and linters are checked when they run rather than
-when Neovim starts, so a project that brings its own toolchain works without
-any change here, and a machine that lacks one simply does without that feature.
+Language servers, formatters, and linters are checked when they run, not when
+Neovim starts. A project that brings its own toolchain works without any change
+here, and a machine that lacks one does without that feature.
 
 ## Features
 
@@ -34,11 +34,12 @@ any change here, and a machine that lacks one simply does without that feature.
   cost you.
 - Upgrades through `bin/update-meowvim.sh`, which saves a restore point first.
 
-Under the hood: snacks.nvim for the picker, explorer, dashboard, and terminal;
-blink.cmp with Copilot for completion; 17 language servers through
-`vim.lsp.config`; 30 treesitter parsers; conform and nvim-lint; gitsigns,
-Neogit, and LazyGit, plus pull request review through the GitHub CLI; neotest
-for Go, Python, Jest, and Vitest; nvim-dap for Go, Python, C#, and Godot.
+Under the hood: snacks.nvim for the picker, explorer, dashboard, and terminal,
+and blink.cmp with Copilot for completion. 17 language servers run through
+`vim.lsp.config`, with 30 treesitter parsers, conform, and nvim-lint. Git is
+gitsigns, Neogit, and LazyGit, plus pull request review through the GitHub CLI.
+Tests run under neotest for Go, Python, Jest, and Vitest; nvim-dap debugs Go,
+Python, C#, and Godot.
 
 ## Requirements
 

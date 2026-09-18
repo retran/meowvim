@@ -70,7 +70,7 @@ Nerd Font selected. The native Windows build is not tested.
 
 If you manage your environment with [meowctl](https://github.com/meowshed/meowctl),
 meowvim arrives with the [dotmeow](https://github.com/meowshed/dotmeow) module
-rather than as a component you add by name. dotmeow clones this repository into
+and not as a component you add by name. dotmeow clones this repository into
 `~/.config/nvim`, fast-forwards it on `meowctl upgrade`, and exports `EDITOR`
 and `VISUAL` as `nvim`.
 
@@ -106,8 +106,8 @@ which is the pair meowvim defaults to, so the editor and the terminal switch
 together.
 
 If `~/.config/nvim` already exists and is not a Git clone, the component logs a
-message and skips rather than overwriting it. Move the directory aside and run
-`meowctl apply` again.
+message and skips, so your files stay where they are. Move the directory aside
+and run `meowctl apply` again.
 
 ## Your first configuration
 
@@ -154,10 +154,17 @@ sync` and then `:checkhealth meowvim`.
 
 ## Checking a change
 
-`bin/test-config.sh` runs what CI runs: Neovim starts, the configuration layer
-loads, your user config validates, the plugins load, the LSP and treesitter
-setup answers, the health check passes, no two mappings collide, and every Lua
-file parses.
+`bin/test-config.sh` runs what CI runs. It checks nine things:
+
+- Neovim starts
+- the configuration layer loads
+- your user config validates
+- the plugins load
+- the LSP setup answers
+- the treesitter parsers are installed
+- the health check passes
+- no two mappings collide
+- every Lua file parses
 
 ```bash
 ./bin/test-config.sh

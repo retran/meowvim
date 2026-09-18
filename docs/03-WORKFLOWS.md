@@ -1,8 +1,8 @@
 # Daily workflows
 
 Ten sequences you repeat often enough that the keystrokes should be automatic.
-Each one starts from a goal, not from a plugin, and names the alternative when
-there is a reason to pick between two paths.
+Each one starts from a goal and names the alternative when two paths both
+work.
 
 If a mapping here is unfamiliar, `<leader>hk` searches all of them by name.
 
@@ -26,10 +26,10 @@ files when they match, a full listing otherwise. Use `<leader>fF` when you want
 the plain listing and `<leader>fg` when you want only tracked files.
 
 `<leader>fe` opens the explorer on the right, which is the better choice when
-you are looking at a directory rather than for a file.
+you want to see what a directory holds.
 
-To search the contents instead of the names, `<leader>s/` greps the project and
-`<leader>sb` greps only the open buffers.
+To search file contents, `<leader>s/` greps the project and `<leader>sb` greps
+only the open buffers.
 
 ## Read code you did not write
 
@@ -45,10 +45,9 @@ and `<leader>nh` and `<leader>nH` open the type hierarchy. These render as trees
 you can expand, which is what makes them worth using over a flat reference list.
 
 In a buffer with no language server, or one whose server does not answer that
-request, these degrade rather than open an empty window. `<leader>ns` lists
-treesitter symbols instead of LSP symbols, `<leader>nS` greps the project
-instead of searching workspace symbols, and the rest say which capability is
-missing. Folding does the same: nvim-ufo takes its ranges from the server, then
+request, these degrade instead of opening an empty window. `<leader>ns` falls
+back to treesitter symbols, `<leader>nS` falls back to a project grep, and the
+rest name the LSP request nobody answered. Folding does the same: nvim-ufo takes its ranges from the server, then
 treesitter, then indentation.
 
 ## Change code
@@ -109,8 +108,8 @@ once.
 tests from the tree. `<leader>to` shows the output of the last run, and
 `<leader>tx` stops a run that is taking too long.
 
-To debug a failing test rather than read its output, `<leader>td` runs the
-nearest test under nvim-dap with the adapter for that language.
+When the output is not enough, `<leader>td` runs the nearest test under
+nvim-dap with the adapter for that language.
 
 ## Debug
 
@@ -123,7 +122,7 @@ starts. For a single value, `<leader>dvh` hovers the expression under the cursor
 and works on a visual selection too.
 
 Conditional breakpoints are `<leader>dbc`, and `<leader>dbl` sets a log point,
-which prints instead of stopping.
+which prints a message and keeps running.
 
 ## Annotate a review
 

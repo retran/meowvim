@@ -241,9 +241,12 @@ The ones worth learning first:
     <leader>cf  format               <leader>nd  go to definition
     <leader><space>  jump anywhere   F2          terminal
 
-Motions between things use bracket pairs: `]h` and `[h` for hunks, `]d` and
-`[d` for diagnostics, `]x` and `[x` for conflicts, `]w` and `[w` for
-references, `]r` and `[r` for review comments, `]b` and `[b` for buffers.
+Bracket pairs move between things of one kind:
+
+    ]h  [h  hunks                ]d  [d  diagnostics
+    ]x  [x  conflicts            ]w  [w  references
+    ]r  [r  review comments      ]b  [b  buffers
+    ]t  [t  tabs                 ]q  [q  quickfix items
 
 `docs/KEYMAPS.md` in the repository lists every mapping.
 
