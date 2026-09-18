@@ -77,7 +77,9 @@ test_health_checks() {
     
     nvim --headless "+checkhealth meowvim" "+write $TEST_OUTPUT/health.txt" +qa 2>&1
     
-    if grep -qi "ERROR" "$TEST_OUTPUT/health.txt"; then
+    # Match the health report's own error marker: a plain "ERROR" substring also
+    # appears inside warning texts (e.g. a mise shim error quoted in a warning).
+    if grep -q "❌ ERROR" "$TEST_OUTPUT/health.txt"; then
         log_error "Health checks found errors"
         cat "$TEST_OUTPUT/health.txt"
         return 1
@@ -142,7 +144,9 @@ test_lsp_config() {
 test_treesitter() {
     log_test "Testing Treesitter parsers..."
     
-    local output=$(nvim --headless "+lua local ts = require('nvim-treesitter.parsers'); local count = 0; for _ in pairs(ts.get_parser_configs()) do count = count + 1 end; print('Parsers:' .. count)" +qa 2>&1)
+    # nvim-treesitter's rewrite removed `nvim-treesitter.parsers`; installed
+    # parsers are reported by the top-level module now.
+    local output=$(nvim --headless "+lua print('Parsers:' .. #require('nvim-treesitter').get_installed())" +qa 2>&1)
     
     if echo "$output" | grep -q "Parsers:[0-9]"; then
         local parser_count=$(echo "$output" | grep -o 'Parsers:[0-9]*' | tail -1 | cut -d: -f2)

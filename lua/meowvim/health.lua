@@ -160,10 +160,13 @@ local function check_one_mise_toml(mise_toml, label)
     return
   end
 
+  -- `mise ls --current` lists declared tools too, marking the ones that are not
+  -- present with "(missing)"; keying off the name alone reported everything as
+  -- installed.
   local installed = {}
   for line in handle:lines() do
     local name = line:match("^(%S+)")
-    if name then
+    if name and not line:find("(missing)", 1, true) then
       local short = name:match("([^/]+)$") or name
       installed[short] = true
     end
@@ -256,9 +259,13 @@ local function check_external_deps()
   end
 
   -- Check node (for Copilot)
-  if vim.fn.executable("node") == 1 then
-    local node_version = vim.fn.system("node --version"):gsub("\n", "")
-    ok("node: " .. node_version)
+  local node_output = vim.fn.executable("node") == 1 and vim.fn.system("node --version") or nil
+  local node_failed = vim.v.shell_error ~= 0
+  if node_output and not node_failed then
+    ok("node: " .. vim.trim(node_output))
+  elseif node_output then
+    -- Present on PATH but not runnable, e.g. a mise shim with no version set.
+    warn("node found but not runnable: " .. vim.trim(vim.split(node_output, "\n")[1] or ""))
   else
     local config_ok, config = pcall(require, "meowvim.config")
     if config_ok and config.get("core.enable_copilot", false) then
@@ -326,19 +333,19 @@ local function check_treesitter()
   end
   ok("nvim-treesitter loaded")
 
-  local parser_ok, parser = pcall(require, "nvim-treesitter.parsers")
-  if parser_ok then
-    local installed = parser.get_parser_configs()
-    local count = 0
-    for _ in pairs(installed) do
-      count = count + 1
-    end
-    if count > 0 then
-      ok(string.format("%d parsers available", count))
+  -- The rewritten nvim-treesitter dropped `nvim-treesitter.parsers`; installed
+  -- parsers are now reported by the top-level module.
+  local ts = require("nvim-treesitter")
+  if type(ts.get_installed) == "function" then
+    local installed = ts.get_installed()
+    if #installed > 0 then
+      ok(string.format("%d parsers installed", #installed))
     else
       warn("No parsers installed")
       info("Run :TSInstall <language> to install parsers")
     end
+  else
+    warn("nvim-treesitter does not expose get_installed(); cannot list parsers")
   end
 end
 
