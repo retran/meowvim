@@ -58,25 +58,11 @@ return {
         }),
       },
 
-      status = {
-        enabled = true,
-        signs = true,
-        virtual_text = false,
-      },
-
+      -- Only the summary width differs from neotest's defaults; `status`,
+      -- `diagnostic` and the floating border (which falls back to
+      -- `vim.o.winborder`) were restating them.
       summary = {
-        enabled = true,
-        expand_errors = true,
-        follow = true,
         open = "botright vsplit | vertical resize 60",
-      },
-
-      floating = {
-        border = "rounded",
-      },
-
-      diagnostic = {
-        enabled = true,
       },
     })
   end,

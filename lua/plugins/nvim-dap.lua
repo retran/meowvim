@@ -3,9 +3,15 @@
 
 -- @file: lua/plugins/nvim-dap.lua
 -- @brief: Debug Adapter Protocol (DAP) client for debugging integration.
+--
+-- Adapters and launch configurations only; the <leader>d keymaps live in
+-- lua/config/keymaps.lua, which is what lets this plugin stay lazy — it used to
+-- register them here and therefore loaded on every startup together with
+-- dap-ui, dap-go, dap-python, nvim-nio and dap-virtual-text.
 
 return {
   "mfussenegger/nvim-dap",
+  lazy = true,
   dependencies = {
     {
       "rcarriga/nvim-dap-ui",
@@ -47,7 +53,6 @@ return {
   },
   config = function()
     local dap = require("dap")
-    local dapui = require("dapui")
 
     if vim.fn.executable("netcoredbg") == 1 then
       dap.adapters.coreclr = {
@@ -91,152 +96,5 @@ return {
         },
       }
     end
-
-    local dap_context_maps = {
-      {
-        "n",
-        "<leader>dc",
-        function()
-          dap.continue()
-        end,
-        "Continue or Run",
-      },
-      {
-        "n",
-        "<leader>dt",
-        function()
-          dap.terminate()
-        end,
-        "Terminate Debugger",
-      },
-      {
-        "n",
-        "<leader>ds",
-        function()
-          dap.step_over()
-        end,
-        "Step Over",
-      },
-      {
-        "n",
-        "<leader>di",
-        function()
-          dap.step_into()
-        end,
-        "Step Into",
-      },
-      {
-        "n",
-        "<leader>do",
-        function()
-          dap.step_out()
-        end,
-        "Step Out",
-      },
-      {
-        "n",
-        "<leader>dr",
-        function()
-          dap.run_to_cursor()
-        end,
-        "Run to Cursor",
-      },
-      {
-        "n",
-        "<leader>du",
-        function()
-          dapui.toggle()
-        end,
-        "Toggle Debug UI",
-      },
-      {
-        "n",
-        "<leader>dR",
-        function()
-          dap.repl.open()
-        end,
-        "Open Debug REPL",
-      },
-      {
-        "n",
-        "<leader>dbt",
-        function()
-          dap.toggle_breakpoint()
-        end,
-        "Toggle Breakpoint",
-      },
-      {
-        "n",
-        "<leader>dB",
-        function()
-          dap.clear_breakpoints()
-        end,
-        "Clear All Breakpoints",
-      },
-      {
-        "n",
-        "<leader>dbc",
-        function()
-          dap.set_breakpoint(vim.fn.input("Condition: "))
-        end,
-        "Set Conditional Breakpoint",
-      },
-      {
-        "n",
-        "<leader>dbl",
-        function()
-          dap.set_breakpoint(nil, nil, vim.fn.input("Log Message: "))
-        end,
-        "Set Log Point",
-      },
-      {
-        "n",
-        "<leader>dbe",
-        function()
-          dap.set_exception_breakpoints()
-        end,
-        "Set Exception Breakpoints",
-      },
-      {
-        "n",
-        "<leader>dvs",
-        function()
-          require("dap.ui.widgets").centered_float(require("dap.ui.widgets").scopes)
-        end,
-        "View Debug Scopes",
-      },
-      {
-        "n",
-        "<leader>dvf",
-        function()
-          require("dap.ui.widgets").centered_float(require("dap.ui.widgets").frames)
-        end,
-        "View Debug Frames",
-      },
-      {
-        { "n", "v" },
-        "<leader>dvh",
-        function()
-          require("dap.ui.widgets").hover()
-        end,
-        "Inspect Hover Value",
-      },
-      {
-        { "n", "v" },
-        "<leader>dvp",
-        function()
-          require("dap.ui.widgets").preview()
-        end,
-        "Preview Variable Value",
-      },
-    }
-
-    local function register_dap_maps()
-      for _, map in ipairs(dap_context_maps) do
-        vim.keymap.set(map[1], map[2], map[3], { desc = map[4] })
-      end
-    end
-
-    register_dap_maps()
   end,
 }

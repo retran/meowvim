@@ -21,13 +21,10 @@ return {
       return
     end
 
+    -- autoclose, close_command and close_buffers_with_windows already match
+    -- hbac's defaults; only the threshold comes from the user config.
     require("hbac").setup({
-      autoclose = true,
       threshold = threshold,
-      close_command = function(bufnr)
-        vim.api.nvim_buf_delete(bufnr, {})
-      end,
-      close_buffers_with_windows = false,
     })
   end,
 }

@@ -8,8 +8,8 @@
 -- Copilot LSP binary (copilot-language-server) installed via mise.
 --
 -- Keymaps:
---   <C-l>  (insert)  – accept inline suggestion (nvim-cmp.lua handles fallback to cmp)
---   <Esc>  (insert)  – dismiss inline suggestion (nvim-cmp.lua checks suggestion.is_visible())
+--   <C-l>  (insert)  – accept inline suggestion (blink-cmp.lua handles fallback to blink)
+--   <Esc>  (insert)  – dismiss inline suggestion (blink-cmp.lua checks suggestion.is_visible())
 --   <leader>oC       – toggle Copilot on/off globally (keymaps.lua)
 
 return {
@@ -36,4 +36,15 @@ return {
       custom_server_filepath = "copilot-language-server",
     },
   },
+  config = function(_, opts)
+    require("copilot").setup(opts)
+
+    -- The plugin loads on InsertEnter regardless of the user config, so honour
+    -- `toggles.copilot` / `core.enable_copilot` here. Without this Copilot kept
+    -- suggesting inline completions while the config said it was disabled.
+    -- <leader>oC drives :Copilot enable / :Copilot disable from the same flag.
+    if not vim.g.copilot_enabled then
+      require("copilot.command").disable()
+    end
+  end,
 }

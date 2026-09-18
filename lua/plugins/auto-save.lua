@@ -8,11 +8,11 @@ return {
   "okuuva/auto-save.nvim",
   event = { "InsertLeave", "TextChanged" },
   opts = {
-    enabled = true,
     trigger_events = {
+      -- Deliberately narrower than auto-save's default, which also saves on
+      -- QuitPre and VimSuspend. defer_save / cancel_deferred_save are left at
+      -- their defaults.
       immediate_save = { "BufLeave", "FocusLost" },
-      defer_save = { "InsertLeave", "TextChanged" },
-      cancel_deferred_save = { "InsertEnter" },
     },
     debounce_delay = 1500,
     write_all_buffers = true,

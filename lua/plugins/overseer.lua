@@ -4,18 +4,34 @@
 -- @file: lua/plugins/overseer.lua
 -- @brief: Task runner integration using overseer.nvim.
 
-local function find_root(patterns)
-  local cwd = vim.fn.getcwd()
-  local match = vim.fs.find(patterns, { upward = true, path = cwd, limit = 1 })[1]
+-- `vim.fs.find` matches names exactly unless it is given a predicate, so
+-- extension patterns have to be expressed as a function. The .NET template
+-- used to pass "*.sln" / "*.csproj" as plain strings and therefore never
+-- matched, hiding the template even inside a .NET project.
+local function find_root(names)
+  local match = vim.fs.find(names, { upward = true, path = vim.fn.getcwd(), limit = 1 })[1]
   if match then
     return vim.fs.dirname(match)
   end
-  return nil
 end
 
-local function has_project_file(patterns)
-  return find_root(patterns) ~= nil
+local function has_project_file(names)
+  return find_root(names) ~= nil
 end
+
+local function by_extension(...)
+  local suffixes = { ... }
+  return function(name)
+    for _, suffix in ipairs(suffixes) do
+      if name:sub(-#suffix) == suffix then
+        return true
+      end
+    end
+    return false
+  end
+end
+
+local DOTNET_PROJECT = by_extension(".sln", ".csproj")
 
 return {
   "stevearc/overseer.nvim",
@@ -34,93 +50,44 @@ return {
       opts = { direction = "float" },
     },
   },
-  opts = {},
+  opts = {
+    strategy = {
+      "toggleterm",
+      direction = "float",
+    },
+  },
   config = function(_, opts)
     local overseer = require("overseer")
-    overseer.setup(vim.tbl_deep_extend("force", {
-      strategy = {
-        "toggleterm",
-        direction = "float",
-      },
-      templates = { "builtin" },
-    }, opts or {}))
+    overseer.setup(opts)
 
     local TAG = require("overseer.constants").TAG
 
-    local function register(template)
-      overseer.register_template(template)
+    ---@param name string
+    ---@param tag string
+    ---@param root string|string[]|fun(name: string): boolean
+    ---@param cmd string[]
+    local function register(name, tag, root, cmd)
+      overseer.register_template({
+        name = name,
+        tags = { tag },
+        condition = {
+          callback = function()
+            return has_project_file(root)
+          end,
+        },
+        builder = function()
+          return {
+            cmd = cmd,
+            cwd = find_root(root) or vim.fn.getcwd(),
+            components = { "default", "unique" },
+          }
+        end,
+      })
     end
 
-    register({
-      name = "npm run dev",
-      tags = { TAG.BUILD },
-      condition = {
-        callback = function()
-          return has_project_file({ "package.json" })
-        end,
-      },
-      builder = function()
-        local cwd = find_root({ "package.json" }) or vim.fn.getcwd()
-        return {
-          cmd = { "npm", "run", "dev" },
-          cwd = cwd,
-          components = { "default", "unique" },
-        }
-      end,
-    })
-
-    register({
-      name = "npm test",
-      tags = { TAG.TEST },
-      condition = {
-        callback = function()
-          return has_project_file({ "package.json" })
-        end,
-      },
-      builder = function()
-        local cwd = find_root({ "package.json" }) or vim.fn.getcwd()
-        return {
-          cmd = { "npm", "test" },
-          cwd = cwd,
-          components = { "default", "unique" },
-        }
-      end,
-    })
-
-    register({
-      name = "go test ./...",
-      tags = { TAG.TEST },
-      condition = {
-        callback = function()
-          return has_project_file({ "go.mod" })
-        end,
-      },
-      builder = function()
-        local cwd = find_root({ "go.mod" }) or vim.fn.getcwd()
-        return {
-          cmd = { "go", "test", "./..." },
-          cwd = cwd,
-          components = { "default", "unique" },
-        }
-      end,
-    })
-
-    register({
-      name = "dotnet build",
-      tags = { TAG.BUILD },
-      condition = {
-        callback = function()
-          return has_project_file({ "*.sln", "*.csproj" })
-        end,
-      },
-      builder = function()
-        local cwd = find_root({ "*.sln", "*.csproj" }) or vim.fn.getcwd()
-        return {
-          cmd = { "dotnet", "build" },
-          cwd = cwd,
-          components = { "default", "unique" },
-        }
-      end,
-    })
+    register("npm run dev", TAG.BUILD, { "package.json" }, { "npm", "run", "dev" })
+    register("npm test", TAG.TEST, { "package.json" }, { "npm", "test" })
+    register("go test ./...", TAG.TEST, { "go.mod" }, { "go", "test", "./..." })
+    register("dotnet build", TAG.BUILD, DOTNET_PROJECT, { "dotnet", "build" })
   end,
 }

@@ -12,10 +12,22 @@ return {
     { "<leader>cs", "<cmd>Silicon<cr>", mode = "v", desc = "Create Code Screenshot" },
   },
   config = function()
+    -- Every other external-tool integration in this config gates on the binary;
+    -- silicon did not, so <leader>cs failed with a command-not-found error.
+    if vim.fn.executable("silicon") ~= 1 then
+      return
+    end
+
+    local function hl_bg(name, fallback)
+      local hl = vim.api.nvim_get_hl(0, { name = name, link = false })
+      return (hl and hl.bg) and string.format("#%06x", hl.bg) or fallback
+    end
+
     require("silicon").setup({
       font = "JetBrainsMono Nerd Font=34",
       theme = "Dracula",
-      background = "#94e2d5",
+      -- Follows the active colorscheme instead of a hardcoded catppuccin teal.
+      background = hl_bg("Visual", "#94e2d5"),
       window_title = function()
         return vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t")
       end,

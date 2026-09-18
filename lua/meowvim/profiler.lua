@@ -141,10 +141,8 @@ vim.api.nvim_create_user_command("MeasureRender", function()
   M.measure_buffer_render()
 end, { desc = "Measure buffer render time" })
 
--- Keymaps
-vim.keymap.set("n", "<leader>oPs", M.start, { desc = "Start Profiling" })
-vim.keymap.set("n", "<leader>oPe", M.stop, { desc = "Stop Profiling" })
-vim.keymap.set("n", "<leader>oPl", M.show_plugin_times, { desc = "Plugin Load Times" })
-vim.keymap.set("n", "<leader>oPr", M.measure_buffer_render, { desc = "Measure Render Time" })
+-- Keymaps live in lua/config/keymaps.lua under the <leader>oP group; the
+-- <leader>oPs binding registered here used to be shadowed by the :StartupTime
+-- mapping declared there.
 
 return M

@@ -25,36 +25,36 @@
 --   [r          Previous Review Comment  [n]
 
 return {
-    "retran/meow.review.nvim",
-    -- dir = "/Users/retran/workspace/meow.review.nvim", -- local dev override
-    dependencies = { "MunifTanjim/nui.nvim" },
-    event = "VeryLazy",
-    config = function()
-        require("meow.review").setup({
-            -- Number of source lines to show before and after each annotated range
-            -- in the exported markdown. Set to 0 to disable snippet capture.
-            context_lines = 3,
+  "retran/meow.review.nvim",
+  -- dir = "/Users/retran/workspace/meow.review.nvim", -- local dev override
+  dependencies = { "MunifTanjim/nui.nvim" },
+  event = "VeryLazy",
+  config = function()
+    require("meow.review").setup({
+      -- Number of source lines to show before and after each annotated range
+      -- in the exported markdown. Set to 0 to disable snippet capture.
+      context_lines = 3,
 
-            -- Exporter used by <Plug>(MeowReviewExport) / :MeowReview export.
-            default_exporter = "clipboard",
+      -- Exporter used by <Plug>(MeowReviewExport) / :MeowReview export.
+      default_exporter = "clipboard",
 
-            -- Formatter used when rendering annotations ("markdown" or "json").
-            default_formatter = "markdown",
+      -- Formatter used when rendering annotations ("markdown" or "json").
+      default_formatter = "markdown",
 
-            -- Filename written by :MeowReview export file (and file_prompt).
-            -- Relative to project root; parent dirs are auto-created.
-            export_filename = ".cache/meow-review/review.md",
+      -- Filename written by :MeowReview export file (and file_prompt).
+      -- Relative to project root; parent dirs are auto-created.
+      export_filename = ".cache/meow-review/review.md",
 
-            -- Path to the annotation store JSON file.
-            store_path = ".cache/meow-review/annotations.json",
+      -- Path to the annotation store JSON file.
+      store_path = ".cache/meow-review/annotations.json",
 
-            -- Inject a ## Summary block (file count, annotation count, type breakdown)
-            -- after the preamble in exported Markdown.
-            export_summary = true,
+      -- Inject a ## Summary block (file count, annotation count, type breakdown)
+      -- after the preamble in exported Markdown.
+      export_summary = true,
 
-            -- Add store file to .gitignore after first write.
-            -- "always" = silent, "prompt" = vim.ui.select once, false = disabled.
-            auto_gitignore = "prompt",
-        })
-    end,
+      -- Add store file to .gitignore after first write.
+      -- "always" = silent, "prompt" = vim.ui.select once, false = disabled.
+      auto_gitignore = "prompt",
+    })
+  end,
 }
